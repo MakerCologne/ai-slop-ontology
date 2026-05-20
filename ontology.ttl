@@ -1,0 +1,789 @@
+@prefix : <http://btm.one/ontology/ai-slop#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix skos: <http://www.w3.org/2004/01/skos/core#> .
+
+<http://btm.one/ontology/ai-slop> a owl:Ontology ;
+    dc:title "AI Slop Ontology" ;
+    dc:description "A machine-readable ontology for classifying, detecting, and reasoning about AI-generated slop content across all media types." ;
+    dc:creator "Stefan / BTM.one" ;
+    dc:date "2026-05-20" ;
+    dc:source "Shaib et al. 2025, Kommers et al. 2026, SlopDetector.org, MINT Lab 2026" ;
+    rdfs:comment "Designed for agent consumption — agents can load this ontology to understand, classify, detect, and countermeasure AI slop." .
+
+# ============================================================================
+# CLASSES
+# ============================================================================
+
+# --- Core Entity ---
+
+:SlopInstance a owl:Class ;
+    rdfs:label "Slop Instance" ;
+    rdfs:comment "A concrete observation of AI slop content. The central entity of this ontology." .
+
+# --- Classification ---
+
+:SlopType a owl:Class ;
+    rdfs:label "Slop Type" ;
+    rdfs:comment "Hierarchical classification of slop varieties." .
+
+:SlopMedium a owl:Class ;
+    rdfs:label "Slop Medium" ;
+    rdfs:comment "The media type in which slop manifests." .
+
+# --- Measurement ---
+
+:SlopDimension a owl:Class ;
+    rdfs:label "Slop Dimension" ;
+    rdfs:comment "A measurable quality axis along which slop can be assessed. From Shaib et al. (2025)." .
+
+:SlopSignal a owl:Class ;
+    rdfs:label "Slop Signal" ;
+    rdfs:comment "An observable indicator that suggests slop. Detectable by humans or automated tools." .
+
+# --- Normative ---
+
+:NormativeFraming a owl:Class ;
+    rdfs:label "Normative Framing" ;
+    rdfs:comment "A philosophical/ethical lens through which slop is evaluated as harmful." .
+
+:SlopHarm a owl:Class ;
+    rdfs:label "Slop Harm" ;
+    rdfs:comment "A specific negative consequence of slop." .
+
+# --- Detection & Response ---
+
+:DetectionMethod a owl:Class ;
+    rdfs:label "Detection Method" ;
+    rdfs:comment "A technique for identifying slop." .
+
+:DetectionTool a owl:Class ;
+    rdfs:label "Detection Tool" ;
+    rdfs:comment "A concrete software tool or service for slop detection." .
+
+:Countermeasure a owl:Class ;
+    rdfs:label "Countermeasure" ;
+    rdfs:comment "An action or technique to prevent, reduce, or remediate slop." .
+
+# --- Provenance ---
+
+:SlopContext a owl:Class ;
+    rdfs:label "Slop Context" ;
+    rdfs:comment "The situational context in which slop was created or encountered." .
+
+:SlopActor a owl:Class ;
+    rdfs:label "Slop Actor" ;
+    rdfs:comment "An entity (human, bot, organization) that produces or distributes slop." .
+
+# ============================================================================
+# SLOP TYPES (Hierarchical)
+# ============================================================================
+
+# --- Level 1: By Content Quality Pattern (Text) ---
+
+:GenericSlop a :SlopType ;
+    rdfs:label "Generic Slop" ;
+    :telltalePhrase "In today's fast-paced world..." ;
+    rdfs:comment "Templated, vague content with no specifics. The most basic form." ;
+    :hasMedium :Text ;
+    :detectedBy :RepetitionAnalysis , :InformationDensityAnalysis .
+
+:PseudoInsightSlop a :SlopType ;
+    rdfs:label "Pseudo-Insight Slop" ;
+    :telltalePhrase "The key is to find balance..." ;
+    rdfs:comment "Sounds profound but communicates nothing. Fake depth." ;
+    :hasMedium :Text ;
+    :detectedBy :InformationDensityAnalysis , :LogicalConsistencyCheck .
+
+:FakeAuthoritySlop a :SlopType ;
+    rdfs:label "Fake Authority Slop" ;
+    :telltalePhrase "Studies have shown..." ;
+    rdfs:comment "Confident tone with no citations or evidence. Unsubstantiated claims." ;
+    :hasMedium :Text ;
+    :detectedBy :FactualityCheck , :SourceVerification .
+
+:WikipediaRehash a :SlopType ;
+    rdfs:label "Wikipedia Rehash" ;
+    :telltalePhrase "X is defined as..." ;
+    rdfs:comment "Rephrased common knowledge with no original analysis or added value." ;
+    :hasMedium :Text ;
+    :detectedBy :OriginalityAnalysis , :InformationDensityAnalysis .
+
+:WellnessSlop a :SlopType ;
+    rdfs:label "Wellness Slop" ;
+    :telltalePhrase "Self-care isn't selfish..." ;
+    rdfs:comment "Universalized self-help that applies to everyone and helps no one." ;
+    :hasMedium :Text ;
+    :detectedBy :SpecificityCheck , :LivedExperienceCheck .
+
+# --- Level 1: By Visual Pattern (Image) ---
+
+:ShrimpJesusSlop a :SlopType ;
+    rdfs:label "Surreal Engagement Bait" ;
+    rdfs:comment "Bizarre, surreal AI images designed for maximum engagement. Named after the 'Shrimp Jesus' meme. Exploits the uncanny." ;
+    :hasMedium :Image ;
+    :detectedBy :VisualArtifactDetection , :EngagementPatternAnalysis ;
+    :hasNormativeFraming :AttentionEconomyExploitation .
+
+:FakePhotographSlop a :SlopType ;
+    rdfs:label "Fake Photograph Slop" ;
+    rdfs:comment "AI-generated images presented as real photographs, often for emotional manipulation (veteran birthdays, disaster victims)." ;
+    :hasMedium :Image ;
+    :detectedBy :VisualArtifactDetection , :ReverseImageSearch ;
+    :hasNormativeFraming :NonconsensualImposition .
+
+:FakeProductImageSlop a :SlopType ;
+    rdfs:label "Fake Product Image Slop" ;
+    rdfs:comment "AI-generated product images for items that don't exist (fake plants, fake food)." ;
+    :hasMedium :Image ;
+    :detectedBy :VisualArtifactDetection , :MarketplaceCrossReference ;
+    :hasNormativeFraming :ConsumerFraud .
+
+# --- Level 1: By Audio/Video Pattern ---
+
+:FakeArtistMusicSlop a :SlopType ;
+    rdfs:label "Fake Artist Music Slop" ;
+    rdfs:comment "AI-generated music attributed to non-existent artists. Accumulates streams before detection." ;
+    :hasMedium :Audio ;
+    :detectedBy :AudioFingerprintAnalysis , :ArtistVerification ;
+    :hasNormativeFraming :EconomicFraud .
+
+:AIGeneratedVideoContent a :SlopType ;
+    rdfs:label "AI-Generated Video Slop" ;
+    rdfs:comment "Mass-produced AI video content, especially children's content and educational videos with misinformation." ;
+    :hasMedium :Video ;
+    :detectedBy :FrameConsistencyAnalysis , :ContentQualityReview ;
+    :hasNormativeFraming :EpistemicPollution .
+
+# --- Level 1: By Code Pattern ---
+
+:HallucinatedPackageSlop a :SlopType ;
+    rdfs:label "Hallucinated Package Slop" ;
+    rdfs:comment "AI suggests non-existent libraries/packages, enabling 'slopsquatting' attacks." ;
+    :hasMedium :Code ;
+    :detectedBy :PackageRegistryVerification ;
+    :hasNormativeFraming :SecurityRisk .
+
+:UniformCodeSlop a :SlopType ;
+    rdfs:label "Uniform Code Slop" ;
+    rdfs:comment "Overly clean, generic code style with no human customization or iterative history." ;
+    :hasMedium :Code ;
+    :detectedBy :CodeStyleAnalysis , :DocumentationGapDetection .
+
+# --- Level 1: By Domain ---
+
+:SEOSlop a :SlopType ;
+    rdfs:label "SEO Slop" ;
+    rdfs:comment "Content created solely to rank in search engines, with no informational value." ;
+    :hasMedium :Text ;
+    :detectedBy :InformationDensityAnalysis , :SEOHeuristicAnalysis ;
+    :hasNormativeFraming :EpistemicPollution .
+
+:AcademicSlop a :SlopType ;
+    rdfs:label "Academic Slop" ;
+    rdfs:comment "AI-generated papers, peer reviews, or essays with fabricated citations." ;
+    :hasMedium :Text ;
+    :detectedBy :CitationVerification , :StyleConsistencyAnalysis ;
+    :hasNormativeFraming :EpistemicPollution .
+
+:PoliticalSlop a :SlopType ;
+    rdfs:label "Political Slop" ;
+    rdfs:comment "AI-generated political imagery or text for propaganda and engagement farming." ;
+    :hasMedium :Text, :Image ;
+    :detectedBy :SourceVerification , :VisualArtifactDetection ;
+    :hasNormativeFraming :DemocraticHarm .
+
+:ReviewSlop a :SlopType ;
+    rdfs:label "Review Slop" ;
+    rdfs:comment "AI-generated product reviews, all using similar structure and language." ;
+    :hasMedium :Text ;
+    :detectedBy :ReviewSimilarityClustering , :LinguisticPatternAnalysis ;
+    :hasNormativeFraming :ConsumerFraud .
+
+# ============================================================================
+# MEDIA TYPES
+# ============================================================================
+
+:Text a :SlopMedium ;
+    rdfs:label "Text" ;
+    :applicableDetection :PerplexityAnalysis , :BurstinessAnalysis , :RepetitionAnalysis ,
+        :InformationDensityAnalysis , :BuzzwordFrequencyAnalysis , :PunctuationAnalysis ,
+        :StructuralAnalysis , :FactualityCheck , :SourceVerification .
+
+:Image a :SlopMedium ;
+    rdfs:label "Image" ;
+    :applicableDetection :VisualArtifactDetection , :ReverseImageSearch , :HSVarianceAnalysis .
+
+:Video a :SlopMedium ;
+    rdfs:label "Video" ;
+    :applicableDetection :FrameConsistencyAnalysis , :LipSyncAnalysis , :TemporalArtifactDetection .
+
+:Audio a :SlopMedium ;
+    rdfs:label "Audio" ;
+    :applicableDetection :AudioFingerprintAnalysis , :VoiceConsistencyAnalysis .
+
+:Code a :SlopMedium ;
+    rdfs:label "Code" ;
+    :applicableDetection :PackageRegistryVerification , :CodeStyleAnalysis ,
+        :HallucinationDetection , :SecurityVulnerabilityScan .
+
+:MultiModal a :SlopMedium ;
+    rdfs:label "Multi-Modal" ;
+    rdfs:comment "Combinations of text, code, images, audio, video." .
+
+# ============================================================================
+# DIMENSIONS (from Shaib et al. 2025)
+# ============================================================================
+
+# Theme 1: Information Utility
+
+:Density a :SlopDimension ;
+    rdfs:label "Information Density" ;
+    rdfs:comment "Ratio of unique words to total words. Low density (< 0.40) indicates verbose, low-value content." ;
+    :theme "Information Utility" ;
+    :code "IU1" ;
+    :expertCount 5 ;
+    :metric "unique_words / total_words" ;
+    :slopThreshold "< 0.40" ;
+    :automaticallyMeasurable true .
+
+:Relevance a :SlopDimension ;
+    rdfs:label "Relevance" ;
+    rdfs:comment "How well content addresses its stated topic or prompt. Irrelevant tangents indicate slop." ;
+    :theme "Information Utility" ;
+    :code "IU2" ;
+    :expertCount 9 ;
+    :automaticallyMeasurable false ;
+    rdfs:comment "Best assessed by LLM-as-judge or expert annotation." .
+
+# Theme 2: Information Quality
+
+:Factuality a :SlopDimension ;
+    rdfs:label "Factuality" ;
+    rdfs:comment "Whether claims are factually correct. Hallucinations and fabricated facts are key slop indicators." ;
+    :theme "Information Quality" ;
+    :code "IQ1" ;
+    :expertCount 7 ;
+    :automaticallyMeasurable false ;
+    rdfs:comment "Requires external verification against knowledge bases." .
+
+:Bias a :SlopDimension ;
+    rdfs:label "Bias" ;
+    rdfs:comment "Systematic skew in presented information, often reflecting training data biases." ;
+    :theme "Information Quality" ;
+    :code "IQ2" ;
+    :expertCount 2 ;
+    :automaticallyMeasurable false .
+
+# Theme 3: Style Quality
+
+:Repetition a :SlopDimension ;
+    rdfs:label "Repetition" ;
+    rdfs:comment "Excessive reuse of words, phrases, or sentence structures." ;
+    :theme "Style Quality" ;
+    :code "SQ1" ;
+    :expertCount 7 ;
+    :metric "most_common_token_count / total_tokens" ;
+    :slopThreshold "> 0.20" ;
+    :automaticallyMeasurable true .
+
+:Templatedness a :SlopDimension ;
+    rdfs:label "Templatedness" ;
+    rdfs:comment "Degree to which content follows a predictable, formulaic structure." ;
+    :theme "Style Quality" ;
+    :code "SQ2" ;
+    :expertCount 2 ;
+    :automaticallyMeasurable true ;
+    rdfs:comment "Measurable via POS-tag sequence analysis." .
+
+:Coherence a :SlopDimension ;
+    rdfs:label "Coherence" ;
+    rdfs:comment "Logical flow and consistency of argument. Incoherent jumps indicate slop." ;
+    :theme "Style Quality" ;
+    :code "SQ3" ;
+    :expertCount 6 ;
+    :automaticallyMeasurable false .
+
+:Fluency a :SlopDimension ;
+    rdfs:label "Fluency" ;
+    rdfs:comment "Surface-level readability. Slop is often paradoxically fluent (superficial competence)." ;
+    :theme "Style Quality" ;
+    :code "SQ4" ;
+    :expertCount 4 ;
+    :automaticallyMeasurable true ;
+    rdfs:comment "High fluency + low density = strong slop signal." .
+
+:Verbosity a :SlopDimension ;
+    rdfs:label "Verbosity" ;
+    rdfs:comment "Using many words to say little. Correlates with low information density." ;
+    :theme "Style Quality" ;
+    :code "SQ5" ;
+    :expertCount 5 ;
+    :automaticallyMeasurable true .
+
+:WordComplexity a :SlopDimension ;
+    rdfs:label "Word Complexity" ;
+    rdfs:comment "Unnecessarily complex vocabulary used to appear authoritative." ;
+    :theme "Style Quality" ;
+    :code "SQ6" ;
+    :expertCount 1 ;
+    :automaticallyMeasurable true .
+
+:Tone a :SlopDimension ;
+    rdfs:label "Tone" ;
+    rdfs:comment "Uniform, unnatural tone throughout. AI lacks tonal variation of human writing." ;
+    :theme "Style Quality" ;
+    :code "SQ7" ;
+    :expertCount 3 ;
+    :automaticallyMeasurable false .
+
+# ============================================================================
+# PROTOTYPICAL PROPERTIES (from Kommers et al. 2026)
+# ============================================================================
+
+:SuperficialCompetence a owl:Class ;
+    rdfs:subClassOf :SlopDimension ;
+    rdfs:label "Superficial Competence" ;
+    rdfs:comment "A veneer of quality belied by deeper lack of substance. The defining feature of LLM slop — it looks right while being wrong." ;
+    :source "Kommers et al. 2026" .
+
+:AsymmetricEffort a owl:Class ;
+    rdfs:subClassOf :SlopDimension ;
+    rdfs:label "Asymmetric Effort" ;
+    rdfs:comment "Creation requires vastly less labour than would be needed without AI. Effort asymmetry is observable but hard to measure from content alone." ;
+    :source "Kommers et al. 2026" .
+
+:MassProducibility a owl:Class ;
+    rdfs:subClassOf :SlopDimension ;
+    rdfs:label "Mass Producibility" ;
+    rdfs:comment "The content exists within a digital ecosystem of widespread generation and consumption. High volume is a necessary but not sufficient condition." ;
+    :source "Kommers et al. 2026" .
+
+# Varianz-Dimensionen
+:InstrumentalUtility a owl:Class ;
+    rdfs:label "Instrumental Utility" ;
+    rdfs:comment "Why was it created? Ranges from monetary gain → artistic expression → trolling → political propaganda." ;
+    :source "Kommers et al. 2026" .
+
+:Personalization a owl:Class ;
+    rdfs:label "Personalization" ;
+    rdfs:comment "Is it generic (mass audience) or personalized (specific person/group)?" ;
+    :source "Kommers et al. 2026" .
+
+:Surrealism a owl:Class ;
+    rdfs:label "Surrealism" ;
+    rdfs:comment "How implausible is the content? Ranges from ludicrously implausible (Shrimp Jesus) to deceptively realistic (fake photographs)." ;
+    :source "Kommers et al. 2026" .
+
+# ============================================================================
+# SIGNALS
+# ============================================================================
+
+:BuzzwordOveruse a :SlopSignal ;
+    rdfs:label "Buzzword Overuse" ;
+    :tier1Words "delve, realm, tapestry, landscape" ;
+    :tier2Words "unleash, unlock, harness, leverage" ;
+    :tier3Words "paradigm, synergy, robust" ;
+    :tier4Words "cutting-edge, state-of-the-art, game-changing" ;
+    :slopThreshold "> 3 occurrences across tiers" ;
+    :confidence 0.8 ;
+    :appliesTo :Text .
+
+:PunctuationAnomaly a :SlopSignal ;
+    rdfs:label "Punctuation Anomaly" ;
+    rdfs:comment "Excessive em-dashes (>0.5/sentence), ellipses (>0.3/sentence), exclamations (>0.2/sentence)." ;
+    :confidence 0.85 ;
+    :appliesTo :Text .
+
+:GenericTransition a :SlopSignal ;
+    rdfs:label "Generic Transition" ;
+    :phrases "it's important to note, in conclusion, to sum up, as previously mentioned, furthermore, moreover" ;
+    :slopThreshold "> 2 occurrences" ;
+    :confidence 0.75 ;
+    :appliesTo :Text .
+
+:ExtraLimbs a :SlopSignal ;
+    rdfs:label "Extra Limbs/Features" ;
+    rdfs:comment "Additional limbs, fingers, or distorted features in generated images." ;
+    :confidence 0.9 ;
+    :appliesTo :Image .
+
+:UnnaturalSmoothness a :SlopSignal ;
+    rdfs:label "Unnatural Smoothness" ;
+    rdfs:comment "Flawless textures with no natural variation." ;
+    :confidence 0.7 ;
+    :appliesTo :Image .
+
+:DistortedText a :SlopSignal ;
+    rdfs:label "Distorted Text in Image" ;
+    rdfs:comment "Nonsensical or garbled text rendered within images." ;
+    :confidence 0.95 ;
+    :appliesTo :Image .
+
+:SymmetryAnomaly a :SlopSignal ;
+    rdfs:label "Over-Symmetry" ;
+    rdfs:comment "Overly symmetric or repetitive visual patterns not found in nature." ;
+    :confidence 0.7 ;
+    :appliesTo :Image .
+
+:FrameFlicker a :SlopSignal ;
+    rdfs:label "Frame Flicker" ;
+    rdfs:comment "Flickering elements or inconsistent objects between video frames." ;
+    :confidence 0.85 ;
+    :appliesTo :Video .
+
+:LipSyncMismatch a :SlopSignal ;
+    rdfs:label "Lip-Sync Mismatch" ;
+    rdfs:comment "Audio-visual desynchronization in synthesized video." ;
+    :confidence 0.9 ;
+    :appliesTo :Video .
+
+:InventedPackage a :SlopSignal ;
+    rdfs:label "Invented Package/Dependency" ;
+    :knownHallucinations "super-fast-json-parser, ts-migrate-parser, fast-data-processor, quick-api-helper, ultra-fast-parser, super-validator" ;
+    :confidence 1.0 ;
+    :appliesTo :Code .
+
+:HardcodedSecret a :SlopSignal ;
+    rdfs:label "Hardcoded Secret" ;
+    rdfs:comment "API keys, passwords, or tokens embedded in AI-generated code." ;
+    :confidence 0.95 ;
+    :appliesTo :Code .
+
+:LowPerplexity a :SlopSignal ;
+    rdfs:label "Low Perplexity" ;
+    rdfs:comment "Text perplexity below threshold, indicating AI generation." ;
+    :slopThreshold "< 50 PPL (AI), > 100 PPL (human)" ;
+    :confidence 0.75 ;
+    :appliesTo :Text .
+
+:UniformSentenceLength a :SlopSignal ;
+    rdfs:label "Uniform Sentence Length" ;
+    rdfs:comment "Low burstiness — all sentences roughly the same length and complexity." ;
+    :confidence 0.7 ;
+    :appliesTo :Text .
+
+# ============================================================================
+# NORMATIVE FRAMINGS
+# ============================================================================
+
+:EpistemicPollution a :NormativeFraming ;
+    rdfs:label "Epistemic Pollution" ;
+    rdfs:comment "Slop degrades the information ecosystem, narrowing the epistemic commons. Peterson (2025): society moves 2.3x further from truth at 20% AI content cost discount." ;
+    :relatedHarm :KnowledgeCollapse , :ModelCollapse .
+
+:AutomationBias a :NormativeFraming ;
+    rdfs:label "Automation Bias" ;
+    rdfs:comment "Humans systematically over-defer to automated outputs. AI slop exploits this by appearing competent." ;
+    :relatedHarm :OverrelianceOnAI , :FalseBeliefAmplification .
+
+:IllegitimateReasonGiving a :NormativeFraming ;
+    rdfs:label "Illegitimate Reason-Giving" ;
+    rdfs:comment "AI content presents itself as informative testimony but lacks epistemic standing, accountability, and communicative intention." ;
+    :source "Enoch 2012" .
+
+:NonconsensualImposition a :NormativeFraming ;
+    rdfs:label "Nonconsensual Imposition" ;
+    rdfs:comment "Sending unreviewed AI output to strangers is coercing them into unpaid evaluation labour." ;
+    :source "Doctorow 2026" .
+
+:AttentionEconomyExploitation a :NormativeFraming ;
+    rdfs:label "Attention Economy Exploitation" ;
+    rdfs:comment "Slop optimized for engagement metrics rather than informational value." .
+
+:ConsumerFraud a :NormativeFraming ;
+    rdfs:label "Consumer Fraud" ;
+    rdfs:comment "Fake products, reviews, or descriptions that deceive consumers." .
+
+:SecurityRisk a :NormativeFraming ;
+    rdfs:label "Security Risk" ;
+    rdfs:comment "Hallucinated packages enable supply chain attacks ('slopsquatting')." .
+
+:DemocraticHarm a :NormativeFraming ;
+    rdfs:label "Democratic Harm" ;
+    rdfs:comment "Political slop undermines democratic discourse through fabricated imagery and misinformation." .
+
+# ============================================================================
+# HARM TYPES
+# ============================================================================
+
+:KnowledgeCollapse a :SlopHarm ;
+    rdfs:label "Knowledge Collapse" ;
+    rdfs:comment "Progressive forgetting of less-common elements when models train recursively on their own output. Society's beliefs narrow." ;
+    :source "Peterson 2025, Shumailov et al. 2024" .
+
+:ModelCollapse a :SlopHarm ;
+    rdfs:label "Model Collapse" ;
+    rdfs:comment "Recursive training on AI output causes progressive degradation until models produce nonsense." ;
+    :source "Shumailov et al. 2024, Gerstgrasser et al. 2024" .
+
+:OverrelianceOnAI a :SlopHarm ;
+    rdfs:label "Overreliance on AI" ;
+    rdfs:comment "Cognitive offloading to AI reduces human epistemic agency and critical thinking." .
+
+:FalseBeliefAmplification a :SlopHarm ;
+    rdfs:label "False Belief Amplification" ;
+    rdfs:comment "AI-generated deceptive explanations amplify belief in false headlines. Neither cognitive reflection nor trust-in-AI attitudes protect against this." ;
+    :source "Danry et al. 2024" .
+
+:CreditErosion a :SlopHarm ;
+    rdfs:label "Credit Erosion" ;
+    rdfs:comment "Human creators lose rightful credit when their work is reproduced as slop." .
+
+# ============================================================================
+# DETECTION METHODS
+# ============================================================================
+
+:PerplexityAnalysis a :DetectionMethod ;
+    rdfs:label "Perplexity Analysis" ;
+    rdfs:comment "Measures how 'surprised' a language model is by text. Low perplexity suggests AI generation." ;
+    :automated true ;
+    :accuracy "0.95 AUROC in controlled settings" ;
+    :limitation "Struggles with post-edited text and newer models" .
+
+:BurstinessAnalysis a :DetectionMethod ;
+    rdfs:label "Burstiness Analysis" ;
+    rdfs:comment "Measures variation in sentence complexity. AI produces uniform burstiness; humans vary." ;
+    :automated true .
+
+:RepetitionAnalysis a :DetectionMethod ;
+    rdfs:label "Repetition Analysis" ;
+    rdfs:comment "Token frequency analysis. Ratio of most common token to total tokens." ;
+    :automated true ;
+    :threshold "> 0.20 = slop" .
+
+:InformationDensityAnalysis a :DetectionMethod ;
+    rdfs:label "Information Density Analysis" ;
+    rdfs:comment "Unique words / total words ratio." ;
+    :automated true ;
+    :threshold "< 0.40 = low density slop" .
+
+:BuzzwordFrequencyAnalysis a :DetectionMethod ;
+    rdfs:label "Buzzword Frequency Analysis" ;
+    rdfs:comment "Counts known AI-overused terms across severity tiers." ;
+    :automated true ;
+    :threshold "> 3 total occurrences = generic language slop" .
+
+:PunctuationAnalysis a :DetectionMethod ;
+    rdfs:label "Punctuation Pattern Analysis" ;
+    rdfs:comment "Detects excessive em-dashes, ellipses, exclamations per sentence." ;
+    :automated true .
+
+:StructuralAnalysis a :DetectionMethod ;
+    rdfs:label "Structural Analysis" ;
+    rdfs:comment "Detects unnatural formatting: excessive lists, trailing morals, uniform paragraphs." ;
+    :automated true .
+
+:FactualityCheck a :DetectionMethod ;
+    rdfs:label "Factuality Check" ;
+    rdfs:comment "Verify claims against knowledge bases. Detect hallucinations." ;
+    :automated false ;
+    rdfs:comment "Requires external knowledge base or human verification." .
+
+:SourceVerification a :DetectionMethod ;
+    rdfs:label "Source Verification" ;
+    rdfs:comment "Check if cited sources exist and say what they're claimed to say." ;
+    :automated false .
+
+:VisualArtifactDetection a :DetectionMethod ;
+    rdfs:label "Visual Artifact Detection" ;
+    rdfs:comment "Detect extra limbs, distorted features, impossible physics, unnatural lighting." ;
+    :automated true ;
+    rdfs:comment "HSV variance analysis: high variance (>10000) signals artifacts." .
+
+:ReverseImageSearch a :DetectionMethod ;
+    rdfs:label "Reverse Image Search" ;
+    rdfs:comment "Check if image exists elsewhere, identify manipulation." ;
+    :automated true .
+
+:FrameConsistencyAnalysis a :DetectionMethod ;
+    rdfs:label "Frame Consistency Analysis" ;
+    rdfs:comment "Compare consecutive frames for flickering elements." ;
+    :automated true .
+
+:PackageRegistryVerification a :DetectionMethod ;
+    rdfs:label "Package Registry Verification" ;
+    rdfs:comment "Check if referenced packages exist in pip/npm registries." ;
+    :automated true ;
+    :confidence 1.0 .
+
+:CodeStyleAnalysis a :DetectionMethod ;
+    rdfs:label "Code Style Analysis" ;
+    rdfs:comment "Detect overly uniform, generic naming and structure." ;
+    :automated true .
+
+:WatermarkDetection a :DetectionMethod ;
+    rdfs:label "Watermark Detection" ;
+    rdfs:comment "Detect cryptographic watermarks embedded during AI generation. Green/Red token list partitioning." ;
+    :automated true ;
+    :limitation "Requires cooperation from content generators. Open-source models typically unwatermarked." .
+
+:LinguisticPatternAnalysis a :DetectionMethod ;
+    rdfs:label "Linguistic Pattern Analysis" ;
+    rdfs:comment "Analyze sentence starts, POS-tag sequences, syntactic templates for AI patterns." ;
+    :automated true ;
+    :source "Shaib et al. 2024, Russell et al. 2025" .
+
+# ============================================================================
+# DETECTION TOOLS
+# ============================================================================
+
+:SlopDetector a :DetectionTool ;
+    rdfs:label "SlopDetector.org" ;
+    rdfs:comment "Web-based 5-category slop classifier. Free." ;
+    :url "https://slopdetector.org" ;
+    :classifies :GenericSlop, :PseudoInsightSlop, :FakeAuthoritySlop, :WikipediaRehash, :WellnessSlop .
+
+:DetectGPT a :DetectionTool ;
+    rdfs:label "DetectGPT" ;
+    rdfs:comment "Academic tool using perplexity-based detection." ;
+    :accuracy "0.95 AUROC controlled" ;
+    :source "Mitchell et al. 2023" .
+
+:Binoculars a :DetectionTool ;
+    rdfs:label "Binoculars" ;
+    rdfs:comment "AI text detection using paired model scoring." ;
+    :source "Hans et al. 2024" .
+
+:GPTZero a :DetectionTool ;
+    rdfs:label "GPTZero" ;
+    rdfs:comment "Commercial AI text detection service. Not slop-specific." .
+
+:OriginalityAI a :DetectionTool ;
+    rdfs:label "Originality.ai" ;
+    rdfs:comment "Commercial AI content detection. Not slop-specific." .
+
+:LocalAISetupSlopSkill a :DetectionTool ;
+    rdfs:label "local-ai-setup Slop Detection Skill" ;
+    rdfs:comment "Stefan's custom multi-modal detection skill. 22 techniques, Python-based. In hikaman/local-ai-setup." ;
+    :techniques 22 ;
+    :modalities "text, code, image, multi-modal" .
+
+# ============================================================================
+# COUNTERMEASURES
+# ============================================================================
+
+:PromptEngineering a :Countermeasure ;
+    rdfs:label "Prompt Engineering" ;
+    rdfs:comment "Add constraints, require specifics, ban buzzwords in prompts." .
+
+:HumanReview a :Countermeasure ;
+    rdfs:label "Human Review" ;
+    rdfs:comment "Mandatory human review before AI output publication." .
+
+:QualityGates a :Countermeasure ;
+    rdfs:label "Quality Gates" ;
+    rdfs:comment "Automated checks before content is published: density > 0.40, no hallucinated packages, no hardcoded secrets." .
+
+:ProgressiveDisclosure a :Countermeasure ;
+    rdfs:label "Progressive Disclosure" ;
+    rdfs:comment "Design AI tools to show reasoning steps, not just final output." .
+
+:SourceAttribution a :Countermeasure ;
+    rdfs:label "Source Attribution" ;
+    rdfs:comment "Require AI outputs to cite verifiable sources." .
+
+:AntiSlopTraining a :Countermeasure ;
+    rdfs:label "Anti-Slop Training Data" ;
+    rdfs:comment "Fine-tune models to avoid slop patterns (low density, generic language)." .
+
+:ContentAuthentication a :Countermeasure ;
+    rdfs:label "Content Authentication" ;
+    rdfs:comment "C2PA, watermarks, provenance chains for AI-generated content." .
+
+:DetectionPipeline a :Countermeasure ;
+    rdfs:label "Detection Pipeline" ;
+    rdfs:comment "Integrate slop detection into CI/CD, content management, and publishing workflows." .
+
+# ============================================================================
+# RELATIONSHIPS (Object Properties)
+# ============================================================================
+
+:hasType a owl:ObjectProperty ;
+    rdfs:domain :SlopInstance ;
+    rdfs:range :SlopType ;
+    rdfs:comment "Classifies a slop instance into one or more slop types." .
+
+:hasMedium a owl:ObjectProperty ;
+    rdfs:domain :SlopInstance ;
+    rdfs:range :SlopMedium ;
+    rdfs:comment "Identifies the media type of a slop instance." .
+
+:hasSignal a owl:ObjectProperty ;
+    rdfs:domain :SlopInstance ;
+    rdfs:range :SlopSignal ;
+    rdfs:comment "Links a slop instance to its detected signals." .
+
+:hasDimension a owl:ObjectProperty ;
+    rdfs:domain :SlopInstance ;
+    rdfs:range :SlopDimension ;
+    rdfs:comment "Links a slop instance to its measured dimensions." .
+
+:detectedBy a owl:ObjectProperty ;
+    rdfs:domain :SlopType ;
+    rdfs:range :DetectionMethod ;
+    rdfs:comment "Which detection methods can identify this type of slop." .
+
+:counteredBy a owl:ObjectProperty ;
+    rdfs:domain :SlopType ;
+    rdfs:range :Countermeasure ;
+    rdfs:comment "Which countermeasures can address this type of slop." .
+
+:hasNormativeFraming a owl:ObjectProperty ;
+    rdfs:domain :SlopType ;
+    rdfs:range :NormativeFraming ;
+    rdfs:comment "Which ethical/societal concerns this slop type raises." .
+
+:relatedHarm a owl:ObjectProperty ;
+    rdfs:domain :NormativeFraming ;
+    rdfs:range :SlopHarm ;
+    rdfs:comment "Which concrete harms this framing identifies." .
+
+:appliesTo a owl:ObjectProperty ;
+    rdfs:domain :SlopSignal ;
+    rdfs:range :SlopMedium ;
+    rdfs:comment "Which media type this signal applies to." .
+
+:applicableDetection a owl:ObjectProperty ;
+    rdfs:domain :SlopMedium ;
+    rdfs:range :DetectionMethod ;
+    rdfs:comment "Which detection methods work for this medium." .
+
+:variantOf a owl:ObjectProperty ;
+    rdfs:domain :SlopType ;
+    rdfs:range :SlopType ;
+    rdfs:comment "Indicates a subtype relationship." .
+
+:overlapsWith a owl:ObjectProperty ;
+    rdfs:domain :SlopType ;
+    rdfs:range :SlopType ;
+    rdfs:comment "Slop types that frequently co-occur." .
+
+# ============================================================================
+# DATA PROPERTIES
+# ============================================================================
+
+:telltalePhrase a owl:DatatypeProperty ;
+    rdfs:domain :SlopType ;
+    rdfs:range xsd:string .
+
+:confidence a owl:DatatypeProperty ;
+    rdfs:domain :SlopSignal ;
+    rdfs:range xsd:decimal .
+
+:slopThreshold a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+:metric a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+:automaticallyMeasurable a owl:DatatypeProperty ;
+    rdfs:range xsd:boolean .
+
+:expertCount a owl:DatatypeProperty ;
+    rdfs:range xsd:integer .
+
+:source a owl:DatatypeProperty ;
+    rdfs:range xsd:string .

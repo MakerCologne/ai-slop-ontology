@@ -1,0 +1,50 @@
+[
+  {
+    "id": "code-hallucinated-pkg-001",
+    "input": "import super-fast-json-parser from 'super-fast-json-parser';\nimport { validate } from 'quick-api-helper';\n\nconst data = super-fast-json-parser.parse(responseBody);\nif (validate(data)) {\n  return data;\n}",
+    "classification": {
+      "modality": "code",
+      "slopTypes": ["HallucinatedPackage"],
+      "signalsDetected": [
+        {"signal": "InventedPackage", "confidence": 1.0, "evidence": "'super-fast-json-parser' and 'quick-api-helper' do not exist in npm registry"},
+        {"signal": "HardcodedSecret", "confidence": 0.0, "evidence": "No secrets detected"}
+      ],
+      "overallSlopScore": 0.95,
+      "severity": "critical",
+      "normativeFraming": "SecurityRisk",
+      "countermeasures": ["PackageRegistryVerification", "QualityGates"],
+      "note": "If someone registers these packages, this becomes a supply chain attack vector ('slopsquatting')."
+    }
+  },
+  {
+    "id": "code-uniform-001",
+    "input": "def process_data(data):\n    \"\"\"Process the data and return the result.\"\"\"\n    result = []\n    for item in data:\n        processed_item = process_item(item)\n        result.append(processed_item)\n    return result\n\ndef process_item(item):\n    \"\"\"Process a single item and return it.\"\"\"\n    processed = transform(item)\n    return processed\n\ndef transform(item):\n    \"\"\"Transform the item and return it.\"\"\"\n    return item",
+    "classification": {
+      "modality": "code",
+      "slopTypes": ["UniformCode"],
+      "signalsDetected": [
+        {"signal": "UniformSentenceLength", "confidence": 0.85, "evidence": "All functions same structure: docstring + 2-3 lines + return"}
+      ],
+      "overallSlopScore": 0.65,
+      "severity": "medium",
+      "countermeasures": ["HumanReview"],
+      "note": "Functional but useless — wraps identity. Classic over-engineered slop where simpler code would be better."
+    }
+  },
+  {
+    "id": "code-hardcoded-secret-001",
+    "input": "API_KEY = 'sk-proj-abc123def456ghi789'\nDATABASE_URL = 'postgres://admin:password123@prod-db.example.com:5432/users'\n\ndef connect():\n    \"\"\"Connect to the database and return connection.\"\"\"\n    import psycopg2\n    return psycopg2.connect(DATABASE_URL)",
+    "classification": {
+      "modality": "code",
+      "slopTypes": ["UniformCode"],
+      "signalsDetected": [
+        {"signal": "HardcodedSecret", "confidence": 1.0, "evidence": "API key and database credentials hardcoded in source"}
+      ],
+      "overallSlopScore": 0.95,
+      "severity": "critical",
+      "normativeFraming": "SecurityRisk",
+      "countermeasures": ["QualityGates", "HumanReview"],
+      "note": "AI routinely generates code with hardcoded secrets — a critical security risk."
+    }
+  }
+]

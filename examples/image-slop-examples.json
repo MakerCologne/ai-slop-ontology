@@ -1,0 +1,55 @@
+[
+  {
+    "id": "image-shrimp-jesus-001",
+    "description": "Surreal AI image of Jesus Christ made entirely of shrimp, standing on a beach at sunset",
+    "classification": {
+      "modality": "image",
+      "slopTypes": ["SurrealEngagementBait"],
+      "signalsDetected": [
+        {"signal": "ExtraLimbs", "confidence": 0.6, "evidence": "Possible extra appendages in crowd"},
+        {"signal": "DistortedText", "confidence": 0.3, "evidence": "Any text in background likely garbled"},
+        {"signal": "SymmetryAnomaly", "confidence": 0.7, "evidence": "Overly symmetric sunset composition"}
+      ],
+      "overallSlopScore": 0.9,
+      "severity": "high",
+      "normativeFraming": "AttentionEconomyExploitation",
+      "countermeasures": ["ContentAuthentication", "HumanReview"],
+      "culturalNote": "Named phenomenon — 'Shrimp Jesus' became the canonical example of engagement-bait AI slop on Facebook in 2024"
+    }
+  },
+  {
+    "id": "image-fake-veteran-001",
+    "description": "AI-generated image of elderly man in military uniform holding a 'Happy 98th Birthday' sign, shared with 'Please like/share to wish him happy birthday'",
+    "classification": {
+      "modality": "image",
+      "slopTypes": ["FakePhotographSlop"],
+      "signalsDetected": [
+        {"signal": "DistortedText", "confidence": 0.9, "evidence": "Birthday sign text likely garbled"},
+        {"signal": "UnnaturalSmoothness", "confidence": 0.85, "evidence": "Skin texture too smooth for 98-year-old"},
+        {"signal": "SymmetryAnomaly", "confidence": 0.6, "evidence": "Overly symmetric facial features"}
+      ],
+      "overallSlopScore": 0.92,
+      "severity": "critical",
+      "normativeFraming": "NonconsensualImposition",
+      "countermeasures": ["ReverseImageSearch", "HumanReview", "ContentAuthentication"],
+      "note": "Exploits emotional response. Person does not exist. Engagement farming through fake empathy."
+    }
+  },
+  {
+    "id": "image-fake-plant-001",
+    "description": "AI-generated image of impossibly beautiful, vibrant flower/plant for sale on marketplace",
+    "classification": {
+      "modality": "image",
+      "slopTypes": ["FakeProductImageSlop"],
+      "signalsDetected": [
+        {"signal": "UnnaturalSmoothness", "confidence": 0.8, "evidence": "Petal texture impossibly perfect"},
+        {"signal": "SymmetryAnomaly", "confidence": 0.75, "evidence": "Bilateral symmetry too perfect for real plant"}
+      ],
+      "overallSlopScore": 0.8,
+      "severity": "high",
+      "normativeFraming": "ConsumerFraud",
+      "countermeasures": ["ReverseImageSearch", "DetectionPipeline"],
+      "note": "Sold as real seeds. Plant does not exist. Financial fraud via AI imagery."
+    }
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "id": "text-generic-001",
+    "input": "In today's fast-paced digital landscape, leveraging cutting-edge AI solutions is paramount for businesses seeking to unlock their full potential. The key is to find balance between innovation and practicality, as studies have shown that a robust approach can deliver game-changing results. It's important to note that self-care isn't selfish — it's a fundamental aspect of maintaining the synergy needed to thrive in this dynamic paradigm.",
+    "classification": {
+      "modality": "text",
+      "slopTypes": ["GenericSlop", "PseudoInsightSlop", "FakeAuthoritySlop", "WellnessSlop"],
+      "signalsDetected": [
+        {"signal": "BuzzwordOveruse", "confidence": 0.95, "evidence": "Found: landscape (t1), leverage (t2), cutting-edge (t4), game-changing (t4), synergy (t3), paradigm (t3), robust (t3), unlock (t2), dynamic (t1)"},
+        {"signal": "GenericTransition", "confidence": 0.9, "evidence": "Found: 'It's important to note'"},
+        {"signal": "PunctuationAnomaly", "confidence": 0.7, "evidence": "Em-dash usage: 1 in 3 sentences"},
+        {"signal": "UniformSentenceLength", "confidence": 0.8, "evidence": "All sentences 25-35 words, low burstiness"}
+      ],
+      "dimensions": {
+        "Density": {"value": 0.31, "isSlop": true, "threshold": "< 0.40"},
+        "Repetition": {"value": 0.22, "isSlop": true, "threshold": "> 0.20"},
+        "Verbosity": {"value": 0.85, "isSlop": true},
+        "Fluency": {"value": 0.95, "isSlop": true, "note": "High fluency + low density = classic slop"}
+      },
+      "overallSlopScore": 0.92,
+      "severity": "critical",
+      "countermeasures": ["PromptEngineering", "QualityGates"],
+      "rewriteSuggestion": "Replace with specific claims, cite real studies, use concrete examples, remove buzzwords."
+    }
+  },
+  {
+    "id": "text-seo-001",
+    "input": "Coffee is a popular beverage enjoyed by millions around the world. Coffee contains caffeine, which is a stimulant. Many people drink coffee in the morning. Coffee can be prepared in various ways, including espresso, drip, and French press. In conclusion, coffee remains one of the most beloved beverages globally.",
+    "classification": {
+      "modality": "text",
+      "slopTypes": ["WikipediaRehash", "SEOSlop"],
+      "signalsDetected": [
+        {"signal": "GenericTransition", "confidence": 0.85, "evidence": "Found: 'In conclusion'"},
+        {"signal": "LowPerplexity", "confidence": 0.9, "evidence": "Extremely predictable sentence structures"},
+        {"signal": "UniformSentenceLength", "confidence": 0.9, "evidence": "All sentences 8-12 words"}
+      ],
+      "dimensions": {
+        "Density": {"value": 0.38, "isSlop": true, "threshold": "< 0.40"},
+        "Repetition": {"value": 0.18, "isSlop": false, "note": "Just under threshold but 'coffee' overused"},
+        "Relevance": {"value": 0.5, "isSlop": false, "note": "Technically on-topic but zero information gain"}
+      },
+      "overallSlopScore": 0.74,
+      "severity": "high",
+      "countermeasures": ["PromptEngineering"],
+      "note": "Classic SEO slop: technically correct but tells you nothing you didn't already know."
+    }
+  },
+  {
+    "id": "text-academic-001",
+    "input": "Recent studies have demonstrated the efficacy of novel approaches in addressing contemporary challenges. The landscape of research in this domain has evolved significantly, with researchers leveraging state-of-the-art methodologies to uncover new insights. This paper contributes to the growing body of literature by proposing a framework that synthesizes existing paradigms.",
+    "classification": {
+      "modality": "text",
+      "slopTypes": ["AcademicSlop", "FakeAuthoritySlop", "GenericSlop"],
+      "signalsDetected": [
+        {"signal": "BuzzwordOveruse", "confidence": 0.9, "evidence": "Found: landscape (t1), leverage (t2), state-of-the-art (t4), paradigm (t3)"},
+        {"signal": "GenericTransition", "confidence": 0.7, "evidence": "No specific claims, all hedging"},
+        {"signal": "LowPerplexity", "confidence": 0.8, "evidence": "Could apply to literally any field"}
+      ],
+      "dimensions": {
+        "Density": {"value": 0.35, "isSlop": true},
+        "Factuality": {"value": null, "isSlop": true, "note": "Zero verifiable claims — all hedging language"}
+      },
+      "overallSlopScore": 0.85,
+      "severity": "high",
+      "countermeasures": ["SourceAttribution", "FactualityCheck"],
+      "note": "Academic slop: sounds like an abstract but could describe ANY paper in ANY field."
+    }
+  },
+  {
+    "id": "text-linkedin-001",
+    "input": "🔥 I'm thrilled to announce that after 10 years in the industry, I've learned one fundamental truth: the key to success is finding balance. In today's rapidly evolving landscape, those who embrace change while staying true to their core values will unlock unprecedented opportunities. Remember — self-care isn't selfish. The journey of a thousand miles begins with a single step. 💡",
+    "classification": {
+      "modality": "text",
+      "slopTypes": ["PseudoInsightSlop", "WellnessSlop", "GenericSlop"],
+      "signalsDetected": [
+        {"signal": "BuzzwordOveruse", "confidence": 0.85, "evidence": "Found: landscape (t1), unlock (t2)"},
+        {"signal": "GenericTransition", "confidence": 0.8, "evidence": "Stock phrases: 'key to success', 'rapidly evolving'"},
+        {"signal": "PunctuationAnomaly", "confidence": 0.8, "evidence": "Em-dash, emoji spam"}
+      ],
+      "dimensions": {
+        "Density": {"value": 0.29, "isSlop": true},
+        "Relevance": {"value": 0.2, "isSlop": true, "note": "Announces nothing despite 'thrilled to announce'"}
+      },
+      "overallSlopScore": 0.88,
+      "severity": "high",
+      "countermeasures": ["HumanReview"],
+      "note": "Archetypal LinkedIn slop: announces nothing, teaches nothing, inspires no one."
+    }
+  }
+]
