@@ -532,123 +532,558 @@
     }
   },
   "signals": {
-    "text": [
-      {
-        "id": "BuzzwordOveruse",
-        "description": "Known AI-overused terms",
+    "version": "1.0.0",
+    "lastUpdated": "2026-05-20",
+    "source": "Consolidated from Shaib et al. 2025, empirical observation, community detection (Reddit r/LocalLLaMA, HN), slopdetector.org, glukhov.org, Willison 2024",
+    "note": "Signal words are PROBABILISTIC indicators, not proof. Human writers use some of these too. Threshold-based scoring required.",
+    "text": {
+      "buzzwords": {
+        "description": "Words disproportionately used by LLMs vs humans. Tier = signal strength.",
         "tiers": {
-          "tier1": [
-            "delve",
-            "realm",
-            "tapestry",
-            "landscape"
-          ],
-          "tier2": [
-            "unleash",
-            "unlock",
-            "harness",
-            "leverage"
-          ],
-          "tier3": [
-            "paradigm",
-            "synergy",
-            "robust"
-          ],
-          "tier4": [
-            "cutting-edge",
-            "state-of-the-art",
-            "game-changing"
+          "tier1_critical": {
+            "description": "Strongest AI markers. Almost never in casual human writing.",
+            "confidence": 0.9,
+            "words": [
+              "delve",
+              "delving",
+              "tapestry",
+              "rich tapestry",
+              "realm",
+              "the realm of",
+              "navigating the landscape",
+              "in today's rapidly evolving",
+              "in today's ever-changing",
+              "it's worth noting that",
+              "serves as a testament",
+              "paints a vivid picture",
+              "a testament to",
+              "at its core",
+              "delve deeper",
+              "let's dive in",
+              "embark on a journey",
+              "whether you're a seasoned",
+              "game-changer",
+              "game changing"
+            ]
+          },
+          "tier2_high": {
+            "description": "Very common in AI output, uncommon in human writing.",
+            "confidence": 0.8,
+            "words": [
+              "unlock",
+              "unleash",
+              "harness",
+              "leverage",
+              "leverage the power of",
+              "elevate",
+              "elevating",
+              "empower",
+              "empowering",
+              "foster",
+              "fostering",
+              "spearhead",
+              "spearheading",
+              "cultivate",
+              "cultivating",
+              "catalyst",
+              "a catalyst for",
+              "cornerstone",
+              "beacon",
+              "a beacon of",
+              "pivotal",
+              "paramount",
+              "indispensable",
+              "imperative",
+              "multifaceted",
+              "nuanced",
+              "robust",
+              "seamless",
+              "comprehensive",
+              "holistic",
+              "transformative",
+              "revolutionary",
+              "groundbreaking",
+              "innovative",
+              "cutting-edge",
+              "state-of-the-art",
+              "the power of",
+              "at the end of the day",
+              "in the grand scheme of things",
+              "not only... but also",
+              "it's important to remember",
+              "it's crucial to understand"
+            ]
+          },
+          "tier3_moderate": {
+            "description": "Common in both AI and corporate/buzzword-heavy human writing.",
+            "confidence": 0.6,
+            "words": [
+              "synergy",
+              "paradigm",
+              "paradigm shift",
+              "ecosystem",
+              "in this space",
+              "optimize",
+              "streamline",
+              "dynamic",
+              "agile",
+              "disrupt",
+              "disruption",
+              "scalable",
+              "sustainable",
+              "leveraging AI",
+              "the intersection of",
+              "bridging the gap",
+              "tip of the iceberg",
+              "silver bullet",
+              "one-size-fits-all",
+              "punching above its weight",
+              "sweet spot",
+              "the elephant in the room",
+              "leveling the playing field",
+              "moving the needle",
+              "doubling down",
+              "doubling down on",
+              "doubling down on"
+            ]
+          },
+          "tier4_weak": {
+            "description": "Context-dependent. Common in many registers.",
+            "confidence": 0.4,
+            "words": [
+              "innovate",
+              "innovation",
+              "efficient",
+              "effective",
+              "strategic",
+              "proactive",
+              "best practices",
+              "value proposition",
+              "stakeholder",
+              "value-added",
+              "results-driven",
+              "forward-thinking",
+              "future-proof",
+              "next-generation",
+              "mission-critical",
+              "actionable insights",
+              "deep dive",
+              "deep-dive"
+            ]
+          }
+        }
+      },
+      "phrases": {
+        "description": "Multi-word patterns characteristic of AI generation.",
+        "categories": {
+          "hedging_qualifiers": {
+            "confidence": 0.75,
+            "items": [
+              "it's worth noting",
+              "it's important to note",
+              "it's important to remember",
+              "it's crucial to understand",
+              "it's essential to recognize",
+              "while this may vary",
+              "it's safe to say",
+              "needless to say",
+              "worth mentioning",
+              "it goes without saying",
+              "one thing is certain",
+              "it's no secret that",
+              "it's no surprise that",
+              "an important consideration",
+              "it bears repeating",
+              "notably",
+              "importantly",
+              "crucially"
+            ]
+          },
+          "generic_transitions": {
+            "confidence": 0.7,
+            "items": [
+              "in conclusion",
+              "to sum up",
+              "to summarize",
+              "as previously mentioned",
+              "furthermore",
+              "moreover",
+              "additionally",
+              "in addition",
+              "on the other hand",
+              "by the same token",
+              "with that in mind",
+              "that being said",
+              "having said that",
+              "at the end of the day",
+              "when all is said and done",
+              "taking a step back",
+              "with that said",
+              "as we've explored",
+              "as we've seen",
+              "in this article, we've",
+              "in this blog post, we've"
+            ]
+          },
+          "opening_formulas": {
+            "confidence": 0.8,
+            "items": [
+              "in today's rapidly evolving landscape",
+              "in today's ever-changing world",
+              "in today's digital age",
+              "in an increasingly interconnected world",
+              "as the digital landscape continues to evolve",
+              "the world of [X] is undergoing a profound transformation",
+              "in recent years, [X] has emerged as",
+              "in the age of [X]",
+              "welcome to the world of",
+              "whether you're a seasoned [X] or just starting out",
+              "have you ever wondered",
+              "imagine a world where",
+              "picture this"
+            ]
+          },
+          "closing_formulas": {
+            "confidence": 0.8,
+            "items": [
+              "in conclusion,",
+              "to wrap things up,",
+              "as we look to the future,",
+              "the future of [X] is bright",
+              "only time will tell",
+              "one thing is for certain",
+              "the possibilities are endless",
+              "the bottom line is",
+              "at the end of the day",
+              "as we move forward",
+              "embrace the future",
+              "stay ahead of the curve",
+              "the journey doesn't end here",
+              "until next time"
+            ]
+          },
+          "metaphor_abuse": {
+            "confidence": 0.75,
+            "items": [
+              "rich tapestry",
+              "navigating the landscape",
+              "serves as a testament",
+              "paints a vivid picture",
+              "tip of the iceberg",
+              "spearheading a revolution",
+              "bridging the gap between",
+              "the holy grail of",
+              "the elephant in the room",
+              "a double-edged sword",
+              "the perfect storm",
+              "a perfect blend of",
+              "a delicate balance",
+              "a harmonious blend",
+              "the backbone of",
+              "the cornerstone of",
+              "the lifeblood of",
+              "the driving force behind",
+              "at the heart of",
+              "a world of difference",
+              "a game of [X]",
+              "a beacon of hope",
+              "a sea of [X]",
+              "opening pandora's box"
+            ]
+          },
+          "listicle_tells": {
+            "confidence": 0.7,
+            "items": [
+              "let's explore",
+              "let's dive into",
+              "let's break it down",
+              "here are [N] ways",
+              "top [N] reasons",
+              "[N] things you need to know",
+              "you might be wondering",
+              "the short answer is",
+              "the long answer is",
+              "but wait, there's more",
+              "here's the thing",
+              "here's the kicker",
+              "pro tip:",
+              "fun fact:",
+              "key takeaway:",
+              "bottom line:"
+            ]
+          }
+        }
+      },
+      "structural": {
+        "description": "Structural patterns in AI output.",
+        "indicators": [
+          {
+            "id": "ExcessiveEmDash",
+            "pattern": "—",
+            "threshold": "> 0.5 per sentence",
+            "confidence": 0.85,
+            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output"
+          },
+          {
+            "id": "UniformSentenceLength",
+            "pattern": "low burstiness",
+            "threshold": "std_dev < 3 words",
+            "confidence": 0.7
+          },
+          {
+            "id": "NumberedListOveruse",
+            "pattern": "5+ numbered items in sequence",
+            "confidence": 0.5
+          },
+          {
+            "id": "MirroredIntroConclusion",
+            "pattern": "Conclusion restates introduction with synonym substitution",
+            "confidence": 0.75
+          },
+          {
+            "id": "BalancedStructure",
+            "pattern": "Every section same length regardless of topic importance",
+            "confidence": 0.65
+          },
+          {
+            "id": "ExcessiveHedging",
+            "pattern": ">3 hedging phrases per 500 words",
+            "confidence": 0.7
+          },
+          {
+            "id": "PerfectGrammarUniformTone",
+            "pattern": "Zero grammar errors + identical formality throughout",
+            "confidence": 0.55,
+            "note": "Weak signal alone — professional editors also produce this"
+          }
+        ]
+      },
+      "punctuation": {
+        "description": "Punctuation anomalies characteristic of AI output.",
+        "indicators": [
+          {
+            "id": "EmDashExcess",
+            "char": "—",
+            "threshold_per_sentence": 0.5,
+            "confidence": 0.85
+          },
+          {
+            "id": "EllipsisExcess",
+            "char": "...",
+            "threshold_per_sentence": 0.3,
+            "confidence": 0.7
+          },
+          {
+            "id": "ExclamationExcess",
+            "char": "!",
+            "threshold_per_sentence": 0.2,
+            "confidence": 0.65
+          },
+          {
+            "id": "BoldFormatting",
+            "pattern": "**word**",
+            "threshold": "> 3 per paragraph",
+            "confidence": 0.5
+          },
+          {
+            "id": "EmojiInProfessional",
+            "pattern": "emoji in formal/business text",
+            "confidence": 0.55
+          }
+        ]
+      }
+    },
+    "image": {
+      "description": "Visual artifacts in AI-generated images.",
+      "indicators": [
+        {
+          "id": "ExtraLimbs",
+          "description": "Additional limbs, fingers, distorted features",
+          "confidence": 0.9
+        },
+        {
+          "id": "UnnaturalSmoothness",
+          "description": "Flawless textures with no variation",
+          "confidence": 0.7
+        },
+        {
+          "id": "DistortedText",
+          "description": "Garbled text within images",
+          "confidence": 0.95
+        },
+        {
+          "id": "SymmetryAnomaly",
+          "description": "Overly symmetric patterns",
+          "confidence": 0.7
+        },
+        {
+          "id": "UncannyFaces",
+          "description": "Faces with subtle but detectable wrongness",
+          "confidence": 0.75
+        },
+        {
+          "id": "WatermarkRemnants",
+          "description": "Getty/iStock watermark fragments",
+          "confidence": 0.9
+        },
+        {
+          "id": "NonsensicalText",
+          "description": "Letters that don't form real words",
+          "confidence": 0.95
+        },
+        {
+          "id": "ShrimpJesus",
+          "description": "Bizarre AI imagery mixing unrelated concepts",
+          "confidence": 0.85
+        },
+        {
+          "id": "HyperRealisticStyle",
+          "description": "Over-polished, no imperfections",
+          "confidence": 0.6
+        }
+      ]
+    },
+    "video": {
+      "description": "Artifacts in AI-generated video.",
+      "indicators": [
+        {
+          "id": "FrameFlicker",
+          "description": "Inconsistent objects between frames",
+          "confidence": 0.85
+        },
+        {
+          "id": "LipSyncMismatch",
+          "description": "Audio-visual desync",
+          "confidence": 0.9
+        },
+        {
+          "id": "MorphingArtifacts",
+          "description": "Objects morph unnaturally",
+          "confidence": 0.8
+        },
+        {
+          "id": "TemporalInconsistency",
+          "description": "Background changes between cuts",
+          "confidence": 0.75
+        },
+        {
+          "id": "UniformLighting",
+          "description": "No natural shadow variation",
+          "confidence": 0.65
+        }
+      ]
+    },
+    "code": {
+      "description": "Patterns in AI-generated code.",
+      "indicators": [
+        {
+          "id": "InventedPackage",
+          "description": "Non-existent libraries",
+          "confidence": 1.0,
+          "knownExamples": [
+            "super-fast-json-parser",
+            "ts-migrate-parser",
+            "fast-data-processor",
+            "advanced-math-utils"
           ]
         },
-        "threshold": "> 3 occurrences across tiers",
-        "confidence": 0.8
-      },
-      {
-        "id": "PunctuationAnomaly",
-        "description": "Excessive em-dashes, ellipses, exclamations",
-        "thresholds": {
-          "emDash": "> 0.5/sentence",
-          "ellipsis": "> 0.3/sentence",
-          "exclamation": "> 0.2/sentence"
+        {
+          "id": "HardcodedSecret",
+          "description": "API keys/passwords in code",
+          "confidence": 0.95
         },
-        "confidence": 0.85
-      },
-      {
-        "id": "GenericTransition",
-        "phrases": [
-          "it's important to note",
-          "in conclusion",
-          "to sum up",
-          "as previously mentioned",
-          "furthermore",
-          "moreover"
+        {
+          "id": "ExcessiveComments",
+          "description": "Comment on every line including obvious ones",
+          "confidence": 0.6
+        },
+        {
+          "id": "GenericErrorHandling",
+          "description": "except Exception: pass patterns",
+          "confidence": 0.55
+        },
+        {
+          "id": "OverlyVerboseNaming",
+          "description": "Extremely long descriptive variable names everywhere",
+          "confidence": 0.5
+        },
+        {
+          "id": "HallucinatedAPI",
+          "description": "Methods that don't exist in the library",
+          "confidence": 0.85
+        }
+      ]
+    },
+    "audio": {
+      "description": "Patterns in AI-generated audio/music.",
+      "indicators": [
+        {
+          "id": "UniformTiming",
+          "description": "Metronomic precision, no human micro-timing",
+          "confidence": 0.6
+        },
+        {
+          "id": "LackOfDynamics",
+          "description": "Compressed dynamic range",
+          "confidence": 0.55
+        },
+        {
+          "id": "UncannyVoice",
+          "description": "Slight artifacts in speech synthesis",
+          "confidence": 0.7
+        },
+        {
+          "id": "GenericChordProgression",
+          "description": "I-V-vi-IV loop without variation",
+          "confidence": 0.4
+        }
+      ]
+    },
+    "multilingual": {
+      "description": "Language-specific AI markers beyond English.",
+      "german": {
+        "buzzwords": [
+          "im heutigen schnelllebigen",
+          "es gilt zu beachten",
+          "nunmehr",
+          "im digitalen Zeitalter",
+          "die sich ständig wandelnde",
+          "sowohl als auch",
+          "es ist wichtig zu betonen",
+          "im Folgenden",
+          "zusammenfassend lässt sich sagen",
+          "ein tiefgreifender Wandel",
+          "die Synergieeffekte",
+          "ganzheitlicher Ansatz",
+          "der Gamechanger",
+          "aufAugenhöhe",
+          "Best Practices"
         ],
-        "threshold": "> 2 occurrences",
-        "confidence": 0.75
+        "note": "German AI output often mixes Denglisch (English loanwords) with formal register"
       },
-      {
-        "id": "LowPerplexity",
-        "description": "Text perplexity below threshold",
-        "threshold": "< 50 PPL (AI), > 100 PPL (human)",
-        "confidence": 0.75
+      "french": {
+        "buzzwords": [
+          "il est important de noter",
+          "dans le paysage actuel",
+          "dans un monde en constante évolution",
+          "il convient de souligner",
+          "force est de constater",
+          "rappelons que",
+          "en somme",
+          "en fin de compte"
+        ]
       },
-      {
-        "id": "UniformSentenceLength",
-        "description": "Low burstiness, all sentences similar length",
-        "confidence": 0.7
+      "spanish": {
+        "buzzwords": [
+          "en el paisaje actual",
+          "es importante destacar",
+          "cabe señalar que",
+          "en conclusión",
+          "en el mundo de hoy",
+          "no cabe duda de que"
+        ]
       }
-    ],
-    "image": [
-      {
-        "id": "ExtraLimbs",
-        "description": "Additional limbs, fingers, distorted features",
-        "confidence": 0.9
-      },
-      {
-        "id": "UnnaturalSmoothness",
-        "description": "Flawless textures with no variation",
-        "confidence": 0.7
-      },
-      {
-        "id": "DistortedText",
-        "description": "Garbled text within images",
-        "confidence": 0.95
-      },
-      {
-        "id": "SymmetryAnomaly",
-        "description": "Overly symmetric patterns",
-        "confidence": 0.7
-      }
-    ],
-    "video": [
-      {
-        "id": "FrameFlicker",
-        "description": "Inconsistent objects between frames",
-        "confidence": 0.85
-      },
-      {
-        "id": "LipSyncMismatch",
-        "description": "Audio-visual desync",
-        "confidence": 0.9
-      }
-    ],
-    "code": [
-      {
-        "id": "InventedPackage",
-        "description": "Non-existent libraries",
-        "knownExamples": [
-          "super-fast-json-parser",
-          "ts-migrate-parser",
-          "fast-data-processor"
-        ],
-        "confidence": 1.0
-      },
-      {
-        "id": "HardcodedSecret",
-        "description": "API keys/passwords in code",
-        "confidence": 0.95
-      }
-    ]
+    }
   },
   "normativeFramings": {
     "EpistemicPollution": {

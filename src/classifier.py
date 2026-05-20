@@ -1,5 +1,5 @@
 """
-AI Slop Classifier — uses the AI Slop Ontology to classify content.
+AI Slop Classifier v1.1 — uses the AI Slop Ontology signal database.
 
 Usage:
     from classifier import SlopClassifier
@@ -11,6 +11,7 @@ Usage:
 
 import json
 import re
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -54,70 +55,174 @@ class ClassificationResult:
     severity: str = "clean"
     countermeasures: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
+    buzzword_report: dict = field(default_factory=dict)
+    phrase_report: dict = field(default_factory=dict)
 
 
 class SlopClassifier:
-    """Classify content using the AI Slop Ontology."""
+    """Classify content using the AI Slop Ontology signal database."""
 
     def __init__(self, ontology_path: str = "ontology.json"):
         with open(ontology_path) as f:
             self.ontology = json.load(f)
-        self._load_text_patterns()
+        self._load_signals()
 
-    def _load_text_patterns(self):
-        """Pre-compile text signal patterns."""
+    def _load_signals(self):
+        """Pre-compile all signal patterns from the ontology."""
+        sigs = self.ontology["signals"]
+        text_sigs = sigs["text"]
+
+        # --- Buzzwords (all tiers) ---
         self.buzzword_tiers = {}
-        for tier_name, words in self.ontology["signals"]["text"][0]["tiers"].items():
+        self.buzzword_confidence = {}
+        tiers = text_sigs["buzzwords"]["tiers"]
+        for tier_name, tier_data in tiers.items():
+            words = tier_data["words"]
             self.buzzword_tiers[tier_name] = [w.lower() for w in words]
+            self.buzzword_confidence[tier_name] = tier_data.get("confidence", 0.5)
 
-        self.generic_transitions = [
-            p.lower() for p in self.ontology["signals"]["text"][1]["phrases"]
-        ]
+        # --- Phrases (all categories) ---
+        self.phrase_categories = {}
+        self.phrase_confidence = {}
+        phrase_cats = text_sigs["phrases"]["categories"]
+        for cat_name, cat_data in phrase_cats.items():
+            self.phrase_categories[cat_name] = [p.lower() for p in cat_data["items"]]
+            self.phrase_confidence[cat_name] = cat_data.get("confidence", 0.5)
+
+        # --- Structural indicators ---
+        self.structural_indicators = text_sigs.get("structural", {}).get("indicators", [])
+
+        # --- Punctuation thresholds ---
+        self.punctuation_indicators = text_sigs.get("punctuation", {}).get("indicators", [])
+
+        # --- Multilingual ---
+        self.multilingual = sigs.get("multilingual", {})
 
     def classify_text(self, text: str) -> ClassificationResult:
-        """Classify a text for AI slop."""
+        """Classify a text for AI slop using the full signal database."""
         result = ClassificationResult(modality="text")
 
-        # --- Signal Detection ---
         text_lower = text.lower()
-        words = re.findall(r'\b\w+\b', text_lower)
+        words = re.findall(r'\b[\w-]+\b', text_lower)
         total_words = len(words)
         unique_words = len(set(words))
-
-        # 1. Buzzword Overuse
-        buzzword_hits = []
-        for tier, tier_words in self.buzzword_tiers.items():
-            for w in tier_words:
-                count = text_lower.count(w)
-                if count > 0:
-                    buzzword_hits.append((w, tier, count))
-
-        if len(buzzword_hits) >= 3:
-            evidence = f"Found: {', '.join(f'{w} ({t})' for w, t, c in buzzword_hits)}"
-            result.signals_detected.append(SignalMatch(
-                "BuzzwordOveruse", 0.8 + min(len(buzzword_hits) * 0.02, 0.15), evidence
-            ))
-
-        # 2. Generic Transitions
-        transition_hits = [p for p in self.generic_transitions if p in text_lower]
-        if len(transition_hits) >= 2:
-            result.signals_detected.append(SignalMatch(
-                "GenericTransition", 0.75,
-                f"Found: {', '.join(transition_hits)}"
-            ))
-
-        # 3. Punctuation Anomaly
         sentences = re.split(r'[.!?]+', text)
         sentences = [s.strip() for s in sentences if s.strip()]
         num_sentences = len(sentences) or 1
+
+        # ============================================================
+        # 1. BUZZWORD DETECTION (all tiers)
+        # ============================================================
+        buzzword_hits = []  # (word, tier, count, confidence)
+        tier_summary = {}
+
+        for tier_name, tier_words in self.buzzword_tiers.items():
+            tier_hits = []
+            for w in tier_words:
+                count = text_lower.count(w)
+                if count > 0:
+                    tier_hits.append((w, count))
+                    buzzword_hits.append((w, tier_name, count, self.buzzword_confidence[tier_name]))
+            if tier_hits:
+                tier_summary[tier_name] = tier_hits
+
+        result.buzzword_report = tier_summary
+
+        if buzzword_hits:
+            # Weight by tier confidence
+            weighted_score = sum(conf * min(count, 3) for _, _, count, conf in buzzword_hits)
+            max_possible = sum(self.buzzword_confidence.get(t, 0.5) * 3 for _, t, _, _ in buzzword_hits)
+            normalized = min(1.0, weighted_score / max(max_possible, 1))
+
+            hit_words = [w for w, _, _, _ in buzzword_hits]
+            unique_hits = len(set(hit_words))
+
+            # Escalation rules
+            critical_hits = [w for w, t, _, _ in buzzword_hits if "critical" in t]
+            if critical_hits:
+                result.signals_detected.append(SignalMatch(
+                    "CriticalBuzzword", 0.90,
+                    f"Tier1 hit(s): {', '.join(set(critical_hits))}"
+                ))
+
+            if unique_hits >= 5:
+                result.signals_detected.append(SignalMatch(
+                    "BuzzwordOveruse_Severe", 0.85 + min(unique_hits * 0.01, 0.10),
+                    f"{unique_hits} unique buzzwords: {', '.join(set(hit_words[:10]))}"
+                ))
+            elif unique_hits >= 3:
+                result.signals_detected.append(SignalMatch(
+                    "BuzzwordOveruse", 0.75 + min(unique_hits * 0.02, 0.15),
+                    f"Found: {', '.join(set(hit_words))}"
+                ))
+
+        # ============================================================
+        # 2. PHRASE PATTERN DETECTION (all categories)
+        # ============================================================
+        phrase_hits = {}
+        total_phrase_hits = 0
+
+        for cat_name, phrases in self.phrase_categories.items():
+            cat_hits = [p for p in phrases if p in text_lower]
+            if cat_hits:
+                phrase_hits[cat_name] = cat_hits
+                total_phrase_hits += len(cat_hits)
+
+        result.phrase_report = phrase_hits
+
+        if total_phrase_hits >= 4:
+            hit_list = [f"{cat}: {len(items)}" for cat, items in phrase_hits.items()]
+            result.signals_detected.append(SignalMatch(
+                "PhrasePatternSevere", 0.85,
+                f"4+ phrase categories hit: {'; '.join(hit_list)}"
+            ))
+        elif total_phrase_hits >= 2:
+            all_phrases = [p for items in phrase_hits.values() for p in items]
+            result.signals_detected.append(SignalMatch(
+                "PhrasePattern", 0.75,
+                f"Found: {', '.join(all_phrases[:8])}"
+            ))
+
+        # Category-specific signals
+        if "hedging_qualifiers" in phrase_hits and len(phrase_hits["hedging_qualifiers"]) >= 3:
+            result.signals_detected.append(SignalMatch(
+                "ExcessiveHedging", 0.70,
+                f"Hedging phrases: {', '.join(phrase_hits['hedging_qualifiers'])}"
+            ))
+
+        if "metaphor_abuse" in phrase_hits and len(phrase_hits["metaphor_abuse"]) >= 2:
+            result.signals_detected.append(SignalMatch(
+                "MetaphorAbuse", 0.75,
+                f"Tapestry-style metaphors: {', '.join(phrase_hits['metaphor_abuse'])}"
+            ))
+
+        # ============================================================
+        # 3. PUNCTUATION ANOMALIES
+        # ============================================================
         em_dashes = text.count('—') + text.count('–')
         if em_dashes / num_sentences > 0.5:
             result.signals_detected.append(SignalMatch(
-                "PunctuationAnomaly", 0.85,
-                f"Em-dash usage: {em_dashes} in {num_sentences} sentences"
+                "EmDashExcess", 0.85,
+                f"Em-dash usage: {em_dashes} in {num_sentences} sentences ({em_dashes/num_sentences:.1f}/sentence)"
             ))
 
-        # 4. Uniform Sentence Length
+        ellipses = text.count('...')
+        if ellipses / num_sentences > 0.3:
+            result.signals_detected.append(SignalMatch(
+                "EllipsisExcess", 0.70,
+                f"Ellipsis usage: {ellipses} in {num_sentences} sentences"
+            ))
+
+        exclamations = text.count('!')
+        if exclamations / num_sentences > 0.2:
+            result.signals_detected.append(SignalMatch(
+                "ExclamationExcess", 0.65,
+                f"Exclamation usage: {exclamations} in {num_sentences} sentences"
+            ))
+
+        # ============================================================
+        # 4. STRUCTURAL INDICATORS
+        # ============================================================
         if sentences:
             lengths = [len(s.split()) for s in sentences]
             if len(lengths) >= 3:
@@ -126,179 +231,176 @@ class SlopClassifier:
                 std_dev = variance ** 0.5
                 if std_dev < 3:
                     result.signals_detected.append(SignalMatch(
-                        "UniformSentenceLength", 0.7,
-                        f"All sentences {int(mean_len)-2}-{int(mean_len)+2} words, low burstiness"
+                        "UniformSentenceLength", 0.70,
+                        f"All sentences {int(mean_len)-2}-{int(mean_len)+2} words, std_dev={std_dev:.1f}"
                     ))
 
-        # --- Dimension Measurement ---
-        # Density
+        # Trailing moral
+        if _trailing_moral(text):
+            result.signals_detected.append(SignalMatch(
+                "TrailingMoral", 0.70,
+                "Ends with moral/lesson statement"
+            ))
+
+        # List-heavy
+        if _list_heavy(text):
+            result.signals_detected.append(SignalMatch(
+                "ListHeavy", 0.50,
+                ">40% list items in text"
+            ))
+
+        # ============================================================
+        # 5. MULTILINGUAL CHECK
+        # ============================================================
+        for lang, lang_data in self.multilingual.items():
+            if isinstance(lang_data, dict) and "buzzwords" in lang_data:
+                lang_hits = [w for w in lang_data["buzzwords"] if w.lower() in text_lower]
+                if len(lang_hits) >= 2:
+                    result.signals_detected.append(SignalMatch(
+                        f"Multilingual_{lang}", 0.70,
+                        f"{lang} AI markers: {', '.join(lang_hits)}"
+                    ))
+
+        # ============================================================
+        # 6. DIMENSION MEASUREMENT
+        # ============================================================
         if total_words > 0:
             density = unique_words / total_words
             result.dimensions["Density"] = DimensionResult(
-                "Density", round(density, 2), density < 0.40, "< 0.40"
+                "Density", round(density, 2), density < 0.40, "< 0.40",
+                f"{unique_words}/{total_words} unique/total"
             )
 
-        # Repetition
-        if total_words > 0:
-            from collections import Counter
             word_counts = Counter(words)
             most_common_ratio = word_counts.most_common(1)[0][1] / total_words
             result.dimensions["Repetition"] = DimensionResult(
                 "Repetition", round(most_common_ratio, 2), most_common_ratio > 0.20, "> 0.20"
             )
 
-        # Verbosity (approximation: avg words per sentence)
-        if sentences:
-            avg_sentence_len = total_words / num_sentences
-            result.dimensions["Verbosity"] = DimensionResult(
-                "Verbosity", round(avg_sentence_len / 30, 2),
-                avg_sentence_len > 25, "> 25 words/sentence"
-            )
+        # ============================================================
+        # 7. SCORE CALCULATION
+        # ============================================================
+        if result.signals_detected:
+            weights = {"critical": 1.0, "high": 0.7, "medium": 0.4, "low": 0.2}
+            total_weight = sum(s.confidence for s in result.signals_detected)
+            n = len(result.signals_detected)
+            result.overall_slop_score = min(1.0, total_weight / max(n, 1))
 
-        # --- Type Classification ---
-        type_scores = {}
-        text_types = self.ontology["slopTypes"]["TEXT_SLOP"]
-
-        # GenericSlop: buzzwords + low density
-        generic_score = 0
-        if any(s.signal_id == "BuzzwordOveruse" for s in result.signals_detected):
-            generic_score += 0.4
-        if result.dimensions.get("Density", DimensionResult("", 1, False)).is_slop:
-            generic_score += 0.3
-        if any(s.signal_id == "UniformSentenceLength" for s in result.signals_detected):
-            generic_score += 0.2
-        type_scores["GenericSlop"] = generic_score
-
-        # PseudoInsightSlop: low density + generic transitions
-        pseudo_score = 0
-        if result.dimensions.get("Density", DimensionResult("", 1, False)).is_slop:
-            pseudo_score += 0.3
-        if any(s.signal_id == "GenericTransition" for s in result.signals_detected):
-            pseudo_score += 0.4
-        type_scores["PseudoInsightSlop"] = pseudo_score
-
-        # FakeAuthoritySlop: "studies have shown" pattern
-        authority_patterns = ["studies have shown", "research shows", "experts say", "it has been proven"]
-        if any(p in text_lower for p in authority_patterns):
-            type_scores["FakeAuthoritySlop"] = 0.7
-            result.signals_detected.append(SignalMatch(
-                "FakeAuthorityPattern", 0.8,
-                f"Found unsubstantiated authority claim"
-            ))
-
-        # WellnessSlop: wellness phrases
-        wellness_patterns = ["self-care", "isn't selfish", "journey", "embrace", "inner"]
-        wellness_hits = sum(1 for p in wellness_patterns if p in text_lower)
-        if wellness_hits >= 2:
-            type_scores["WellnessSlop"] = 0.6
-
-        # WikipediaRehash: "is defined as" pattern + low density
-        if "is defined as" in text_lower or "is known as" in text_lower:
-            type_scores["WikipediaRehash"] = 0.5
-
-        # EngagementClickbait: emotional manipulation patterns
-        clickbait_patterns = ["please like", "share if", "today is my birthday", "nobody helped", "amazing reaction"]
-        clickbait_hits = sum(1 for p in clickbait_patterns if p in text_lower)
-        if clickbait_hits >= 1:
-            type_scores["EngagementClickbaitSlop"] = 0.7
-
-        # SEO/ContentFarm: keyword-stuffed patterns
-        seo_patterns = ["in this article", "we will explore", "table of contents", "let's dive in"]
-        seo_hits = sum(1 for p in seo_patterns if p in text_lower)
-        if seo_hits >= 2:
-            type_scores["SEOContentFarmSlop"] = 0.6
-
-        # Propaganda: political manipulation patterns
-        propaganda_patterns = ["they don't want you to know", "wake up", "the truth about", "mainstream media won't"]
-        propaganda_hits = sum(1 for p in propaganda_patterns if p in text_lower)
-        if propaganda_hits >= 1:
-            type_scores["PropagandaDisinfoSlop"] = 0.7
-
-        # Cross-lingual artifacts
-        cross_lingual = any(c in text for c in ['।', '،', '।।', 'न', 'क'])  # Hindi/Arabic chars
-        if cross_lingual:
-            result.signals_detected.append(SignalMatch(
-                "CrossLingualArtifacts", 0.7, "Non-Latin characters in English text"
-            ))
-
-        # Trailing moral check
-        if _trailing_moral(text):
-            result.signals_detected.append(SignalMatch(
-                "TrailingMoral", 0.8, "Text ends with generic moral/lesson statement"
-            ))
-            type_scores.setdefault("GenericSlop", 0)
-            type_scores["GenericSlop"] = min(type_scores["GenericSlop"] + 0.15, 1.0)
-
-        # Mass production pattern: excessive list markers
-        if _list_heavy(text):
-            result.signals_detected.append(SignalMatch(
-                "ExcessiveLists", 0.75, "Over 40% of lines are list items"
-            ))
-
-        # Sort by score, keep significant ones
-        result.slop_types = sorted(type_scores.keys(), key=lambda t: type_scores[t], reverse=True)
-        result.slop_types = [t for t in result.slop_types if type_scores[t] >= 0.3]
-
-        # --- Overall Score ---
-        signal_score = len(result.signals_detected) / 5  # max 5 signals
-        dimension_score = sum(1 for d in result.dimensions.values() if d.is_slop) / max(len(result.dimensions), 1)
-        type_score = len(result.slop_types) / 3
-        result.overall_slop_score = round(min((signal_score * 0.4 + dimension_score * 0.4 + type_score * 0.2), 1.0), 2)
-
-        # --- Severity ---
-        if result.overall_slop_score >= 0.8:
-            result.severity = "critical"
-        elif result.overall_slop_score >= 0.6:
-            result.severity = "high"
-        elif result.overall_slop_score >= 0.4:
-            result.severity = "medium"
-        elif result.overall_slop_score >= 0.2:
-            result.severity = "low"
+            if result.overall_slop_score >= 0.70:
+                result.severity = "slop_candidate"
+                result.countermeasures = ["exclude_from_rag", "do_not_cite", "label_as_ai"]
+            elif result.overall_slop_score >= 0.40:
+                result.severity = "suspicious"
+                result.countermeasures = ["require_human_review", "cross_check_sources"]
+            elif result.overall_slop_score >= 0.25:
+                result.severity = "ai_assisted"
+                result.countermeasures = ["source_check_recommended"]
+            else:
+                result.severity = "clean"
+                result.countermeasures = ["standard_quality_check"]
         else:
+            result.overall_slop_score = 0.0
             result.severity = "clean"
-
-        # --- Countermeasures ---
-        if result.severity in ("critical", "high"):
-            result.countermeasures = ["PromptEngineering", "QualityGates"]
-        elif result.severity == "medium":
-            result.countermeasures = ["HumanReview"]
-        else:
-            result.countermeasures = []
+            result.countermeasures = ["standard_quality_check"]
 
         return result
 
-    def to_dict(self, result: ClassificationResult) -> dict:
-        """Convert result to JSON-serializable dict matching ontology output format."""
+    def classify_code(self, code: str, language: str = "") -> ClassificationResult:
+        """Classify code for AI slop patterns."""
+        result = ClassificationResult(modality="code")
+
+        code_sigs = self.ontology["signals"].get("code", {}).get("indicators", [])
+
+        # Check for invented packages
+        import_patterns = re.findall(r'(?:import|from|require|use)\s+["\']?([a-zA-Z0-9_-]+)', code)
+        known_examples = []
+        for sig in code_sigs:
+            if sig.get("id") == "InventedPackage":
+                known_examples = sig.get("knownExamples", [])
+
+        invented = [p for p in import_patterns if p in known_examples]
+        if invented:
+            result.signals_detected.append(SignalMatch(
+                "InventedPackage", 1.0,
+                f"Hallucinated packages: {', '.join(invented)}"
+            ))
+
+        # Hardcoded secrets
+        if re.search(r'(?:api[_-]?key|password|secret|token)\s*[:=]\s*["\'][^"\']{8,}', code, re.I):
+            result.signals_detected.append(SignalMatch(
+                "HardcodedSecret", 0.95, "API key or password found in code"
+            ))
+
+        # Excessive comments
+        comment_lines = len(re.findall(r'^\s*//|^\s*#|^\s*/\*', code, re.MULTILINE))
+        code_lines = len([l for l in code.split('\n') if l.strip() and not l.strip().startswith(('#', '//'))])
+        if code_lines > 0 and comment_lines / code_lines > 0.8:
+            result.signals_detected.append(SignalMatch(
+                "ExcessiveComments", 0.60,
+                f"Comment/code ratio: {comment_lines}/{code_lines}"
+            ))
+
+        # Score
+        if result.signals_detected:
+            result.overall_slop_score = min(1.0, sum(s.confidence for s in result.signals_detected) / len(result.signals_detected))
+            if result.overall_slop_score >= 0.70:
+                result.severity = "slop_candidate"
+            elif result.overall_slop_score >= 0.40:
+                result.severity = "suspicious"
+            else:
+                result.severity = "ai_assisted"
+
+        return result
+
+    def get_signal_stats(self) -> dict:
+        """Return statistics about the loaded signal database."""
+        total_buzzwords = sum(len(words) for words in self.buzzword_tiers.values())
+        total_phrases = sum(len(phrases) for phrases in self.phrase_categories.values())
         return {
-            "modality": result.modality,
-            "slopTypes": result.slop_types,
-            "signalsDetected": [
-                {"signal": s.signal_id, "confidence": s.confidence, "evidence": s.evidence}
-                for s in result.signals_detected
-            ],
-            "dimensions": {
-                name: {"value": d.value, "isSlop": d.is_slop, "threshold": d.threshold, "note": d.note}
-                for name, d in result.dimensions.items()
-            },
-            "overallSlopScore": result.overall_slop_score,
-            "severity": result.severity,
-            "countermeasures": result.countermeasures
+            "buzzwords": total_buzzwords,
+            "buzzword_tiers": list(self.buzzword_tiers.keys()),
+            "phrase_categories": list(self.phrase_categories.keys()),
+            "total_phrases": total_phrases,
+            "structural_indicators": len(self.structural_indicators),
+            "punctuation_indicators": len(self.punctuation_indicators),
+            "languages": list(self.multilingual.keys()),
+            "total_signals": total_buzzwords + total_phrases + len(self.structural_indicators) + len(self.punctuation_indicators)
         }
 
 
 if __name__ == "__main__":
-    classifier = SlopClassifier("ontology.json")
+    import sys
 
-    test_cases = [
-        "In today's fast-paced digital landscape, leveraging cutting-edge AI solutions is paramount for businesses seeking to unlock their full potential. The key is to find balance between innovation and practicality.",
-        "The quick brown fox jumps over the lazy dog. Python 3.12 adds new type syntax. Coffee tastes best when freshly ground.",
-        "Recent studies have shown that self-care isn't selfish. In conclusion, the tapestry of life is a journey of a thousand miles."
-    ]
+    classifier = SlopClassifier(sys.argv[1] if len(sys.argv) > 1 else "ontology.json")
+    stats = classifier.get_signal_stats()
+    print(f"=== AI Slop Classifier v1.1 ===")
+    print(f"Signal database: {stats['total_signals']} total signals")
+    print(f"  Buzzwords: {stats['buzzwords']} across {len(stats['buzzword_tiers'])} tiers")
+    print(f"  Phrases: {stats['total_phrases']} across {len(stats['phrase_categories'])} categories")
+    print(f"  Structural: {stats['structural_indicators']}")
+    print(f"  Punctuation: {stats['punctuation_indicators']}")
+    print(f"  Languages: {', '.join(stats['languages'])}")
+    print()
 
-    for i, text in enumerate(test_cases):
-        result = classifier.classify_text(text)
-        output = classifier.to_dict(result)
-        print(f"\n--- Test {i+1} (score: {result.overall_slop_score}, severity: {result.severity}) ---")
-        print(f"Types: {result.slop_types}")
-        for s in result.signals_detected:
-            print(f"  Signal: {s.signal_id} ({s.confidence:.0%}) — {s.evidence}")
+    # Demo
+    test = """In today's rapidly evolving digital landscape, it's important to note that 
+    the rich tapestry of AI tools serves as a testament to innovation. Whether you're a 
+    seasoned developer or just starting out, let's dive into how these cutting-edge 
+    solutions can unlock your potential and harness the power of transformative technology. 
+    At its core, this paradigm shift is paramount to navigating the landscape of modern 
+    software development. Furthermore, it's crucial to understand the multifaceted nature 
+    of these robust, seamless, and holistic platforms."""
+
+    result = classifier.classify_text(test)
+    print(f"Slop Score: {result.overall_slop_score:.2f} ({result.severity})")
+    print(f"Signals: {len(result.signals_detected)}")
+    for s in result.signals_detected:
+        print(f"  [{s.confidence:.2f}] {s.signal_id}: {s.evidence}")
+    if result.buzzword_report:
+        print(f"Buzzwords by tier:")
+        for tier, hits in result.buzzword_report.items():
+            print(f"  {tier}: {', '.join(f'{w} ({c}x)' for w, c in hits)}")
+    if result.phrase_report:
+        print(f"Phrases by category:")
+        for cat, hits in result.phrase_report.items():
+            print(f"  {cat}: {', '.join(hits)}")
