@@ -1522,5 +1522,209 @@
     "lowquality_and_slop": "LowQualityHumanContent ist wertlos aber nicht zwingend Slop",
     "academic_and_legal": "Besonders gefährlich weil sie nicht billig aussehen",
     "careless_speech": "Breiteste Kategorie — nicht bösartig, aber ungeprüft"
+  },
+  "slopnessScoring": {
+    "syntheticity": {
+      "question": "Wie stark ist der Inhalt KI-generiert?",
+      "signals": [
+        "C2PA",
+        "Wasserzeichen",
+        "Stil",
+        "Detector",
+        "Selbstlabel"
+      ]
+    },
+    "quality_deficit": {
+      "question": "Wie schlecht ist der Inhalt relativ zum Zweck?",
+      "signals": [
+        "Fehler",
+        "Redundanz",
+        "Oberflächlichkeit"
+      ]
+    },
+    "substance_deficit": {
+      "question": "Gibt es echte Information, Erfahrung, Primärdaten?",
+      "signals": [
+        "keine Quellen",
+        "keine Beispiele",
+        "keine Originalität"
+      ]
+    },
+    "verification_deficit": {
+      "question": "Wurde geprüft?",
+      "signals": [
+        "fake citations",
+        "keine Belege",
+        "Halluzinationen"
+      ]
+    },
+    "effort_asymmetry": {
+      "question": "War die Erzeugung extrem billig gegenüber Konsum-/Reviewkosten?",
+      "signals": [
+        "Workslop",
+        "PR-Slop",
+        "Review-Burden"
+      ]
+    },
+    "mass_production": {
+      "question": "Gibt es Skalierungsmuster?",
+      "signals": [
+        "viele ähnliche Seiten",
+        "Upload-Spikes"
+      ]
+    },
+    "deceptiveness": {
+      "question": "Wird KI-Nutzung verschleiert oder Identität imitiert?",
+      "signals": [
+        "fehlendes Label",
+        "Fake-Autor",
+        "Voice Clone"
+      ]
+    },
+    "distribution_manipulation": {
+      "question": "Wird ein Algorithmus ausgenutzt?",
+      "signals": [
+        "SEO/GEO",
+        "Hashtag-Spam",
+        "Ranking-Cluster"
+      ]
+    },
+    "harm_potential": {
+      "question": "Was kann schiefgehen?",
+      "signals": [
+        "Desinformation",
+        "Betrug",
+        "Kindercontent",
+        "Recht",
+        "Medizin"
+      ]
+    },
+    "retrieval_risk": {
+      "question": "Kann der Inhalt RAG/Search/Agenten kontaminieren?",
+      "signals": [
+        "hoher Ranking-Status",
+        "viele Kopien",
+        "synthetische Quelle"
+      ]
+    }
+  },
+  "detectionSignalsStructured": {
+    "content_based": [
+      {
+        "signal": "generische Sprache",
+        "relevance": "oft Text-Slop"
+      },
+      {
+        "signal": "fehlende Primärquellen",
+        "relevance": "hohes RAG-Risiko"
+      },
+      {
+        "signal": "halluzinierte Zitate",
+        "relevance": "akademischer / rechtlicher Hochrisikofall"
+      },
+      {
+        "signal": "widersprüchliche Details",
+        "relevance": "schwache Validierung"
+      },
+      {
+        "signal": "überperfekte Banalität",
+        "relevance": "superficial competence"
+      },
+      {
+        "signal": "wenig konkrete Erfahrung",
+        "relevance": "keine echte Autorschaft"
+      },
+      {
+        "signal": "wiederholte Struktur",
+        "relevance": "Template- oder Serienproduktion"
+      }
+    ],
+    "behavioral": [
+      {
+        "signal": "sehr hohe Upload-Frequenz",
+        "relevance": "Massenerzeugung"
+      },
+      {
+        "signal": "viele ähnliche Titel/Thumbnails",
+        "relevance": "Content-Farm"
+      },
+      {
+        "signal": "Crossposting auf vielen Domains",
+        "relevance": "Reichweiten- oder SEO-Spiel"
+      },
+      {
+        "signal": "plötzliche Themenwechsel",
+        "relevance": "Opportunismus"
+      },
+      {
+        "signal": "neue Accounts mit hoher Outputrate",
+        "relevance": "Slop Producer"
+      },
+      {
+        "signal": "Cluster mit gegenseitigen Zitaten",
+        "relevance": "Citation Inflation"
+      }
+    ],
+    "provenance": [
+      {
+        "signal": "C2PA vorhanden",
+        "relevance": "nützlich, aber nicht ausreichend"
+      },
+      {
+        "signal": "Wasserzeichen / SynthID",
+        "relevance": "nützlich, aber nicht vollständig"
+      },
+      {
+        "signal": "Plattformlabel",
+        "relevance": "hilfreich, aber inkonsistent"
+      },
+      {
+        "signal": "fehlende Autorschaft",
+        "relevance": "Verdacht"
+      },
+      {
+        "signal": "falsche Autorschaft",
+        "relevance": "starker Verdacht"
+      },
+      {
+        "signal": "offengelegter KI-Einsatz + Human Review",
+        "relevance": "eher entlastend"
+      }
+    ]
+  },
+  "classificationThresholds": {
+    "low_slop_risk": {
+      "range": "0.00-0.24",
+      "behavior": "normal nutzbar, Quellenprüfung bleibt nötig"
+    },
+    "moderate_slop_risk": {
+      "range": "0.25-0.49",
+      "behavior": "nur mit Gegenprüfung verwenden"
+    },
+    "high_slop_risk": {
+      "range": "0.50-0.69",
+      "behavior": "nicht als Hauptquelle, Human Review"
+    },
+    "ai_slop_candidate": {
+      "range": "0.70-1.00",
+      "behavior": "nicht zitieren, nicht in Memory als Fakt speichern"
+    },
+    "critical_review_required": {
+      "range": "any + high harm",
+      "behavior": "bei Recht/Medizin/Politik/Finanzen/Kindern/Identität immer eskalieren"
+    }
+  },
+  "newSources": {
+    "YuKimKim_RetrievalCollapse": "Retrieval Collapses When AI Pollutes the Web — RAG contamination research",
+    "Stanusch_AlgorithmicVirality": "AI-Generated Algorithmic Virality — TikTok/Instagram analysis",
+    "Drolsbach_Misinfo": "Characterizing AI-Generated Misinformation on Social Media — empirical X analysis",
+    "Gamage_Labeling": "Labeling Synthetic Content — user impact of labels",
+    "Khazanah_AI_Slop_I": "AI Slop I: Pollution in Our Communication Environment — communication environment problem",
+    "Deezer_44Percent": "AI-generated tracks represent 44% of new uploaded music (20.04.2026)",
+    "Spotify_AI_Protections": "AI Protections for Artists, Songwriters, and Producers",
+    "WaPo_ChatGPT_Flood": "These 5 charts show how ChatGPT has flooded our lives",
+    "Verge_Google_Spam_AI": "Google updates spam rules to include attempts to manipulate AI",
+    "Verge_arXiv_Ban": "arXiv will ban researchers who upload papers full of AI slop",
+    "NBER_Books": "How Large Language Models Are Reshaping the Book Market"
   }
 }

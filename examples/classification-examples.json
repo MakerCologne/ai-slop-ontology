@@ -1,0 +1,135 @@
+[
+  {
+    "content_id": "example-seo-article",
+    "classification": "AISlopCandidate",
+    "slop_score": 0.77,
+    "evidence_confidence": 0.68,
+    "retrieval_trust_score": 0.22,
+    "generation_mode": "ai_assisted_or_fully_synthetic",
+    "medium": "text",
+    "intent": ["search_manipulation", "attention_farming"],
+    "quality_failures": ["genericity", "lack_of_originality", "unverifiable_claim"],
+    "distribution_pattern": ["templated_series", "search_result_saturation"],
+    "harm_types": ["retrieval_contamination", "user_time_waste"],
+    "scores": {
+      "syntheticity": 0.75,
+      "quality_deficit": 0.55,
+      "substance_deficit": 0.80,
+      "mass_production": 0.90,
+      "retrieval_risk": 0.85
+    },
+    "recommended_agent_action": [
+      "do_not_use_as_primary_source",
+      "cross_check_with_primary_sources",
+      "do_not_store_as_fact"
+    ],
+    "explanation": "High mass-production and low-substance signals; no primary evidence; likely SEO-oriented AI content."
+  },
+  {
+    "content_id": "example-ai-assisted-article",
+    "classification": "NonSlopAIContent",
+    "slop_score": 0.18,
+    "evidence_confidence": 0.85,
+    "retrieval_trust_score": 0.82,
+    "generation_mode": "ai_assisted",
+    "medium": "text",
+    "intent": ["productivity"],
+    "provenance_status": "disclosed_ai",
+    "quality_failures": [],
+    "scores": {
+      "syntheticity": 0.45,
+      "quality_deficit": 0.10,
+      "substance_deficit": 0.15,
+      "verification_deficit": 0.10,
+      "mass_production": 0.05
+    },
+    "recommended_agent_action": [
+      "allow_with_normal_source_checks"
+    ],
+    "explanation": "AI-assisted with human review, disclosed provenance, verifiable claims, no quality failures."
+  },
+  {
+    "content_id": "example-ai-music-mass-upload",
+    "classification": "AISlopCandidate",
+    "slop_score": 0.78,
+    "evidence_confidence": 0.72,
+    "retrieval_trust_score": 0.10,
+    "generation_mode": "fully_synthetic",
+    "medium": "music",
+    "intent": ["royalty_dilution", "ad_revenue"],
+    "distribution_pattern": ["mass_upload"],
+    "harm_types": ["royalty_dilution", "creator_displacement"],
+    "scores": {
+      "syntheticity": 0.95,
+      "mass_production": 0.95,
+      "deceptiveness": 0.60,
+      "harm_potential": 0.70
+    },
+    "recommended_agent_action": [
+      "exclude_from_rag",
+      "do_not_store_as_fact",
+      "label_as_ai_generated"
+    ],
+    "explanation": "Mass-uploaded synthetic music for royalty dilution. Deezer reports 75K AI tracks/day (44% of uploads).",
+    "platform_references": {
+      "deezer": "AI-generated tracks = 44% of daily uploads, most streams demonetized",
+      "spotify": "Spam tactics include mass uploads, duplicates, SEO hacks enabled by AI"
+    }
+  },
+  {
+    "content_id": "example-hallucinated-package",
+    "classification": "AISlopCandidate",
+    "slop_score": 0.95,
+    "evidence_confidence": 1.0,
+    "retrieval_trust_score": 0.0,
+    "generation_mode": "fully_synthetic",
+    "medium": "code",
+    "intent": ["careless_speech"],
+    "quality_failures": ["hallucinated_citation", "misleading_functionality"],
+    "harm_types": ["retrieval_contamination", "legal_risk"],
+    "scores": {
+      "syntheticity": 0.95,
+      "quality_deficit": 0.90,
+      "verification_deficit": 1.0,
+      "harm_potential": 0.95,
+      "retrieval_risk": 0.95
+    },
+    "recommended_agent_action": [
+      "block_source",
+      "verify_citations",
+      "require_human_review",
+      "quarantine_for_dataset"
+    ],
+    "explanation": "Hallucinated package name enabling slopsquatting attack. 19.7% of AI-recommended packages don't exist.",
+    "critical_review": true,
+    "critical_domain": "security"
+  },
+  {
+    "content_id": "example-legal-slop",
+    "classification": "AISlopCandidate",
+    "slop_score": 0.88,
+    "evidence_confidence": 0.75,
+    "retrieval_trust_score": 0.0,
+    "generation_mode": "fully_synthetic",
+    "medium": "legal_document",
+    "intent": ["careless_speech", "credential_inflation"],
+    "quality_failures": ["hallucinated_citation", "factual_error", "unverifiable_claim"],
+    "harm_types": ["legal_risk", "academic_integrity_risk", "trust_erosion"],
+    "scores": {
+      "syntheticity": 0.80,
+      "quality_deficit": 0.85,
+      "substance_deficit": 0.75,
+      "verification_deficit": 0.95,
+      "harm_potential": 0.95,
+      "deceptiveness": 0.70
+    },
+    "recommended_agent_action": [
+      "block_source",
+      "require_human_review",
+      "do_not_store_as_fact"
+    ],
+    "explanation": "AI-generated legal document with invented precedents and false norms. PARTICULARLY DANGEROUS — looks professional.",
+    "critical_review": true,
+    "critical_domain": "legal"
+  }
+]
