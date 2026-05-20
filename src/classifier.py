@@ -15,6 +15,19 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 
+def _trailing_moral(text):
+    text_lower = text.lower().strip()
+    moral_patterns = ["remember that", "in the end", "ultimately", "the lesson is",
+                      "what matters most", "at the end of the day", "it's important to remember"]
+    return any(p in text_lower[-200:] for p in moral_patterns)
+
+
+def _list_heavy(text):
+    lines = text.strip().split('\n')
+    list_lines = sum(1 for l in lines if re.match(r'^\s*[-*•]\s|^\s*\d+[.)]\s', l))
+    return len(lines) > 3 and list_lines / len(lines) > 0.4
+
+
 @dataclass
 class SignalMatch:
     signal_id: str
@@ -182,6 +195,45 @@ class SlopClassifier:
         # WikipediaRehash: "is defined as" pattern + low density
         if "is defined as" in text_lower or "is known as" in text_lower:
             type_scores["WikipediaRehash"] = 0.5
+
+        # EngagementClickbait: emotional manipulation patterns
+        clickbait_patterns = ["please like", "share if", "today is my birthday", "nobody helped", "amazing reaction"]
+        clickbait_hits = sum(1 for p in clickbait_patterns if p in text_lower)
+        if clickbait_hits >= 1:
+            type_scores["EngagementClickbaitSlop"] = 0.7
+
+        # SEO/ContentFarm: keyword-stuffed patterns
+        seo_patterns = ["in this article", "we will explore", "table of contents", "let's dive in"]
+        seo_hits = sum(1 for p in seo_patterns if p in text_lower)
+        if seo_hits >= 2:
+            type_scores["SEOContentFarmSlop"] = 0.6
+
+        # Propaganda: political manipulation patterns
+        propaganda_patterns = ["they don't want you to know", "wake up", "the truth about", "mainstream media won't"]
+        propaganda_hits = sum(1 for p in propaganda_patterns if p in text_lower)
+        if propaganda_hits >= 1:
+            type_scores["PropagandaDisinfoSlop"] = 0.7
+
+        # Cross-lingual artifacts
+        cross_lingual = any(c in text for c in ['।', '،', '।।', 'न', 'क'])  # Hindi/Arabic chars
+        if cross_lingual:
+            result.signals_detected.append(SignalMatch(
+                "CrossLingualArtifacts", 0.7, "Non-Latin characters in English text"
+            ))
+
+        # Trailing moral check
+        if _trailing_moral(text):
+            result.signals_detected.append(SignalMatch(
+                "TrailingMoral", 0.8, "Text ends with generic moral/lesson statement"
+            ))
+            type_scores.setdefault("GenericSlop", 0)
+            type_scores["GenericSlop"] = min(type_scores["GenericSlop"] + 0.15, 1.0)
+
+        # Mass production pattern: excessive list markers
+        if _list_heavy(text):
+            result.signals_detected.append(SignalMatch(
+                "ExcessiveLists", 0.75, "Over 40% of lines are list items"
+            ))
 
         # Sort by score, keep significant ones
         result.slop_types = sorted(type_scores.keys(), key=lambda t: type_scores[t], reverse=True)

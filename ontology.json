@@ -704,13 +704,30 @@
     }
   },
   "countermeasures": {
-    "PromptEngineering": "Add constraints, require specifics, ban buzzwords.",
-    "HumanReview": "Mandatory human review before publication.",
-    "QualityGates": "Automated checks: density > 0.40, no hallucinated packages, no secrets.",
-    "SourceAttribution": "Require AI to cite verifiable sources.",
-    "AntiSlopTraining": "Fine-tune models to avoid slop patterns.",
-    "ContentAuthentication": "C2PA, watermarks, provenance chains.",
-    "DetectionPipeline": "Integrate slop detection into CI/CD and CMS workflows."
+    "detection": {
+      "LinguisticPatterns": "Buzzword-Frequenz, Em-Dash-Rate, Sentence-Burstiness",
+      "StatisticalAnalysis": "Perplexity, Information Density, Repetition Ratio",
+      "Watermarking": "Kryptographische Token-Partitionierung (Green/Red Lists)",
+      "CommunityTools": [
+        "Kagi SlopStop",
+        "SlopDetector.org",
+        "GPTZero",
+        "Originality.ai"
+      ]
+    },
+    "platforms": {
+      "Moderation": "Bessere automatische Erkennung von AI-Slop",
+      "Labeling": "AI-Content Kennzeichnungspflicht",
+      "AlgorithmAdjustment": "Quality-Signals statt reinen Engagement-Signals"
+    },
+    "userAgentLevel": {
+      "ProvenanceChecks": "Herkunft verifizieren (C2PA, Watermarks, Reverse Image Search)",
+      "QualityScoring": "Slop Score berechnen (Density, Repetition, Verbosity)"
+    },
+    "risks": {
+      "ArmsRace": "Bessere Generatoren umgehen Detection — kat-and-mouse game",
+      "PositivePotenzial": "Sorgfältige AI-Nutzung ist KEIN Slop — Unterscheidung bleibt wichtig"
+    }
   },
   "detectionTools": [
     {
@@ -856,6 +873,237 @@
         "AI garbage",
         "AI pollution"
       ]
+    }
+  },
+  "detectionRedFlags": {
+    "text": [
+      {
+        "id": "OverusedPhrases",
+        "description": "Bestimmte Phrasen übermäßig genutzt",
+        "examples": [
+          "delve",
+          "tapestry",
+          "in today's fast-paced world",
+          "it's important to note"
+        ],
+        "confidence": 0.8
+      },
+      {
+        "id": "EmojisInCode",
+        "description": "Emojis in Code-Kommentaren oder -Dokumentation",
+        "confidence": 0.85
+      },
+      {
+        "id": "PerfectButSoulless",
+        "description": "Perfekte Grammatik/Struktur aber keine menschliche Note",
+        "confidence": 0.7
+      },
+      {
+        "id": "ExcessiveLists",
+        "description": "Jeder Absatz wird zur Aufzählung",
+        "confidence": 0.75
+      },
+      {
+        "id": "TrailingMorals",
+        "description": "Endet mit generischer Moral/Lektion",
+        "confidence": 0.8
+      },
+      {
+        "id": "EmDashOveruse",
+        "description": "Übermäßiger Gebrauch von Em-Dashes",
+        "confidence": 0.85
+      },
+      {
+        "id": "LowInformationDensity",
+        "description": "unique_words / total_words < 0.40",
+        "confidence": 0.9,
+        "automated": true
+      },
+      {
+        "id": "UniformSentenceLength",
+        "description": "Alle Sätze ähnliche Länge, niedrige Burstiness",
+        "confidence": 0.7,
+        "automated": true
+      }
+    ],
+    "image_video": [
+      {
+        "id": "GlossyTextures",
+        "description": "Zu perfekte, glänzende Texturen ohne natürliche Variation",
+        "confidence": 0.7
+      },
+      {
+        "id": "WarpedBackgrounds",
+        "description": "Verzerrte Hintergründe, unsaubere Übergänge",
+        "confidence": 0.8
+      },
+      {
+        "id": "InconsistentDetails",
+        "description": "Details ändern sich zwischen Nah- und Fernansicht",
+        "confidence": 0.85
+      },
+      {
+        "id": "Morphing",
+        "description": "Objekte verformen sich unnatürlich",
+        "confidence": 0.8
+      },
+      {
+        "id": "BadTextRendering",
+        "description": "Kauderwelsch oder verschwommener Text im Bild",
+        "confidence": 0.95
+      },
+      {
+        "id": "ExtraLimbs",
+        "description": "Zusätzliche Finger/Gliedmaßen/Körperparts",
+        "confidence": 0.9
+      },
+      {
+        "id": "UnnaturalLighting",
+        "description": "Beleuchtung passt nicht zur Szene",
+        "confidence": 0.7
+      },
+      {
+        "id": "FrameFlicker",
+        "description": "Flickernde Elemente zwischen Video-Frames",
+        "confidence": 0.85
+      }
+    ],
+    "general": [
+      {
+        "id": "MissingProvenance",
+        "description": "Keine Herkunftsnachweise, keine Watermarks, keine Quellenangaben",
+        "confidence": 0.6
+      },
+      {
+        "id": "MassProductionPattern",
+        "description": "Gleiche Struktur/Vorlage über hunderte Inhalte",
+        "confidence": 0.85
+      },
+      {
+        "id": "NoAuthorIdentity",
+        "description": "Fake-Autoren (AI-Headshots, kein Publishing-History)",
+        "confidence": 0.8
+      },
+      {
+        "id": "CrossLingualArtifacts",
+        "description": "Hindi/andere Sprach-Patterns im englischen Output",
+        "confidence": 0.7
+      }
+    ]
+  },
+  "ecosystem": {
+    "producers": {
+      "label": "Slop Farmers / Sloppers",
+      "description": "Individuen/Firmen die mit Prompts skalieren. Oft in Entwicklungsländern (Indien, Kenia, Philippinen).",
+      "patterns": [
+        "Cross-Lingual Prompts (Hindi etc.) → absurde Outputs",
+        "AI-Headshots für Fake-Autoren",
+        "Bestehende virale Content identifizieren → AI repliziert sie",
+        "80+ AI-Pins/Tag auf Pinterest"
+      ],
+      "knownExamples": [
+        {
+          "name": "Jesse Cunningham",
+          "method": "Facebook + Pinterest Slop Farming",
+          "target": "50+ female demographic",
+          "scale": "8.6M monthly views (Bonsai Mary)"
+        },
+        {
+          "name": "Content Goblin Users",
+          "method": "AI-powered listicle generator → faux blogs",
+          "scale": "Thousands of AI-generated articles"
+        }
+      ]
+    },
+    "platforms": {
+      "facebook": {
+        "role": "Primäres Opfer durch ältere Demografie (24% über 55)",
+        "amplifier": "Performance Bonus Program (shuttered), algorithm rewards engagement"
+      },
+      "youtube": {
+        "role": "278 AI-Kanäle mit 63 Mrd. Views/Jahr",
+        "amplifier": "YouTube Kids: 40% AI-Slop",
+        "doubleStandard": "Echte Creator werden für Guidelines verfolgt, Slop läuft durch"
+      },
+      "tiktok": {
+        "role": "AI-Video-Slop (Cat Soap Operas, Fruit Love Island)",
+        "amplifier": "For You Page bevorzugt Novelty"
+      },
+      "pinterest": {
+        "role": "Aspirational AI-Slop (Fake-Plants, Fake-Recipes)",
+        "amplifier": "8.6M Views für einzelne Slop-Accounts"
+      },
+      "googleSearch": {
+        "role": "AI Overviews verstärken Slop",
+        "amplifier": "SEO-Slop rankt durch Volume"
+      },
+      "spotify": {
+        "role": "Fake Artists mit Millionen Listeners",
+        "amplifier": "Royalty-Multiplication durch Volume"
+      }
+    },
+    "consumers": {
+      "algorithms": {
+        "role": "Engagement-Signale → Amplifikation",
+        "vulnerability": "Volume + Engagement = Quality-unabhängig"
+      },
+      "users": {
+        "role": "Unwissende Konsumenten",
+        "vulnerability": "Ältere Nutzer, geringe AI-Literacy"
+      },
+      "advertisers": {
+        "role": "Programmatic Ads auf Slop-Inventar",
+        "vulnerability": "Cheap Inventory, aber sinkendes Vertrauen langfristig"
+      }
+    }
+  },
+  "impacts": {
+    "web_search": {
+      "ContentCollapse": "Echte Inhalte werden von Slop verdrängt",
+      "SEODegradation": "Schlechtere Rankings für echte, recherchierte Inhalte",
+      "ModelCollapse": "Training auf AI-Output → irreversible Degradation (Shumailov et al., Nature 2024)",
+      "KnowledgeCollapse": "Fakten verfallen während Fluency erhalten bleibt (Stage B — Confidently Wrong)"
+    },
+    "society": {
+      "Misinfo": "AI-generierte Desinformation massenhaft verbreitet",
+      "TrustErosion": "Sinkendes Vertrauen in digitale Inhalte generell",
+      "DemocracyRisks": "Politischer Slop untergräbt demokratischen Diskurs",
+      "CreatorDisplacement": "Echte Creator verlieren Einkommen und Sichtbarkeit"
+    },
+    "economy": {
+      "CheapAdInventory": "Slop liefert billiges Werbeinventar",
+      "DecliningEngagement": "Langfristig sinkendes User-Engagement bei Slop-Sättigung",
+      "CreatorEconomy": "\"Put a ton of people out of business\" (Rachel Farnsworth, Food Bloggerin)"
+    }
+  },
+  "dynamics": {
+    "slopToAlgorithm": {
+      "relationship": "Slop → Algorithm: Wird bevorzugt",
+      "mechanism": "Volume + Engagement Signals > Quality Signals",
+      "result": "Positive Feedback Loop — mehr Slop → mehr Engagement → mehr Slop"
+    },
+    "slopToHumanContent": {
+      "relationship": "Slop → Human Content: Verdrängt",
+      "mechanism": "Enshittification — Billigcontent flutet den Markt",
+      "result": "Echte Creator können nicht mehr konkurrieren"
+    },
+    "detectionToMitigation": {
+      "relationship": "Detection → Mitigation",
+      "methods": [
+        "Watermarking",
+        "Filters",
+        "Human-in-the-Loop",
+        "Policies (Disclosure, Penalties)"
+      ]
+    },
+    "slopVsValuableAI": {
+      "relationship": "Slop vs. Valuable AI: Unterscheidung",
+      "criteria": {
+        "HumanOversight": "Menschliche Überarbeitung vorhanden?",
+        "Effort": "Echter Aufwand oder nur Prompt→Output?",
+        "Utility": "Echter Informationsgewinn oder Füllmaterial?",
+        "key": "Nicht alles AI ist Slop — der Unterschied liegt in Absicht, Aufwand und Wert"
+      }
     }
   }
 }

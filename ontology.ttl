@@ -787,3 +787,112 @@
 
 :source a owl:DatatypeProperty ;
     rdfs:range xsd:string .
+
+# ============================================================================
+# ROUND 3 ADDITIONS: Detection Red Flags, Ecosystem, Dynamics
+# ============================================================================
+
+# --- Red Flags (Expanded) ---
+
+:EmojisInCode a :SlopSignal ;
+    rdfs:label "Emojis in Code" ;
+    rdfs:comment "Emojis in code comments or documentation — strong AI code slop indicator." ;
+    :confidence 0.85 ;
+    :appliesTo :Code .
+
+:GlossyTextures a :SlopSignal ;
+    rdfs:label "Glossy Textures" ;
+    rdfs:comment "Overly perfect, shiny textures with no natural variation." ;
+    :confidence 0.7 ;
+    :appliesTo :Image .
+
+:WarpedBackgrounds a :SlopSignal ;
+    rdfs:label "Warped Backgrounds" ;
+    rdfs:comment "Distorted backgrounds, unclean transitions in generated images." ;
+    :confidence 0.8 ;
+    :appliesTo :Image .
+
+:MassProductionPattern a :SlopSignal ;
+    rdfs:label "Mass Production Pattern" ;
+    rdfs:comment "Same template/structure repeated across hundreds of content pieces." ;
+    :confidence 0.85 ;
+    :appliesTo :Text, :Image, :Video .
+
+:NoAuthorIdentity a :SlopSignal ;
+    rdfs:label "No Author Identity" ;
+    rdfs:comment "Fake authors with AI-generated headshots and no publishing history." ;
+    :confidence 0.8 ;
+    :appliesTo :Text .
+
+:CrossLingualArtifacts a :SlopSignal ;
+    rdfs:label "Cross-Lingual Artifacts" ;
+    rdfs:comment "Hindi or other language patterns in English output, indicating cross-lingual prompting." ;
+    :confidence 0.7 ;
+    :appliesTo :Text .
+
+# --- Ecosystem Actors ---
+
+:SlopFarmer a :SlopActor ;
+    rdfs:label "Slop Farmer" ;
+    rdfs:comment "Individual or firm that mass-produces AI slop for monetization. Often in developing countries (India, Kenya, Philippines). Cross-lingual prompts lead to absurd outputs." ;
+    :produces :GenericSlop, :SEOSlop, :FakeProductImageSlop .
+
+:SlopPlatform a owl:Class ;
+    rdfs:label "Slop Platform" ;
+    rdfs:comment "A digital platform whose incentive structure amplifies slop." .
+
+:Facebook a :SlopPlatform ;
+    rdfs:label "Facebook" ;
+    rdfs:comment "Primary victim through older demographics (24% users over 55). Algorithm rewards engagement regardless of quality." .
+
+:YouTube a :SlopPlatform ;
+    rdfs:label "YouTube" ;
+    rdfs:comment "278 AI channels with 63 billion views/year. YouTube Kids: 40% AI slop." .
+
+:TikTok a :SlopPlatform ;
+    rdfs:label "TikTok" ;
+    rdfs:comment "AI video slop (Cat Soap Operas, Fruit Love Island). For You Page favors novelty." .
+
+:Pinterest a :SlopPlatform ;
+    rdfs:label "Pinterest" ;
+    rdfs:comment "Aspirational AI slop (fake plants, fake recipes). 8.6M views for individual slop accounts." .
+
+:GoogleSearch a :SlopPlatform ;
+    rdfs:label "Google Search" ;
+    rdfs:comment "AI Overviews amplify slop. SEO slop ranks through volume." .
+
+:Spotify a :SlopPlatform ;
+    rdfs:label "Spotify" ;
+    rdfs:comment "Fake artists with millions of listeners. Royalty multiplication through volume." .
+
+# --- Dynamics ---
+
+:SlopAlgorithmFeedback a owl:Class ;
+    rdfs:label "Slop-Algorithm Feedback Loop" ;
+    rdfs:comment "Slop generates engagement → algorithm amplifies → more slop produced → positive feedback loop." .
+
+:Enshittification a owl:Class ;
+    rdfs:label "Enshittification" ;
+    rdfs:comment "Progressive degradation of platform quality as slop displaces authentic human content." .
+
+:SlopVsValuableAI a owl:Class ;
+    rdfs:label "Slop vs. Valuable AI Distinction" ;
+    rdfs:comment "Not all AI content is slop. The distinction lies in: Human Oversight, Effort, and Utility." .
+
+:ArmsRace a owl:Class ;
+    rdfs:label "Detection Arms Race" ;
+    rdfs:comment "Better generators evade detection, better detection catches generators — cat-and-mouse dynamic." .
+
+# --- New Countermeasures ---
+
+:KagiSlopStop a :Countermeasure ;
+    rdfs:label "Kagi SlopStop" ;
+    rdfs:comment "Community tool for filtering AI slop from search results." .
+
+:AlgorithmAdjustment a :Countermeasure ;
+    rdfs:label "Algorithm Adjustment" ;
+    rdfs:comment "Platforms adjusting algorithms to prioritize quality signals over pure engagement metrics." .
+
+:DisclosurePolicies a :Countermeasure ;
+    rdfs:label "Disclosure Policies" ;
+    rdfs:comment "Regulatory requirements for AI content disclosure and labeling." .
