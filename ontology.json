@@ -10,30 +10,54 @@
   "dc:creator": "Stefan / BTM.one",
   "dc:date": "2026-05-20",
   "dc:source": "Shaib et al. 2025, Kommers et al. 2026, SlopDetector.org, MINT Lab 2026",
-
   "mediaTypes": {
     "Text": {
       "label": "Text",
-      "detection_methods": ["PerplexityAnalysis", "BurstinessAnalysis", "RepetitionAnalysis", "InformationDensityAnalysis", "BuzzwordFrequencyAnalysis", "PunctuationAnalysis", "StructuralAnalysis", "FactualityCheck", "SourceVerification"]
+      "detection_methods": [
+        "PerplexityAnalysis",
+        "BurstinessAnalysis",
+        "RepetitionAnalysis",
+        "InformationDensityAnalysis",
+        "BuzzwordFrequencyAnalysis",
+        "PunctuationAnalysis",
+        "StructuralAnalysis",
+        "FactualityCheck",
+        "SourceVerification"
+      ]
     },
     "Image": {
       "label": "Image",
-      "detection_methods": ["VisualArtifactDetection", "ReverseImageSearch", "HSVarianceAnalysis"]
+      "detection_methods": [
+        "VisualArtifactDetection",
+        "ReverseImageSearch",
+        "HSVarianceAnalysis"
+      ]
     },
     "Video": {
       "label": "Video",
-      "detection_methods": ["FrameConsistencyAnalysis", "LipSyncAnalysis", "TemporalArtifactDetection"]
+      "detection_methods": [
+        "FrameConsistencyAnalysis",
+        "LipSyncAnalysis",
+        "TemporalArtifactDetection"
+      ]
     },
     "Audio": {
       "label": "Audio",
-      "detection_methods": ["AudioFingerprintAnalysis", "VoiceConsistencyAnalysis"]
+      "detection_methods": [
+        "AudioFingerprintAnalysis",
+        "VoiceConsistencyAnalysis"
+      ]
     },
     "Code": {
       "label": "Code",
-      "detection_methods": ["PackageRegistryVerification", "CodeStyleAnalysis", "HallucinationDetection", "SecurityVulnerabilityScan"]
+      "detection_methods": [
+        "PackageRegistryVerification",
+        "CodeStyleAnalysis",
+        "HallucinationDetection",
+        "SecurityVulnerabilityScan"
+      ]
     }
   },
-
   "slopTypes": {
     "TEXT_SLOP": {
       "GenericSlop": {
@@ -41,49 +65,98 @@
         "telltale": "In today's fast-paced world...",
         "description": "Templated, vague content with no specifics.",
         "medium": "Text",
-        "signals": ["BuzzwordOveruse", "LowPerplexity", "UniformSentenceLength"],
-        "detection": ["RepetitionAnalysis", "InformationDensityAnalysis"],
-        "countermeasures": ["PromptEngineering", "QualityGates"],
-        "overlapsWith": ["PseudoInsightSlop"]
+        "signals": [
+          "BuzzwordOveruse",
+          "LowPerplexity",
+          "UniformSentenceLength"
+        ],
+        "detection": [
+          "RepetitionAnalysis",
+          "InformationDensityAnalysis"
+        ],
+        "countermeasures": [
+          "PromptEngineering",
+          "QualityGates"
+        ],
+        "overlapsWith": [
+          "PseudoInsightSlop"
+        ]
       },
       "PseudoInsightSlop": {
         "label": "Pseudo-Insight Slop",
         "telltale": "The key is to find balance...",
         "description": "Sounds profound but communicates nothing.",
         "medium": "Text",
-        "signals": ["GenericTransition", "LowPerplexity"],
-        "detection": ["InformationDensityAnalysis", "LogicalConsistencyCheck"],
-        "countermeasures": ["SourceAttribution", "HumanReview"],
-        "overlapsWith": ["GenericSlop", "WellnessSlop"]
+        "signals": [
+          "GenericTransition",
+          "LowPerplexity"
+        ],
+        "detection": [
+          "InformationDensityAnalysis",
+          "LogicalConsistencyCheck"
+        ],
+        "countermeasures": [
+          "SourceAttribution",
+          "HumanReview"
+        ],
+        "overlapsWith": [
+          "GenericSlop",
+          "WellnessSlop"
+        ]
       },
       "FakeAuthoritySlop": {
         "label": "Fake Authority Slop",
         "telltale": "Studies have shown...",
         "description": "Confident tone with no citations or evidence.",
         "medium": "Text",
-        "signals": ["GenericTransition"],
-        "detection": ["FactualityCheck", "SourceVerification"],
-        "countermeasures": ["SourceAttribution"],
-        "overlapsWith": ["WikipediaRehash"]
+        "signals": [
+          "GenericTransition"
+        ],
+        "detection": [
+          "FactualityCheck",
+          "SourceVerification"
+        ],
+        "countermeasures": [
+          "SourceAttribution"
+        ],
+        "overlapsWith": [
+          "WikipediaRehash"
+        ]
       },
       "WikipediaRehash": {
         "label": "Wikipedia Rehash",
         "telltale": "X is defined as...",
         "description": "Rephrased common knowledge with no analysis.",
         "medium": "Text",
-        "signals": ["LowPerplexity", "UniformSentenceLength"],
-        "detection": ["InformationDensityAnalysis"],
-        "countermeasures": ["PromptEngineering"],
-        "overlapsWith": ["SEOSlop"]
+        "signals": [
+          "LowPerplexity",
+          "UniformSentenceLength"
+        ],
+        "detection": [
+          "InformationDensityAnalysis"
+        ],
+        "countermeasures": [
+          "PromptEngineering"
+        ],
+        "overlapsWith": [
+          "SEOSlop"
+        ]
       },
       "WellnessSlop": {
         "label": "Wellness Slop",
         "telltale": "Self-care isn't selfish...",
         "description": "Universalized self-help that applies to everyone and helps no one.",
         "medium": "Text",
-        "signals": ["BuzzwordOveruse", "GenericTransition"],
-        "detection": ["InformationDensityAnalysis"],
-        "countermeasures": ["HumanReview"]
+        "signals": [
+          "BuzzwordOveruse",
+          "GenericTransition"
+        ],
+        "detection": [
+          "InformationDensityAnalysis"
+        ],
+        "countermeasures": [
+          "HumanReview"
+        ]
       }
     },
     "IMAGE_SLOP": {
@@ -91,28 +164,53 @@
         "label": "Surreal Engagement Bait (Shrimp Jesus)",
         "description": "Bizarre AI images designed for maximum engagement. Exploits the uncanny.",
         "medium": "Image",
-        "signals": ["ExtraLimbs", "DistortedText", "SymmetryAnomaly"],
-        "detection": ["VisualArtifactDetection"],
+        "signals": [
+          "ExtraLimbs",
+          "DistortedText",
+          "SymmetryAnomaly"
+        ],
+        "detection": [
+          "VisualArtifactDetection"
+        ],
         "normative": "AttentionEconomyExploitation",
-        "examples": ["Shrimp Jesus", "Cat Soap Operas"]
+        "examples": [
+          "Shrimp Jesus",
+          "Cat Soap Operas"
+        ]
       },
       "FakePhotographSlop": {
         "label": "Fake Photograph Slop",
         "description": "AI images presented as real photos for emotional manipulation.",
         "medium": "Image",
-        "signals": ["UnnaturalSmoothness", "SymmetryAnomaly"],
-        "detection": ["VisualArtifactDetection", "ReverseImageSearch"],
+        "signals": [
+          "UnnaturalSmoothness",
+          "SymmetryAnomaly"
+        ],
+        "detection": [
+          "VisualArtifactDetection",
+          "ReverseImageSearch"
+        ],
         "normative": "NonconsensualImposition",
-        "examples": ["Veteran birthday signs", "Hurricane Helene fake girl with puppy"]
+        "examples": [
+          "Veteran birthday signs",
+          "Hurricane Helene fake girl with puppy"
+        ]
       },
       "FakeProductImageSlop": {
         "label": "Fake Product Image",
         "description": "AI product images for items that don't exist.",
         "medium": "Image",
-        "signals": ["DistortedText", "UnnaturalSmoothness"],
-        "detection": ["VisualArtifactDetection"],
+        "signals": [
+          "DistortedText",
+          "UnnaturalSmoothness"
+        ],
+        "detection": [
+          "VisualArtifactDetection"
+        ],
         "normative": "ConsumerFraud",
-        "examples": ["Fake plant seeds on Amazon"]
+        "examples": [
+          "Fake plant seeds on Amazon"
+        ]
       }
     },
     "VIDEO_SLOP": {
@@ -120,10 +218,18 @@
         "label": "AI-Generated Video Slop",
         "description": "Mass-produced AI video, especially children's/educational content with misinformation.",
         "medium": "Video",
-        "signals": ["FrameFlicker", "LipSyncMismatch"],
-        "detection": ["FrameConsistencyAnalysis"],
+        "signals": [
+          "FrameFlicker",
+          "LipSyncMismatch"
+        ],
+        "detection": [
+          "FrameConsistencyAnalysis"
+        ],
         "normative": "EpistemicPollution",
-        "examples": ["YouTube Kids AI alphabet videos", "278 AI YouTube channels"]
+        "examples": [
+          "YouTube Kids AI alphabet videos",
+          "278 AI YouTube channels"
+        ]
       }
     },
     "AUDIO_SLOP": {
@@ -131,9 +237,13 @@
         "label": "Fake Artist Music",
         "description": "AI music attributed to non-existent artists.",
         "medium": "Audio",
-        "detection": ["AudioFingerprintAnalysis"],
+        "detection": [
+          "AudioFingerprintAnalysis"
+        ],
         "normative": "EconomicFraud",
-        "examples": ["Velvet Sundown"]
+        "examples": [
+          "Velvet Sundown"
+        ]
       }
     },
     "CODE_SLOP": {
@@ -141,17 +251,60 @@
         "label": "Hallucinated Package",
         "description": "AI suggests non-existent libraries enabling slopsquatting attacks.",
         "medium": "Code",
-        "signals": ["InventedPackage"],
-        "detection": ["PackageRegistryVerification"],
+        "signals": [
+          "InventedPackage"
+        ],
+        "detection": [
+          "PackageRegistryVerification"
+        ],
         "normative": "SecurityRisk",
-        "examples": ["super-fast-json-parser", "ts-migrate-parser"]
+        "examples": [
+          "super-fast-json-parser",
+          "ts-migrate-parser"
+        ],
+        "realWorldIncidents": [
+          {
+            "package": "huggingface-cli",
+            "date": "2024",
+            "downloads": 30000,
+            "source": "Lasso Security",
+            "note": "Empty package, real downloads. Alibaba copied hallucinated command into README."
+          },
+          {
+            "package": "react-codeshift",
+            "date": "2026-01",
+            "spreadTo": 237,
+            "source": "Aikido Security",
+            "note": "No attacker. Spread organically through 47 LLM-generated Agent Skills."
+          },
+          {
+            "package": "unused-imports",
+            "date": "2026-02",
+            "downloadsPerWeek": 233,
+            "source": "Aikido/npm",
+            "note": "Actual malware. npm security hold applied."
+          }
+        ],
+        "stats": {
+          "overallHallucinationRate": "19.7%",
+          "openSourceRate": "21.7%",
+          "gpt4TurboRate": "3.59%",
+          "codeLlamaRate": ">33%",
+          "uniqueHallucinatedNames": 205000,
+          "repeatedHallucinations": "43% always repeated",
+          "crossEcosystem": "8.7% hallucinated Python packages exist as npm packages"
+        }
       },
       "UniformCode": {
         "label": "Uniform Code",
         "description": "Overly clean, generic code with no human customization.",
         "medium": "Code",
-        "signals": ["UniformSentenceLength"],
-        "detection": ["CodeStyleAnalysis"]
+        "signals": [
+          "UniformSentenceLength"
+        ],
+        "detection": [
+          "CodeStyleAnalysis"
+        ]
       }
     },
     "DOMAIN_SLOP": {
@@ -159,34 +312,46 @@
         "label": "SEO Slop",
         "description": "Content created solely to rank in search engines.",
         "medium": "Text",
-        "detection": ["InformationDensityAnalysis"],
+        "detection": [
+          "InformationDensityAnalysis"
+        ],
         "normative": "EpistemicPollution"
       },
       "AcademicSlop": {
         "label": "Academic Slop",
         "description": "AI papers, peer reviews, essays with fabricated citations.",
         "medium": "Text",
-        "detection": ["SourceVerification", "FactualityCheck"],
+        "detection": [
+          "SourceVerification",
+          "FactualityCheck"
+        ],
         "normative": "EpistemicPollution"
       },
       "PoliticalSlop": {
         "label": "Political Slop",
         "description": "AI political imagery/text for propaganda.",
         "medium": "Text, Image",
-        "detection": ["SourceVerification", "VisualArtifactDetection"],
+        "detection": [
+          "SourceVerification",
+          "VisualArtifactDetection"
+        ],
         "normative": "DemocraticHarm",
-        "examples": ["Trump as Pope", "Swifties for Trump"]
+        "examples": [
+          "Trump as Pope",
+          "Swifties for Trump"
+        ]
       },
       "ReviewSlop": {
         "label": "Review Slop",
         "description": "AI product reviews with similar structure.",
         "medium": "Text",
-        "detection": ["LinguisticPatternAnalysis"],
+        "detection": [
+          "LinguisticPatternAnalysis"
+        ],
         "normative": "ConsumerFraud"
       }
     }
   },
-
   "dimensions": {
     "InformationUtility": {
       "Density": {
@@ -291,19 +456,52 @@
       "Surrealism": {
         "description": "Ludicrously implausible → deceptively realistic"
       }
+    },
+    "KnowledgeCollapseStages": {
+      "StageA_KnowledgePreservation": {
+        "description": "Facts correct, instruction-following intact.",
+        "risk": "low"
+      },
+      "StageB_KnowledgeCollapse": {
+        "description": "CONFIDENTLY WRONG — Facts false but format correct. Surface metrics show no problem.",
+        "risk": "critical",
+        "note": "The valley of dangerous competence. Most harmful stage."
+      },
+      "StageC_InstructionCollapse": {
+        "description": "Complete breakdown, random baseline (~28%), incoherent outputs.",
+        "risk": "high_but_detectable"
+      },
+      "source": "Keisha et al. NeurIPS 2025"
     }
   },
-
   "signals": {
     "text": [
       {
         "id": "BuzzwordOveruse",
         "description": "Known AI-overused terms",
         "tiers": {
-          "tier1": ["delve", "realm", "tapestry", "landscape"],
-          "tier2": ["unleash", "unlock", "harness", "leverage"],
-          "tier3": ["paradigm", "synergy", "robust"],
-          "tier4": ["cutting-edge", "state-of-the-art", "game-changing"]
+          "tier1": [
+            "delve",
+            "realm",
+            "tapestry",
+            "landscape"
+          ],
+          "tier2": [
+            "unleash",
+            "unlock",
+            "harness",
+            "leverage"
+          ],
+          "tier3": [
+            "paradigm",
+            "synergy",
+            "robust"
+          ],
+          "tier4": [
+            "cutting-edge",
+            "state-of-the-art",
+            "game-changing"
+          ]
         },
         "threshold": "> 3 occurrences across tiers",
         "confidence": 0.8
@@ -311,12 +509,23 @@
       {
         "id": "PunctuationAnomaly",
         "description": "Excessive em-dashes, ellipses, exclamations",
-        "thresholds": {"emDash": "> 0.5/sentence", "ellipsis": "> 0.3/sentence", "exclamation": "> 0.2/sentence"},
+        "thresholds": {
+          "emDash": "> 0.5/sentence",
+          "ellipsis": "> 0.3/sentence",
+          "exclamation": "> 0.2/sentence"
+        },
         "confidence": 0.85
       },
       {
         "id": "GenericTransition",
-        "phrases": ["it's important to note", "in conclusion", "to sum up", "as previously mentioned", "furthermore", "moreover"],
+        "phrases": [
+          "it's important to note",
+          "in conclusion",
+          "to sum up",
+          "as previously mentioned",
+          "furthermore",
+          "moreover"
+        ],
         "threshold": "> 2 occurrences",
         "confidence": 0.75
       },
@@ -333,29 +542,71 @@
       }
     ],
     "image": [
-      {"id": "ExtraLimbs", "description": "Additional limbs, fingers, distorted features", "confidence": 0.9},
-      {"id": "UnnaturalSmoothness", "description": "Flawless textures with no variation", "confidence": 0.7},
-      {"id": "DistortedText", "description": "Garbled text within images", "confidence": 0.95},
-      {"id": "SymmetryAnomaly", "description": "Overly symmetric patterns", "confidence": 0.7}
+      {
+        "id": "ExtraLimbs",
+        "description": "Additional limbs, fingers, distorted features",
+        "confidence": 0.9
+      },
+      {
+        "id": "UnnaturalSmoothness",
+        "description": "Flawless textures with no variation",
+        "confidence": 0.7
+      },
+      {
+        "id": "DistortedText",
+        "description": "Garbled text within images",
+        "confidence": 0.95
+      },
+      {
+        "id": "SymmetryAnomaly",
+        "description": "Overly symmetric patterns",
+        "confidence": 0.7
+      }
     ],
     "video": [
-      {"id": "FrameFlicker", "description": "Inconsistent objects between frames", "confidence": 0.85},
-      {"id": "LipSyncMismatch", "description": "Audio-visual desync", "confidence": 0.9}
+      {
+        "id": "FrameFlicker",
+        "description": "Inconsistent objects between frames",
+        "confidence": 0.85
+      },
+      {
+        "id": "LipSyncMismatch",
+        "description": "Audio-visual desync",
+        "confidence": 0.9
+      }
     ],
     "code": [
-      {"id": "InventedPackage", "description": "Non-existent libraries", "knownExamples": ["super-fast-json-parser", "ts-migrate-parser", "fast-data-processor"], "confidence": 1.0},
-      {"id": "HardcodedSecret", "description": "API keys/passwords in code", "confidence": 0.95}
+      {
+        "id": "InventedPackage",
+        "description": "Non-existent libraries",
+        "knownExamples": [
+          "super-fast-json-parser",
+          "ts-migrate-parser",
+          "fast-data-processor"
+        ],
+        "confidence": 1.0
+      },
+      {
+        "id": "HardcodedSecret",
+        "description": "API keys/passwords in code",
+        "confidence": 0.95
+      }
     ]
   },
-
   "normativeFramings": {
     "EpistemicPollution": {
       "description": "Degrades information ecosystem. Knowledge collapse: society 2.3x further from truth at 20% AI cost discount.",
-      "harms": ["KnowledgeCollapse", "ModelCollapse"]
+      "harms": [
+        "KnowledgeCollapse",
+        "ModelCollapse"
+      ]
     },
     "AutomationBias": {
       "description": "Humans over-defer to automated outputs. Cognitive reflection does NOT protect.",
-      "harms": ["OverrelianceOnAI", "FalseBeliefAmplification"]
+      "harms": [
+        "OverrelianceOnAI",
+        "FalseBeliefAmplification"
+      ]
     },
     "IllegitimateReasonGiving": {
       "description": "AI presents as testimony but lacks epistemic standing, accountability, communicative intention.",
@@ -365,12 +616,36 @@
       "description": "Sending unreviewed AI output = coercing strangers into unpaid evaluation labour.",
       "source": "Doctorow 2026"
     },
-    "AttentionEconomyExploitation": {"description": "Content optimized for engagement, not information."},
-    "ConsumerFraud": {"description": "Fake products/reviews deceive consumers."},
-    "SecurityRisk": {"description": "Hallucinated packages enable supply chain attacks."},
-    "DemocraticHarm": {"description": "Political slop undermines democratic discourse."}
+    "AttentionEconomyExploitation": {
+      "description": "Content optimized for engagement, not information."
+    },
+    "ConsumerFraud": {
+      "description": "Fake products/reviews deceive consumers."
+    },
+    "SecurityRisk": {
+      "description": "Hallucinated packages enable supply chain attacks."
+    },
+    "DemocraticHarm": {
+      "description": "Political slop undermines democratic discourse."
+    },
+    "SupplyChainAttack": {
+      "description": "AI hallucinated package names enable zero-skill supply chain attacks. Attacker needs only free registry account.",
+      "harms": [
+        "CredentialTheft",
+        "BackdoorInstallation",
+        "OrganicSpread"
+      ],
+      "mitigatedBy": "PackageRegistryVerification, HumanReview, SCA Scanning"
+    },
+    "EngagementFarming": {
+      "description": "AI slop is not exogenous but a consequence of engagement-farming political economy. Platforms reward engagement regardless of quality. AI reduces production cost to ~0.",
+      "source": "Mark Carrigan 2026",
+      "harms": [
+        "CreatorDisplacement",
+        "InformationEcosystemDegradation"
+      ]
+    }
   },
-
   "countermeasures": {
     "PromptEngineering": "Add constraints, require specifics, ban buzzwords.",
     "HumanReview": "Mandatory human review before publication.",
@@ -380,16 +655,50 @@
     "ContentAuthentication": "C2PA, watermarks, provenance chains.",
     "DetectionPipeline": "Integrate slop detection into CI/CD and CMS workflows."
   },
-
   "detectionTools": [
-    {"name": "SlopDetector.org", "url": "https://slopdetector.org", "type": "web", "categories": 5, "free": true},
-    {"name": "DetectGPT", "type": "academic", "accuracy": "0.95 AUROC", "source": "Mitchell et al. 2023"},
-    {"name": "Binoculars", "type": "academic", "source": "Hans et al. 2024"},
-    {"name": "GPTZero", "type": "commercial", "note": "AI text detection, not slop-specific"},
-    {"name": "local-ai-setup Slop Skill", "type": "custom", "techniques": 22, "modalities": ["text", "code", "image", "multi-modal"], "repo": "hikaman/local-ai-setup"},
-    {"name": "SlopScan Hackathon", "url": "https://slopscan.dev", "type": "community", "date": "2026-05-29 to 2026-06-01", "tracks": 8}
+    {
+      "name": "SlopDetector.org",
+      "url": "https://slopdetector.org",
+      "type": "web",
+      "categories": 5,
+      "free": true
+    },
+    {
+      "name": "DetectGPT",
+      "type": "academic",
+      "accuracy": "0.95 AUROC",
+      "source": "Mitchell et al. 2023"
+    },
+    {
+      "name": "Binoculars",
+      "type": "academic",
+      "source": "Hans et al. 2024"
+    },
+    {
+      "name": "GPTZero",
+      "type": "commercial",
+      "note": "AI text detection, not slop-specific"
+    },
+    {
+      "name": "local-ai-setup Slop Skill",
+      "type": "custom",
+      "techniques": 22,
+      "modalities": [
+        "text",
+        "code",
+        "image",
+        "multi-modal"
+      ],
+      "repo": "hikaman/local-ai-setup"
+    },
+    {
+      "name": "SlopScan Hackathon",
+      "url": "https://slopscan.dev",
+      "type": "community",
+      "date": "2026-05-29 to 2026-06-01",
+      "tracks": 8
+    }
   ],
-
   "agentUsage": {
     "description": "How agents should use this ontology",
     "workflow": [
@@ -403,12 +712,71 @@
     ],
     "outputFormat": {
       "modality": "string",
-      "slopTypes": ["string"],
-      "signalsDetected": [{"signal": "string", "confidence": "number", "evidence": "string"}],
-      "dimensions": {"dimension": {"value": "number", "isSlop": "boolean"}},
+      "slopTypes": [
+        "string"
+      ],
+      "signalsDetected": [
+        {
+          "signal": "string",
+          "confidence": "number",
+          "evidence": "string"
+        }
+      ],
+      "dimensions": {
+        "dimension": {
+          "value": "number",
+          "isSlop": "boolean"
+        }
+      },
       "overallSlopScore": "number (0-1)",
       "severity": "critical|high|medium|low|clean",
-      "countermeasures": ["string"]
+      "countermeasures": [
+        "string"
+      ]
+    }
+  },
+  "relatedResearch": {
+    "predictSlopBeforeItHappens": {
+      "url": "https://github.com/Hypogenic-AI/predict-slop-ai-claude",
+      "description": "Research project investigating whether slop genres can be predicted before they become prevalent.",
+      "datasets": [
+        "MAGE (437K AI text)",
+        "HC3 (24K Human vs ChatGPT)",
+        "Steam Games (124K genre emergence proxy)"
+      ],
+      "gap": "No cross-modal slop benchmark exists. No genre prediction dataset."
+    },
+    "slopAnnotationFramework": {
+      "url": "https://github.com/cshaib/slop",
+      "description": "Shaib et al. annotation framework. Code available, data coming soon."
+    }
+  },
+  "existingImplementations": {
+    "quality-agent": {
+      "repo": "hikaman/quality-agent",
+      "files": [
+        "docs/refinements/ai.slop.md (200+ lines, 23 techniques)",
+        ".skills/slop-skill/SKILL.md",
+        "features/slop_detection.feature"
+      ],
+      "strength": "Comprehensive reference table with 23 cross-modal techniques and 15+ external sources",
+      "codeExamples": "Invented packages, fabricated functions, incorrect logic, hardcoded secrets"
+    },
+    "local-ai-setup": {
+      "repo": "hikaman/local-ai-setup",
+      "files": 16,
+      "keyFiles": [
+        "SKILL.md (747 lines, 22 techniques)",
+        "detectors.py",
+        "text_detector.py",
+        "code_detector.py",
+        "image_detector.py",
+        "scoring.py",
+        "content_quality.py",
+        "analyzer_enhanced.py"
+      ],
+      "strength": "Full multi-modal Python implementation with separate code/image/text detectors",
+      "review": "skill-reviews repo scored 4/5 completeness. P0: SKILL.md too large (747→120 lines recommended)"
     }
   }
 }
