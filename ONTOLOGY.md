@@ -1,6 +1,12 @@
 # AI Slop Ontologie — Kanonische Definition
 
-## AI Slop (Kernkonzept)
+## ⚠️ Kernparadigma: AI Slop ist ein Risikoprofil, kein binärer Typ
+
+**AI Slop ist nicht einfach "KI-generierter Content".** Slopness entsteht aus der **Kombination** von synthetischer Erzeugung, geringer menschlicher Sorgfalt, Massenskalierung, manipulativer Distribution, schwacher Provenienz und Qualitätsmängeln. Ein Inhalt kann KI-generiert und hochwertig sein. Umgekehrt kann menschlicher Spam wertlos sein. (Shaib et al. 2025, Spotify Policy)
+
+---
+
+## AI Slop (Arbeitsdefinition)
 
 **AI Slop** (auch "Slop Content" oder einfach "Slop") ist digitale Inhalte, die mit generativer KI (LLMs, Bild-/Video-Generatoren etc.) erstellt werden und als low-effort, low-quality, generisch, oberflächlich oder bedeutungsarm wahrgenommen werden. Sie werden massenhaft produziert, um Aufmerksamkeit (Attention Economy), Klicks, Werbeeinnahmen oder andere monetäre Vorteile zu erzielen. Der Begriff hat eine pejorative Konnotation ähnlich wie Spam und wurde 2025 zum Word of the Year von Merriam-Webster und der American Dialect Society gewählt.
 
@@ -287,6 +293,72 @@ Individuen/Firmen in Entwicklungsländern (Indien, Kenia, Philippinen), die mit 
 #### Risiken
 - **Arms Race:** Bessere Generatoren umgehen Detection — cat-and-mouse game
 - **Positives Potenzial:** Sorgfältige AI-Nutzung ist KEIN Slop — Unterscheidung bleibt wichtig
+
+---
+
+### 11. Slopness als Risikoprofil
+
+**Slopness Score = f(Generierung, Sorgfalt, Skalierung, Distribution, Provenienz, Qualität)**
+
+| Dimension | Low Risk (0-2) | Medium Risk (3-5) | High Risk (6-10) |
+|-----------|----------------|-------------------|------------------|
+| **Generierung** | Menschlich geschrieben | AI-assisted, human-edited | Reines AI, kein Edit |
+| **Sorgfalt** | Gründliche Recherche, Testing | Oberflächliche Prüfung | Keine Überprüfung |
+| **Skalierung** | Einzelner Artikel | Serie, kuratiert | Massenproduktion (100+/Tag) |
+| **Distribution** | Organisch, zielgerichtet | SEO-optimiert | Clickbait, Engagement Farming |
+| **Provenienz** | Klare Autorschaft, Quellen | Teilweise Quellen | Fake-Autor, keine Quellen |
+| **Qualität** | Originell, informativ | Generisch, teils nützlich | Substanzlos, repetitiv |
+
+### 12. Agent Risk Levels
+
+| Level | Beschreibung | Agent-Verhalten |
+|-------|-------------|----------------|
+| 🟢 **Clean** | Menschlich, geprüft, mit Quellen | Normal verwenden |
+| 🟡 **AI-Assisted** | AI-generiert, human-edited, nützlich | Mit Quellenangabe verwenden |
+| 🟠 **Suspicious** | AI-generiert, keine Quellen, generisch | Verifizieren vor Verwendung |
+| 🔴 **Slop** | AI-generiert, substanzlos, massenhaft | **NICHT in RAG/Memory aufnehmen** |
+| ⚫ **Malicious** | Slop + Absicht (Disinfo, Slopsquatting) | **Blockieren + Warnen** |
+
+### 13. Retrieval Collapse ⚠️ (Agenten-spezifisch)
+
+**Für Agenten ist AI Slop besonders gefährlich**, weil RAG-, Search- und Memory-Systeme kontaminiert werden.
+
+**Zwei Stufen:**
+1. **Quellendominanz:** KI-generierte Inhalte dominieren Suchergebnisse → Reduzierte Quellendiversität
+2. **Pipeline-Kontamination:** Minderwertige Inhalte dringen in Retrieval-Pipelines → Agenten antworten mit Slop
+
+**Experimentell:** 67% Pool-Kontamination → über 80% Expositionskontamination.
+
+**Abwehrmaßnahmen:**
+
+| Maßnahme | Implementierung |
+|----------|---------------|
+| Source Diversity Check | Min. 3+ unterschiedliche Quell-Domains |
+| Slop Score Gate | Nur Quellen mit Score < 0.4 aufnehmen |
+| Provenance Filter | Bevorzuge menschlich verifizierte Quellen |
+| Cross-Validation | Min. 2 unabhängige Bestätigungen |
+| Contamination Detection | Information Diversity der Top-10 prüfen |
+
+### 14. AI Slop vs. Spam
+
+| | Spam | AI Slop |
+|---|------|--------|
+| **Primär** | Unerwünschte Distribution | Billige Generierung + Oberflächlichkeit |
+| **Mechanismus** | Volume + Deception | Superficial Competence + Mass Producibility |
+| **Google** | — | "Scaled Content Abuse" = Suchmanipulation, nicht Nutzerhilfe |
+
+**Überlappung:** Slop KANN Spam sein, aber nicht alles Slop ist Spam und nicht alles Spam ist Slop.
+
+### 15. Plattform-Statistiken (2026)
+
+| Metrik | Wert | Quelle |
+|--------|------|--------|
+| Deezer AI-Tracks/Tag | ~75.000 (44% der Uploads) | Deezer 20.04.2026 |
+| YouTube AI-Kanäle | 278 (63 Mrd. Views/Jahr) | Research |
+| YouTube Kids AI-Anteil | ~40% | Analysis |
+| Facebook Nutzer >55 | 24% | Platform Data |
+| AI-Package-Halluzination | 19.7% der Empfehlungen | USENIX 2025 |
+| Pinterest Slop-Account | 8.6M Monthly Views | Futurism |
 
 ---
 

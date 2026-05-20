@@ -1105,5 +1105,158 @@
         "key": "Nicht alles AI ist Slop — der Unterschied liegt in Absicht, Aufwand und Wert"
       }
     }
+  },
+  "coreParadigm": {
+    "statement": "AI Slop ist kein binärer Medientyp, sondern ein Risikoprofil.",
+    "implication": "Ein Inhalt kann KI-generiert und hochwertig sein. Umgekehrt kann menschlicher Spam wertlos sein. Slopness entsteht aus der Kombination von Generierung, Sorgfalt, Skalierung, Distribution, Provenienz und Qualität.",
+    "sources": [
+      "Shaib et al. 2025 (teils subjektiv, aber korreliert mit Kohärenz/Relevanz)",
+      "Spotify (KI-Nutzung = Spektrum, nicht binär)"
+    ]
+  },
+  "slopnessDimensions": {
+    "Generierung": {
+      "low": "Menschlich geschrieben",
+      "medium": "AI-assisted, human-edited",
+      "high": "Reines AI, kein Edit"
+    },
+    "Sorgfalt": {
+      "low": "Gründliche Recherche, Testing",
+      "medium": "Oberflächliche Prüfung",
+      "high": "Keine Überprüfung"
+    },
+    "Skalierung": {
+      "low": "Einzelner Artikel",
+      "medium": "Serie, kuratiert",
+      "high": "Massenproduktion (100+/Tag)"
+    },
+    "Distribution": {
+      "low": "Organisch, zielgerichtet",
+      "medium": "SEO-optimiert",
+      "high": "Clickbait, Engagement Farming"
+    },
+    "Provenienz": {
+      "low": "Klare Autorschaft, Quellen",
+      "medium": "Teilweise Quellen",
+      "high": "Fake-Autor, keine Quellen"
+    },
+    "Qualität": {
+      "low": "Originell, informativ",
+      "medium": "Generisch, teils nützlich",
+      "high": "Substanzlos, repetitiv"
+    }
+  },
+  "agentRiskLevels": {
+    "clean": {
+      "level": "🟢",
+      "description": "Menschlich, geprüft, mit Quellen",
+      "action": "Normal verwenden"
+    },
+    "ai_assisted": {
+      "level": "🟡",
+      "description": "AI-generiert, aber human-edited, nützlich",
+      "action": "Mit Quellenangabe verwenden"
+    },
+    "suspicious": {
+      "level": "🟠",
+      "description": "AI-generiert, keine Quellen, generisch",
+      "action": "Verifizieren vor Verwendung"
+    },
+    "slop": {
+      "level": "🔴",
+      "description": "AI-generiert, substanzlos, massenhaft",
+      "action": "NICHT in RAG/Memory aufnehmen"
+    },
+    "malicious": {
+      "level": "⚫",
+      "description": "Slop + Absicht (Disinfo, Slopsquatting)",
+      "action": "Blockieren + Warnen"
+    }
+  },
+  "retrievalCollapse": {
+    "description": "AI Slop gefährdet Agenten besonders über RAG-, Search- und Memory-Systeme.",
+    "stages": [
+      {
+        "stage": 1,
+        "name": "Quellendominanz",
+        "description": "KI-generierte Inhalte dominieren Suchergebnisse → Reduzierte Quellendiversität"
+      },
+      {
+        "stage": 2,
+        "name": "Pipeline-Kontamination",
+        "description": "Minderwertige/adversariale Inhalte dringen in Retrieval-Pipelines ein → Agenten antworten mit Slop"
+      }
+    ],
+    "experimental": "67% Pool-Kontamination → über 80% Expositionskontamination",
+    "defenses": [
+      {
+        "measure": "Source Diversity Check",
+        "description": "Min. 3+ unterschiedliche Quell-Domains",
+        "implementation": "len(set(source_domains)) >= 3"
+      },
+      {
+        "measure": "Slop Score Gate",
+        "description": "Nur Quellen mit Slop-Score < 0.4 aufnehmen",
+        "implementation": "slop_score(doc) < 0.4"
+      },
+      {
+        "measure": "Provenance Filter",
+        "description": "Bevorzuge menschlich verifizierte Quellen",
+        "implementation": "Source-Attribution, Peer Review, Edit History"
+      },
+      {
+        "measure": "Recency vs. Authority",
+        "description": "Neu ≠ Besser. Ältere etablierte Quellen bevorzugen",
+        "implementation": "Domain Authority Score"
+      },
+      {
+        "measure": "Contamination Detection",
+        "description": "Erkennen wenn Suchergebnisse Slop-dominated",
+        "implementation": "Information Diversity der Top-10 prüfen"
+      },
+      {
+        "measure": "Cross-Validation",
+        "description": "Facts gegen unabhängige Quellen prüfen",
+        "implementation": "Min. 2 unabhängige Bestätigungen"
+      }
+    ]
+  },
+  "platformStats": {
+    "deezer": {
+      "aiTracksPerDay": 75000,
+      "percentageOfUploads": 44,
+      "date": "2026-04-20",
+      "note": "Die meisten Streams als betrügerisch erkannt und demonetarisiert"
+    },
+    "youtube": {
+      "aiChannels": 278,
+      "viewsPerYear": "63 billion",
+      "kidsPercentage": 40
+    },
+    "facebook": {
+      "usersOver55": "24%"
+    },
+    "packageHallucination": {
+      "rate": "19.7%",
+      "uniqueNames": 205000
+    },
+    "spotify": {
+      "position": "KI-Nutzung ist ein Spektrum, nicht binär"
+    },
+    "google": {
+      "policy": "Scaled Content Abuse — explizit in Spam-Policies eingeschlossen"
+    }
+  },
+  "slopVsSpam": {
+    "spam": {
+      "primary": "Unerwünschte Distribution",
+      "mechanism": "Volume + Deception"
+    },
+    "slop": {
+      "primary": "Billige Generierung + Semantische Oberflächlichkeit + Algorithmische Skalierung",
+      "mechanism": "Superficial Competence + Mass Producibility + Engagement Optimization"
+    },
+    "overlap": "Slop KANN Spam sein, aber nicht alles Slop ist Spam, und nicht alles Spam ist Slop.",
+    "googleDefinition": "Scaled Content Abuse = viele Seiten zur Suchmanipulation, nicht Nutzerhilfe. Einschließlich: generative KI ohne Mehrwert, Scraping, Stitching, keywordhaltige Seiten ohne Sinn."
   }
 }

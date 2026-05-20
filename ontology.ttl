@@ -896,3 +896,93 @@
 :DisclosurePolicies a :Countermeasure ;
     rdfs:label "Disclosure Policies" ;
     rdfs:comment "Regulatory requirements for AI content disclosure and labeling." .
+
+# ============================================================================
+# ROUND 4 ADDITIONS: Risk Profile, Retrieval Collapse, Agent Risk Levels
+# ============================================================================
+
+# --- Core Paradigm: Slopness as Risk Profile ---
+
+:SlopnessScore a owl:Class ;
+    rdfs:label "Slopness Score" ;
+    rdfs:comment "AI Slop is not a binary media type but a risk profile. Slopness arises from the combination of synthetic generation, low human care, mass scaling, manipulative distribution, weak provenance, and quality deficiencies." .
+
+:SlopnessDimension a owl:Class ;
+    rdfs:label "Slopness Dimension" ;
+    rdfs:comment "One of six axes along which slopness is measured: Generierung, Sorgfalt, Skalierung, Distribution, Provenienz, Qualität." .
+
+# --- Agent Risk Levels ---
+
+:AgentRiskLevel a owl:Class ;
+    rdfs:label "Agent Risk Level" ;
+    rdfs:comment "Classification of content risk for agent consumption. Determines whether content should be used in RAG/Memory systems." .
+
+:CleanRisk a :AgentRiskLevel ;
+    rdfs:label "🟢 Clean" ;
+    rdfs:comment "Menschlich, geprüft, mit Quellen. Normal verwenden." .
+
+:AIAssistedRisk a :AgentRiskLevel ;
+    rdfs:label "🟡 AI-Assisted" ;
+    rdfs:comment "AI-generiert, aber human-edited, nützlich. Mit Quellenangabe verwenden." .
+
+:SuspiciousRisk a :AgentRiskLevel ;
+    rdfs:label "🟠 Suspicious" ;
+    rdfs:comment "AI-generiert, keine Quellen, generisch. Verifizieren vor Verwendung." .
+
+:SlopRisk a :AgentRiskLevel ;
+    rdfs:label "🔴 Slop" ;
+    rdfs:comment "AI-generiert, substanzlos, massenhaft. NICHT in RAG/Memory aufnehmen." .
+
+:MaliciousRisk a :AgentRiskLevel ;
+    rdfs:label "⚫ Malicious" ;
+    rdfs:comment "Slop + Absicht (Disinfo, Slopsquatting). Blockieren + Warnen." .
+
+# --- Retrieval Collapse ---
+
+:RetrievalCollapse a owl:Class ;
+    rdfs:label "Retrieval Collapse" ;
+    rdfs:comment "AI slop contaminates RAG-, Search- and Memory-systems. Two stages: Source dominance → Pipeline contamination. 67% pool contamination leads to 80%+ exposure contamination." .
+
+:SourceDominance a owl:Class ;
+    rdfs:subClassOf :RetrievalCollapse ;
+    rdfs:label "Stage 1: Source Dominance" ;
+    rdfs:comment "AI-generated content dominates search results, reducing source diversity." .
+
+:PipelineContamination a owl:Class ;
+    rdfs:subClassOf :RetrievalCollapse ;
+    rdfs:label "Stage 2: Pipeline Contamination" ;
+    rdfs:comment "Low-quality/adversarial content enters retrieval pipelines, causing agents to answer with slop." .
+
+# --- Slop vs Spam ---
+
+:SlopSpamDistinction a owl:Class ;
+    rdfs:label "Slop vs. Spam Distinction" ;
+    rdfs:comment "Spam = unwanted distribution. Slop = cheap generation + semantic superficiality + algorithmic scaling. Slop CAN be spam, but not all slop is spam, and not all spam is slop." .
+
+:GoogleScaledContentAbuse a :SlopType ;
+    rdfs:label "Scaled Content Abuse (Google)" ;
+    rdfs:comment "Google's policy definition: many pages primarily for search manipulation, not user help. Includes: generative AI without added value, scraping, stitching, keyword pages without meaning." ;
+    :hasMedium :Text ;
+    :hasNormativeFraming :EpistemicPollution .
+
+# --- Retrieval Defenses for Agents ---
+
+:SourceDiversityCheck a :Countermeasure ;
+    rdfs:label "Source Diversity Check" ;
+    rdfs:comment "Require minimum 3+ different source domains in RAG results." .
+
+:SlopScoreGate a :Countermeasure ;
+    rdfs:label "Slop Score Gate" ;
+    rdfs:comment "Only ingest sources with slop score < 0.4 into RAG/Memory." .
+
+:ProvenanceFilter a :Countermeasure ;
+    rdfs:label "Provenance Filter" ;
+    rdfs:comment "Prefer human-verified sources with clear attribution." .
+
+:CrossValidation a :Countermeasure ;
+    rdfs:label "Cross-Validation" ;
+    rdfs:comment "Verify facts against minimum 2 independent sources." .
+
+:ContaminationDetection a :Countermeasure ;
+    rdfs:label "Contamination Detection" ;
+    rdfs:comment "Detect when search results are slop-dominated by checking information diversity." .
