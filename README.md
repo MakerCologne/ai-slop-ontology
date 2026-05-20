@@ -1,8 +1,12 @@
 # AI Slop Ontology
 
+**Languages:** English (canonical) · [Deutsch](README.de.md)
+
 A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*. Consolidated from academic research (Shaib et al. 2025; Madsen & Puyt 2025; Shumailov et al. 2024), investigative journalism (404 Media; NYT; Guardian), industry research (NewsGuard; Pangram Labs), and lexicography (Merriam-Webster 2025; Oxford 2024).
 
 **Version:** 1.0.0 | **Date:** 2026-05-20 | **License:** CC BY 4.0
+
+Full documentation lives under [`docs/en/`](docs/en/) (English, canonical) and [`docs/de/`](docs/de/) (German). Code-facing artifacts — `ai_slop_ontology.yaml`, `ontology.json`, `ontology.ttl`, and `src/` — are English-canonical.
 
 ## Quick Start
 
@@ -36,19 +40,27 @@ Key insight: Carefully curated, verified, and intentionally published AI outputs
 ## Repository Structure
 
 ```
-├── AI-SLOP-ONTOLOGY-v1.0.0.md  ← Canonical document (526 lines, 14 sections)
-├── ai_slop_ontology.yaml        ← Machine-readable YAML ontology
-├── ontology.json                 ← Agent-friendly JSON (all data)
-├── ontology.ttl                  ← RDF/Turtle (semantic web)
-├── ONTOLOGY.md                   ← Human-readable taxonomy overview
-├── ONTOLOGY-STRUCTURE.md         ← Property-based model & class hierarchy
-├── REFERENCES.md                 ← Source list (30 references)
-├── report.md                     ← Deep research report (Round 1)
-├── report-extended.md            ← Extended research (Round 2)
-├── RESEARCH-v0.1.md              ← v0.1 research findings
+├── README.md                     ← This file (English entry point)
+├── README.de.md                  ← German entry point
+├── ai_slop_ontology.yaml         ← Machine-readable YAML ontology
+├── ontology.json                  ← Agent-friendly JSON (all data)
+├── ontology.ttl                   ← RDF/Turtle (semantic web)
+├── docs/
+│   ├── en/                        ← English documentation (canonical)
+│   │   ├── ai-slop-ontology-v1.0.0.md   ← Canonical document (14 sections)
+│   │   ├── ontology.md                  ← Human-readable taxonomy overview
+│   │   ├── ontology-structure.md        ← Property-based model & class hierarchy
+│   │   ├── references.md                ← Source list (30 references)
+│   │   ├── report.md                    ← Deep research report (Round 1)
+│   │   ├── report-extended.md           ← Extended research (Round 2)
+│   │   └── research-v0.1.md             ← v0.1 research findings
+│   └── de/                        ← German documentation (parity-tracked)
+│       └── … (same files as docs/en/)
+├── skills/
+│   └── ai-slop-detection/         ← Agent skill (English)
 ├── src/
-│   ├── classifier.py             ← Python classifier
-│   └── scorer.py                  ← Scoring engine
+│   ├── classifier.py              ← Python classifier
+│   └── scorer.py                   ← Scoring engine
 └── examples/
     ├── classification-examples.json  ← 8 scored examples
     ├── text-slop-examples.json       ← Text slop instances

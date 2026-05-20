@@ -1140,11 +1140,11 @@
 
 :RoyaltyDilution a :Intent ;
     rdfs:label "Royalty Dilution" ;
-    rdfs:comment "Streaming-Royalties durch Massenmusik." .
+    rdfs:comment "Streaming royalties diluted by mass-produced AI music." .
 
 :SearchManipulation a :Intent ;
     rdfs:label "Search Manipulation" ;
-    rdfs:comment "SEO, GEO, Ranking-Manipulation." .
+    rdfs:comment "SEO, GEO, and ranking manipulation." .
 
 :RecommendationPoisoning a :Intent ;
     rdfs:label "Recommendation Poisoning" ;

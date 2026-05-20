@@ -354,7 +354,7 @@
     "BY_PURPOSE": {
       "EngagementClickbaitSlop": {
         "label": "Engagement/Clickbait Slop",
-        "description": "Virales Potenzial — Motivational, Emotional Bait.",
+        "description": "Viral potential — Motivational, Emotional Bait.",
         "examples": [
           "Veteran Birthday Signs",
           "Shrimp Jesus",
@@ -363,46 +363,46 @@
       },
       "SEOContentFarmSlop": {
         "label": "SEO/Content Farm Slop",
-        "description": "Keyword-stuffed Seiten für programmatic Ads.",
+        "description": "Keyword-stuffed pages for programmatic Ads.",
         "examples": [
           "10-Ways-to-Leverage-AI articles"
         ]
       },
       "PropagandaDisinfoSlop": {
         "label": "Propaganda/Disinfo Slop",
-        "description": "Politisch motiviert — AI-Images, Spamouflage.",
+        "description": "Politically motivated — AI-Images, Spamouflage.",
         "examples": [
-          "Trump als Papst",
-          "Spamouflage (China/Russland)"
+          "Trump as Pope",
+          "Spamouflage (China/Russia)"
         ]
       },
       "MonetizationSlop": {
         "label": "Monetization Slop (Slop Farmers)",
-        "description": "Direkte Revenue — Facebook Bonuses, Fake Shops, Affiliate Farming.",
+        "description": "Direct revenue — Facebook Bonuses, Fake Shops, Affiliate Farming.",
         "examples": [
           "Jesse Cunningham / Bonsai Mary (8.6M Pinterest Views)"
         ]
       },
       "SpamNoiseSlop": {
         "label": "Spam/Noise Slop",
-        "description": "Füllmaterial ohne klaren Zweck."
+        "description": "Filler material with no clear purpose."
       }
     },
     "BY_FORM": {
       "LowSurrealHighSurreal": {
-        "axis": "Surrealismus",
-        "low": "Banal-realistisch (SEO-Artikel, Fake Reviews)",
-        "high": "Absurd (Shrimp Jesus, bizarre AI-Kombinationen)"
+        "axis": "Surrealism",
+        "low": "Banal-realistic (SEO articles, Fake Reviews)",
+        "high": "Absurd (Shrimp Jesus, bizarre AI combinations)"
       },
       "MassVsPersonalized": {
-        "axis": "Personalisierung",
-        "low": "Mass — generisch, für alle",
-        "high": "Personalized — zugeschnitten auf Person/Gruppe"
+        "axis": "Personalization",
+        "low": "Mass — generic, for everyone",
+        "high": "Personalized — tailored to person/group"
       },
       "PureAIVsAIAssisted": {
         "axis": "Human Oversight",
-        "low": "Reines AI — kein menschlicher Input",
-        "high": "AI-assisted mit minimal Edits"
+        "low": "Pure AI — no human input",
+        "high": "AI-assisted with minimal edits"
       }
     }
   },
@@ -488,30 +488,30 @@
     },
     "PrototypicalProperties": {
       "SuperficialCompetence": {
-        "description": "Grammatikalisch korrekt, photorealistisch oder strukturiert, aber ohne Tiefe, Originalität oder echte Intention.",
+        "description": "Grammatically correct, photorealistic or structured, but without depth, originality or genuine intention.",
         "source": "Kommers et al. 2026"
       },
       "AsymmetricEffort": {
-        "description": "Minimaler Input (Prompt) für massenhaften Output; fehlende menschliche Überarbeitung, Recherche oder Kreativität.",
+        "description": "Minimal input (prompt) for mass output; lack of human revision, research or creativity.",
         "source": "Kommers et al. 2026"
       },
       "MassProducibility": {
-        "description": "Skalierbar für Algorithmen (SEO, Feeds), oft mit Clickbait-Elementen.",
+        "description": "Scalable for algorithms (SEO, Feeds), often with clickbait elements.",
         "source": "Kommers et al. 2026"
       }
     },
     "VarianceDimensions": {
       "InstrumentalUtility": {
-        "description": "Warum wurde es erstellt?",
-        "spectrum": "Monetization → Propaganda → Kunst → Trolling"
+        "description": "Why was it created?",
+        "spectrum": "Monetization → Propaganda → Art → Trolling"
       },
       "Personalization": {
-        "description": "Ist es generisch oder zugeschnitten?",
-        "spectrum": "Mass (generisch) → Personalized (zugeschnitten)"
+        "description": "Is it generic or tailored?",
+        "spectrum": "Mass (generic) → Personalized (tailored)"
       },
       "Surrealism": {
-        "description": "Wie absurd ist der Inhalt?",
-        "spectrum": "Banal-realistisch (SEO-Artikel) → Absurd (Shrimp Jesus)"
+        "description": "How absurd is the content?",
+        "spectrum": "Banal-realistic (SEO articles) → Absurd (Shrimp Jesus)"
       }
     },
     "KnowledgeCollapseStages": {
@@ -1140,9 +1140,9 @@
   },
   "countermeasures": {
     "detection": {
-      "LinguisticPatterns": "Buzzword-Frequenz, Em-Dash-Rate, Sentence-Burstiness",
+      "LinguisticPatterns": "Buzzword frequency, Em-Dash rate, Sentence burstiness",
       "StatisticalAnalysis": "Perplexity, Information Density, Repetition Ratio",
-      "Watermarking": "Kryptographische Token-Partitionierung (Green/Red Lists)",
+      "Watermarking": "Cryptographic token partitioning (Green/Red Lists)",
       "CommunityTools": [
         "Kagi SlopStop",
         "SlopDetector.org",
@@ -1151,17 +1151,17 @@
       ]
     },
     "platforms": {
-      "Moderation": "Bessere automatische Erkennung von AI-Slop",
-      "Labeling": "AI-Content Kennzeichnungspflicht",
-      "AlgorithmAdjustment": "Quality-Signals statt reinen Engagement-Signals"
+      "Moderation": "Better automatic detection of AI slop",
+      "Labeling": "Mandatory AI content labeling",
+      "AlgorithmAdjustment": "Quality signals instead of pure engagement signals"
     },
     "userAgentLevel": {
-      "ProvenanceChecks": "Herkunft verifizieren (C2PA, Watermarks, Reverse Image Search)",
-      "QualityScoring": "Slop Score berechnen (Density, Repetition, Verbosity)"
+      "ProvenanceChecks": "Verify provenance (C2PA, Watermarks, Reverse Image Search)",
+      "QualityScoring": "Calculate Slop Score (Density, Repetition, Verbosity)"
     },
     "risks": {
-      "ArmsRace": "Bessere Generatoren umgehen Detection — kat-and-mouse game",
-      "PositivePotenzial": "Sorgfältige AI-Nutzung ist KEIN Slop — Unterscheidung bleibt wichtig"
+      "ArmsRace": "Better generators evade detection — cat-and-mouse game",
+      "PositivePotenzial": "Careful AI use is NOT slop — the distinction remains important"
     }
   },
   "detectionTools": [
@@ -1294,15 +1294,15 @@
       "Slop Content",
       "Slop"
     ],
-    "definition": "Digitale Inhalte, die mit generativer KI erstellt werden und als low-effort, low-quality, generisch, oberflächlich oder bedeutungsarm wahrgenommen werden. Massenhaft produziert für Attention Economy, Klicks, Werbeeinnahmen oder andere monetäre Vorteile.",
-    "connotation": "pejorative, ähnlich wie Spam",
+    "definition": "Digital content created with generative AI and perceived as low-effort, low-quality, generic, superficial or lacking in meaning. Mass-produced for the attention economy, clicks, advertising revenue or other monetary benefits.",
+    "connotation": "pejorative, similar to spam",
     "wordOfTheYear": [
       "Merriam-Webster 2025",
       "American Dialect Society 2025",
       "Macquarie Dictionary 2025"
     ],
     "origin": {
-      "period": "~2022 (Bildgeneratoren auf 4chan)",
+      "period": "~2022 (image generators on 4chan)",
       "popularizedBy": "Simon Willison 2024",
       "superseded": [
         "AI garbage",
@@ -1312,27 +1312,27 @@
     "necessaryConditions": [
       {
         "id": 1,
-        "condition": "Generative KI ist primäre Quelle des Inhalts",
+        "condition": "Generative AI is the primary source of the content",
         "source": "v1.0.0 §1"
       },
       {
         "id": 2,
-        "condition": "Es fehlt menschliche Sorgfalt, Kuration oder Verifikation",
+        "condition": "Human care, curation or verification is lacking",
         "source": "v1.0.0 §1"
       },
       {
         "id": 3,
-        "condition": "Der Inhalt wird unverlangt publiziert/distribuiert (Push statt Pull)",
+        "condition": "The content is published/distributed unsolicited (push rather than pull)",
         "source": "v1.0.0 §1"
       }
     ],
-    "exclusion": "Sorgfältig kuratierte, geprüfte und intentional veröffentlichte KI-Hilfsoutputs fallen ausdrücklich nicht unter die Definition (Willison 2024; Shaib et al. 2025 §3)."
+    "exclusion": "Carefully curated, reviewed and intentionally published AI-assisted outputs are explicitly excluded from this definition (Willison 2024; Shaib et al. 2025 §3)."
   },
   "detectionRedFlags": {
     "text": [
       {
         "id": "OverusedPhrases",
-        "description": "Bestimmte Phrasen übermäßig genutzt",
+        "description": "Certain phrases used excessively",
         "examples": [
           "delve",
           "tapestry",
@@ -1343,27 +1343,27 @@
       },
       {
         "id": "EmojisInCode",
-        "description": "Emojis in Code-Kommentaren oder -Dokumentation",
+        "description": "Emojis in code comments or documentation",
         "confidence": 0.85
       },
       {
         "id": "PerfectButSoulless",
-        "description": "Perfekte Grammatik/Struktur aber keine menschliche Note",
+        "description": "Perfect grammar/structure but no human touch",
         "confidence": 0.7
       },
       {
         "id": "ExcessiveLists",
-        "description": "Jeder Absatz wird zur Aufzählung",
+        "description": "Every paragraph becomes a list",
         "confidence": 0.75
       },
       {
         "id": "TrailingMorals",
-        "description": "Endet mit generischer Moral/Lektion",
+        "description": "Ends with a generic moral/lesson",
         "confidence": 0.8
       },
       {
         "id": "EmDashOveruse",
-        "description": "Übermäßiger Gebrauch von Em-Dashes",
+        "description": "Excessive use of em-dashes",
         "confidence": 0.85
       },
       {
@@ -1374,7 +1374,7 @@
       },
       {
         "id": "UniformSentenceLength",
-        "description": "Alle Sätze ähnliche Länge, niedrige Burstiness",
+        "description": "All sentences of similar length, low burstiness",
         "confidence": 0.7,
         "automated": true
       }
@@ -1382,64 +1382,64 @@
     "image_video": [
       {
         "id": "GlossyTextures",
-        "description": "Zu perfekte, glänzende Texturen ohne natürliche Variation",
+        "description": "Overly perfect, glossy textures without natural variation",
         "confidence": 0.7
       },
       {
         "id": "WarpedBackgrounds",
-        "description": "Verzerrte Hintergründe, unsaubere Übergänge",
+        "description": "Distorted backgrounds, sloppy transitions",
         "confidence": 0.8
       },
       {
         "id": "InconsistentDetails",
-        "description": "Details ändern sich zwischen Nah- und Fernansicht",
+        "description": "Details change between close-up and far view",
         "confidence": 0.85
       },
       {
         "id": "Morphing",
-        "description": "Objekte verformen sich unnatürlich",
+        "description": "Objects deform unnaturally",
         "confidence": 0.8
       },
       {
         "id": "BadTextRendering",
-        "description": "Kauderwelsch oder verschwommener Text im Bild",
+        "description": "Gibberish or blurry text within the image",
         "confidence": 0.95
       },
       {
         "id": "ExtraLimbs",
-        "description": "Zusätzliche Finger/Gliedmaßen/Körperparts",
+        "description": "Extra fingers/limbs/body parts",
         "confidence": 0.9
       },
       {
         "id": "UnnaturalLighting",
-        "description": "Beleuchtung passt nicht zur Szene",
+        "description": "Lighting doesn't match the scene",
         "confidence": 0.7
       },
       {
         "id": "FrameFlicker",
-        "description": "Flickernde Elemente zwischen Video-Frames",
+        "description": "Flickering elements between video frames",
         "confidence": 0.85
       }
     ],
     "general": [
       {
         "id": "MissingProvenance",
-        "description": "Keine Herkunftsnachweise, keine Watermarks, keine Quellenangaben",
+        "description": "No provenance records, no watermarks, no source citations",
         "confidence": 0.6
       },
       {
         "id": "MassProductionPattern",
-        "description": "Gleiche Struktur/Vorlage über hunderte Inhalte",
+        "description": "Same structure/template across hundreds of pieces of content",
         "confidence": 0.85
       },
       {
         "id": "NoAuthorIdentity",
-        "description": "Fake-Autoren (AI-Headshots, kein Publishing-History)",
+        "description": "Fake authors (AI headshots, no publishing history)",
         "confidence": 0.8
       },
       {
         "id": "CrossLingualArtifacts",
-        "description": "Hindi/andere Sprach-Patterns im englischen Output",
+        "description": "Hindi/other language patterns in English output",
         "confidence": 0.7
       }
     ]
@@ -1447,12 +1447,12 @@
   "ecosystem": {
     "producers": {
       "label": "Slop Farmers / Sloppers",
-      "description": "Individuen/Firmen die mit Prompts skalieren. Oft in Entwicklungsländern (Indien, Kenia, Philippinen).",
+      "description": "Individuals/companies scaling with prompts. Often in developing countries (India, Kenya, Philippines).",
       "patterns": [
-        "Cross-Lingual Prompts (Hindi etc.) → absurde Outputs",
-        "AI-Headshots für Fake-Autoren",
-        "Bestehende virale Content identifizieren → AI repliziert sie",
-        "80+ AI-Pins/Tag auf Pinterest"
+        "Cross-Lingual Prompts (Hindi etc.) → absurd outputs",
+        "AI headshots for fake authors",
+        "Identify existing viral content → AI replicates it",
+        "80+ AI pins/day on Pinterest"
       ],
       "knownExamples": [
         {
@@ -1470,75 +1470,75 @@
     },
     "platforms": {
       "facebook": {
-        "role": "Primäres Opfer durch ältere Demografie (24% über 55)",
+        "role": "Primary victim due to older demographic (24% over 55)",
         "amplifier": "Performance Bonus Program (shuttered), algorithm rewards engagement"
       },
       "youtube": {
-        "role": "278 AI-Kanäle mit 63 Mrd. Views/Jahr",
-        "amplifier": "YouTube Kids: 40% AI-Slop",
-        "doubleStandard": "Echte Creator werden für Guidelines verfolgt, Slop läuft durch"
+        "role": "278 AI channels with 63 billion views/year",
+        "amplifier": "YouTube Kids: 40% AI slop",
+        "doubleStandard": "Real creators are pursued for guideline violations, slop slips through"
       },
       "tiktok": {
-        "role": "AI-Video-Slop (Cat Soap Operas, Fruit Love Island)",
-        "amplifier": "For You Page bevorzugt Novelty"
+        "role": "AI video slop (Cat Soap Operas, Fruit Love Island)",
+        "amplifier": "For You Page favors novelty"
       },
       "pinterest": {
-        "role": "Aspirational AI-Slop (Fake-Plants, Fake-Recipes)",
-        "amplifier": "8.6M Views für einzelne Slop-Accounts"
+        "role": "Aspirational AI slop (fake plants, fake recipes)",
+        "amplifier": "8.6M views for individual slop accounts"
       },
       "googleSearch": {
-        "role": "AI Overviews verstärken Slop",
-        "amplifier": "SEO-Slop rankt durch Volume"
+        "role": "AI Overviews amplify slop",
+        "amplifier": "SEO slop ranks through volume"
       },
       "spotify": {
-        "role": "Fake Artists mit Millionen Listeners",
-        "amplifier": "Royalty-Multiplication durch Volume"
+        "role": "Fake artists with millions of listeners",
+        "amplifier": "Royalty multiplication through volume"
       }
     },
     "consumers": {
       "algorithms": {
-        "role": "Engagement-Signale → Amplifikation",
-        "vulnerability": "Volume + Engagement = Quality-unabhängig"
+        "role": "Engagement signals → amplification",
+        "vulnerability": "Volume + Engagement = quality-independent"
       },
       "users": {
-        "role": "Unwissende Konsumenten",
-        "vulnerability": "Ältere Nutzer, geringe AI-Literacy"
+        "role": "Unaware consumers",
+        "vulnerability": "Older users, low AI literacy"
       },
       "advertisers": {
-        "role": "Programmatic Ads auf Slop-Inventar",
-        "vulnerability": "Cheap Inventory, aber sinkendes Vertrauen langfristig"
+        "role": "Programmatic ads on slop inventory",
+        "vulnerability": "Cheap inventory, but declining trust in the long term"
       }
     }
   },
   "impacts": {
     "web_search": {
-      "ContentCollapse": "Echte Inhalte werden von Slop verdrängt",
-      "SEODegradation": "Schlechtere Rankings für echte, recherchierte Inhalte",
-      "ModelCollapse": "Training auf AI-Output → irreversible Degradation (Shumailov et al., Nature 2024)",
-      "KnowledgeCollapse": "Fakten verfallen während Fluency erhalten bleibt (Stage B — Confidently Wrong)"
+      "ContentCollapse": "Real content is displaced by slop",
+      "SEODegradation": "Worse rankings for real, researched content",
+      "ModelCollapse": "Training on AI output → irreversible degradation (Shumailov et al., Nature 2024)",
+      "KnowledgeCollapse": "Facts decay while fluency is preserved (Stage B — Confidently Wrong)"
     },
     "society": {
-      "Misinfo": "AI-generierte Desinformation massenhaft verbreitet",
-      "TrustErosion": "Sinkendes Vertrauen in digitale Inhalte generell",
-      "DemocracyRisks": "Politischer Slop untergräbt demokratischen Diskurs",
-      "CreatorDisplacement": "Echte Creator verlieren Einkommen und Sichtbarkeit"
+      "Misinfo": "AI-generated disinformation spread on a mass scale",
+      "TrustErosion": "Declining trust in digital content generally",
+      "DemocracyRisks": "Political slop undermines democratic discourse",
+      "CreatorDisplacement": "Real creators lose income and visibility"
     },
     "economy": {
-      "CheapAdInventory": "Slop liefert billiges Werbeinventar",
-      "DecliningEngagement": "Langfristig sinkendes User-Engagement bei Slop-Sättigung",
-      "CreatorEconomy": "\"Put a ton of people out of business\" (Rachel Farnsworth, Food Bloggerin)"
+      "CheapAdInventory": "Slop provides cheap ad inventory",
+      "DecliningEngagement": "Long-term declining user engagement under slop saturation",
+      "CreatorEconomy": "\"Put a ton of people out of business\" (Rachel Farnsworth, food blogger)"
     }
   },
   "dynamics": {
     "slopToAlgorithm": {
-      "relationship": "Slop → Algorithm: Wird bevorzugt",
+      "relationship": "Slop → Algorithm: gets favored",
       "mechanism": "Volume + Engagement Signals > Quality Signals",
-      "result": "Positive Feedback Loop — mehr Slop → mehr Engagement → mehr Slop"
+      "result": "Positive Feedback Loop — more slop → more engagement → more slop"
     },
     "slopToHumanContent": {
-      "relationship": "Slop → Human Content: Verdrängt",
-      "mechanism": "Enshittification — Billigcontent flutet den Markt",
-      "result": "Echte Creator können nicht mehr konkurrieren"
+      "relationship": "Slop → Human Content: displaces",
+      "mechanism": "Enshittification — cheap content floods the market",
+      "result": "Real creators can no longer compete"
     },
     "detectionToMitigation": {
       "relationship": "Detection → Mitigation",
@@ -1550,127 +1550,127 @@
       ]
     },
     "slopVsValuableAI": {
-      "relationship": "Slop vs. Valuable AI: Unterscheidung",
+      "relationship": "Slop vs. Valuable AI: distinction",
       "criteria": {
-        "HumanOversight": "Menschliche Überarbeitung vorhanden?",
-        "Effort": "Echter Aufwand oder nur Prompt→Output?",
-        "Utility": "Echter Informationsgewinn oder Füllmaterial?",
-        "key": "Nicht alles AI ist Slop — der Unterschied liegt in Absicht, Aufwand und Wert"
+        "HumanOversight": "Is there human revision?",
+        "Effort": "Real effort or just prompt→output?",
+        "Utility": "Real informational gain or filler material?",
+        "key": "Not all AI is slop — the difference lies in intent, effort and value"
       }
     }
   },
   "coreParadigm": {
-    "statement": "AI Slop ist kein binärer Medientyp, sondern ein Risikoprofil.",
-    "implication": "Ein Inhalt kann KI-generiert und hochwertig sein. Umgekehrt kann menschlicher Spam wertlos sein. Slopness entsteht aus der Kombination von Generierung, Sorgfalt, Skalierung, Distribution, Provenienz und Qualität.",
+    "statement": "AI slop is not a binary media type but a risk profile.",
+    "implication": "Content can be AI-generated and high quality. Conversely, human spam can be worthless. Slopness arises from the combination of generation, care, scaling, distribution, provenance and quality.",
     "sources": [
-      "Shaib et al. 2025 (teils subjektiv, aber korreliert mit Kohärenz/Relevanz)",
-      "Spotify (KI-Nutzung = Spektrum, nicht binär)"
+      "Shaib et al. 2025 (partly subjective, but correlated with coherence/relevance)",
+      "Spotify (AI use = spectrum, not binary)"
     ]
   },
   "slopnessDimensions": {
-    "Generierung": {
-      "low": "Menschlich geschrieben",
+    "generation": {
+      "low": "Human-written",
       "medium": "AI-assisted, human-edited",
-      "high": "Reines AI, kein Edit"
+      "high": "Pure AI, no edit"
     },
-    "Sorgfalt": {
-      "low": "Gründliche Recherche, Testing",
-      "medium": "Oberflächliche Prüfung",
-      "high": "Keine Überprüfung"
+    "care": {
+      "low": "Thorough research, testing",
+      "medium": "Superficial review",
+      "high": "No verification"
     },
-    "Skalierung": {
-      "low": "Einzelner Artikel",
-      "medium": "Serie, kuratiert",
-      "high": "Massenproduktion (100+/Tag)"
+    "scaling": {
+      "low": "Single article",
+      "medium": "Series, curated",
+      "high": "Mass production (100+/day)"
     },
-    "Distribution": {
-      "low": "Organisch, zielgerichtet",
-      "medium": "SEO-optimiert",
-      "high": "Clickbait, Engagement Farming"
+    "distribution": {
+      "low": "Organic, targeted",
+      "medium": "SEO-optimized",
+      "high": "Clickbait, engagement farming"
     },
-    "Provenienz": {
-      "low": "Klare Autorschaft, Quellen",
-      "medium": "Teilweise Quellen",
-      "high": "Fake-Autor, keine Quellen"
+    "provenance": {
+      "low": "Clear authorship, sources",
+      "medium": "Partial sources",
+      "high": "Fake author, no sources"
     },
-    "Qualität": {
-      "low": "Originell, informativ",
-      "medium": "Generisch, teils nützlich",
-      "high": "Substanzlos, repetitiv"
+    "quality": {
+      "low": "Original, informative",
+      "medium": "Generic, partially useful",
+      "high": "Substance-free, repetitive"
     }
   },
   "agentRiskLevels": {
     "clean": {
       "level": "🟢",
-      "description": "Menschlich, geprüft, mit Quellen",
-      "action": "Normal verwenden"
+      "description": "Human, reviewed, with sources",
+      "action": "Use normally"
     },
     "ai_assisted": {
       "level": "🟡",
-      "description": "AI-generiert, aber human-edited, nützlich",
-      "action": "Mit Quellenangabe verwenden"
+      "description": "AI-generated, but human-edited, useful",
+      "action": "Use with source attribution"
     },
     "suspicious": {
       "level": "🟠",
-      "description": "AI-generiert, keine Quellen, generisch",
-      "action": "Verifizieren vor Verwendung"
+      "description": "AI-generated, no sources, generic",
+      "action": "Verify before use"
     },
     "slop": {
       "level": "🔴",
-      "description": "AI-generiert, substanzlos, massenhaft",
-      "action": "NICHT in RAG/Memory aufnehmen"
+      "description": "AI-generated, substance-free, mass-produced",
+      "action": "Do NOT include in RAG/Memory"
     },
     "malicious": {
       "level": "⚫",
-      "description": "Slop + Absicht (Disinfo, Slopsquatting)",
-      "action": "Blockieren + Warnen"
+      "description": "Slop + intent (disinfo, slopsquatting)",
+      "action": "Block + warn"
     }
   },
   "retrievalCollapse": {
-    "description": "AI Slop gefährdet Agenten besonders über RAG-, Search- und Memory-Systeme.",
+    "description": "AI slop particularly endangers agents through RAG, search and memory systems.",
     "stages": [
       {
         "stage": 1,
-        "name": "Quellendominanz",
-        "description": "KI-generierte Inhalte dominieren Suchergebnisse → Reduzierte Quellendiversität"
+        "name": "Source dominance",
+        "description": "AI-generated content dominates search results → reduced source diversity"
       },
       {
         "stage": 2,
-        "name": "Pipeline-Kontamination",
-        "description": "Minderwertige/adversariale Inhalte dringen in Retrieval-Pipelines ein → Agenten antworten mit Slop"
+        "name": "Pipeline contamination",
+        "description": "Low-quality/adversarial content infiltrates retrieval pipelines → agents respond with slop"
       }
     ],
-    "experimental": "67% Pool-Kontamination → über 80% Expositionskontamination",
+    "experimental": "67% pool contamination → over 80% exposure contamination",
     "defenses": [
       {
         "measure": "Source Diversity Check",
-        "description": "Min. 3+ unterschiedliche Quell-Domains",
+        "description": "Min. 3+ distinct source domains",
         "implementation": "len(set(source_domains)) >= 3"
       },
       {
         "measure": "Slop Score Gate",
-        "description": "Nur Quellen mit Slop-Score < 0.4 aufnehmen",
+        "description": "Only include sources with slop score < 0.4",
         "implementation": "slop_score(doc) < 0.4"
       },
       {
         "measure": "Provenance Filter",
-        "description": "Bevorzuge menschlich verifizierte Quellen",
+        "description": "Prefer human-verified sources",
         "implementation": "Source-Attribution, Peer Review, Edit History"
       },
       {
         "measure": "Recency vs. Authority",
-        "description": "Neu ≠ Besser. Ältere etablierte Quellen bevorzugen",
+        "description": "New ≠ Better. Prefer older established sources",
         "implementation": "Domain Authority Score"
       },
       {
         "measure": "Contamination Detection",
-        "description": "Erkennen wenn Suchergebnisse Slop-dominated",
-        "implementation": "Information Diversity der Top-10 prüfen"
+        "description": "Detect when search results are slop-dominated",
+        "implementation": "Check information diversity of the top 10"
       },
       {
         "measure": "Cross-Validation",
-        "description": "Facts gegen unabhängige Quellen prüfen",
-        "implementation": "Min. 2 unabhängige Bestätigungen"
+        "description": "Verify facts against independent sources",
+        "implementation": "Min. 2 independent confirmations"
       }
     ]
   },
@@ -1679,7 +1679,7 @@
       "aiTracksPerDay": 75000,
       "percentageOfUploads": 44,
       "date": "2026-04-20",
-      "note": "Die meisten Streams als betrügerisch erkannt und demonetarisiert"
+      "note": "Most streams identified as fraudulent and demonetized"
     },
     "youtube": {
       "aiChannels": 278,
@@ -1694,23 +1694,23 @@
       "uniqueNames": 205000
     },
     "spotify": {
-      "position": "KI-Nutzung ist ein Spektrum, nicht binär"
+      "position": "AI use is a spectrum, not binary"
     },
     "google": {
-      "policy": "Scaled Content Abuse — explizit in Spam-Policies eingeschlossen"
+      "policy": "Scaled Content Abuse — explicitly included in spam policies"
     }
   },
   "slopVsSpam": {
     "spam": {
-      "primary": "Unerwünschte Distribution",
+      "primary": "Unwanted distribution",
       "mechanism": "Volume + Deception"
     },
     "slop": {
-      "primary": "Billige Generierung + Semantische Oberflächlichkeit + Algorithmische Skalierung",
+      "primary": "Cheap generation + semantic superficiality + algorithmic scaling",
       "mechanism": "Superficial Competence + Mass Producibility + Engagement Optimization"
     },
-    "overlap": "Slop KANN Spam sein, aber nicht alles Slop ist Spam, und nicht alles Spam ist Slop.",
-    "googleDefinition": "Scaled Content Abuse = viele Seiten zur Suchmanipulation, nicht Nutzerhilfe. Einschließlich: generative KI ohne Mehrwert, Scraping, Stitching, keywordhaltige Seiten ohne Sinn."
+    "overlap": "Slop CAN be spam, but not all slop is spam, and not all spam is slop.",
+    "googleDefinition": "Scaled Content Abuse = many pages for search manipulation, not user help. Including: generative AI without added value, scraping, stitching, keyword-laden pages without meaning."
   },
   "ontologicalGroundDecision": {
     "wrong": "AIContent = Slop, HumanContent = NotSlop",
@@ -1771,400 +1771,400 @@
   },
   "topLevelClasses": {
     "ContentItem": {
-      "description": "Einzelner Inhalt: Text, Bild, Video, Audio, Code, Dokument, Listing, Kommentar"
+      "description": "Single piece of content: text, image, video, audio, code, document, listing, comment"
     },
     "SyntheticContent": {
-      "description": "Inhalt ganz oder teilweise durch generative KI erzeugt"
+      "description": "Content created wholly or partly by generative AI"
     },
     "AI_AssistedContent": {
-      "description": "Menschlicher Inhalt mit KI-Hilfe (Recherche, Entwurf, Editing)"
+      "description": "Human content with AI assistance (research, draft, editing)"
     },
     "AI_SlopCandidate": {
-      "description": "Inhalt mit Slop-Verdacht basierend auf Slop-Score"
+      "description": "Content suspected of being slop based on slop score"
     },
     "ConfirmedAI_Slop": {
-      "description": "Inhalt mit ausreichender Evidenz für Slop-Klassifikation (2+ Detection Evidence)"
+      "description": "Content with sufficient evidence for slop classification (2+ detection evidence)"
     },
     "LowQualityHumanContent": {
-      "description": "Schlechter menschlicher Content, aber nicht zwingend AI Slop"
+      "description": "Poor human content, but not necessarily AI slop"
     },
     "SpamContent": {
-      "description": "Unerwünschter oder manipulativer Content unabhängig von KI"
+      "description": "Unwanted or manipulative content independent of AI"
     },
     "MisinformationContent": {
-      "description": "Inhalt mit falschen oder irreführenden Behauptungen"
+      "description": "Content with false or misleading claims"
     },
     "SyntheticMedia": {
-      "description": "Bild, Video, Audio oder multimodaler synthetischer Inhalt"
+      "description": "Image, video, audio or multimodal synthetic content"
     },
     "SlopProducer": {
-      "description": "Account, Bot, Content Farm, SEO-Cluster, Channel, Uploader"
+      "description": "Account, bot, content farm, SEO cluster, channel, uploader"
     },
     "DistributionChannel": {
-      "description": "Plattform, Suchmaschine, Feed, Marketplace, RAG-Korpus"
+      "description": "Platform, search engine, feed, marketplace, RAG corpus"
     },
     "DetectionEvidence": {
-      "description": "Hinweise: Metadaten, Artefakte, Wiederholungsmuster, Halluzinationen"
+      "description": "Indicators: metadata, artifacts, repetition patterns, hallucinations"
     },
     "MitigationAction": {
-      "description": "Labeln, Demonetarisieren, Downranken, Ausschließen, Human Review"
+      "description": "Label, demonetize, downrank, exclude, human review"
     }
   },
   "mediaTaxonomy": {
     "TextSlop": {
       "examples": [
-        "Blogartikel",
-        "LinkedIn-Posts",
-        "SEO-Seiten",
-        "Produktbeschreibungen"
+        "Blog articles",
+        "LinkedIn posts",
+        "SEO pages",
+        "Product descriptions"
       ],
       "markers": [
-        "generische Struktur",
-        "wenig Quellen",
-        "Floskeln",
-        "falsche Fakten",
+        "generic structure",
+        "few sources",
+        "platitudes",
+        "false facts",
         "Em-Dash Overuse",
         "Low Density"
       ]
     },
     "ImageSlop": {
       "examples": [
-        "Fake-Historienbilder",
-        "virale Tiere",
-        "Produktbilder"
+        "Fake historical images",
+        "viral animals",
+        "product images"
       ],
       "markers": [
-        "anatomische Fehler",
-        "surrealer Realismus",
-        "Kontextbruch",
+        "anatomical errors",
+        "surreal realism",
+        "context break",
         "Bad Text Rendering",
         "Glossy Textures"
       ]
     },
     "VideoSlop": {
       "examples": [
-        "YouTube-Kindercontent",
-        "KI-News",
-        "Fake-Dokus"
+        "YouTube kids content",
+        "AI news",
+        "Fake documentaries"
       ],
       "markers": [
-        "repetitive Szenen",
-        "KI-Voiceover",
-        "keine echte Dramaturgie",
+        "repetitive scenes",
+        "AI voiceover",
+        "no real dramaturgy",
         "Frame Flicker",
         "Lip-Sync Mismatch"
       ]
     },
     "AudioSlop": {
       "examples": [
-        "AI-Musik",
-        "Voice-Clones",
-        "Podcast-Fakes"
+        "AI music",
+        "Voice clones",
+        "Podcast fakes"
       ],
       "markers": [
-        "Massen-Uploads",
-        "generische Komposition",
-        "Identitätsmissbrauch"
+        "Mass uploads",
+        "generic composition",
+        "identity abuse"
       ]
     },
     "AcademicSlop": {
       "examples": [
-        "Paper",
+        "Papers",
         "Preprints",
-        "Review-Artikel"
+        "Review articles"
       ],
       "markers": [
         "fake citations",
-        "oberflächliche Literaturübersichten",
-        "Template-Struktur",
-        "uneditierter Prompt-Text"
+        "superficial literature reviews",
+        "template structure",
+        "unedited prompt text"
       ],
-      "danger": "BESONDERS GEFÄHRLICH — sieht nicht billig aus",
-      "arXiv2026": "Verschärfte Regeln gegen unvalidierte LLM-Inhalte",
-      "neurIPS2025": "KI-halluzinierte Zitate nutzen Plausibilitätsheuristiken gleichzeitig aus"
+      "danger": "ESPECIALLY DANGEROUS — does not look cheap",
+      "arXiv2026": "Tightened rules against unvalidated LLM content",
+      "neurIPS2025": "AI-hallucinated citations exploit plausibility heuristics simultaneously"
     },
     "CodeSlop": {
       "examples": [
-        "AI-generierte PRs",
+        "AI-generated PRs",
         "Issues",
         "Docs"
       ],
       "markers": [
-        "kompiliert nicht",
-        "falsche APIs",
-        "Review-Burden",
-        "Copy-Paste-Muster",
+        "doesn't compile",
+        "wrong APIs",
+        "Review burden",
+        "Copy-paste patterns",
         "Hardcoded Secrets"
       ]
     },
     "LegalSlop": {
       "examples": [
-        "KI-generierte Schriftsätze"
+        "AI-generated briefs"
       ],
       "markers": [
-        "erfundene Präzedenzfälle",
-        "falsche Normen",
-        "unvalidierte Zitate"
+        "fabricated precedents",
+        "incorrect statutes",
+        "unvalidated citations"
       ],
-      "danger": "BESONDERS GEFÄHRLICH — sieht professionell aus"
+      "danger": "ESPECIALLY DANGEROUS — looks professional"
     },
     "WorkSlop": {
       "examples": [
-        "Interne Reports",
-        "Präsentationen",
+        "Internal reports",
+        "Presentations",
         "Memos"
       ],
       "markers": [
-        "sieht professionell aus",
-        "spart Senderzeit",
-        "kostet Empfängerzeit"
+        "looks professional",
+        "saves sender's time",
+        "costs receiver's time"
       ],
-      "danger": "Invisible Cost Shift — Kosten werden auf Empfänger verlagert"
+      "danger": "Invisible Cost Shift — costs are shifted onto the recipient"
     }
   },
   "intentTaxonomy": {
     "AttentionFarming": {
-      "description": "Reichweite, Likes, Watchtime",
-      "danger": "hoch"
+      "description": "Reach, likes, watchtime",
+      "danger": "high"
     },
     "AdRevenueFarming": {
-      "description": "Monetarisierung über Ads",
-      "danger": "hoch"
+      "description": "Monetization via ads",
+      "danger": "high"
     },
     "RoyaltyDilution": {
-      "description": "Streaming-Royalties durch Massenmusik",
-      "danger": "hoch"
+      "description": "Streaming royalties via mass music",
+      "danger": "high"
     },
     "SearchManipulation": {
-      "description": "SEO, GEO, Ranking-Manipulation",
-      "danger": "kritisch"
+      "description": "SEO, GEO, ranking manipulation",
+      "danger": "critical"
     },
     "RecommendationPoisoning": {
-      "description": "Inhalte so platzieren dass KI-Antwortsysteme sie bevorzugen",
-      "danger": "kritisch",
-      "note": "Google hat Spamregeln auf Manipulation generativer Suchsysteme erweitert (AI Overviews, AI Mode)"
+      "description": "Place content so that AI answer systems prefer it",
+      "danger": "critical",
+      "note": "Google has expanded spam rules to manipulation of generative search systems (AI Overviews, AI Mode)"
     },
     "AffiliateFunnel": {
-      "description": "KI-Content als Traffic-Funnel",
-      "danger": "mittel"
+      "description": "AI content as traffic funnel",
+      "danger": "medium"
     },
     "CredentialInflation": {
-      "description": "Paper, Zitate, Profile zur Reputationssteigerung",
-      "danger": "hoch"
+      "description": "Papers, citations, profiles for reputation boosting",
+      "danger": "high"
     },
     "Disinformation": {
-      "description": "Absichtlich irreführender synthetischer Content",
+      "description": "Intentionally misleading synthetic content",
       "danger": "malicious"
     },
     "CarelessSpeech": {
-      "description": "Nicht zwingend bösartig, aber ungeprüft, oberflächlich, irreführend",
-      "danger": "mittel"
+      "description": "Not necessarily malicious, but unverified, superficial, misleading",
+      "danger": "medium"
     },
     "Impersonation": {
-      "description": "Stimme, Stil, Name, Marke oder Person wird imitiert",
-      "danger": "kritisch"
+      "description": "Voice, style, name, brand or person is impersonated",
+      "danger": "critical"
     },
     "PlaceholderPublishing": {
-      "description": "Content wird veröffentlicht obwohl er nur Entwurf/Füllmaterial ist",
-      "danger": "mittel"
+      "description": "Content is published even though it is only a draft/filler material",
+      "danger": "medium"
     }
   },
   "classOverlaps": {
-    "slop_and_spam": "Slop kann Spam sein, aber nicht alles Slop ist Spam",
-    "slop_and_misinformation": "Slop kann Misinformation sein, aber nicht alles Slop ist absichtlich",
-    "lowquality_and_slop": "LowQualityHumanContent ist wertlos aber nicht zwingend Slop",
-    "academic_and_legal": "Besonders gefährlich weil sie nicht billig aussehen",
-    "careless_speech": "Breiteste Kategorie — nicht bösartig, aber ungeprüft"
+    "slop_and_spam": "Slop can be spam, but not all slop is spam",
+    "slop_and_misinformation": "Slop can be misinformation, but not all slop is intentional",
+    "lowquality_and_slop": "LowQualityHumanContent is worthless but not necessarily slop",
+    "academic_and_legal": "Especially dangerous because they don't look cheap",
+    "careless_speech": "Broadest category — not malicious, but unverified"
   },
   "slopnessScoring": {
     "syntheticity": {
-      "question": "Wie stark ist der Inhalt KI-generiert?",
+      "question": "How AI-generated is the content?",
       "signals": [
         "C2PA",
-        "Wasserzeichen",
-        "Stil",
+        "Watermark",
+        "Style",
         "Detector",
-        "Selbstlabel"
+        "Self-label"
       ]
     },
     "quality_deficit": {
-      "question": "Wie schlecht ist der Inhalt relativ zum Zweck?",
+      "question": "How poor is the content relative to its purpose?",
       "signals": [
-        "Fehler",
-        "Redundanz",
-        "Oberflächlichkeit"
+        "Errors",
+        "Redundancy",
+        "Superficiality"
       ]
     },
     "substance_deficit": {
-      "question": "Gibt es echte Information, Erfahrung, Primärdaten?",
+      "question": "Is there real information, experience, primary data?",
       "signals": [
-        "keine Quellen",
-        "keine Beispiele",
-        "keine Originalität"
+        "no sources",
+        "no examples",
+        "no originality"
       ]
     },
     "verification_deficit": {
-      "question": "Wurde geprüft?",
+      "question": "Has it been verified?",
       "signals": [
         "fake citations",
-        "keine Belege",
-        "Halluzinationen"
+        "no evidence",
+        "hallucinations"
       ]
     },
     "effort_asymmetry": {
-      "question": "War die Erzeugung extrem billig gegenüber Konsum-/Reviewkosten?",
+      "question": "Was the generation extremely cheap relative to consumption/review costs?",
       "signals": [
         "Workslop",
         "PR-Slop",
-        "Review-Burden"
+        "Review burden"
       ]
     },
     "mass_production": {
-      "question": "Gibt es Skalierungsmuster?",
+      "question": "Are there scaling patterns?",
       "signals": [
-        "viele ähnliche Seiten",
-        "Upload-Spikes"
+        "many similar pages",
+        "upload spikes"
       ]
     },
     "deceptiveness": {
-      "question": "Wird KI-Nutzung verschleiert oder Identität imitiert?",
+      "question": "Is AI use concealed or identity impersonated?",
       "signals": [
-        "fehlendes Label",
-        "Fake-Autor",
+        "missing label",
+        "fake author",
         "Voice Clone"
       ]
     },
     "distribution_manipulation": {
-      "question": "Wird ein Algorithmus ausgenutzt?",
+      "question": "Is an algorithm being exploited?",
       "signals": [
         "SEO/GEO",
-        "Hashtag-Spam",
-        "Ranking-Cluster"
+        "Hashtag spam",
+        "Ranking cluster"
       ]
     },
     "harm_potential": {
-      "question": "Was kann schiefgehen?",
+      "question": "What can go wrong?",
       "signals": [
-        "Desinformation",
-        "Betrug",
-        "Kindercontent",
-        "Recht",
-        "Medizin"
+        "Disinformation",
+        "Fraud",
+        "Children's content",
+        "Law",
+        "Medicine"
       ]
     },
     "retrieval_risk": {
-      "question": "Kann der Inhalt RAG/Search/Agenten kontaminieren?",
+      "question": "Can the content contaminate RAG/Search/agents?",
       "signals": [
-        "hoher Ranking-Status",
-        "viele Kopien",
-        "synthetische Quelle"
+        "high ranking status",
+        "many copies",
+        "synthetic source"
       ]
     }
   },
   "detectionSignalsStructured": {
     "content_based": [
       {
-        "signal": "generische Sprache",
-        "relevance": "oft Text-Slop"
+        "signal": "generic language",
+        "relevance": "often text slop"
       },
       {
-        "signal": "fehlende Primärquellen",
-        "relevance": "hohes RAG-Risiko"
+        "signal": "missing primary sources",
+        "relevance": "high RAG risk"
       },
       {
-        "signal": "halluzinierte Zitate",
-        "relevance": "akademischer / rechtlicher Hochrisikofall"
+        "signal": "hallucinated citations",
+        "relevance": "academic / legal high-risk case"
       },
       {
-        "signal": "widersprüchliche Details",
-        "relevance": "schwache Validierung"
+        "signal": "contradictory details",
+        "relevance": "weak validation"
       },
       {
-        "signal": "überperfekte Banalität",
+        "signal": "overly perfect banality",
         "relevance": "superficial competence"
       },
       {
-        "signal": "wenig konkrete Erfahrung",
-        "relevance": "keine echte Autorschaft"
+        "signal": "little concrete experience",
+        "relevance": "no real authorship"
       },
       {
-        "signal": "wiederholte Struktur",
-        "relevance": "Template- oder Serienproduktion"
+        "signal": "repeated structure",
+        "relevance": "template or serial production"
       }
     ],
     "behavioral": [
       {
-        "signal": "sehr hohe Upload-Frequenz",
-        "relevance": "Massenerzeugung"
+        "signal": "very high upload frequency",
+        "relevance": "mass production"
       },
       {
-        "signal": "viele ähnliche Titel/Thumbnails",
-        "relevance": "Content-Farm"
+        "signal": "many similar titles/thumbnails",
+        "relevance": "content farm"
       },
       {
-        "signal": "Crossposting auf vielen Domains",
-        "relevance": "Reichweiten- oder SEO-Spiel"
+        "signal": "Crossposting on many domains",
+        "relevance": "reach or SEO play"
       },
       {
-        "signal": "plötzliche Themenwechsel",
-        "relevance": "Opportunismus"
+        "signal": "sudden topic changes",
+        "relevance": "opportunism"
       },
       {
-        "signal": "neue Accounts mit hoher Outputrate",
+        "signal": "new accounts with high output rate",
         "relevance": "Slop Producer"
       },
       {
-        "signal": "Cluster mit gegenseitigen Zitaten",
+        "signal": "clusters with mutual citations",
         "relevance": "Citation Inflation"
       }
     ],
     "provenance": [
       {
-        "signal": "C2PA vorhanden",
-        "relevance": "nützlich, aber nicht ausreichend"
+        "signal": "C2PA present",
+        "relevance": "useful, but not sufficient"
       },
       {
-        "signal": "Wasserzeichen / SynthID",
-        "relevance": "nützlich, aber nicht vollständig"
+        "signal": "Watermark / SynthID",
+        "relevance": "useful, but not complete"
       },
       {
-        "signal": "Plattformlabel",
-        "relevance": "hilfreich, aber inkonsistent"
+        "signal": "Platform label",
+        "relevance": "helpful, but inconsistent"
       },
       {
-        "signal": "fehlende Autorschaft",
-        "relevance": "Verdacht"
+        "signal": "missing authorship",
+        "relevance": "suspicion"
       },
       {
-        "signal": "falsche Autorschaft",
-        "relevance": "starker Verdacht"
+        "signal": "false authorship",
+        "relevance": "strong suspicion"
       },
       {
-        "signal": "offengelegter KI-Einsatz + Human Review",
-        "relevance": "eher entlastend"
+        "signal": "disclosed AI use + Human Review",
+        "relevance": "rather exculpatory"
       }
     ]
   },
   "classificationThresholds": {
     "low_slop_risk": {
       "range": "0.00-0.24",
-      "behavior": "normal nutzbar, Quellenprüfung bleibt nötig"
+      "behavior": "usable normally, source verification still required"
     },
     "moderate_slop_risk": {
       "range": "0.25-0.49",
-      "behavior": "nur mit Gegenprüfung verwenden"
+      "behavior": "use only with cross-checking"
     },
     "high_slop_risk": {
       "range": "0.50-0.69",
-      "behavior": "nicht als Hauptquelle, Human Review"
+      "behavior": "not as primary source, Human Review"
     },
     "ai_slop_candidate": {
       "range": "0.70-1.00",
-      "behavior": "nicht zitieren, nicht in Memory als Fakt speichern"
+      "behavior": "do not cite, do not store in memory as fact"
     },
     "critical_review_required": {
       "range": "any + high harm",
-      "behavior": "bei Recht/Medizin/Politik/Finanzen/Kindern/Identität immer eskalieren"
+      "behavior": "always escalate for law/medicine/politics/finance/children/identity"
     }
   },
   "newSources": {
@@ -2183,32 +2183,32 @@
   "etymology": [
     {
       "year": "~1700",
-      "event": "\"Slop\" = weicher Schlamm (Englisch)",
+      "event": "\"Slop\" = soft mud (English)",
       "source": "OED"
     },
     {
       "year": "~1800",
-      "event": "Bedeutungserweiterung zu \"Schweinetränke / Abfall\"",
+      "event": "Meaning extended to \"pig swill / waste\"",
       "source": "OED"
     },
     {
       "year": "2022",
-      "event": "Erste Belege für \"AI slop\" online",
+      "event": "First citations of \"AI slop\" online",
       "source": "Wikipedia"
     },
     {
       "year": "early 2024",
-      "event": "Poet \"deepfates\" verwendet Begriff auf X als \"term for unwanted AI generated content\"",
+      "event": "Poet \"deepfates\" uses the term on X as \"term for unwanted AI generated content\"",
       "source": "Wikipedia"
     },
     {
       "year": "2024-05",
-      "event": "Simon Willison popularisiert auf Blog mit Spam-Analogie",
+      "event": "Simon Willison popularizes on blog with spam analogy",
       "source": "simonw.substack.com"
     },
     {
       "year": "2024",
-      "event": "Oxford Dictionary Word-of-the-Year-Shortlist (+332% Nutzung)",
+      "event": "Oxford Dictionary Word-of-the-Year shortlist (+332% usage)",
       "source": "Oxford"
     },
     {
@@ -2218,143 +2218,143 @@
     },
     {
       "year": "2025-2026",
-      "event": "Akademische Operationalisierung (Shaib et al., Madsen & Puyt, MINT Lab)",
+      "event": "Academic operationalization (Shaib et al., Madsen & Puyt, MINT Lab)",
       "source": "arXiv"
     }
   ],
   "historicalAnalogues": [
     {
       "name": "Grub Street",
-      "period": "London, 1700er",
-      "description": "Billige Druckwerke, massenproduziert, ökonomisch motiviert"
+      "period": "London, 1700s",
+      "description": "Cheap printed works, mass-produced, economically motivated"
     },
     {
       "name": "Kitsch",
-      "period": "München, 1860er",
-      "description": "Abwertend für massenproduzierte Kunst"
+      "period": "Munich, 1860s",
+      "description": "Pejorative term for mass-produced art"
     },
     {
       "name": "Pulp Fiction",
-      "period": "1900er",
-      "description": "Billig produzierte Zeitschriftenromane"
+      "period": "1900s",
+      "description": "Cheaply produced magazine novels"
     },
     {
       "name": "Churnalism",
-      "period": "2000er",
-      "description": "Rewritten press releases als Journalismus"
+      "period": "2000s",
+      "description": "Rewritten press releases as journalism"
     },
     {
       "name": "Spam",
-      "period": "1990er+",
-      "description": "Unerwünschte Massen-Kommunikation"
+      "period": "1990s+",
+      "description": "Unwanted mass communication"
     },
     {
       "name": "Clickbait",
-      "period": "2010er+",
-      "description": "Sensationelle Überschriften ohne Substanz"
+      "period": "2010s+",
+      "description": "Sensational headlines without substance"
     }
   ],
   "systemicDimensions7Vs": {
     "source": "Madsen & Puyt 2025, SSRN 5558018",
-    "description": "Ergänzen Qualitäts-Taxonomie um Systemeigenschaften der Slop-Ökologie",
+    "description": "Complement the quality taxonomy with systemic properties of the slop ecology",
     "dimensions": {
       "Volume": {
-        "definition": "Produktionsskala",
-        "metric": "Items pro Tag/Plattform"
+        "definition": "Production scale",
+        "metric": "Items per day/platform"
       },
       "Velocity": {
-        "definition": "Generierungs- und Zirkulationsgeschwindigkeit",
-        "metric": "Latenz Prompt → Publish"
+        "definition": "Generation and circulation speed",
+        "metric": "Latency prompt → publish"
       },
       "Variety": {
-        "definition": "Spannweite an Formen/Genres",
-        "metric": "Modalitäts-Coverage"
+        "definition": "Range of forms/genres",
+        "metric": "Modality coverage"
       },
       "Value": {
-        "definition": "Erosion kulturellen/epistemischen Werts",
-        "metric": "Trust-Surveys; Citation-Quality"
+        "definition": "Erosion of cultural/epistemic value",
+        "metric": "Trust surveys; citation quality"
       },
       "Verification": {
-        "definition": "Wahrheits- und Vertrauensproblem",
-        "metric": "Fact-Check-Rate"
+        "definition": "Truth and trust problem",
+        "metric": "Fact-check rate"
       },
       "Visibility": {
-        "definition": "Algorithmische Verstärkung",
-        "metric": "Recommendation-Anteil"
+        "definition": "Algorithmic amplification",
+        "metric": "Recommendation share"
       },
       "Virality": {
-        "definition": "Memetische Diffusion",
-        "metric": "Reproduktionsrate R"
+        "definition": "Memetic diffusion",
+        "metric": "Reproduction rate R"
       }
     }
   },
   "harms": [
     {
       "id": "model_collapse",
-      "mechanism": "Rekursives Training auf KI-Output → Verlust der Verteilungs-Tails, gibberish-Konvergenz",
+      "mechanism": "Recursive training on AI output → loss of distribution tails, gibberish convergence",
       "source": "Shumailov et al. 2024, Nature"
     },
     {
       "id": "epistemic_pollution",
-      "mechanism": "Polluierte Informationsökologie, LLMs zitieren UAINs als Quellen",
+      "mechanism": "Polluted information ecology, LLMs cite UAINs as sources",
       "source": "NewsGuard Aug 2025; EDMO"
     },
     {
       "id": "misinformation",
-      "mechanism": "Staatlich oder kommerziell gesteuerte False-Claim-Operationen",
+      "mechanism": "State- or commercially-driven false-claim operations",
       "source": "US Treasury Dec 2024; Storm-1516; Freedom House 2025"
     },
     {
       "id": "trust_erosion",
-      "mechanism": "\"Liar's dividend\"; Schwierigkeit, echt von gefälscht zu trennen",
+      "mechanism": "\"Liar's dividend\"; difficulty separating real from fake",
       "source": "Koebler 404 Media"
     },
     {
       "id": "workplace_productivity_loss",
-      "mechanism": "Workslop lädt kognitive Last auf Empfänger ab; 40% Beschäftigte betroffen; ~1h56min Rework",
+      "mechanism": "Workslop shifts cognitive load onto recipients; 40% of employees affected; ~1h56min rework",
       "source": "Niederhoffer et al. HBR 2025"
     },
     {
       "id": "creator_squeeze",
-      "mechanism": "Algorithmen unterscheiden nicht zwischen Original und Fake-Bulk",
+      "mechanism": "Algorithms don't distinguish between original and fake bulk",
       "source": "Scientific American"
     },
     {
       "id": "harm_to_children",
-      "mechanism": "~40% YouTube-Kids-Empfehlungen sind Slop; falsche Informationen, gefährliches Verhalten",
+      "mechanism": "~40% of YouTube Kids recommendations are slop; false information, dangerous behavior",
       "source": "NYT Mar 2026; The 74; Mother Jones"
     },
     {
       "id": "ad_fraud_brand_safety",
-      "mechanism": "141 Blue-Chip-Marken werben unwissentlich auf Content-Farmen",
+      "mechanism": "141 blue-chip brands unknowingly advertise on content farms",
       "source": "NewsGuard/AdWeek 2026"
     },
     {
       "id": "cognitive_load",
-      "mechanism": "Konstante \"Ist das echt?\"-Überprüfung erschöpft Aufmerksamkeit",
+      "mechanism": "Constant \"Is this real?\" checking exhausts attention",
       "source": "Koebler \"Your AI Use Is Breaking My Brain\" 2026"
     },
     {
       "id": "environmental_cost",
-      "mechanism": "Strom- und Wasserverbrauch generativer Modelle",
+      "mechanism": "Electricity and water consumption of generative models",
       "source": "Crawford \"Eating the Future\""
     },
     {
       "id": "democracy_risk",
-      "mechanism": "Wahlbeeinflussung, deepfake-endorsements",
+      "mechanism": "Election influence, deepfake endorsements",
       "source": "Wikipedia; Freedom on the Net 2025"
     },
     {
       "id": "royalty_fraud",
-      "mechanism": "KI-Tracks zur Streaming-Royalty-Manipulation",
+      "mechanism": "AI tracks for streaming royalty manipulation",
       "source": "DOJ; Wikipedia"
     }
   ],
   "relationshipGraph": {
     "analogousTo": [
-      "Spam (E-Mail-Analog; Willison)",
-      "Kitsch (München 1860er; ästhetisch)",
-      "Grub Street (London 1700er; ökonomisch)",
+      "Spam (email analog; Willison)",
+      "Kitsch (Munich 1860s; aesthetic)",
+      "Grub Street (London 1700s; economic)",
       "Churnalism",
       "Clickbait"
     ],
@@ -2364,73 +2364,73 @@
       "EpistemicPollution"
     ],
     "isCausedBy": [
-      "AttentionEconomy (Creator-Bonus-Programme)",
+      "AttentionEconomy (creator bonus programs)",
       "ZeroMarginalCostGeneration",
       "AlgorithmicRecommendation",
-      "LowEntryBarrier (Prompt-only Workflow)"
+      "LowEntryBarrier (prompt-only workflow)"
     ],
     "coOccursWith": [
-      "ModelCollapse (kausal verkoppelt)",
+      "ModelCollapse (causally coupled)",
       "DeadInternetTheory",
       "ZombieInternet (Koebler)",
       "Enshittification (Doctorow)"
     ],
     "enables": [
       "Workslop (Niederhoffer et al.)",
-      "Slom (AI-Spam-Subset, Willison)",
+      "Slom (AI spam subset, Willison)",
       "Brainrot (low-attention reward content)",
       "Necromemetics (Koebler; post-violence meme economy)"
     ]
   },
   "empiricalKeyFigures": [
     {
-      "metric": "Anteil AI-Inhalte in Google-Suchergebnissen",
-      "value": "19% (Jan 2025); 7% (Vorjahr)",
+      "metric": "Share of AI content in Google search results",
+      "value": "19% (Jan 2025); 7% (previous year)",
       "source": "Graphite/Entrepreneur Loop"
     },
     {
-      "metric": "Anteil AI-Footprint in neuen Web-Artikeln",
-      "value": ">50% (Graphite); 74% (Studien)",
+      "metric": "Share of AI footprint in new web articles",
+      "value": ">50% (Graphite); 74% (studies)",
       "source": "Graphite"
     },
     {
-      "metric": "AI-Content-Farm-Sites (NewsGuard)",
-      "value": "3.006 (März 2026); >2x Vorjahr",
+      "metric": "AI content farm sites (NewsGuard)",
+      "value": "3,006 (March 2026); >2x previous year",
       "source": "NewsGuard × Pangram Labs"
     },
     {
-      "metric": "Neue Content-Farm-Sites pro Monat",
+      "metric": "New content farm sites per month",
       "value": "300-500",
       "source": "NewsGuard"
     },
     {
-      "metric": "YouTube-Empfehlungen Slop für Neu-User",
+      "metric": "YouTube slop recommendations for new users",
       "value": "21-33% (Kapwing 2025)",
       "source": "Kapwing × Guardian"
     },
     {
-      "metric": "YouTube-Kids Slop-Anteil",
-      "value": "~40% (NYT März 2026)",
+      "metric": "YouTube Kids slop share",
+      "value": "~40% (NYT March 2026)",
       "source": "NYT"
     },
     {
-      "metric": "Workslop-Empfänger",
-      "value": "40% der Beschäftigten",
+      "metric": "Workslop recipients",
+      "value": "40% of employees",
       "source": "Niederhoffer et al. HBR 2025"
     },
     {
-      "metric": "Workslop-Rework-Zeit pro Instanz",
+      "metric": "Workslop rework time per instance",
       "value": "~1h 56min",
       "source": "Niederhoffer et al. HBR 2025"
     },
     {
-      "metric": "AI-Content-Farm-Brands (Werbung)",
-      "value": "141 Blue-Chip-Marken (2 Monate)",
+      "metric": "AI content farm brands (advertising)",
+      "value": "141 blue-chip brands (2 months)",
       "source": "NewsGuard/AdWeek"
     },
     {
-      "metric": "Sprachen mit UAINs",
-      "value": "16 (Arabisch bis Türkisch)",
+      "metric": "Languages with UAINs",
+      "value": "16 (Arabic to Turkish)",
       "source": "NewsGuard AI Tracking Center"
     }
   ],
@@ -2472,22 +2472,22 @@
     }
   },
   "limitations": [
-    "Subjektivität binärer Slop-Urteile: Cohen's κ -0.15 bis 0.29 (Shaib et al. 2025) → dimensionale Bewertung robuster",
-    "Reflexivität: Detection-Heuristiken werden bekannt → Producer adaptieren (\"humanized\" Variants)",
-    "Falsch-Positive bei menschlichem Text: Templatierter Journalismus, Boilerplate",
-    "Kontextabhängigkeit: Technische Dokumentation darf Wiederholungen für Klarheit nutzen",
-    "Sprachliche Verzerrung: Detection auf Englisch am stärksten; geringer in Hindi, Vietnamesisch, Urdu — just dort wo viel Slop entsteht",
-    "Sich entwickelnde Modelle: Neue Modellgenerationen erzeugen neue Slop-Muster; Ontologie braucht regelmässige Updates",
-    "Philosophische Kritik (Puliafito): \"Slop\" beschreibt Mediokrität — aber Mediokrität ist Basislinie aller Kulturproduktion"
+    "Subjectivity of binary slop judgments: Cohen's κ -0.15 to 0.29 (Shaib et al. 2025) → dimensional scoring more robust",
+    "Reflexivity: detection heuristics become known → producers adapt (\"humanized\" variants)",
+    "False positives on human text: templated journalism, boilerplate",
+    "Context dependence: technical documentation may use repetition for clarity",
+    "Linguistic bias: detection strongest in English; weaker in Hindi, Vietnamese, Urdu — exactly where a lot of slop is produced",
+    "Evolving models: new model generations produce new slop patterns; ontology needs regular updates",
+    "Philosophical critique (Puliafito): \"Slop\" describes mediocrity — but mediocrity is the baseline of all cultural production"
   ],
   "maintenance": {
-    "updateRhythm": "Quartal (neue Modellgenerationen → neue Slop-Patterns)",
-    "adhoc": "Bei NewsGuard-Quartalsberichten oder neuen arXiv-Taxonomien",
-    "groundTruth": "github.com/cshaib/slop — Shaib et al. Annotation Dataset",
+    "updateRhythm": "Quarterly (new model generations → new slop patterns)",
+    "adhoc": "On NewsGuard quarterly reports or new arXiv taxonomies",
+    "groundTruth": "github.com/cshaib/slop — Shaib et al. annotation dataset",
     "contributions_welcome": [
-      "Audio-Slop (unterforscht)",
-      "Nicht-westliche Plattformen (TikTok/Douyin, KakaoTalk, WhatsApp)",
-      "Systematische Cross-modal-Detection"
+      "Audio slop (under-researched)",
+      "Non-Western platforms (TikTok/Douyin, KakaoTalk, WhatsApp)",
+      "Systematic cross-modal detection"
     ]
   }
 }
