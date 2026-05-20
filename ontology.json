@@ -1258,5 +1258,269 @@
     },
     "overlap": "Slop KANN Spam sein, aber nicht alles Slop ist Spam, und nicht alles Spam ist Slop.",
     "googleDefinition": "Scaled Content Abuse = viele Seiten zur Suchmanipulation, nicht Nutzerhilfe. Einschließlich: generative KI ohne Mehrwert, Scraping, Stitching, keywordhaltige Seiten ohne Sinn."
+  },
+  "ontologicalGroundDecision": {
+    "wrong": "AIContent = Slop, HumanContent = NotSlop",
+    "correct": "ContentItem has properties → derived classification",
+    "model": {
+      "ContentItem": {
+        "hasGenerationMode": [
+          "human",
+          "ai_assisted",
+          "synthetic"
+        ],
+        "hasHumanOversightLevel": [
+          "full",
+          "partial",
+          "minimal",
+          "none"
+        ],
+        "hasQualityProfile": {
+          "hasDensity": "float 0-1",
+          "hasCoherence": "float 0-1",
+          "hasOriginality": "float 0-1",
+          "hasFactuality": "float 0-1",
+          "hasUtility": "float 0-1"
+        },
+        "hasDistributionPattern": [
+          "organic",
+          "seo_optimized",
+          "engagement_farmed",
+          "adversarial",
+          "platform_amplified"
+        ],
+        "hasIntent": [
+          "inform",
+          "monetize",
+          "manipulate",
+          "fill"
+        ],
+        "hasProvenanceStatus": [
+          "verified",
+          "unverified",
+          "fake_author",
+          "spoofed"
+        ],
+        "hasRiskProfile": [
+          "clean",
+          "ai_assisted",
+          "suspicious",
+          "slop",
+          "malicious"
+        ],
+        "hasSlopScore": "float 0.0-1.0"
+      }
+    },
+    "derivedClasses": {
+      "AI_SlopCandidate": "ContentItem AND (synthetic OR ai_assisted) AND slopScore > threshold",
+      "ConfirmedAI_Slop": "AI_SlopCandidate AND detectionEvidence.count >= 2"
+    }
+  },
+  "topLevelClasses": {
+    "ContentItem": {
+      "description": "Einzelner Inhalt: Text, Bild, Video, Audio, Code, Dokument, Listing, Kommentar"
+    },
+    "SyntheticContent": {
+      "description": "Inhalt ganz oder teilweise durch generative KI erzeugt"
+    },
+    "AI_AssistedContent": {
+      "description": "Menschlicher Inhalt mit KI-Hilfe (Recherche, Entwurf, Editing)"
+    },
+    "AI_SlopCandidate": {
+      "description": "Inhalt mit Slop-Verdacht basierend auf Slop-Score"
+    },
+    "ConfirmedAI_Slop": {
+      "description": "Inhalt mit ausreichender Evidenz für Slop-Klassifikation (2+ Detection Evidence)"
+    },
+    "LowQualityHumanContent": {
+      "description": "Schlechter menschlicher Content, aber nicht zwingend AI Slop"
+    },
+    "SpamContent": {
+      "description": "Unerwünschter oder manipulativer Content unabhängig von KI"
+    },
+    "MisinformationContent": {
+      "description": "Inhalt mit falschen oder irreführenden Behauptungen"
+    },
+    "SyntheticMedia": {
+      "description": "Bild, Video, Audio oder multimodaler synthetischer Inhalt"
+    },
+    "SlopProducer": {
+      "description": "Account, Bot, Content Farm, SEO-Cluster, Channel, Uploader"
+    },
+    "DistributionChannel": {
+      "description": "Plattform, Suchmaschine, Feed, Marketplace, RAG-Korpus"
+    },
+    "DetectionEvidence": {
+      "description": "Hinweise: Metadaten, Artefakte, Wiederholungsmuster, Halluzinationen"
+    },
+    "MitigationAction": {
+      "description": "Labeln, Demonetarisieren, Downranken, Ausschließen, Human Review"
+    }
+  },
+  "mediaTaxonomy": {
+    "TextSlop": {
+      "examples": [
+        "Blogartikel",
+        "LinkedIn-Posts",
+        "SEO-Seiten",
+        "Produktbeschreibungen"
+      ],
+      "markers": [
+        "generische Struktur",
+        "wenig Quellen",
+        "Floskeln",
+        "falsche Fakten",
+        "Em-Dash Overuse",
+        "Low Density"
+      ]
+    },
+    "ImageSlop": {
+      "examples": [
+        "Fake-Historienbilder",
+        "virale Tiere",
+        "Produktbilder"
+      ],
+      "markers": [
+        "anatomische Fehler",
+        "surrealer Realismus",
+        "Kontextbruch",
+        "Bad Text Rendering",
+        "Glossy Textures"
+      ]
+    },
+    "VideoSlop": {
+      "examples": [
+        "YouTube-Kindercontent",
+        "KI-News",
+        "Fake-Dokus"
+      ],
+      "markers": [
+        "repetitive Szenen",
+        "KI-Voiceover",
+        "keine echte Dramaturgie",
+        "Frame Flicker",
+        "Lip-Sync Mismatch"
+      ]
+    },
+    "AudioSlop": {
+      "examples": [
+        "AI-Musik",
+        "Voice-Clones",
+        "Podcast-Fakes"
+      ],
+      "markers": [
+        "Massen-Uploads",
+        "generische Komposition",
+        "Identitätsmissbrauch"
+      ]
+    },
+    "AcademicSlop": {
+      "examples": [
+        "Paper",
+        "Preprints",
+        "Review-Artikel"
+      ],
+      "markers": [
+        "fake citations",
+        "oberflächliche Literaturübersichten",
+        "Template-Struktur",
+        "uneditierter Prompt-Text"
+      ],
+      "danger": "BESONDERS GEFÄHRLICH — sieht nicht billig aus",
+      "arXiv2026": "Verschärfte Regeln gegen unvalidierte LLM-Inhalte",
+      "neurIPS2025": "KI-halluzinierte Zitate nutzen Plausibilitätsheuristiken gleichzeitig aus"
+    },
+    "CodeSlop": {
+      "examples": [
+        "AI-generierte PRs",
+        "Issues",
+        "Docs"
+      ],
+      "markers": [
+        "kompiliert nicht",
+        "falsche APIs",
+        "Review-Burden",
+        "Copy-Paste-Muster",
+        "Hardcoded Secrets"
+      ]
+    },
+    "LegalSlop": {
+      "examples": [
+        "KI-generierte Schriftsätze"
+      ],
+      "markers": [
+        "erfundene Präzedenzfälle",
+        "falsche Normen",
+        "unvalidierte Zitate"
+      ],
+      "danger": "BESONDERS GEFÄHRLICH — sieht professionell aus"
+    },
+    "WorkSlop": {
+      "examples": [
+        "Interne Reports",
+        "Präsentationen",
+        "Memos"
+      ],
+      "markers": [
+        "sieht professionell aus",
+        "spart Senderzeit",
+        "kostet Empfängerzeit"
+      ],
+      "danger": "Invisible Cost Shift — Kosten werden auf Empfänger verlagert"
+    }
+  },
+  "intentTaxonomy": {
+    "AttentionFarming": {
+      "description": "Reichweite, Likes, Watchtime",
+      "danger": "hoch"
+    },
+    "AdRevenueFarming": {
+      "description": "Monetarisierung über Ads",
+      "danger": "hoch"
+    },
+    "RoyaltyDilution": {
+      "description": "Streaming-Royalties durch Massenmusik",
+      "danger": "hoch"
+    },
+    "SearchManipulation": {
+      "description": "SEO, GEO, Ranking-Manipulation",
+      "danger": "kritisch"
+    },
+    "RecommendationPoisoning": {
+      "description": "Inhalte so platzieren dass KI-Antwortsysteme sie bevorzugen",
+      "danger": "kritisch",
+      "note": "Google hat Spamregeln auf Manipulation generativer Suchsysteme erweitert (AI Overviews, AI Mode)"
+    },
+    "AffiliateFunnel": {
+      "description": "KI-Content als Traffic-Funnel",
+      "danger": "mittel"
+    },
+    "CredentialInflation": {
+      "description": "Paper, Zitate, Profile zur Reputationssteigerung",
+      "danger": "hoch"
+    },
+    "Disinformation": {
+      "description": "Absichtlich irreführender synthetischer Content",
+      "danger": "malicious"
+    },
+    "CarelessSpeech": {
+      "description": "Nicht zwingend bösartig, aber ungeprüft, oberflächlich, irreführend",
+      "danger": "mittel"
+    },
+    "Impersonation": {
+      "description": "Stimme, Stil, Name, Marke oder Person wird imitiert",
+      "danger": "kritisch"
+    },
+    "PlaceholderPublishing": {
+      "description": "Content wird veröffentlicht obwohl er nur Entwurf/Füllmaterial ist",
+      "danger": "mittel"
+    }
+  },
+  "classOverlaps": {
+    "slop_and_spam": "Slop kann Spam sein, aber nicht alles Slop ist Spam",
+    "slop_and_misinformation": "Slop kann Misinformation sein, aber nicht alles Slop ist absichtlich",
+    "lowquality_and_slop": "LowQualityHumanContent ist wertlos aber nicht zwingend Slop",
+    "academic_and_legal": "Besonders gefährlich weil sie nicht billig aussehen",
+    "careless_speech": "Breiteste Kategorie — nicht bösartig, aber ungeprüft"
   }
 }

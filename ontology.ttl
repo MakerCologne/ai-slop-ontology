@@ -986,3 +986,212 @@
 :ContaminationDetection a :Countermeasure ;
     rdfs:label "Contamination Detection" ;
     rdfs:comment "Detect when search results are slop-dominated by checking information diversity." .
+
+# ============================================================================
+# ROUND 5: Formal Ontology Structure, Top-Level Classes, Intent Taxonomy
+# ============================================================================
+
+# --- Ontological Ground Decision ---
+
+# WRONG: AIContent = Slop, HumanContent = NotSlop
+# CORRECT: ContentItem has properties → derived classification
+# AI_Slop ≈ ContentItem AND synthetic_or_ai_assisted AND low_quality AND low_effort AND mass_produced
+
+# --- Properties ---
+
+:hasGenerationMode a owl:ObjectProperty ;
+    rdfs:domain :ContentItem ;
+    rdfs:range :GenerationMode ;
+    rdfs:comment "How the content was created." .
+
+:hasHumanOversightLevel a owl:ObjectProperty ;
+    rdfs:domain :ContentItem ;
+    rdfs:range :OversightLevel ;
+    rdfs:comment "Degree of human review before publication." .
+
+:hasQualityProfile a owl:ObjectProperty ;
+    rdfs:domain :ContentItem ;
+    rdfs:range :QualityProfile ;
+    rdfs:comment "Measured quality dimensions." .
+
+:hasDistributionPattern a owl:ObjectProperty ;
+    rdfs:domain :ContentItem ;
+    rdfs:range :DistributionPattern ;
+    rdfs:comment "How the content is distributed." .
+
+:hasIntent a owl:ObjectProperty ;
+    rdfs:domain :ContentItem ;
+    rdfs:range :Intent ;
+    rdfs:comment "Purpose behind content creation." .
+
+:hasProvenanceStatus a owl:ObjectProperty ;
+    rdfs:domain :ContentItem ;
+    rdfs:range :ProvenanceStatus ;
+    rdfs:comment "Verifiability of content origin." .
+
+:hasRiskProfile a owl:ObjectProperty ;
+    rdfs:domain :ContentItem ;
+    rdfs:range :RiskLevel ;
+    rdfs:comment "Risk classification for agent consumption." .
+
+:hasSlopScore a owl:DatatypeProperty ;
+    rdfs:domain :ContentItem ;
+    rdfs:range xsd:float ;
+    rdfs:comment "Derived slop score (0.0 = clean, 1.0 = maximum slop)." .
+
+# --- Generation Modes ---
+
+:GenerationMode a owl:Class ;
+    rdfs:label "Generation Mode" ;
+    rdfs:comment "How content was created." .
+
+:Human a :GenerationMode ;
+    rdfs:label "Human" ;
+    rdfs:comment "Entirely human-created." .
+
+:AI_Assisted a :GenerationMode ;
+    rdfs:label "AI-Assisted" ;
+    rdfs:comment "Human content with AI help (research, drafting, editing)." .
+
+:Synthetic a :GenerationMode ;
+    rdfs:label "Synthetic" ;
+    rdfs:comment "Entirely or predominantly AI-generated." .
+
+# --- Oversight Levels ---
+
+:OversightLevel a owl:Class ;
+    rdfs:label "Oversight Level" .
+
+:FullOversight a :OversightLevel ;
+    rdfs:label "Full" ;
+    rdfs:comment "Thorough research + editing." .
+
+:PartialOversight a :OversightLevel ;
+    rdfs:label "Partial" ;
+    rdfs:comment "Review but no deep verification." .
+
+:MinimalOversight a :OversightLevel ;
+    rdfs:label "Minimal" ;
+    rdfs:comment "Glancing review only." .
+
+:NoOversight a :OversightLevel ;
+    rdfs:label "None" ;
+    rdfs:comment "Published directly without review." .
+
+# --- Distribution Patterns ---
+
+:DistributionPattern a owl:Class ;
+    rdfs:label "Distribution Pattern" .
+
+:Organic a :DistributionPattern ;
+    rdfs:label "Organic" ;
+    rdfs:comment "Natural, targeted distribution." .
+
+:SEOOptimized a :DistributionPattern ;
+    rdfs:label "SEO-Optimized" ;
+    rdfs:comment "Optimized for search engine ranking." .
+
+:EngagementFarmed a :DistributionPattern ;
+    rdfs:label "Engagement-Farmed" ;
+    rdfs:comment "Designed to maximize engagement metrics." .
+
+:Adversarial a :DistributionPattern ;
+    rdfs:label "Adversarial" ;
+    rdfs:comment "Deliberately placed to poison information systems." .
+
+:PlatformAmplified a :DistributionPattern ;
+    rdfs:label "Platform-Amplified" ;
+    rdfs:comment "Algorithm amplifies due to engagement signals." .
+
+# --- Provenance Status ---
+
+:ProvenanceStatus a owl:Class ;
+    rdfs:label "Provenance Status" .
+
+:Verified a :ProvenanceStatus ;
+    rdfs:label "Verified" ;
+    rdfs:comment "Clear authorship, cited sources." .
+
+:Unverified a :ProvenanceStatus ;
+    rdfs:label "Unverified" ;
+    rdfs:comment "No clear provenance." .
+
+:FakeAuthor a :ProvenanceStatus ;
+    rdfs:label "Fake Author" ;
+    rdfs:comment "AI-generated headshot, no publishing history." .
+
+:Spoofed a :ProvenanceStatus ;
+    rdfs:label "Spoofed" ;
+    rdfs:comment "Identity forged or impersonated." .
+
+# --- Expanded Intent Taxonomy ---
+
+:Intent a owl:Class ;
+    rdfs:label "Intent" ;
+    rdfs:comment "Purpose behind content creation." .
+
+:AttentionFarming a :Intent ;
+    rdfs:label "Attention Farming" ;
+    rdfs:comment "Reichweite, Likes, Watchtime." .
+
+:AdRevenueFarming a :Intent ;
+    rdfs:label "Ad Revenue Farming" ;
+    rdfs:comment "Monetarisierung über Ads." .
+
+:RoyaltyDilution a :Intent ;
+    rdfs:label "Royalty Dilution" ;
+    rdfs:comment "Streaming-Royalties durch Massenmusik." .
+
+:SearchManipulation a :Intent ;
+    rdfs:label "Search Manipulation" ;
+    rdfs:comment "SEO, GEO, Ranking-Manipulation." .
+
+:RecommendationPoisoning a :Intent ;
+    rdfs:label "Recommendation Poisoning" ;
+    rdfs:comment "Inhalte so platzieren dass KI-Antwortsysteme sie bevorzugen. Google hat Spamregeln auf Manipulation generativer Suchsysteme erweitert." .
+
+:AffiliateFunnel a :Intent ;
+    rdfs:label "Affiliate Funnel" ;
+    rdfs:comment "KI-Content als Traffic-Funnel." .
+
+:CredentialInflation a :Intent ;
+    rdfs:label "Credential Inflation" ;
+    rdfs:comment "Paper, Zitate, Profile zur Reputationssteigerung." .
+
+:Disinformation a :Intent ;
+    rdfs:label "Disinformation" ;
+    rdfs:comment "Absichtlich irreführender synthetischer Content." .
+
+:CarelessSpeech a :Intent ;
+    rdfs:label "Careless Speech" ;
+    rdfs:comment "Nicht zwingend bösartig, aber ungeprüft, oberflächlich, irreführend." .
+
+:Impersonation a :Intent ;
+    rdfs:label "Impersonation" ;
+    rdfs:comment "Stimme, Stil, Name, Marke oder Person wird imitiert." .
+
+:PlaceholderPublishing a :Intent ;
+    rdfs:label "Placeholder Publishing" ;
+    rdfs:comment "Content wird veröffentlicht obwohl er nur Entwurf/Füllmaterial ist." .
+
+# --- Expanded Media Types ---
+
+:AcademicSlop a :SlopType ;
+    rdfs:label "Academic Slop" ;
+    rdfs:comment "AI-generated papers, preprints, reviews. Fake citations, superficial literature reviews, template structure. PARTICULARLY DANGEROUS — does not look cheap." ;
+    :hasMedium :Text ;
+    :detectedBy :CitationVerification , :SourceVerification ;
+    :hasNormativeFraming :EpistemicPollution ;
+    rdfs:comment "arXiv 2026: verschärfte Regeln gegen unvalidierte LLM-Inhalte. NeurIPS 2025: KI-halluzinierte Zitate nutzen Plausibilitätsheuristiken gleichzeitig aus." .
+
+:LegalSlop a :SlopType ;
+    rdfs:label "Legal Slop" ;
+    rdfs:comment "AI-generated legal documents with invented precedents, false norms, unvalidated citations. PARTICULARLY DANGEROUS — looks professional." ;
+    :hasMedium :Text ;
+    :hasNormativeFraming :EpistemicPollution .
+
+:WorkSlop a :SlopType ;
+    rdfs:label "Work Slop" ;
+    rdfs:comment "Internal reports, presentations, memos. Looks professional, saves sender time, costs receiver time. Invisible Cost Shift." ;
+    :hasMedium :Text ;
+    :hasNormativeFraming :NonconsensualImposition .
