@@ -350,6 +350,60 @@
         ],
         "normative": "ConsumerFraud"
       }
+    },
+    "BY_PURPOSE": {
+      "EngagementClickbaitSlop": {
+        "label": "Engagement/Clickbait Slop",
+        "description": "Virales Potenzial — Motivational, Emotional Bait.",
+        "examples": [
+          "Veteran Birthday Signs",
+          "Shrimp Jesus",
+          "Cat Soap Operas"
+        ]
+      },
+      "SEOContentFarmSlop": {
+        "label": "SEO/Content Farm Slop",
+        "description": "Keyword-stuffed Seiten für programmatic Ads.",
+        "examples": [
+          "10-Ways-to-Leverage-AI articles"
+        ]
+      },
+      "PropagandaDisinfoSlop": {
+        "label": "Propaganda/Disinfo Slop",
+        "description": "Politisch motiviert — AI-Images, Spamouflage.",
+        "examples": [
+          "Trump als Papst",
+          "Spamouflage (China/Russland)"
+        ]
+      },
+      "MonetizationSlop": {
+        "label": "Monetization Slop (Slop Farmers)",
+        "description": "Direkte Revenue — Facebook Bonuses, Fake Shops, Affiliate Farming.",
+        "examples": [
+          "Jesse Cunningham / Bonsai Mary (8.6M Pinterest Views)"
+        ]
+      },
+      "SpamNoiseSlop": {
+        "label": "Spam/Noise Slop",
+        "description": "Füllmaterial ohne klaren Zweck."
+      }
+    },
+    "BY_FORM": {
+      "LowSurrealHighSurreal": {
+        "axis": "Surrealismus",
+        "low": "Banal-realistisch (SEO-Artikel, Fake Reviews)",
+        "high": "Absurd (Shrimp Jesus, bizarre AI-Kombinationen)"
+      },
+      "MassVsPersonalized": {
+        "axis": "Personalisierung",
+        "low": "Mass — generisch, für alle",
+        "high": "Personalized — zugeschnitten auf Person/Gruppe"
+      },
+      "PureAIVsAIAssisted": {
+        "axis": "Human Oversight",
+        "low": "Reines AI — kein menschlicher Input",
+        "high": "AI-assisted mit minimal Edits"
+      }
     }
   },
   "dimensions": {
@@ -434,27 +488,30 @@
     },
     "PrototypicalProperties": {
       "SuperficialCompetence": {
-        "description": "Veneer of quality belied by deeper lack of substance.",
+        "description": "Grammatikalisch korrekt, photorealistisch oder strukturiert, aber ohne Tiefe, Originalität oder echte Intention.",
         "source": "Kommers et al. 2026"
       },
       "AsymmetricEffort": {
-        "description": "Creation requires vastly less effort than without AI.",
+        "description": "Minimaler Input (Prompt) für massenhaften Output; fehlende menschliche Überarbeitung, Recherche oder Kreativität.",
         "source": "Kommers et al. 2026"
       },
       "MassProducibility": {
-        "description": "Part of digital ecosystem of widespread generation/consumption.",
+        "description": "Skalierbar für Algorithmen (SEO, Feeds), oft mit Clickbait-Elementen.",
         "source": "Kommers et al. 2026"
       }
     },
     "VarianceDimensions": {
       "InstrumentalUtility": {
-        "description": "Why was it created? Money → Art → Trolling → Propaganda"
+        "description": "Warum wurde es erstellt?",
+        "spectrum": "Monetization → Propaganda → Kunst → Trolling"
       },
       "Personalization": {
-        "description": "Generic mass audience → specific person/group"
+        "description": "Ist es generisch oder zugeschnitten?",
+        "spectrum": "Mass (generisch) → Personalized (zugeschnitten)"
       },
       "Surrealism": {
-        "description": "Ludicrously implausible → deceptively realistic"
+        "description": "Wie absurd ist der Inhalt?",
+        "spectrum": "Banal-realistisch (SEO-Artikel) → Absurd (Shrimp Jesus)"
       }
     },
     "KnowledgeCollapseStages": {
@@ -777,6 +834,28 @@
       ],
       "strength": "Full multi-modal Python implementation with separate code/image/text detectors",
       "review": "skill-reviews repo scored 4/5 completeness. P0: SKILL.md too large (747→120 lines recommended)"
+    }
+  },
+  "canonicalDefinition": {
+    "term": "AI Slop",
+    "aliases": [
+      "Slop Content",
+      "Slop"
+    ],
+    "definition": "Digitale Inhalte, die mit generativer KI erstellt werden und als low-effort, low-quality, generisch, oberflächlich oder bedeutungsarm wahrgenommen werden. Massenhaft produziert für Attention Economy, Klicks, Werbeeinnahmen oder andere monetäre Vorteile.",
+    "connotation": "pejorative, ähnlich wie Spam",
+    "wordOfTheYear": [
+      "Merriam-Webster 2025",
+      "American Dialect Society 2025",
+      "Macquarie Dictionary 2025"
+    ],
+    "origin": {
+      "period": "~2022 (Bildgeneratoren auf 4chan)",
+      "popularizedBy": "Simon Willison 2024",
+      "superseded": [
+        "AI garbage",
+        "AI pollution"
+      ]
     }
   }
 }
