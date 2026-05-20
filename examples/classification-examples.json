@@ -7,15 +7,28 @@
     "retrieval_trust_score": 0.22,
     "generation_mode": "ai_assisted_or_fully_synthetic",
     "medium": "text",
-    "intent": ["search_manipulation", "attention_farming"],
-    "quality_failures": ["genericity", "lack_of_originality", "unverifiable_claim"],
-    "distribution_pattern": ["templated_series", "search_result_saturation"],
-    "harm_types": ["retrieval_contamination", "user_time_waste"],
+    "intent": [
+      "search_manipulation",
+      "attention_farming"
+    ],
+    "quality_failures": [
+      "genericity",
+      "lack_of_originality",
+      "unverifiable_claim"
+    ],
+    "distribution_pattern": [
+      "templated_series",
+      "search_result_saturation"
+    ],
+    "harm_types": [
+      "retrieval_contamination",
+      "user_time_waste"
+    ],
     "scores": {
       "syntheticity": 0.75,
       "quality_deficit": 0.55,
-      "substance_deficit": 0.80,
-      "mass_production": 0.90,
+      "substance_deficit": 0.8,
+      "mass_production": 0.9,
       "retrieval_risk": 0.85
     },
     "recommended_agent_action": [
@@ -33,14 +46,16 @@
     "retrieval_trust_score": 0.82,
     "generation_mode": "ai_assisted",
     "medium": "text",
-    "intent": ["productivity"],
+    "intent": [
+      "productivity"
+    ],
     "provenance_status": "disclosed_ai",
     "quality_failures": [],
     "scores": {
       "syntheticity": 0.45,
-      "quality_deficit": 0.10,
+      "quality_deficit": 0.1,
       "substance_deficit": 0.15,
-      "verification_deficit": 0.10,
+      "verification_deficit": 0.1,
       "mass_production": 0.05
     },
     "recommended_agent_action": [
@@ -53,17 +68,25 @@
     "classification": "AISlopCandidate",
     "slop_score": 0.78,
     "evidence_confidence": 0.72,
-    "retrieval_trust_score": 0.10,
+    "retrieval_trust_score": 0.1,
     "generation_mode": "fully_synthetic",
     "medium": "music",
-    "intent": ["royalty_dilution", "ad_revenue"],
-    "distribution_pattern": ["mass_upload"],
-    "harm_types": ["royalty_dilution", "creator_displacement"],
+    "intent": [
+      "royalty_dilution",
+      "ad_revenue"
+    ],
+    "distribution_pattern": [
+      "mass_upload"
+    ],
+    "harm_types": [
+      "royalty_dilution",
+      "creator_displacement"
+    ],
     "scores": {
       "syntheticity": 0.95,
       "mass_production": 0.95,
-      "deceptiveness": 0.60,
-      "harm_potential": 0.70
+      "deceptiveness": 0.6,
+      "harm_potential": 0.7
     },
     "recommended_agent_action": [
       "exclude_from_rag",
@@ -84,12 +107,20 @@
     "retrieval_trust_score": 0.0,
     "generation_mode": "fully_synthetic",
     "medium": "code",
-    "intent": ["careless_speech"],
-    "quality_failures": ["hallucinated_citation", "misleading_functionality"],
-    "harm_types": ["retrieval_contamination", "legal_risk"],
+    "intent": [
+      "careless_speech"
+    ],
+    "quality_failures": [
+      "hallucinated_citation",
+      "misleading_functionality"
+    ],
+    "harm_types": [
+      "retrieval_contamination",
+      "legal_risk"
+    ],
     "scores": {
       "syntheticity": 0.95,
-      "quality_deficit": 0.90,
+      "quality_deficit": 0.9,
       "verification_deficit": 1.0,
       "harm_potential": 0.95,
       "retrieval_risk": 0.95
@@ -112,16 +143,27 @@
     "retrieval_trust_score": 0.0,
     "generation_mode": "fully_synthetic",
     "medium": "legal_document",
-    "intent": ["careless_speech", "credential_inflation"],
-    "quality_failures": ["hallucinated_citation", "factual_error", "unverifiable_claim"],
-    "harm_types": ["legal_risk", "academic_integrity_risk", "trust_erosion"],
+    "intent": [
+      "careless_speech",
+      "credential_inflation"
+    ],
+    "quality_failures": [
+      "hallucinated_citation",
+      "factual_error",
+      "unverifiable_claim"
+    ],
+    "harm_types": [
+      "legal_risk",
+      "academic_integrity_risk",
+      "trust_erosion"
+    ],
     "scores": {
-      "syntheticity": 0.80,
+      "syntheticity": 0.8,
       "quality_deficit": 0.85,
       "substance_deficit": 0.75,
       "verification_deficit": 0.95,
       "harm_potential": 0.95,
-      "deceptiveness": 0.70
+      "deceptiveness": 0.7
     },
     "recommended_agent_action": [
       "block_source",
@@ -131,5 +173,121 @@
     "explanation": "AI-generated legal document with invented precedents and false norms. PARTICULARLY DANGEROUS — looks professional.",
     "critical_review": true,
     "critical_domain": "legal"
+  },
+  {
+    "content_id": "example-workslop-hbr",
+    "classification": "AISlopCandidate",
+    "slop_score": 0.72,
+    "evidence_confidence": 0.75,
+    "retrieval_trust_score": 0.15,
+    "generation_mode": "fully_synthetic",
+    "medium": "text",
+    "intent": [
+      "productivity"
+    ],
+    "quality_failures": [
+      "genericity",
+      "lack_of_originality",
+      "missing_context"
+    ],
+    "harm_types": [
+      "workplace_productivity_loss",
+      "user_time_waste"
+    ],
+    "scores": {
+      "syntheticity": 0.8,
+      "quality_deficit": 0.5,
+      "substance_deficit": 0.7,
+      "effort_asymmetry": 0.9,
+      "mass_production": 0.4,
+      "deceptiveness": 0.5,
+      "harm_potential": 0.65
+    },
+    "recommended_agent_action": [
+      "require_human_review",
+      "do_not_store_as_fact",
+      "label_as_low_confidence"
+    ],
+    "explanation": "Workslop: AI-generated internal report that saves sender ~10min but costs receiver ~2h to review. 40% of employees affected (Niederhoffer et al. HBR 2025).",
+    "source": "Niederhoffer et al. HBR 2025"
+  },
+  {
+    "content_id": "example-brainrot-youtube",
+    "classification": "AISlopCandidate",
+    "slop_score": 0.85,
+    "evidence_confidence": 0.8,
+    "retrieval_trust_score": 0.05,
+    "generation_mode": "fully_synthetic",
+    "medium": "video",
+    "intent": [
+      "attention_farming",
+      "ad_revenue"
+    ],
+    "distribution_pattern": [
+      "mass_upload",
+      "platform_recommendation_boost"
+    ],
+    "harm_types": [
+      "harm_to_children",
+      "cognitive_load",
+      "ad_fraud_brand_safety"
+    ],
+    "scores": {
+      "syntheticity": 0.9,
+      "mass_production": 0.95,
+      "deceptiveness": 0.6,
+      "harm_potential": 0.9,
+      "retrieval_risk": 0.7
+    },
+    "recommended_agent_action": [
+      "block_source",
+      "label_as_ai_generated",
+      "exclude_from_rag"
+    ],
+    "explanation": "Brainrot video targeting children. ~40% of YouTube Kids recommendations are slop (NYT 2026). Italian brainrot, Fruit Love Island patterns.",
+    "critical_review": true,
+    "critical_domain": "child_safety",
+    "source": "NYT Mar 2026; Kapwing × Guardian 2025"
+  },
+  {
+    "content_id": "example-content-farm-newsguard",
+    "classification": "ConfirmedAISlop",
+    "slop_score": 0.92,
+    "evidence_confidence": 0.9,
+    "retrieval_trust_score": 0.02,
+    "generation_mode": "templated_automation",
+    "medium": "text",
+    "intent": [
+      "ad_revenue",
+      "search_manipulation"
+    ],
+    "distribution_pattern": [
+      "content_farm",
+      "search_result_saturation",
+      "expired_domain_abuse"
+    ],
+    "harm_types": [
+      "epistemic_pollution",
+      "ad_fraud_brand_safety",
+      "retrieval_contamination"
+    ],
+    "scores": {
+      "syntheticity": 0.95,
+      "quality_deficit": 0.9,
+      "substance_deficit": 0.95,
+      "verification_deficit": 1.0,
+      "mass_production": 1.0,
+      "distribution_manipulation": 0.95,
+      "harm_potential": 0.85,
+      "retrieval_risk": 0.95
+    },
+    "recommended_agent_action": [
+      "block_source",
+      "exclude_from_rag",
+      "quarantine_for_dataset",
+      "demote_in_ranking"
+    ],
+    "explanation": "NewsGuard-identified AI content farm. 3,006 sites identified March 2026 (2x YoY). 300-500 new sites/month. 141 blue-chip brands unknowingly advertising. UAINs in 16 languages.",
+    "source": "NewsGuard × Pangram Labs Mar 2026"
   }
 ]

@@ -1195,3 +1195,205 @@
     rdfs:comment "Internal reports, presentations, memos. Looks professional, saves sender time, costs receiver time. Invisible Cost Shift." ;
     :hasMedium :Text ;
     :hasNormativeFraming :NonconsensualImposition .
+
+# ============================================================================
+# v1.0.0 ADDITIONS: 7Vs, Harms, Relationship Graph, Etymology, Analogues
+# ============================================================================
+
+# --- Necessary Conditions ---
+
+:NecessaryCondition a owl:Class ;
+    rdfs:label "Necessary Condition for AI Slop" ;
+    rdfs:comment "All three must be met for content to qualify as AI Slop." .
+
+:AIPrimarySource a :NecessaryCondition ;
+    rdfs:label "1. AI Primary Source" ;
+    rdfs:comment "Generative KI ist primäre Quelle des Inhalts." .
+
+:LacksHumanCare a :NecessaryCondition ;
+    rdfs:label "2. Lacks Human Care" ;
+    rdfs:comment "Es fehlt menschliche Sorgfalt, Kuration oder Verifikation." .
+
+:UnsolicitedPush a :NecessaryCondition ;
+    rdfs:label "3. Unsolicited Push Distribution" ;
+    rdfs:comment "Der Inhalt wird unverlangt publiziert/distribuiert (Push statt Pull)." .
+
+# --- 7Vs Systemic Dimensions (Madsen & Puyt 2025) ---
+
+:SystemicDimension7V a owl:Class ;
+    rdfs:label "7V Systemic Dimension" ;
+    rdfs:comment "System-level properties of the slop ecology (Madsen & Puyt 2025). Complements per-item quality taxonomy." ;
+    dc:source "Madsen & Puyt 2025, SSRN 5558018" .
+
+:Volume7V a :SystemicDimension7V ;
+    rdfs:label "Volume" ;
+    rdfs:comment "Produktionsskala. Metric: Items pro Tag/Plattform." .
+
+:Velocity7V a :SystemicDimension7V ;
+    rdfs:label "Velocity" ;
+    rdfs:comment "Generierungs- und Zirkulationsgeschwindigkeit. Metric: Latenz Prompt → Publish." .
+
+:Variety7V a :SystemicDimension7V ;
+    rdfs:label "Variety" ;
+    rdfs:comment "Spannweite an Formen/Genres. Metric: Modalitäts-Coverage." .
+
+:Value7V a :SystemicDimension7V ;
+    rdfs:label "Value" ;
+    rdfs:comment "Erosion kulturellen/epistemischen Werts. Metric: Trust-Surveys; Citation-Quality." .
+
+:Verification7V a :SystemicDimension7V ;
+    rdfs:label "Verification" ;
+    rdfs:comment "Wahrheits- und Vertrauensproblem. Metric: Fact-Check-Rate." .
+
+:Visibility7V a :SystemicDimension7V ;
+    rdfs:label "Visibility" ;
+    rdfs:comment "Algorithmische Verstärkung. Metric: Recommendation-Anteil." .
+
+:Virality7V a :SystemicDimension7V ;
+    rdfs:label "Virality" ;
+    rdfs:comment "Memetische Diffusion. Metric: Reproduktionsrate R." .
+
+# --- 12 Harm Types ---
+
+:HarmType a owl:Class ;
+    rdfs:label "Harm Type" ;
+    rdfs:comment "A specific negative consequence of AI slop, with mechanism and evidence." .
+
+:ModelCollapseHarm a :HarmType ;
+    rdfs:label "Model Collapse" ;
+    rdfs:comment "Recursive training on AI output → loss of distribution tails, gibberish convergence." ;
+    dc:source "Shumailov et al. 2024, Nature 631" .
+
+:EpistemicPollutionHarm a :HarmType ;
+    rdfs:label "Epistemic Pollution" ;
+    rdfs:comment "Polluted information ecology, LLMs cite UAINs as sources." ;
+    dc:source "NewsGuard Aug 2025; EDMO" .
+
+:MisinformationHarm a :HarmType ;
+    rdfs:label "Mis/Disinformation" ;
+    rdfs:comment "State or commercially driven false-claim operations." ;
+    dc:source "US Treasury Dec 2024; Storm-1516; Freedom House 2025" .
+
+:TrustErosionHarm a :HarmType ;
+    rdfs:label "Trust Erosion" ;
+    rdfs:comment "Liar's dividend; difficulty distinguishing real from fake." ;
+    dc:source "Koebler 404 Media" .
+
+:WorkplaceProductivityHarm a :HarmType ;
+    rdfs:label "Workplace Productivity Loss" ;
+    rdfs:comment "Workslop offloads cognitive load to receivers; 40% employees affected; ~1h56m rework per instance." ;
+    dc:source "Niederhoffer et al. HBR 2025" .
+
+:CreatorSqueezeHarm a :HarmType ;
+    rdfs:label "Creator Squeeze" ;
+    rdfs:comment "Algorithms don't distinguish original from fake bulk → originals displaced." ;
+    dc:source "Scientific American" .
+
+:ChildrenHarm a :HarmType ;
+    rdfs:label "Harm to Children" ;
+    rdfs:comment "~40% YouTube Kids recommendations are slop; false info, dangerous behavior." ;
+    dc:source "NYT Mar 2026; The 74; Mother Jones" .
+
+:AdFraudHarm a :HarmType ;
+    rdfs:label "Ad Fraud / Brand Safety" ;
+    rdfs:comment "141 blue-chip brands unknowingly advertising on content farms." ;
+    dc:source "NewsGuard/AdWeek 2026" .
+
+:CognitiveLoadHarm a :HarmType ;
+    rdfs:label "Cognitive Load" ;
+    rdfs:comment "Constant 'Is this real?' verification exhausts attention." ;
+    dc:source "Koebler 'Your AI Use Is Breaking My Brain' 2026" .
+
+:EnvironmentalCostHarm a :HarmType ;
+    rdfs:label "Environmental Cost" ;
+    rdfs:comment "Energy and water consumption of generative models." ;
+    dc:source "Crawford 'Eating the Future'" .
+
+:DemocracyRiskHarm a :HarmType ;
+    rdfs:label "Democracy Risk" ;
+    rdfs:comment "Election manipulation, deepfake endorsements." ;
+    dc:source "Wikipedia; Freedom on the Net 2025" .
+
+:RoyaltyFraudHarm a :HarmType ;
+    rdfs:label "Royalty Fraud" ;
+    rdfs:comment "AI tracks for streaming royalty manipulation." ;
+    dc:source "DOJ; Wikipedia" .
+
+# --- Historical Analogues ---
+
+:HistoricalAnalogue a owl:Class ;
+    rdfs:label "Historical Analogue" ;
+    rdfs:comment "A historical precedent for mass-produced, economically motivated, aesthetically/epistemically deficient output." .
+
+:GrubStreet a :HistoricalAnalogue ;
+    rdfs:label "Grub Street" ;
+    rdfs:comment "London, 1700s. Cheap printed works, mass-produced, economically motivated." .
+
+:Kitsch a :HistoricalAnalogue ;
+    rdfs:label "Kitsch" ;
+    rdfs:comment "Munich, 1860s. Derogatory term for mass-produced art." .
+
+:PulpFiction a :HistoricalAnalogue ;
+    rdfs:label "Pulp Fiction" ;
+    rdfs:comment "1900s. Cheaply produced magazine novels." .
+
+:Churnalism a :HistoricalAnalogue ;
+    rdfs:label "Churnalism" ;
+    rdfs:comment "2000s. Rewritten press releases as journalism." .
+
+# --- Specializations ---
+
+:Slom a :SlopType ;
+    rdfs:label "Slom" ;
+    rdfs:comment "AI-Spam-Subset (Willison). Overlap between slop and spam." .
+
+:Brainrot a :SlopType ;
+    rdfs:label "Brainrot" ;
+    rdfs:comment "Low-attention reward content. Italian brainrot, Fruit Love Island." ;
+    :hasMedium :Video .
+
+:Necromemetics a :SlopType ;
+    rdfs:label "Necromemetics" ;
+    rdfs:comment "Post-violence meme economy (Koebler)." .
+
+:Workslop a :SlopType ;
+    rdfs:label "Workslop" ;
+    rdfs:comment "AI-generated workplace content that saves sender time but costs receiver time. 40% of employees affected; ~1h56m rework per instance." ;
+    dc:source "Niederhoffer et al. HBR 2025" ;
+    :hasNormativeFraming :NonconsensualImposition .
+
+# --- Relationship Properties ---
+
+:isAnalogousTo a owl:ObjectProperty ;
+    rdfs:domain :AISlop ;
+    rdfs:range :HistoricalAnalogue .
+
+:isCausedBy a owl:ObjectProperty ;
+    rdfs:domain :AISlop ;
+    rdfs:range :AttentionEconomy .
+
+:coOccursWith a owl:ObjectProperty ;
+    rdfs:domain :AISlop ;
+    rdfs:range :ModelCollapse .
+
+:enables a owl:ObjectProperty ;
+    rdfs:domain :AISlop ;
+    rdfs:range :Workslop .
+
+:hasHarm a owl:ObjectProperty ;
+    rdfs:domain :AISlop ;
+    rdfs:range :HarmType .
+
+# --- Causes ---
+
+:AttentionEconomy a owl:Class ;
+    rdfs:label "Attention Economy" ;
+    rdfs:comment "Platform incentive structure that rewards engagement regardless of quality." .
+
+:ZeroMarginalCostGeneration a owl:Class ;
+    rdfs:label "Zero Marginal Cost Generation" ;
+    rdfs:comment "AI reduces content production cost to near zero." .
+
+:LowEntryBarrier a owl:Class ;
+    rdfs:label "Low Entry Barrier" ;
+    rdfs:comment "Prompt-only workflow requires no skill or investment." .

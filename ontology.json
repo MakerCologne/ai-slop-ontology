@@ -873,7 +873,25 @@
         "AI garbage",
         "AI pollution"
       ]
-    }
+    },
+    "necessaryConditions": [
+      {
+        "id": 1,
+        "condition": "Generative KI ist primäre Quelle des Inhalts",
+        "source": "v1.0.0 §1"
+      },
+      {
+        "id": 2,
+        "condition": "Es fehlt menschliche Sorgfalt, Kuration oder Verifikation",
+        "source": "v1.0.0 §1"
+      },
+      {
+        "id": 3,
+        "condition": "Der Inhalt wird unverlangt publiziert/distribuiert (Push statt Pull)",
+        "source": "v1.0.0 §1"
+      }
+    ],
+    "exclusion": "Sorgfältig kuratierte, geprüfte und intentional veröffentlichte KI-Hilfsoutputs fallen ausdrücklich nicht unter die Definition (Willison 2024; Shaib et al. 2025 §3)."
   },
   "detectionRedFlags": {
     "text": [
@@ -1726,5 +1744,315 @@
     "Verge_Google_Spam_AI": "Google updates spam rules to include attempts to manipulate AI",
     "Verge_arXiv_Ban": "arXiv will ban researchers who upload papers full of AI slop",
     "NBER_Books": "How Large Language Models Are Reshaping the Book Market"
+  },
+  "etymology": [
+    {
+      "year": "~1700",
+      "event": "\"Slop\" = weicher Schlamm (Englisch)",
+      "source": "OED"
+    },
+    {
+      "year": "~1800",
+      "event": "Bedeutungserweiterung zu \"Schweinetränke / Abfall\"",
+      "source": "OED"
+    },
+    {
+      "year": "2022",
+      "event": "Erste Belege für \"AI slop\" online",
+      "source": "Wikipedia"
+    },
+    {
+      "year": "early 2024",
+      "event": "Poet \"deepfates\" verwendet Begriff auf X als \"term for unwanted AI generated content\"",
+      "source": "Wikipedia"
+    },
+    {
+      "year": "2024-05",
+      "event": "Simon Willison popularisiert auf Blog mit Spam-Analogie",
+      "source": "simonw.substack.com"
+    },
+    {
+      "year": "2024",
+      "event": "Oxford Dictionary Word-of-the-Year-Shortlist (+332% Nutzung)",
+      "source": "Oxford"
+    },
+    {
+      "year": "2025",
+      "event": "Merriam-Webster & American Dialect Society: Word of the Year",
+      "source": "MW/ADS"
+    },
+    {
+      "year": "2025-2026",
+      "event": "Akademische Operationalisierung (Shaib et al., Madsen & Puyt, MINT Lab)",
+      "source": "arXiv"
+    }
+  ],
+  "historicalAnalogues": [
+    {
+      "name": "Grub Street",
+      "period": "London, 1700er",
+      "description": "Billige Druckwerke, massenproduziert, ökonomisch motiviert"
+    },
+    {
+      "name": "Kitsch",
+      "period": "München, 1860er",
+      "description": "Abwertend für massenproduzierte Kunst"
+    },
+    {
+      "name": "Pulp Fiction",
+      "period": "1900er",
+      "description": "Billig produzierte Zeitschriftenromane"
+    },
+    {
+      "name": "Churnalism",
+      "period": "2000er",
+      "description": "Rewritten press releases als Journalismus"
+    },
+    {
+      "name": "Spam",
+      "period": "1990er+",
+      "description": "Unerwünschte Massen-Kommunikation"
+    },
+    {
+      "name": "Clickbait",
+      "period": "2010er+",
+      "description": "Sensationelle Überschriften ohne Substanz"
+    }
+  ],
+  "systemicDimensions7Vs": {
+    "source": "Madsen & Puyt 2025, SSRN 5558018",
+    "description": "Ergänzen Qualitäts-Taxonomie um Systemeigenschaften der Slop-Ökologie",
+    "dimensions": {
+      "Volume": {
+        "definition": "Produktionsskala",
+        "metric": "Items pro Tag/Plattform"
+      },
+      "Velocity": {
+        "definition": "Generierungs- und Zirkulationsgeschwindigkeit",
+        "metric": "Latenz Prompt → Publish"
+      },
+      "Variety": {
+        "definition": "Spannweite an Formen/Genres",
+        "metric": "Modalitäts-Coverage"
+      },
+      "Value": {
+        "definition": "Erosion kulturellen/epistemischen Werts",
+        "metric": "Trust-Surveys; Citation-Quality"
+      },
+      "Verification": {
+        "definition": "Wahrheits- und Vertrauensproblem",
+        "metric": "Fact-Check-Rate"
+      },
+      "Visibility": {
+        "definition": "Algorithmische Verstärkung",
+        "metric": "Recommendation-Anteil"
+      },
+      "Virality": {
+        "definition": "Memetische Diffusion",
+        "metric": "Reproduktionsrate R"
+      }
+    }
+  },
+  "harms": [
+    {
+      "id": "model_collapse",
+      "mechanism": "Rekursives Training auf KI-Output → Verlust der Verteilungs-Tails, gibberish-Konvergenz",
+      "source": "Shumailov et al. 2024, Nature"
+    },
+    {
+      "id": "epistemic_pollution",
+      "mechanism": "Polluierte Informationsökologie, LLMs zitieren UAINs als Quellen",
+      "source": "NewsGuard Aug 2025; EDMO"
+    },
+    {
+      "id": "misinformation",
+      "mechanism": "Staatlich oder kommerziell gesteuerte False-Claim-Operationen",
+      "source": "US Treasury Dec 2024; Storm-1516; Freedom House 2025"
+    },
+    {
+      "id": "trust_erosion",
+      "mechanism": "\"Liar's dividend\"; Schwierigkeit, echt von gefälscht zu trennen",
+      "source": "Koebler 404 Media"
+    },
+    {
+      "id": "workplace_productivity_loss",
+      "mechanism": "Workslop lädt kognitive Last auf Empfänger ab; 40% Beschäftigte betroffen; ~1h56min Rework",
+      "source": "Niederhoffer et al. HBR 2025"
+    },
+    {
+      "id": "creator_squeeze",
+      "mechanism": "Algorithmen unterscheiden nicht zwischen Original und Fake-Bulk",
+      "source": "Scientific American"
+    },
+    {
+      "id": "harm_to_children",
+      "mechanism": "~40% YouTube-Kids-Empfehlungen sind Slop; falsche Informationen, gefährliches Verhalten",
+      "source": "NYT Mar 2026; The 74; Mother Jones"
+    },
+    {
+      "id": "ad_fraud_brand_safety",
+      "mechanism": "141 Blue-Chip-Marken werben unwissentlich auf Content-Farmen",
+      "source": "NewsGuard/AdWeek 2026"
+    },
+    {
+      "id": "cognitive_load",
+      "mechanism": "Konstante \"Ist das echt?\"-Überprüfung erschöpft Aufmerksamkeit",
+      "source": "Koebler \"Your AI Use Is Breaking My Brain\" 2026"
+    },
+    {
+      "id": "environmental_cost",
+      "mechanism": "Strom- und Wasserverbrauch generativer Modelle",
+      "source": "Crawford \"Eating the Future\""
+    },
+    {
+      "id": "democracy_risk",
+      "mechanism": "Wahlbeeinflussung, deepfake-endorsements",
+      "source": "Wikipedia; Freedom on the Net 2025"
+    },
+    {
+      "id": "royalty_fraud",
+      "mechanism": "KI-Tracks zur Streaming-Royalty-Manipulation",
+      "source": "DOJ; Wikipedia"
+    }
+  ],
+  "relationshipGraph": {
+    "analogousTo": [
+      "Spam (E-Mail-Analog; Willison)",
+      "Kitsch (München 1860er; ästhetisch)",
+      "Grub Street (London 1700er; ökonomisch)",
+      "Churnalism",
+      "Clickbait"
+    ],
+    "isSubtypeOf": [
+      "SyntheticMedia",
+      "DigitalPollution",
+      "EpistemicPollution"
+    ],
+    "isCausedBy": [
+      "AttentionEconomy (Creator-Bonus-Programme)",
+      "ZeroMarginalCostGeneration",
+      "AlgorithmicRecommendation",
+      "LowEntryBarrier (Prompt-only Workflow)"
+    ],
+    "coOccursWith": [
+      "ModelCollapse (kausal verkoppelt)",
+      "DeadInternetTheory",
+      "ZombieInternet (Koebler)",
+      "Enshittification (Doctorow)"
+    ],
+    "enables": [
+      "Workslop (Niederhoffer et al.)",
+      "Slom (AI-Spam-Subset, Willison)",
+      "Brainrot (low-attention reward content)",
+      "Necromemetics (Koebler; post-violence meme economy)"
+    ]
+  },
+  "empiricalKeyFigures": [
+    {
+      "metric": "Anteil AI-Inhalte in Google-Suchergebnissen",
+      "value": "19% (Jan 2025); 7% (Vorjahr)",
+      "source": "Graphite/Entrepreneur Loop"
+    },
+    {
+      "metric": "Anteil AI-Footprint in neuen Web-Artikeln",
+      "value": ">50% (Graphite); 74% (Studien)",
+      "source": "Graphite"
+    },
+    {
+      "metric": "AI-Content-Farm-Sites (NewsGuard)",
+      "value": "3.006 (März 2026); >2x Vorjahr",
+      "source": "NewsGuard × Pangram Labs"
+    },
+    {
+      "metric": "Neue Content-Farm-Sites pro Monat",
+      "value": "300-500",
+      "source": "NewsGuard"
+    },
+    {
+      "metric": "YouTube-Empfehlungen Slop für Neu-User",
+      "value": "21-33% (Kapwing 2025)",
+      "source": "Kapwing × Guardian"
+    },
+    {
+      "metric": "YouTube-Kids Slop-Anteil",
+      "value": "~40% (NYT März 2026)",
+      "source": "NYT"
+    },
+    {
+      "metric": "Workslop-Empfänger",
+      "value": "40% der Beschäftigten",
+      "source": "Niederhoffer et al. HBR 2025"
+    },
+    {
+      "metric": "Workslop-Rework-Zeit pro Instanz",
+      "value": "~1h 56min",
+      "source": "Niederhoffer et al. HBR 2025"
+    },
+    {
+      "metric": "AI-Content-Farm-Brands (Werbung)",
+      "value": "141 Blue-Chip-Marken (2 Monate)",
+      "source": "NewsGuard/AdWeek"
+    },
+    {
+      "metric": "Sprachen mit UAINs",
+      "value": "16 (Arabisch bis Türkisch)",
+      "source": "NewsGuard AI Tracking Center"
+    }
+  ],
+  "scoringFormula": {
+    "weights": {
+      "critical": 1.0,
+      "high": 0.7,
+      "medium": 0.4,
+      "low": 0.2
+    },
+    "formula": "slop_score = min(1.0, sum(weights[s.severity] * s.confidence) / max(1, n))",
+    "isSlopRule": "slop_score >= 0.4 OR any(severity==critical) OR count(severity>=high) >= 2",
+    "thresholds": {
+      "autoPass": "slop_score < 0.2 AND no critical issues",
+      "review": "0.2 <= slop_score < 0.4 OR 1 high issue",
+      "reject": "slop_score >= 0.4 OR any critical issue",
+      "block": "hardcoded secrets OR SQL injection OR child safety violation"
+    }
+  },
+  "detectionThresholds": {
+    "repetition": {
+      "high": 0.2,
+      "critical": 0.3
+    },
+    "density": {
+      "lowSlop": 0.4,
+      "acceptable": 0.6
+    },
+    "punctuation": {
+      "emDashPerSentence": 0.5,
+      "ellipsisPerSentence": 0.3,
+      "exclamationPerSentence": 0.2
+    },
+    "slopScore": {
+      "autoPass": 0.2,
+      "review": 0.4,
+      "reject": 0.6,
+      "severe": 0.8
+    }
+  },
+  "limitations": [
+    "Subjektivität binärer Slop-Urteile: Cohen's κ -0.15 bis 0.29 (Shaib et al. 2025) → dimensionale Bewertung robuster",
+    "Reflexivität: Detection-Heuristiken werden bekannt → Producer adaptieren (\"humanized\" Variants)",
+    "Falsch-Positive bei menschlichem Text: Templatierter Journalismus, Boilerplate",
+    "Kontextabhängigkeit: Technische Dokumentation darf Wiederholungen für Klarheit nutzen",
+    "Sprachliche Verzerrung: Detection auf Englisch am stärksten; geringer in Hindi, Vietnamesisch, Urdu — just dort wo viel Slop entsteht",
+    "Sich entwickelnde Modelle: Neue Modellgenerationen erzeugen neue Slop-Muster; Ontologie braucht regelmässige Updates",
+    "Philosophische Kritik (Puliafito): \"Slop\" beschreibt Mediokrität — aber Mediokrität ist Basislinie aller Kulturproduktion"
+  ],
+  "maintenance": {
+    "updateRhythm": "Quartal (neue Modellgenerationen → neue Slop-Patterns)",
+    "adhoc": "Bei NewsGuard-Quartalsberichten oder neuen arXiv-Taxonomien",
+    "groundTruth": "github.com/cshaib/slop — Shaib et al. Annotation Dataset",
+    "contributions_welcome": [
+      "Audio-Slop (unterforscht)",
+      "Nicht-westliche Plattformen (TikTok/Douyin, KakaoTalk, WhatsApp)",
+      "Systematische Cross-modal-Detection"
+    ]
   }
 }
