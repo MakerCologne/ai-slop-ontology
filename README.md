@@ -2,7 +2,7 @@
 
 A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*. Consolidated from academic research (Shaib et al. 2025; Madsen & Puyt 2025; Shumailov et al. 2024), investigative journalism (404 Media; NYT; Guardian), industry research (NewsGuard; Pangram Labs), and lexicography (Merriam-Webster 2025; Oxford 2024).
 
-**Version:** 1.1.0 | **Date:** 2026-07-10 | **License:** CC BY 4.0
+**Version:** 1.2.0 | **Date:** 2026-07-10 | **License:** CC BY 4.0
 
 ## Quick Start
 
@@ -77,12 +77,13 @@ Properties: hasGenerationMode, hasHumanOversightLevel, hasQualityProfile, hasDis
 | 0.70–1.00 | AISlopCandidate | Do not cite, do not store as fact |
 | any + high harm | CriticalReviewRequired | Always escalate (legal, medical, children) |
 
-### Scoring Formula
+### Scoring Formula (noisy-OR since v1.2.0)
 ```
 weights = {critical: 1.0, high: 0.7, medium: 0.4, low: 0.2}
-slop_score = min(1.0, sum(weights[s.severity] * s.confidence) / max(1, n))
+slop_score = min(1.0, 1 − Π(1 − weights[s.severity] * s.confidence))
 is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
+Independent evidence accumulates instead of being averaged away.
 
 ### Quality Dimensions (Shaib et al. 2025)
 - **Information Utility:** Density (IU1), Relevance (IU2)
@@ -107,6 +108,14 @@ Volume, Velocity, Variety, Value, Verification, Visibility, Virality
 | Spotify spam tracks removed | 75M+ (12 months to Sep 2025) | Spotify |
 | Journal submissions since ChatGPT | +42%; >30% of peer reviews AI-involved | Organization Science 2026 |
 | curl bug bounty AI slop | ~20% of reports; program closed Feb 2026 | Stenberg |
+
+## New in v1.2.0
+
+- **Labeled evaluation corpus** (`eval/corpus.jsonl`, 53 examples, 7 languages) and benchmark runner (`eval/run_benchmark.py`)
+- **Calibrated weights** via `eval/calibrate.py`: skill pipeline F1 **0.47 → 0.98** at precision 1.0
+- **Noisy-OR score aggregation** — independent evidence accumulates instead of being averaged away
+- **New languages:** Hindi, Vietnamese, Urdu markers (closing the §12 language-bias gap)
+- New phrase category `authority_claims`; TTL synchronized; consistency checker (`scripts/check_consistency.py`) wired into CI; engine parity tests
 
 ## New in v1.1.0
 

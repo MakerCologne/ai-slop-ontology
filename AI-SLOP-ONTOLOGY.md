@@ -1,6 +1,6 @@
 ---
 title: "AI Slop Ontology"
-version: "1.1.0"
+version: "1.2.0"
 date: "2026-07-10"
 language: "de/en (bilingual; technical terms in English)"
 intended_consumers: ["LLM agents", "quality-assurance pipelines", "content moderation", "researchers"]
@@ -199,10 +199,10 @@ Aus der konsolidierten AI-Slop-Detection-Heuristik (40+ Techniken; v1.0). Wichti
 21. **Lists-as-Responses**: übermässige Bullet-Strukturen ohne Substanz.
 22. **Trailing-Moral / Generic-Closing Patterns**: künstliche "In summary"-Klammern.
 
-**Slop-Score-Aggregation** (gewichtet nach Severity):
+**Slop-Score-Aggregation** (Noisy-OR über severity-gewichtete Signale; seit v1.2.0 — die frühere Mittelwert-Formel verwässerte akkumulierende Evidenz):
 ```
 weights = {critical: 1.0, high: 0.7, medium: 0.4, low: 0.2}
-slop_score = min(1.0, sum(weights[s.severity] * s.confidence) / max(1, n))
+slop_score = min(1.0, 1 − Π (1 − weights[s.severity] * s.confidence))
 is_slop = (slop_score ≥ 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
 
@@ -356,6 +356,7 @@ ontology:
       severe: 0.8
 
   scoringFormula:
+    aggregation: noisyOR  # slop_score = 1 - product(1 - w(sev) * conf)
     weights: {critical: 1.0, high: 0.7, medium: 0.4, low: 0.2}
     isSlopRule: "slop_score >= 0.4 OR any(severity==critical) OR count(severity>=high) >= 2"
 
@@ -544,6 +545,7 @@ Weitere: Science-Editorial *Resisting AI slop* (2026, DOI 10.1126/science.aee826
 |---------|-------|----------|
 | 1.0.0 | 2026-05-20 | Initial release; konsolidiert Shaib et al. 2025, Madsen & Puyt 2025, Shumailov et al. 2024, 22 Detection-Techniken, 12 Harm-Klassen, 16 verwandte Konzepte. |
 | 1.1.0 | 2026-07-10 | Neue Klassen `SecurityReportSlop` (curl-Fall) und `PeerReviewSlop` (Organization Science); neues Image-Signal `HyperTypicality` (PNAS 2026); Schlüsselzahlen aktualisiert (NewsGuard 3.749; Deezer 44 %; Spotify 75 Mio.); 7 neue Referenzen [25]–[31]; alle Kernzitate verifiziert (Shaib arXiv:2509.19163, Madsen & Puyt SSRN 5558018, Kommers arXiv:2601.06060, Keisha arXiv:2509.04796). |
+| 1.2.0 | 2026-07-10 | Evaluations-Korpus (53 gelabelte Beispiele, 7 Sprachen) + Benchmark; Gewichts-Kalibrierung (Skill-Pipeline F1 0,47 → 0,98 bei Precision 1,0); Noisy-OR-Aggregation statt Mittelwert (Evidenz akkumuliert); neue Phrasen-Kategorie `authority_claims`; Sprachen Hindi/Vietnamesisch/Urdu ergänzt (§12-Lücke); TTL synchronisiert + Konsistenz-Checker in CI; Engine-Paritätstests. |
 
 **Empfohlener Update-Rhythmus:** Quartal (neue Modellgenerationen → neue Slop-Patterns); ad-hoc bei grossen NewsGuard-Updates oder neuen akademischen Taxonomien.
 

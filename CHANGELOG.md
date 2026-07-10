@@ -1,5 +1,49 @@
 # Changelog
 
+## [1.2.0] — 2026-07-10
+
+Setzt die fünf Follow-up-Vorschläge aus REVIEW-2026-07.md §4 um.
+
+### Evaluation & Kalibrierung
+- **Evaluations-Korpus** `eval/corpus.jsonl`: 53 gelabelte Beispiele
+  (26 Slop / 27 Clean) in 7 Sprachen (EN/DE/FR/ES/HI/VI/UR), inkl. bewusst
+  schwerer Fälle (subtiler Slop, disclosed AI-assisted Clean-Text).
+- **Benchmark-Runner** `eval/run_benchmark.py`: Precision/Recall/F1 pro Engine
+  und Sprache; läuft informativ in CI.
+- **Kalibrierungs-Skript** `eval/calibrate.py`: Koordinaten-Aufstieg über die
+  13 Dimensionsgewichte mit Precision-Floor (Default 0,95); unterstützt
+  eigene Korpora (`--corpus`, z. B. Export des Shaib-et-al.-Datensatzes).
+- **Kalibrierte Default-Gewichte** im Skill-Scorer (dokumentiert im Code):
+  Scorer-F1 0,47 → 0,89; Gesamt-Pipeline (Scorer + Typ-Klassifikator)
+  **F1 0,98 / Precision 1,0** auf dem Korpus.
+
+### Scoring-Verbesserungen
+- **Noisy-OR-Aggregation** in `src/classifier.py` (Text und Code) statt des
+  Mittelwerts: unabhängige Evidenz akkumuliert (drei Medium-Signale ergaben
+  vorher ~0,29 im Schnitt). Formel-Doku in Ontologie §6/§10, ontology.json
+  und README nachgezogen.
+- Multilingual-Signal auf Severity `high` (≥2 sprachspezifische Marker sind
+  starke Evidenz, da alle übrigen Signale englischbasiert sind).
+- Neue Phrasen-Kategorie **`authority_claims`** in ontology.json + dediziertes
+  `FakeAuthorityPattern`-Signal im src-Klassifikator.
+- Skill-Typ-Klassifikator: ≥2 distinktive Muster eines Typs (Type-Score ≥0,6)
+  heben den Score auf mindestens 0,45.
+
+### Sprachen (§12-Lücke geschlossen)
+- **Hindi, Vietnamesisch, Urdu**: je 8–10 formelhafte LLM-Marker in
+  Skill-Scorer und ontology.json; Regressionstests und Korpus-Beispiele.
+
+### Konsistenz & Parität
+- `ontology.ttl` synchronisiert: `PeerReviewSlop`, `SecurityReportSlop`,
+  `HyperTypicalityDetection`, Datum/Quellen aktualisiert.
+- **Konsistenz-Checker** `scripts/check_consistency.py` (JSON↔TTL↔YAML↔Skill)
+  in CI verdrahtet — Drift bricht den Build.
+- **Engine-Paritätstests** `tests/test_engine_sync.py`: pinnt das Verhalten
+  der bewusst duplizierten Kern-Matcher in `src/` und `skills/` aufeinander.
+  Volles Packaging wurde geprüft und verworfen (Skill muss self-contained
+  bleiben); die Entscheidung ist im Test dokumentiert.
+- Testsuite: 37 → 42 Tests.
+
 ## [1.1.0] — 2026-07-10
 
 ### Recherche & Ontologie

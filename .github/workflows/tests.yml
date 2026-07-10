@@ -21,3 +21,7 @@ jobs:
         run: |
           python -c "import json; json.load(open('ontology.json'))"
           python -c "import yaml; yaml.safe_load(open('ai_slop_ontology.yaml'))"
+      - name: Check JSON/YAML/TTL consistency
+        run: python scripts/check_consistency.py
+      - name: Run benchmark (informational)
+        run: python eval/run_benchmark.py

@@ -847,6 +847,20 @@
               "key takeaway:",
               "bottom line:"
             ]
+          },
+          "authority_claims": {
+            "confidence": 0.8,
+            "description": "Unsubstantiated appeals to authority without verifiable citations",
+            "items": [
+              "studies have shown",
+              "research shows",
+              "experts say",
+              "it has been proven",
+              "scientists have found",
+              "researchers discovered",
+              "recent studies",
+              "a growing body of evidence"
+            ]
           }
         }
       },
@@ -1082,7 +1096,7 @@
       ]
     },
     "multilingual": {
-      "description": "Language-specific AI markers beyond English.",
+      "description": "Language-specific AI slop markers (DE/FR/ES + HI/VI/UR added 2026-07)",
       "german": {
         "buzzwords": [
           "im heutigen schnelllebigen",
@@ -1123,6 +1137,45 @@
           "en conclusión",
           "en el mundo de hoy",
           "no cabe duda de que"
+        ]
+      },
+      "hindi": {
+        "buzzwords": [
+          "आज की तेज़ रफ़्तार दुनिया में",
+          "यह ध्यान रखना महत्वपूर्ण है",
+          "निष्कर्ष में",
+          "डिजिटल युग में",
+          "संक्षेप में कहें तो",
+          "गेम चेंजर",
+          "समग्र दृष्टिकोण",
+          "महत्वपूर्ण भूमिका निभाता है",
+          "आइए जानते हैं",
+          "यह कहना सुरक्षित है"
+        ]
+      },
+      "vietnamese": {
+        "buzzwords": [
+          "trong thế giới ngày nay",
+          "trong thời đại số",
+          "điều quan trọng cần lưu ý",
+          "tóm lại",
+          "không thể phủ nhận rằng",
+          "đóng vai trò quan trọng",
+          "trong bối cảnh hiện nay",
+          "hãy cùng khám phá",
+          "một cách toàn diện"
+        ]
+      },
+      "urdu": {
+        "buzzwords": [
+          "آج کی تیز رفتار دنیا میں",
+          "یہ بات قابل ذکر ہے",
+          "ڈیجیٹل دور میں",
+          "خلاصہ یہ ہے کہ",
+          "اہم کردار ادا کرتا ہے",
+          "اس میں کوئی شک نہیں",
+          "آئیے جانتے ہیں",
+          "مجموعی طور پر"
         ]
       }
     }
@@ -2523,14 +2576,16 @@
       "medium": 0.4,
       "low": 0.2
     },
-    "formula": "slop_score = min(1.0, sum(weights[s.severity] * s.confidence) / max(1, n))",
+    "formula": "slop_score = min(1.0, 1 - product(1 - weights[s.severity] * s.confidence))",
     "isSlopRule": "slop_score >= 0.4 OR any(severity==critical) OR count(severity>=high) >= 2",
     "thresholds": {
       "autoPass": "slop_score < 0.2 AND no critical issues",
       "review": "0.2 <= slop_score < 0.4 OR 1 high issue",
       "reject": "slop_score >= 0.4 OR any critical issue",
       "block": "hardcoded secrets OR SQL injection OR child safety violation"
-    }
+    },
+    "aggregation": "noisyOR",
+    "note": "v1.2.0: noisy-OR replaces the severity-weighted mean, which diluted accumulating evidence (three medium signals averaged to ~0.29 instead of adding up)."
   },
   "detectionThresholds": {
     "repetition": {

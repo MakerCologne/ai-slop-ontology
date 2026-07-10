@@ -158,6 +158,26 @@ MULTILINGUAL_BUZZWORDS = {
     "spanish": [
         "en el paisaje actual", "es importante destacar", "cabe señalar que",
         "en conclusión", "en el mundo de hoy", "no cabe duda de que"
+    ],
+    # Added 2026-07: high-slop-volume languages where detection tooling is
+    # weakest (ontology §12). Markers are the formulaic phrases LLMs produce
+    # when translating the English opening/hedging/closing templates.
+    "hindi": [
+        "आज की तेज़ रफ़्तार दुनिया में", "यह ध्यान रखना महत्वपूर्ण है",
+        "निष्कर्ष में", "डिजिटल युग में", "संक्षेप में कहें तो",
+        "गेम चेंजर", "समग्र दृष्टिकोण", "महत्वपूर्ण भूमिका निभाता है",
+        "आइए जानते हैं", "यह कहना सुरक्षित है"
+    ],
+    "vietnamese": [
+        "trong thế giới ngày nay", "trong thời đại số",
+        "điều quan trọng cần lưu ý", "tóm lại", "không thể phủ nhận rằng",
+        "đóng vai trò quan trọng", "trong bối cảnh hiện nay",
+        "hãy cùng khám phá", "một cách toàn diện"
+    ],
+    "urdu": [
+        "آج کی تیز رفتار دنیا میں", "یہ بات قابل ذکر ہے", "ڈیجیٹل دور میں",
+        "خلاصہ یہ ہے کہ", "اہم کردار ادا کرتا ہے", "اس میں کوئی شک نہیں",
+        "آئیے جانتے ہیں", "مجموعی طور پر"
     ]
 }
 
@@ -336,16 +356,22 @@ def mirrored_intro_conclusion(text: str) -> bool:
 
 def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     if weights is None:
+        # Calibrated 2026-07 via eval/calibrate.py (coordinate ascent on
+        # eval/corpus.jsonl, precision floor 0.95): F1 0.47 -> 0.89 at
+        # threshold 0.40 with zero false positives. Weights intentionally sum
+        # to > 1 — the total is capped at 1.0, so strong evidence on a few
+        # dimensions is enough to cross the threshold. Recalibrate for your
+        # domain with eval/calibrate.py --corpus your_data.jsonl.
         weights = {
             "density": 0.15,
-            "repetition": 0.08,
-            "burstiness": 0.08,
-            "buzzwords": 0.12,
-            "phrases": 0.15,
-            "punctuation": 0.05,
-            "trailing_moral": 0.04,
+            "repetition": 0.18,
+            "burstiness": 0.30,
+            "buzzwords": 0.26,
+            "phrases": 0.30,
+            "punctuation": 0.30,
+            "trailing_moral": 0.06,
             "list_heavy": 0.04,
-            "fake_authority": 0.08,
+            "fake_authority": 0.18,
             "verbosity": 0.04,
             "multilingual": 0.04,
             "mirrored": 0.05,

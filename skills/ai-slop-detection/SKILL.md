@@ -1,6 +1,6 @@
 ---
 name: ai-slop-detection
-description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.0.0. Analyze content for syntheticity signals, quality deficits, and slop patterns across 13 detection dimensions with 100+ buzzword signals, 6 phrase categories, multilingual detection (DE/FR/ES), and 12 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
+description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.2.0. Analyze content for syntheticity signals, quality deficits, and slop patterns across 13 detection dimensions with 100+ buzzword signals, 7 phrase categories, multilingual detection (DE/FR/ES/HI/VI/UR), and 14 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
 ---
 
 # AI Slop Detection v2
@@ -24,7 +24,7 @@ Before running scripts, apply this heuristic:
 - **Mirrored intro/conclusion?** Conclusion restates introduction with synonyms
 - **All substance, no information?** High word count, zero verifiable claims
 - **Uniform sentence length?** Every sentence 20-30 words — no burstiness
-- **Multilingual AI patterns?** German: "im heutigen schnelllebigen", "es gilt zu beachten"; French: "dans le paysage actuel"; Spanish: "en el paisaje actual"
+- **Multilingual AI patterns?** German: "im heutigen schnelllebigen", "es gilt zu beachten"; French: "dans le paysage actuel"; Spanish: "en el paisaje actual"; Hindi: "आज की तेज़ रफ़्तार दुनिया में"; Vietnamese: "trong thế giới ngày nay"; Urdu: "آج کی تیز رفتار دنیا میں"
 
 If 3+ apply → likely slop. Proceed to scoring.
 

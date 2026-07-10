@@ -55,6 +55,7 @@ SIGNAL_SEVERITY = {
     "PhrasePattern": "medium",
     "ExcessiveHedging": "medium",
     "MetaphorAbuse": "medium",
+    "FakeAuthorityPattern": "high",
     "EmDashExcess": "medium",
     "EllipsisExcess": "low",
     "ExclamationExcess": "low",
@@ -70,8 +71,10 @@ SEVERITY_WEIGHTS = {"critical": 1.0, "high": 0.7, "medium": 0.4, "low": 0.2}
 
 
 def _severity_for(signal_id: str) -> str:
+    # A multilingual hit means >= 2 language-specific AI markers matched;
+    # since all other signals are English-based, this is strong evidence.
     if signal_id.startswith("Multilingual_"):
-        return "medium"
+        return "high"
     return SIGNAL_SEVERITY.get(signal_id, "medium")
 
 
@@ -244,6 +247,12 @@ class SlopClassifier:
                 f"Tapestry-style metaphors: {', '.join(phrase_hits['metaphor_abuse'])}"
             ))
 
+        if "authority_claims" in phrase_hits and len(phrase_hits["authority_claims"]) >= 2:
+            result.signals_detected.append(SignalMatch(
+                "FakeAuthorityPattern", 0.80,
+                f"Unsubstantiated authority: {', '.join(phrase_hits['authority_claims'])}"
+            ))
+
         # ============================================================
         # 3. PUNCTUATION ANOMALIES
         # ============================================================
@@ -331,16 +340,18 @@ class SlopClassifier:
         # ============================================================
         # 7. SCORE CALCULATION
         # ============================================================
-        # Documented formula (ontology §6): severity-weighted mean, plus
-        # escalation for any critical signal or >= 2 high-severity signals.
+        # Noisy-OR aggregation (ontology §6): independent pieces of evidence
+        # accumulate instead of being averaged away — a mean-based formula let
+        # three medium signals cancel each other down to ~0.29. Escalation for
+        # any critical signal or >= 2 high-severity signals still applies.
         for s in result.signals_detected:
             s.severity = _severity_for(s.signal_id)
 
         if result.signals_detected:
-            n = len(result.signals_detected)
-            weighted = sum(SEVERITY_WEIGHTS[s.severity] * s.confidence
-                           for s in result.signals_detected)
-            result.overall_slop_score = min(1.0, weighted / max(n, 1))
+            no_slop_prob = 1.0
+            for s in result.signals_detected:
+                no_slop_prob *= 1.0 - SEVERITY_WEIGHTS[s.severity] * s.confidence
+            result.overall_slop_score = min(1.0, round(1.0 - no_slop_prob, 4))
 
             has_critical = any(s.severity == "critical" for s in result.signals_detected)
             high_count = sum(1 for s in result.signals_detected if s.severity in ("critical", "high"))
@@ -401,13 +412,14 @@ class SlopClassifier:
                 f"Comment/code ratio: {comment_lines}/{code_lines}"
             ))
 
-        # Score
+        # Score (noisy-OR, same aggregation as classify_text)
         for s in result.signals_detected:
             s.severity = _severity_for(s.signal_id)
         if result.signals_detected:
-            weighted = sum(SEVERITY_WEIGHTS[s.severity] * s.confidence
-                           for s in result.signals_detected)
-            result.overall_slop_score = min(1.0, weighted / len(result.signals_detected))
+            no_slop_prob = 1.0
+            for s in result.signals_detected:
+                no_slop_prob *= 1.0 - SEVERITY_WEIGHTS[s.severity] * s.confidence
+            result.overall_slop_score = min(1.0, round(1.0 - no_slop_prob, 4))
             if any(s.severity == "critical" for s in result.signals_detected):
                 result.overall_slop_score = max(result.overall_slop_score, 0.70)
             if result.overall_slop_score >= 0.70:

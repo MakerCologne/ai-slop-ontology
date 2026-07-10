@@ -37,6 +37,30 @@ class TestSkillScorer(unittest.TestCase):
         result = slop_scorer.slop_score("The report shows revenue grew 4 percent.")
         self.assertEqual(result["dimension_scores"]["burstiness_slop"], 0.0)
 
+    def test_hindi_markers_match(self):
+        result = slop_scorer.multilingual_buzzword_score(
+            "आज की तेज़ रफ़्तार दुनिया में यह ध्यान रखना महत्वपूर्ण है कि "
+            "डिजिटल युग में समग्र दृष्टिकोण महत्वपूर्ण भूमिका निभाता है।"
+        )
+        self.assertIn("hindi", result)
+        self.assertGreaterEqual(len(result["hindi"]), 3)
+
+    def test_vietnamese_markers_match(self):
+        result = slop_scorer.multilingual_buzzword_score(
+            "Trong thế giới ngày nay, điều quan trọng cần lưu ý là công nghệ "
+            "đóng vai trò quan trọng. Tóm lại, hãy cùng khám phá."
+        )
+        self.assertIn("vietnamese", result)
+        self.assertGreaterEqual(len(result["vietnamese"]), 3)
+
+    def test_urdu_markers_match(self):
+        result = slop_scorer.multilingual_buzzword_score(
+            "آج کی تیز رفتار دنیا میں یہ بات قابل ذکر ہے کہ ڈیجیٹل دور میں "
+            "ٹیکنالوجی اہم کردار ادا کرتا ہے۔ مجموعی طور پر، خلاصہ یہ ہے کہ سب بدل گیا۔"
+        )
+        self.assertIn("urdu", result)
+        self.assertGreaterEqual(len(result["urdu"]), 3)
+
     def test_overlap_dedup(self):
         _, hits, _ = slop_scorer.buzzword_score("A rich tapestry of ideas.")
         self.assertIn("rich tapestry", hits)

@@ -38,7 +38,10 @@ class TestOntologyJson(unittest.TestCase):
         multi = self.o["signals"]["multilingual"]
         langs = [k for k, v in multi.items()
                  if isinstance(v, dict) and "buzzwords" in v]
-        self.assertEqual(sorted(langs), ["french", "german", "spanish"])
+        self.assertEqual(
+            sorted(langs),
+            ["french", "german", "hindi", "spanish", "urdu", "vietnamese"],
+        )
 
 
 class TestYamlOntology(unittest.TestCase):
@@ -47,9 +50,15 @@ class TestYamlOntology(unittest.TestCase):
             import yaml
         except ImportError:
             self.skipTest("pyyaml not installed")
+        import re
         with open(os.path.join(ROOT, "ai_slop_ontology.yaml")) as f:
             data = yaml.safe_load(f)
-        self.assertEqual(data["ontology"]["version"], "1.1.0")
+        # Version must be semver and match the canonical document's front
+        # matter (scripts/check_consistency.py enforces the same invariant).
+        self.assertRegex(data["ontology"]["version"], r"^\d+\.\d+\.\d+$")
+        with open(os.path.join(ROOT, "AI-SLOP-ONTOLOGY.md")) as f:
+            md_version = re.search(r'^version: "([^"]+)"', f.read(), re.MULTILINE)
+        self.assertEqual(data["ontology"]["version"], md_version.group(1))
         self.assertIn("empirical_updates_2026_07", data["ontology"])
 
 

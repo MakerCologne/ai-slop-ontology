@@ -255,6 +255,12 @@ def classify_text(text: str) -> ClassificationResult:
     dimension_score = dimension_count / 2
     result.score = round(min(signal_score * 0.4 + dimension_score * 0.2 + min(type_score, 1.0) * 0.4, 1.0), 2)
 
+    # Two or more distinctive patterns of a single slop type (score >= 0.6,
+    # e.g. "precedent clearly shows" + "the court has consistently held") are
+    # decisive on their own, even when generic dimensions stay quiet.
+    if type_scores and max(type_scores.values()) >= 0.6:
+        result.score = max(result.score, 0.45)
+
     # Severity
     if result.score >= 0.80:
         result.severity = "critical"
