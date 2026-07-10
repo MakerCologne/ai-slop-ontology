@@ -9,8 +9,8 @@
     dc:title "AI Slop Ontology" ;
     dc:description "A machine-readable ontology for classifying, detecting, and reasoning about AI-generated slop content across all media types." ;
     dc:creator "Stefan / BTM.one" ;
-    dc:date "2026-05-20" ;
-    dc:source "Shaib et al. 2025, Kommers et al. 2026, SlopDetector.org, MINT Lab 2026" ;
+    dc:date "2026-07-10" ;
+    dc:source "Shaib et al. 2025, Kommers et al. 2026, Nishal et al. 2026, SlopDetector.org, MINT Lab 2026, NewsGuard 2026" ;
     rdfs:comment "Designed for agent consumption — agents can load this ontology to understand, classify, detect, and countermeasure AI slop." .
 
 # ============================================================================
@@ -187,6 +187,20 @@
     :hasMedium :Text ;
     :detectedBy :CitationVerification , :StyleConsistencyAnalysis ;
     :hasNormativeFraming :EpistemicPollution .
+
+:PeerReviewSlop a :SlopType ;
+    rdfs:label "Peer Review Slop" ;
+    rdfs:comment "AI-generated peer reviews: fluent, generic feedback without engagement with the manuscript. Organization Science (2026): >30% of reviews AI-involved." ;
+    :hasMedium :Text ;
+    :detectedBy :StyleConsistencyAnalysis ;
+    :hasNormativeFraming :EpistemicPollution .
+
+:SecurityReportSlop a :SlopType ;
+    rdfs:label "Security Report Slop" ;
+    rdfs:comment "AI-generated vulnerability reports that sound technical but contain nothing actionable. Flooded curl's bug bounty (~20% of submissions mid-2025); program closed Feb 2026." ;
+    :hasMedium :Text ;
+    :detectedBy :SourceVerification ;
+    :hasNormativeFraming :SecurityRisk .
 
 :PoliticalSlop a :SlopType ;
     rdfs:label "Political Slop" ;
@@ -592,6 +606,11 @@
     rdfs:comment "Detect extra limbs, distorted features, impossible physics, unnatural lighting." ;
     :automated true ;
     rdfs:comment "HSV variance analysis: high variance (>10000) signals artifacts." .
+
+:HyperTypicalityDetection a :DetectionMethod ;
+    rdfs:label "Hyper-Typicality Detection" ;
+    rdfs:comment "AI-generated faces regress to the mathematical average and look 'more typical than real faces'. Humans are trainable to near-perfect detection using this cue (ANU/PNAS 2026)." ;
+    :automated false .
 
 :ReverseImageSearch a :DetectionMethod ;
     rdfs:label "Reverse Image Search" ;

@@ -1,6 +1,6 @@
 ---
 name: ai-slop-detection
-description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.0.0. Analyze content for syntheticity signals, quality deficits, and slop patterns across 13 detection dimensions with 100+ buzzword signals, 6 phrase categories, multilingual detection (DE/FR/ES), and 12 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
+description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.2.0. Analyze content for syntheticity signals, quality deficits, and slop patterns across 13 detection dimensions with 100+ buzzword signals, 7 phrase categories, multilingual detection (DE/FR/ES/HI/VI/UR), and 14 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
 ---
 
 # AI Slop Detection v2
@@ -24,7 +24,7 @@ Before running scripts, apply this heuristic:
 - **Mirrored intro/conclusion?** Conclusion restates introduction with synonyms
 - **All substance, no information?** High word count, zero verifiable claims
 - **Uniform sentence length?** Every sentence 20-30 words — no burstiness
-- **Multilingual AI patterns?** German: "im heutigen schnelllebigen", "es gilt zu beachten"; French: "dans le paysage actuel"; Spanish: "en el paisaje actual"
+- **Multilingual AI patterns?** German: "im heutigen schnelllebigen", "es gilt zu beachten"; French: "dans le paysage actuel"; Spanish: "en el paisaje actual"; Hindi: "आज की तेज़ रफ़्तार दुनिया में"; Vietnamese: "trong thế giới ngày nay"; Urdu: "آج کی تیز رفتار دنیا میں"
 
 If 3+ apply → likely slop. Proceed to scoring.
 
@@ -90,7 +90,7 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 12. **Mirrored Intro↔Conclusion** — conclusion restates intro
 13. **Structural Signals** — composite of uniform structure patterns
 
-## 12 Slop Types
+## 14 Slop Types
 
 | Type | Telltale | Danger |
 |------|----------|--------|
@@ -106,6 +106,8 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 | Workslop | "Circling back...", "Let's align..." | Shifts cost to receiver |
 | LegalSlop | "Precedent clearly shows..." | ⚠️ Fake precedents |
 | LinkedInSlop | "Thrilled to announce..." | Announces nothing |
+| SecurityReportSlop | "could potentially allow..." | ⚠️ Wastes maintainer time; killed curl's bug bounty (Feb 2026) |
+| PeerReviewSlop | "the manuscript is well written..." | ⚠️ Generic review without engaging the actual paper |
 
 ## Retrieval Collapse Defense
 
@@ -118,7 +120,7 @@ When evaluating content for RAG/Search/Memory:
 5. **Contamination Detection** — Check if search results are slop-dominated
 6. **Cross-Validation** — Facts against min. 2 independent confirmations
 
-## Knowledge Collapse Stages (Keisha et al. NeurIPS 2025)
+## Knowledge Collapse Stages (Keisha et al., arXiv:2509.04796, NeurIPS 2025 Workshop)
 
 - **Stage A:** Facts correct, instruction-following intact (low risk)
 - **Stage B:** CONFIDENTLY WRONG — Facts false but format correct (CRITICAL — most harmful)
@@ -128,7 +130,7 @@ When evaluating content for RAG/Search/Memory:
 
 For URLs and search results, check these additional signals:
 
-- **Domain reputation** — Known content farm? (NewsGuard: 3,000+ tracked)
+- **Domain reputation** — Known content farm? (NewsGuard: 3,749 tracked, June 2026)
 - **Author presence** — Named author with verifiable history?
 - **Source citations** — Real, verifiable references or hollow claims?
 - **Publication pattern** — Mass upload? Cross-platform repost?
@@ -138,7 +140,7 @@ For URLs and search results, check these additional signals:
 
 - **Detection signals (22 techniques):** `references/detection-signals.md`
 - **Scored examples (8 cases):** `references/slop-examples.md`
-- **Full ontology (459 signals):** `../../ai-slop-ontology/ontology.json`
+- **Full ontology (459 signals):** `../../ontology.json` (repo root)
 
 ## Output Format
 

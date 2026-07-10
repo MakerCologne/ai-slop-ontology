@@ -10,6 +10,37 @@ from collections import Counter
 from typing import Optional
 
 
+def _term_pattern(term: str) -> str:
+    """Regex for a term with word boundaries where the term edge is a word char."""
+    t = term.lower()
+    left = r'\b' if t[0].isalnum() else ''
+    right = r'\b' if t[-1].isalnum() else ''
+    return left + re.escape(t) + right
+
+
+def find_term_matches(text_lower: str, terms: list) -> dict:
+    """
+    Match terms with word boundaries and overlap suppression: if a longer term
+    already covers a span (e.g. "rich tapestry"), a shorter term inside that
+    span (e.g. "tapestry") is not counted again.
+
+    Returns {term: occurrence_count} for matched terms.
+    """
+    spans = []
+    for term in terms:
+        for m in re.finditer(_term_pattern(term), text_lower):
+            spans.append((m.start(), m.end(), term))
+    spans.sort(key=lambda x: (-(x[1] - x[0]), x[0]))
+    occupied = []
+    counts = {}
+    for start, end, term in spans:
+        if any(start < oe and end > os for os, oe in occupied):
+            continue
+        occupied.append((start, end))
+        counts[term] = counts.get(term, 0) + 1
+    return counts
+
+
 def information_density(text: str) -> float:
     """Unique words / total words. < 0.40 = slop."""
     words = re.findall(r'\b\w+\b', text.lower())
@@ -41,11 +72,14 @@ def burstiness(text: str) -> float:
 def buzzword_score(text: str, tiers: dict[str, list[str]]) -> tuple[int, list[str]]:
     """Count buzzword occurrences across tiers. > 3 = generic slop."""
     text_lower = text.lower()
-    hits = []
+    term_to_tier = {}
+    all_terms = []
     for tier_name, words in tiers.items():
         for w in words:
-            if w in text_lower:
-                hits.append(f"{w} ({tier_name})")
+            term_to_tier[w.lower()] = tier_name
+            all_terms.append(w)
+    matched = find_term_matches(text_lower, all_terms)
+    hits = [f"{term} ({term_to_tier[term]})" for term in matched]
     return len(hits), hits
 
 
@@ -69,7 +103,7 @@ def trailing_moral(text: str) -> bool:
     ]
     # Check last 200 chars
     tail = text_lower[-200:]
-    return any(p in tail for p in moral_patterns)
+    return bool(find_term_matches(tail, moral_patterns))
 
 
 def list_heavy(text: str) -> bool:
@@ -115,9 +149,11 @@ def slop_score(
     punct = punctuation_anomaly_score(text)
 
     # Normalize to 0-1 (higher = more slop)
+    num_sentences = len([s for s in re.split(r'[.!?]+', text) if s.strip()])
     density_slop = max(0, (0.50 - density) / 0.50)  # below 0.50 is increasingly slop
     rep_slop = min(1, rep / 0.30)  # above 0.30 is definitely slop
-    burst_slop = max(0, (5 - burst) / 5)  # below 5 is increasingly uniform
+    # Burstiness is only meaningful with >= 3 sentences; neutral otherwise
+    burst_slop = max(0, (5 - burst) / 5) if num_sentences >= 3 else 0.0
     buzz_slop = min(1, buzz_count / 6)  # 6+ buzzwords = definite slop
     punct_slop = min(1, (punct["emDashRate"] + punct["ellipsisRate"] + punct["exclamationRate"]) / 2)
     moral_slop = 1.0 if trailing_moral(text) else 0.0

@@ -2,7 +2,7 @@
 
 A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*. Consolidated from academic research (Shaib et al. 2025; Madsen & Puyt 2025; Shumailov et al. 2024), investigative journalism (404 Media; NYT; Guardian), industry research (NewsGuard; Pangram Labs), and lexicography (Merriam-Webster 2025; Oxford 2024).
 
-**Version:** 1.0.0 | **Date:** 2026-05-20 | **License:** CC BY 4.0
+**Version:** 1.2.0 | **Date:** 2026-07-10 | **License:** CC BY 4.0
 
 ## Quick Start
 
@@ -36,19 +36,23 @@ Key insight: Carefully curated, verified, and intentionally published AI outputs
 ## Repository Structure
 
 ```
-├── AI-SLOP-ONTOLOGY-v1.0.0.md  ← Canonical document (526 lines, 14 sections)
+├── AI-SLOP-ONTOLOGY.md          ← Canonical document (14 sections, versioned in front matter)
 ├── ai_slop_ontology.yaml        ← Machine-readable YAML ontology
 ├── ontology.json                 ← Agent-friendly JSON (all data)
 ├── ontology.ttl                  ← RDF/Turtle (semantic web)
 ├── ONTOLOGY.md                   ← Human-readable taxonomy overview
 ├── ONTOLOGY-STRUCTURE.md         ← Property-based model & class hierarchy
-├── REFERENCES.md                 ← Source list (30 references)
+├── REFERENCES.md                 ← Source list (38 references)
+├── CHANGELOG.md                  ← Version history
+├── REVIEW-2026-07.md             ← Deep review findings (code + data audit)
 ├── report.md                     ← Deep research report (Round 1)
 ├── report-extended.md            ← Extended research (Round 2)
 ├── RESEARCH-v0.1.md              ← v0.1 research findings
 ├── src/
-│   ├── classifier.py             ← Python classifier
+│   ├── classifier.py             ← Python classifier (v1.2)
 │   └── scorer.py                  ← Scoring engine
+├── skills/ai-slop-detection/     ← Agent skill (self-contained scorer + classifier)
+├── tests/                        ← Unit tests (python3 -m unittest discover tests)
 └── examples/
     ├── classification-examples.json  ← 8 scored examples
     ├── text-slop-examples.json       ← Text slop instances
@@ -73,12 +77,13 @@ Properties: hasGenerationMode, hasHumanOversightLevel, hasQualityProfile, hasDis
 | 0.70–1.00 | AISlopCandidate | Do not cite, do not store as fact |
 | any + high harm | CriticalReviewRequired | Always escalate (legal, medical, children) |
 
-### Scoring Formula
+### Scoring Formula (noisy-OR since v1.2.0)
 ```
 weights = {critical: 1.0, high: 0.7, medium: 0.4, low: 0.2}
-slop_score = min(1.0, sum(weights[s.severity] * s.confidence) / max(1, n))
+slop_score = min(1.0, 1 − Π(1 − weights[s.severity] * s.confidence))
 is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
+Independent evidence accumulates instead of being averaged away.
 
 ### Quality Dimensions (Shaib et al. 2025)
 - **Information Utility:** Density (IU1), Relevance (IU2)
@@ -88,17 +93,37 @@ is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ### 7Vs Systemic Dimensions (Madsen & Puyt 2025)
 Volume, Velocity, Variety, Value, Verification, Visibility, Virality
 
-## Key Statistics (May 2026)
+## Key Statistics (July 2026)
 
 | Metric | Value | Source |
 |--------|-------|--------|
-| AI content farm sites | 3,006 (Mar 2026) | NewsGuard |
+| AI content farm sites | 3,749 (Jun 23, 2026) | NewsGuard |
 | New farms/month | 300–500 | NewsGuard |
 | AI in Google results | 19% (Jan 2025) | Graphite |
 | YouTube Kids slop | ~40% | NYT |
 | Workslop recipients | 40% of employees | HBR 2025 |
 | Workslop rework time | ~1h 56min/instance | HBR 2025 |
 | Package hallucination rate | 19.7% | USENIX 2025 |
+| AI share of new Deezer uploads | 44% (~75k tracks/day); 1–3% of streams, ~85% fraud | Deezer Apr 2026 |
+| Spotify spam tracks removed | 75M+ (12 months to Sep 2025) | Spotify |
+| Journal submissions since ChatGPT | +42%; >30% of peer reviews AI-involved | Organization Science 2026 |
+| curl bug bounty AI slop | ~20% of reports; program closed Feb 2026 | Stenberg |
+
+## New in v1.2.0
+
+- **Labeled evaluation corpus** (`eval/corpus.jsonl`, 53 examples, 7 languages) and benchmark runner (`eval/run_benchmark.py`)
+- **Calibrated weights** via `eval/calibrate.py`: skill pipeline F1 **0.47 → 0.98** at precision 1.0
+- **Noisy-OR score aggregation** — independent evidence accumulates instead of being averaged away
+- **New languages:** Hindi, Vietnamese, Urdu markers (closing the §12 language-bias gap)
+- New phrase category `authority_claims`; TTL synchronized; consistency checker (`scripts/check_consistency.py`) wired into CI; engine parity tests
+
+## New in v1.1.0
+
+- **SecurityReportSlop** — AI-generated vulnerability reports (curl killed its bug bounty over these, Feb 2026)
+- **PeerReviewSlop** — AI-generated peer reviews (Organization Science 2026: >30% of reviews AI-involved)
+- **HyperTypicality** image signal — AI faces look "more typical than real" (ANU/PNAS 2026)
+- Detection engine fixes: word-boundary matching, overlap deduplication, multilingual case fix, burstiness neutrality for short texts, severity-weighted scoring
+- Test suite under `tests/`, LICENSE file, CHANGELOG
 
 ## 12 Harm Types
 Model Collapse, Epistemic Pollution, Misinformation, Trust Erosion, Workplace Productivity Loss, Creator Squeeze, Harm to Children, Ad Fraud, Cognitive Load, Environmental Cost, Democracy Risk, Royalty Fraud

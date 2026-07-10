@@ -1,6 +1,7 @@
 ontology:
   name: ai_slop_ontology
-  version: "0.1"
+  version: "1.2.0"
+  updated: "2026-07-10"
   purpose: >
     Classify, score, filter, cite, and mitigate low-quality synthetic or
     AI-assisted content in agentic search, RAG, memory, publishing,
@@ -408,3 +409,27 @@ ontology:
           - facts only from trusted sources
           - claims stored with confidence
           - slop patterns stored as risk signals
+
+  # Empirical updates 2026-07 (see REFERENCES.md #31-38)
+  empirical_updates_2026_07:
+    newsguard_content_farms:
+      count: 3749
+      date: "2026-06-23"
+      languages: 16
+    deezer_ai_music:
+      share_of_uploads: "44%"
+      tracks_per_day: 75000
+      share_of_streams: "1-3%"
+      fraudulent_streams: "~85% flagged & demonetized"
+    academic_publishing:
+      journal: Organization Science
+      submissions_increase: "+42% since ChatGPT"
+      ai_in_peer_reviews: ">30%"
+      readability_drop_sd: 1.28
+    security_reports:
+      project: curl
+      slop_share_mid_2025: "~20%"
+      outcome: "bug bounty closed 2026-02-01"
+    new_slop_types:
+      - SecurityReportSlop
+      - PeerReviewSlop

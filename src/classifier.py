@@ -1,5 +1,8 @@
 """
-AI Slop Classifier v1.1 — uses the AI Slop Ontology signal database.
+AI Slop Classifier v1.2 — uses the AI Slop Ontology signal database.
+
+v1.2: severity-weighted scoring per the documented formula, word-boundary
+matching with overlap deduplication, multilingual case-insensitivity fix.
 
 Usage:
     from classifier import SlopClassifier
@@ -14,6 +17,11 @@ import re
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import Optional
+
+try:
+    from scorer import find_term_matches
+except ImportError:  # allow import as package module
+    from src.scorer import find_term_matches
 
 
 def _trailing_moral(text):
@@ -34,6 +42,40 @@ class SignalMatch:
     signal_id: str
     confidence: float
     evidence: str
+    severity: str = "medium"  # critical | high | medium | low
+
+
+# Severity assignment per signal type, used by the documented scoring formula
+# slop_score = min(1.0, sum(weights[severity] * confidence) / max(1, n))
+SIGNAL_SEVERITY = {
+    "CriticalBuzzword": "critical",
+    "BuzzwordOveruse_Severe": "high",
+    "BuzzwordOveruse": "medium",
+    "PhrasePatternSevere": "high",
+    "PhrasePattern": "medium",
+    "ExcessiveHedging": "medium",
+    "MetaphorAbuse": "medium",
+    "FakeAuthorityPattern": "high",
+    "EmDashExcess": "medium",
+    "EllipsisExcess": "low",
+    "ExclamationExcess": "low",
+    "UniformSentenceLength": "medium",
+    "TrailingMoral": "low",
+    "ListHeavy": "low",
+    "InventedPackage": "critical",
+    "HardcodedSecret": "critical",
+    "ExcessiveComments": "low",
+}
+
+SEVERITY_WEIGHTS = {"critical": 1.0, "high": 0.7, "medium": 0.4, "low": 0.2}
+
+
+def _severity_for(signal_id: str) -> str:
+    # A multilingual hit means >= 2 language-specific AI markers matched;
+    # since all other signals are English-based, this is strong evidence.
+    if signal_id.startswith("Multilingual_"):
+        return "high"
+    return SIGNAL_SEVERITY.get(signal_id, "medium")
 
 
 @dataclass
@@ -116,15 +158,19 @@ class SlopClassifier:
         buzzword_hits = []  # (word, tier, count, confidence)
         tier_summary = {}
 
+        # Match all tiers jointly with word boundaries; overlapping terms
+        # ("tapestry" inside "rich tapestry") count once for the longest match.
+        term_to_tier = {}
+        all_terms = []
         for tier_name, tier_words in self.buzzword_tiers.items():
-            tier_hits = []
             for w in tier_words:
-                count = text_lower.count(w)
-                if count > 0:
-                    tier_hits.append((w, count))
-                    buzzword_hits.append((w, tier_name, count, self.buzzword_confidence[tier_name]))
-            if tier_hits:
-                tier_summary[tier_name] = tier_hits
+                term_to_tier[w] = tier_name
+                all_terms.append(w)
+        matched = find_term_matches(text_lower, all_terms)
+        for w, count in matched.items():
+            tier_name = term_to_tier[w]
+            tier_summary.setdefault(tier_name, []).append((w, count))
+            buzzword_hits.append((w, tier_name, count, self.buzzword_confidence[tier_name]))
 
         result.buzzword_report = tier_summary
 
@@ -162,11 +208,16 @@ class SlopClassifier:
         phrase_hits = {}
         total_phrase_hits = 0
 
+        term_to_cats = {}
+        all_phrases = []
         for cat_name, phrases in self.phrase_categories.items():
-            cat_hits = [p for p in phrases if p in text_lower]
-            if cat_hits:
-                phrase_hits[cat_name] = cat_hits
-                total_phrase_hits += len(cat_hits)
+            for p in phrases:
+                term_to_cats.setdefault(p, []).append(cat_name)
+                all_phrases.append(p)
+        for p in find_term_matches(text_lower, all_phrases):
+            for cat_name in term_to_cats[p]:
+                phrase_hits.setdefault(cat_name, []).append(p)
+                total_phrase_hits += 1
 
         result.phrase_report = phrase_hits
 
@@ -194,6 +245,12 @@ class SlopClassifier:
             result.signals_detected.append(SignalMatch(
                 "MetaphorAbuse", 0.75,
                 f"Tapestry-style metaphors: {', '.join(phrase_hits['metaphor_abuse'])}"
+            ))
+
+        if "authority_claims" in phrase_hits and len(phrase_hits["authority_claims"]) >= 2:
+            result.signals_detected.append(SignalMatch(
+                "FakeAuthorityPattern", 0.80,
+                f"Unsubstantiated authority: {', '.join(phrase_hits['authority_claims'])}"
             ))
 
         # ============================================================
@@ -225,7 +282,9 @@ class SlopClassifier:
         # ============================================================
         if sentences:
             lengths = [len(s.split()) for s in sentences]
-            if len(lengths) >= 3:
+            # Require >= 5 sentences: with fewer, near-zero variance is expected
+            # and short factual texts would be falsely flagged as uniform.
+            if len(lengths) >= 5:
                 mean_len = sum(lengths) / len(lengths)
                 variance = sum((l - mean_len) ** 2 for l in lengths) / len(lengths)
                 std_dev = variance ** 0.5
@@ -254,7 +313,8 @@ class SlopClassifier:
         # ============================================================
         for lang, lang_data in self.multilingual.items():
             if isinstance(lang_data, dict) and "buzzwords" in lang_data:
-                lang_hits = [w for w in lang_data["buzzwords"] if w.lower() in text_lower]
+                lang_hits = sorted(find_term_matches(
+                    text_lower, [w.lower() for w in lang_data["buzzwords"]]))
                 if len(lang_hits) >= 2:
                     result.signals_detected.append(SignalMatch(
                         f"Multilingual_{lang}", 0.70,
@@ -280,11 +340,23 @@ class SlopClassifier:
         # ============================================================
         # 7. SCORE CALCULATION
         # ============================================================
+        # Noisy-OR aggregation (ontology §6): independent pieces of evidence
+        # accumulate instead of being averaged away — a mean-based formula let
+        # three medium signals cancel each other down to ~0.29. Escalation for
+        # any critical signal or >= 2 high-severity signals still applies.
+        for s in result.signals_detected:
+            s.severity = _severity_for(s.signal_id)
+
         if result.signals_detected:
-            weights = {"critical": 1.0, "high": 0.7, "medium": 0.4, "low": 0.2}
-            total_weight = sum(s.confidence for s in result.signals_detected)
-            n = len(result.signals_detected)
-            result.overall_slop_score = min(1.0, total_weight / max(n, 1))
+            no_slop_prob = 1.0
+            for s in result.signals_detected:
+                no_slop_prob *= 1.0 - SEVERITY_WEIGHTS[s.severity] * s.confidence
+            result.overall_slop_score = min(1.0, round(1.0 - no_slop_prob, 4))
+
+            has_critical = any(s.severity == "critical" for s in result.signals_detected)
+            high_count = sum(1 for s in result.signals_detected if s.severity in ("critical", "high"))
+            if has_critical or high_count >= 2:
+                result.overall_slop_score = max(result.overall_slop_score, 0.70)
 
             if result.overall_slop_score >= 0.70:
                 result.severity = "slop_candidate"
@@ -340,9 +412,16 @@ class SlopClassifier:
                 f"Comment/code ratio: {comment_lines}/{code_lines}"
             ))
 
-        # Score
+        # Score (noisy-OR, same aggregation as classify_text)
+        for s in result.signals_detected:
+            s.severity = _severity_for(s.signal_id)
         if result.signals_detected:
-            result.overall_slop_score = min(1.0, sum(s.confidence for s in result.signals_detected) / len(result.signals_detected))
+            no_slop_prob = 1.0
+            for s in result.signals_detected:
+                no_slop_prob *= 1.0 - SEVERITY_WEIGHTS[s.severity] * s.confidence
+            result.overall_slop_score = min(1.0, round(1.0 - no_slop_prob, 4))
+            if any(s.severity == "critical" for s in result.signals_detected):
+                result.overall_slop_score = max(result.overall_slop_score, 0.70)
             if result.overall_slop_score >= 0.70:
                 result.severity = "slop_candidate"
             elif result.overall_slop_score >= 0.40:
@@ -363,7 +442,8 @@ class SlopClassifier:
             "total_phrases": total_phrases,
             "structural_indicators": len(self.structural_indicators),
             "punctuation_indicators": len(self.punctuation_indicators),
-            "languages": list(self.multilingual.keys()),
+            "languages": [k for k, v in self.multilingual.items()
+                          if isinstance(v, dict) and "buzzwords" in v],
             "total_signals": total_buzzwords + total_phrases + len(self.structural_indicators) + len(self.punctuation_indicators)
         }
 
@@ -373,7 +453,7 @@ if __name__ == "__main__":
 
     classifier = SlopClassifier(sys.argv[1] if len(sys.argv) > 1 else "ontology.json")
     stats = classifier.get_signal_stats()
-    print(f"=== AI Slop Classifier v1.1 ===")
+    print(f"=== AI Slop Classifier v1.2 ===")
     print(f"Signal database: {stats['total_signals']} total signals")
     print(f"  Buzzwords: {stats['buzzwords']} across {len(stats['buzzword_tiers'])} tiers")
     print(f"  Phrases: {stats['total_phrases']} across {len(stats['phrase_categories'])} categories")
