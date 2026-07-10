@@ -22,7 +22,7 @@ from slop_scorer import (
     MORAL_PATTERNS, AUTHORITY_PATTERNS,
     buzzword_score, phrase_category_score, multilingual_buzzword_score,
     information_density, burstiness, trailing_moral, list_heavy,
-    punctuation_anomaly_score, mirrored_intro_conclusion,
+    punctuation_anomaly_score, mirrored_intro_conclusion, find_term_matches,
 )
 
 
@@ -111,6 +111,20 @@ SLOP_TYPE_PATTERNS = {
                       "key takeaway", "game-changer", "grateful for the opportunity"],
         "description": "LinkedIn-style inspirational posts with zero substance",
     },
+    "SecurityReportSlop": {
+        "patterns": ["potential vulnerability", "could potentially allow", "may lead to remote code execution",
+                      "this vulnerability could", "an attacker could potentially", "severity: critical",
+                      "responsible disclosure", "proof of concept below"],
+        "description": "AI-generated vulnerability reports that sound technical but contain nothing "
+                       "actionable (curl killed its bug bounty over these, Feb 2026)",
+    },
+    "PeerReviewSlop": {
+        "patterns": ["the authors present", "this paper addresses an important",
+                      "the manuscript is well written", "minor revisions", "the contribution is unclear",
+                      "would benefit from additional experiments", "the related work section"],
+        "description": "AI-generated peer reviews: narrow, generic feedback without engagement "
+                       "with the actual content (Organization Science 2026: >30% of reviews AI-involved)",
+    },
 }
 
 
@@ -146,8 +160,9 @@ def classify_text(text: str) -> ClassificationResult:
         result.signals.append(SignalMatch("PunctuationAnomaly", 0.85,
                                           f"Em-dash usage: {em_dashes} in {num_sentences} sentences"))
 
-    # 4. Uniform Sentence Length
-    if len(sentences) >= 3:
+    # 4. Uniform Sentence Length (>= 5 sentences: below that, near-zero
+    # variance is expected and short factual texts get falsely flagged)
+    if len(sentences) >= 5:
         burst = burstiness(text)
         if burst < 3:
             lengths = [len(s.split()) for s in sentences]
@@ -183,7 +198,7 @@ def classify_text(text: str) -> ClassificationResult:
                                           f"Non-English AI patterns: {', '.join(all_multi)}"))
 
     # 10. Fake Authority
-    authority_hits = [p for p in AUTHORITY_PATTERNS if p in text_lower]
+    authority_hits = sorted(find_term_matches(text_lower, AUTHORITY_PATTERNS))
     if authority_hits:
         result.signals.append(SignalMatch("FakeAuthorityPattern", 0.8,
                                           f"Unsubstantiated authority: {', '.join(authority_hits)}"))
@@ -195,7 +210,7 @@ def classify_text(text: str) -> ClassificationResult:
     for type_name, type_def in SLOP_TYPE_PATTERNS.items():
         if not type_def["patterns"]:
             continue
-        hits = sum(1 for p in type_def["patterns"] if p in text_lower)
+        hits = len(find_term_matches(text_lower, type_def["patterns"]))
         if hits >= 1:
             type_scores[type_name] = min(0.3 + hits * 0.15, 0.95)
 

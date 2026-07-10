@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-AI Slop Scorer v2 — Extended signal database from AI Slop Ontology v1.0.0.
+AI Slop Scorer v2.1 — Extended signal database from AI Slop Ontology v1.1.0.
+
+v2.1: word-boundary matching, overlap deduplication (longest match wins),
+case-insensitive multilingual matching, burstiness neutral for short texts.
 
 Usage:
     python3 slop_scorer.py "Text to analyze"
@@ -181,6 +184,47 @@ AUTHORITY_PATTERNS = [
 ]
 
 
+STOPWORDS = {
+    "a", "an", "the", "and", "or", "but", "of", "to", "in", "on", "for", "with",
+    "is", "are", "was", "were", "be", "been", "it", "its", "this", "that", "these",
+    "those", "as", "at", "by", "from", "we", "you", "they", "he", "she", "i",
+    "not", "no", "can", "will", "have", "has", "had", "do", "does", "their",
+    "our", "your", "my", "his", "her", "them", "us", "s", "t",
+}
+
+
+def _term_pattern(term: str) -> str:
+    """Regex for a term with word boundaries where the term edge is a word char."""
+    t = term.lower()
+    left = r'\b' if t[0].isalnum() else ''
+    right = r'\b' if t[-1].isalnum() else ''
+    return left + re.escape(t) + right
+
+
+def find_term_matches(text_lower: str, terms: list) -> dict:
+    """
+    Match terms against text with word boundaries and overlap suppression:
+    if a longer term already covers a span (e.g. "rich tapestry"), a shorter
+    term inside that span (e.g. "tapestry") is not counted again.
+
+    Returns {term: occurrence_count} for matched terms.
+    """
+    spans = []
+    for term in terms:
+        for m in re.finditer(_term_pattern(term), text_lower):
+            spans.append((m.start(), m.end(), term))
+    # Longest match wins; ties resolved by position
+    spans.sort(key=lambda x: (-(x[1] - x[0]), x[0]))
+    occupied = []
+    counts = {}
+    for start, end, term in spans:
+        if any(start < oe and end > os for os, oe in occupied):
+            continue
+        occupied.append((start, end))
+        counts[term] = counts.get(term, 0) + 1
+    return counts
+
+
 def information_density(text: str) -> float:
     words = re.findall(r'\b\w+\b', text.lower())
     if not words:
@@ -210,28 +254,39 @@ def buzzword_score(text: str, tiers: Optional[dict] = None) -> tuple:
     if tiers is None:
         tiers = BUZZWORD_TIERS
     text_lower = text.lower()
-    hits = []
-    tier_hits = {}
+    term_to_tier = {}
+    all_terms = []
     for tier_name, tier_def in tiers.items():
         words = tier_def if isinstance(tier_def, list) else tier_def.get("words", [])
-        tier_matches = []
         for w in words:
-            if w in text_lower:
-                tier_matches.append(w)
-        if tier_matches:
-            tier_hits[tier_name] = tier_matches
-            hits.extend(tier_matches)
+            term_to_tier[w.lower()] = tier_name
+            all_terms.append(w)
+    # Match all tiers jointly so overlapping terms ("tapestry" inside
+    # "rich tapestry") are counted once, for the longest match.
+    matched = find_term_matches(text_lower, all_terms)
+    hits = []
+    tier_hits = {}
+    for term in matched:
+        tier = term_to_tier.get(term, "unknown")
+        tier_hits.setdefault(tier, []).append(term)
+        hits.append(term)
     return len(hits), hits, tier_hits
 
 
 def phrase_category_score(text: str) -> dict:
     text_lower = text.lower()
-    results = {}
+    term_to_cat = {}
+    all_terms = []
     for cat_name, cat_def in PHRASE_CATEGORIES.items():
         phrases = cat_def if isinstance(cat_def, list) else cat_def.get("phrases", [])
-        matches = [p for p in phrases if p in text_lower]
-        if matches:
-            results[cat_name] = matches
+        for p in phrases:
+            term_to_cat.setdefault(p.lower(), []).append(cat_name)
+            all_terms.append(p)
+    matched = find_term_matches(text_lower, all_terms)
+    results = {}
+    for term in matched:
+        for cat in term_to_cat.get(term, []):
+            results.setdefault(cat, []).append(term)
     return results
 
 
@@ -239,9 +294,9 @@ def multilingual_buzzword_score(text: str) -> dict:
     text_lower = text.lower()
     results = {}
     for lang, words in MULTILINGUAL_BUZZWORDS.items():
-        matches = [w for w in words if w in text_lower]
-        if matches:
-            results[lang] = matches
+        matched = find_term_matches(text_lower, [w.lower() for w in words])
+        if matched:
+            results[lang] = sorted(matched)
     return results
 
 
@@ -257,7 +312,7 @@ def punctuation_anomaly_score(text: str) -> dict:
 
 def trailing_moral(text: str) -> bool:
     tail = text.lower().strip()[-200:]
-    return any(p in tail for p in MORAL_PATTERNS)
+    return bool(find_term_matches(tail, MORAL_PATTERNS))
 
 
 def list_heavy(text: str) -> bool:
@@ -271,9 +326,9 @@ def mirrored_intro_conclusion(text: str) -> bool:
     sentences = [s.strip() for s in re.split(r'[.!?]+', text) if s.strip()]
     if len(sentences) < 4:
         return False
-    intro_words = set(re.findall(r'\b\w+\b', sentences[0].lower()))
-    conclusion_words = set(re.findall(r'\b\w+\b', sentences[-1].lower()))
-    if not intro_words or not conclusion_words:
+    intro_words = set(re.findall(r'\b\w+\b', sentences[0].lower())) - STOPWORDS
+    conclusion_words = set(re.findall(r'\b\w+\b', sentences[-1].lower())) - STOPWORDS
+    if len(intro_words) < 3 or len(conclusion_words) < 3:
         return False
     overlap = len(intro_words & conclusion_words) / min(len(intro_words), len(conclusion_words))
     return overlap > 0.6
@@ -314,13 +369,17 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     # Normalize
     density_slop = max(0, (0.50 - density) / 0.50)
     rep_slop = min(1, rep / 0.30)
-    burst_slop = max(0, (5 - burst) / 5)
+    # Burstiness is meaningless for very short texts: with < 3 sentences the
+    # std-dev of sentence lengths is ~0 by construction, which would falsely
+    # push every short text toward slop. Treat it as neutral instead.
+    burst_slop = max(0, (5 - burst) / 5) if num_sentences >= 3 else 0.0
     buzz_slop = min(1, buzz_count / 8)
     phrase_slop = min(1, total_phrases / 4)
     punct_slop = min(1, (punct["emDashRate"] + punct["ellipsisRate"] + punct["exclamationRate"]) / 2)
     moral_slop = 1.0 if trailing_moral(text) else 0.0
     list_slop = 1.0 if list_heavy(text) else 0.0
-    auth_count = sum(1 for p in AUTHORITY_PATTERNS if p in text.lower())
+    authority_matches = find_term_matches(text.lower(), AUTHORITY_PATTERNS)
+    auth_count = len(authority_matches)
     auth_slop = min(1, auth_count / 2)
     verbose_slop = min(1, max(0, (avg_sentence_len - 20)) / 15)
     multi_slop = min(1, total_multi / 3)
@@ -330,7 +389,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     struct_signals = 0
     if punct["emDashRate"] > 0.5:
         struct_signals += 1
-    if burst < 3:
+    if num_sentences >= 3 and burst < 3:
         struct_signals += 1
     if mirrored_slop:
         struct_signals += 1
@@ -351,6 +410,25 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
         weights["mirrored"] * mirrored_slop +
         weights["structural"] * struct_slop
     )
+
+    # Non-English texts get diluted by the English-only dimensions (buzzwords,
+    # phrases, authority claims are all English). If a text hits 3+ multilingual
+    # AI markers, that is strong evidence on its own — floor at "Suspicious".
+    if total_multi >= 3:
+        overall = max(overall, 0.40)
+
+    # Escalation (mirrors the ontology's ">= 2 high-severity signals" rule):
+    # several strong markers together are decisive even when neutral dimensions
+    # (density, repetition, burstiness) dilute the weighted sum.
+    strong_signals = sum([
+        buzz_slop >= 0.5,
+        phrase_slop >= 0.5,
+        auth_slop >= 0.5,
+        moral_slop == 1.0,
+        mirrored_slop == 1.0,
+    ])
+    if strong_signals >= 3:
+        overall = max(overall, 0.40)
 
     score = round(min(overall, 1.0), 3)
 
@@ -412,7 +490,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
             "buzzword_tiers": buzz_tiers,
             "phrase_categories": phrase_matches,
             "multilingual": multilingual_matches,
-            "authority_phrases": [p for p in AUTHORITY_PATTERNS if p in text.lower()],
+            "authority_phrases": sorted(authority_matches),
             "moral_detected": moral_slop == 1.0,
             "list_heavy": list_slop == 1.0,
             "mirrored_intro_conclusion": mirrored_slop == 1.0,

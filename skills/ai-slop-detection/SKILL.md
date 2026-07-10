@@ -90,7 +90,7 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 12. **Mirrored Intro↔Conclusion** — conclusion restates intro
 13. **Structural Signals** — composite of uniform structure patterns
 
-## 12 Slop Types
+## 14 Slop Types
 
 | Type | Telltale | Danger |
 |------|----------|--------|
@@ -106,6 +106,8 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 | Workslop | "Circling back...", "Let's align..." | Shifts cost to receiver |
 | LegalSlop | "Precedent clearly shows..." | ⚠️ Fake precedents |
 | LinkedInSlop | "Thrilled to announce..." | Announces nothing |
+| SecurityReportSlop | "could potentially allow..." | ⚠️ Wastes maintainer time; killed curl's bug bounty (Feb 2026) |
+| PeerReviewSlop | "the manuscript is well written..." | ⚠️ Generic review without engaging the actual paper |
 
 ## Retrieval Collapse Defense
 
@@ -118,7 +120,7 @@ When evaluating content for RAG/Search/Memory:
 5. **Contamination Detection** — Check if search results are slop-dominated
 6. **Cross-Validation** — Facts against min. 2 independent confirmations
 
-## Knowledge Collapse Stages (Keisha et al. NeurIPS 2025)
+## Knowledge Collapse Stages (Keisha et al., arXiv:2509.04796, NeurIPS 2025 Workshop)
 
 - **Stage A:** Facts correct, instruction-following intact (low risk)
 - **Stage B:** CONFIDENTLY WRONG — Facts false but format correct (CRITICAL — most harmful)
@@ -128,7 +130,7 @@ When evaluating content for RAG/Search/Memory:
 
 For URLs and search results, check these additional signals:
 
-- **Domain reputation** — Known content farm? (NewsGuard: 3,000+ tracked)
+- **Domain reputation** — Known content farm? (NewsGuard: 3,749 tracked, June 2026)
 - **Author presence** — Named author with verifiable history?
 - **Source citations** — Real, verifiable references or hollow claims?
 - **Publication pattern** — Mass upload? Cross-platform repost?
@@ -138,7 +140,7 @@ For URLs and search results, check these additional signals:
 
 - **Detection signals (22 techniques):** `references/detection-signals.md`
 - **Scored examples (8 cases):** `references/slop-examples.md`
-- **Full ontology (459 signals):** `../../ai-slop-ontology/ontology.json`
+- **Full ontology (459 signals):** `../../ontology.json` (repo root)
 
 ## Output Format
 
