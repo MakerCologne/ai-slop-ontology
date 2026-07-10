@@ -8,8 +8,8 @@
   "dc:title": "AI Slop Ontology",
   "dc:description": "Machine-readable ontology for classifying, detecting, and reasoning about AI-generated slop content.",
   "dc:creator": "Stefan / BTM.one",
-  "dc:date": "2026-05-20",
-  "dc:source": "Shaib et al. 2025, Kommers et al. 2026, SlopDetector.org, MINT Lab 2026",
+  "dc:date": "2026-07-10",
+  "dc:source": "Shaib et al. 2025, Kommers et al. 2026, Nishal et al. 2026, SlopDetector.org, MINT Lab 2026, NewsGuard 2026",
   "mediaTypes": {
     "Text": {
       "label": "Text",
@@ -349,6 +349,42 @@
           "LinguisticPatternAnalysis"
         ],
         "normative": "ConsumerFraud"
+      },
+      "SecurityReportSlop": {
+        "label": "Security Report Slop",
+        "description": "AI-generated vulnerability reports that sound technical but contain nothing actionable. Flooded curl's bug bounty (~20% of submissions mid-2025, confirmed-vuln rate dropped from >15% to <5%); curl closed its HackerOne program Feb 2026.",
+        "telltales": [
+          "could potentially allow",
+          "may lead to remote code execution",
+          "generic severity claims without PoC"
+        ],
+        "danger": "high",
+        "harms": [
+          "maintainer_time_waste",
+          "security_process_erosion"
+        ],
+        "sources": [
+          "Stenberg 'Death by a thousand slops' (Jul 2025)",
+          "Stenberg 'The end of the curl bug-bounty' (Jan 2026)"
+        ]
+      },
+      "PeerReviewSlop": {
+        "label": "Peer Review Slop",
+        "description": "AI-generated peer reviews: fluent, generic feedback that does not engage the actual manuscript. Organization Science (2026): >30% of reviews AI-involved; reviews become narrower and less insightful.",
+        "telltales": [
+          "the manuscript is well written",
+          "would benefit from additional experiments",
+          "no engagement with specific claims"
+        ],
+        "danger": "high",
+        "harms": [
+          "science_quality_erosion",
+          "reviewer_trust_erosion"
+        ],
+        "sources": [
+          "Organization Science editorial study 2026",
+          "Sem-Detect (arXiv:2605.21713)"
+        ]
       }
     },
     "BY_PURPOSE": {
@@ -940,6 +976,12 @@
           "id": "HyperRealisticStyle",
           "description": "Over-polished, no imperfections",
           "confidence": 0.6
+        },
+        {
+          "id": "HyperTypicality",
+          "description": "AI-generated faces look 'more typical than real faces' (regression to the mathematical average). Humans are trainable to near-perfect detection using this cue (ANU/PNAS 2026).",
+          "confidence": 0.7,
+          "modality": "image"
         }
       ]
     },
@@ -1679,7 +1721,10 @@
       "aiTracksPerDay": 75000,
       "percentageOfUploads": 44,
       "date": "2026-04-20",
-      "note": "Die meisten Streams als betrügerisch erkannt und demonetarisiert"
+      "note": "Die meisten Streams als betrügerisch erkannt und demonetarisiert",
+      "streamsShare": "1-3% of total streams",
+      "fraudulentShare": "~85% of AI-track streams flagged fraudulent & demonetized",
+      "detectorTool": "Public AI-music detector for external catalogs (Spotify, Apple Music) launched 2026-06-11"
     },
     "youtube": {
       "aiChannels": 278,
@@ -1694,10 +1739,37 @@
       "uniqueNames": 205000
     },
     "spotify": {
-      "position": "KI-Nutzung ist ein Spektrum, nicht binär"
+      "position": "KI-Nutzung ist ein Spektrum, nicht binär",
+      "spamTracksRemoved": "75M+ spammy tracks removed in 12 months to Sep 2025"
     },
     "google": {
       "policy": "Scaled Content Abuse — explizit in Spam-Policies eingeschlossen"
+    },
+    "newsguard": {
+      "aiContentFarmSites": 3749,
+      "date": "2026-06-23",
+      "languages": 16,
+      "previousCounts": {
+        "2026-03": 3006
+      },
+      "newSitesPerMonth": "300-500",
+      "source": "NewsGuard AI Tracking Center"
+    },
+    "academicPublishing": {
+      "journal": "Organization Science",
+      "submissionsIncrease": "+42% since ChatGPT launch",
+      "corpus": "~7,000 submissions, 10,000+ reviews (2021-2026)",
+      "readabilityDrop": "Flesch Reading Ease -1.28 SD (Jan 2026 vs Jan 2021)",
+      "aiInReviews": ">30% of peer reviews AI-involved",
+      "detector": "Pangram",
+      "date": "2026"
+    },
+    "bugBounty": {
+      "project": "curl",
+      "slopShare": "~20% of submissions were AI slop (mid-2025)",
+      "confirmedRate": "dropped from >15% to <5% (2025)",
+      "outcome": "HackerOne program closed 2026-02-01",
+      "source": "Daniel Stenberg"
     }
   },
   "slopVsSpam": {
@@ -2178,7 +2250,17 @@
     "WaPo_ChatGPT_Flood": "These 5 charts show how ChatGPT has flooded our lives",
     "Verge_Google_Spam_AI": "Google updates spam rules to include attempts to manipulate AI",
     "Verge_arXiv_Ban": "arXiv will ban researchers who upload papers full of AI slop",
-    "NBER_Books": "How Large Language Models Are Reshaping the Book Market"
+    "NBER_Books": "How Large Language Models Are Reshaping the Book Market",
+    "NewsGuard_3749_Farms": "NewsGuard AI Tracking Center (2026-06-23): 3,749 AI content farm sites in 16 languages",
+    "OrganizationScience_PeerReviewCrisis": "Organization Science editorial (2026): 'More Versus Better' - AI floods academic publishing, 42% more submissions, quality down",
+    "Science_ResistingAISlop": "Science editorial (2026): 'Resisting AI slop' (DOI 10.1126/science.aee8267)",
+    "NishalSaxKieslich_Critique": "Nishal, Sax & Kieslich (arXiv:2606.12285, Jun 2026): 'Why AI Slop Matters, but Not Like That' - socio-technical critique of Kommers et al.",
+    "SemDetect_PeerReviews": "Sem-Detect (arXiv:2605.21713): semantic-level detection of AI-generated peer reviews",
+    "PNAS_FaceDetectionTraining": "ANU/PNAS (2026): humans trainable to near-perfect detection of AI faces via hyper-typicality cue",
+    "Curl_BugBountyEnd": "Stenberg (Jan 2026): curl ends HackerOne bug bounty after AI slop flood",
+    "Deezer_Detector": "Deezer (2026-06-11): public AI-music detector works on external catalogs",
+    "Ansari_DataPollution": "Ansari (SSRN 5649410): AI Slop and Data Pollution - governance pathways",
+    "NTIRE2026_ImageDetection": "NTIRE 2026 Challenge (arXiv:2604.11487): robust AI-image detection in the wild; detectors fragile to crop/resize/recompress"
   },
   "etymology": [
     {

@@ -1,7 +1,7 @@
 ---
 title: "AI Slop Ontology"
-version: "1.0.0"
-date: "2026-05-20"
+version: "1.1.0"
+date: "2026-07-10"
 language: "de/en (bilingual; technical terms in English)"
 intended_consumers: ["LLM agents", "quality-assurance pipelines", "content moderation", "researchers"]
 license: "CC BY 4.0 (recommended)"
@@ -60,6 +60,8 @@ Phenomenon: AISlop
 │   │   ├── BookSlop             (Amazon AI-Bücher)
 │   │   ├── RecipeSlop           (SEO-Recipes)
 │   │   ├── AcademicSlop         (gefälschte Paper, KI-Reviews)
+│   │   ├── PeerReviewSlop       (Organization Science 2026: >30 % KI-Reviews)
+│   │   ├── SecurityReportSlop   (curl-Bug-Bounty-Ende Feb 2026)
 │   │   ├── ProductReviewSlop    (Fake-Reviews)
 │   │   └── Workslop             (Niederhoffer et al. 2025)
 │   ├── ImageSlop
@@ -258,13 +260,17 @@ AISlop
 
 ---
 
-## 9. Empirische Schlüsselzahlen (Stand Mai 2026)
+## 9. Empirische Schlüsselzahlen (Stand Juli 2026)
 
 | Metrik | Wert | Quelle |
 |--------|------|--------|
 | Anteil AI-Inhalte in Google-Suchergebnissen | 19 % (Jan 2025); 7 % (Vorjahr) | [22] |
 | Anteil AI-Footprint in neuen Web-Artikeln | > 50 % (Graphite); 74 % (Studien) | [22] |
-| AI-Content-Farm-Sites (NewsGuard) | 3.006 (März 2026); >2x Vorjahr | [19] |
+| AI-Content-Farm-Sites (NewsGuard) | 3.749 (23. Juni 2026); 3.006 (März 2026) | [19][24] |
+| AI-Musik-Anteil an Deezer-Neu-Uploads | 44 % (~75.000 Tracks/Tag, Apr 2026); nur 1–3 % der Streams, ~85 % davon als Fraud demonetarisiert | [25] |
+| Spotify: entfernte Spam-Tracks | 75 Mio.+ (12 Monate bis Sep 2025) | [25] |
+| Organization Science: Submissions seit ChatGPT | +42 %; Lesbarkeit −1,28 SD; >30 % der Peer-Reviews KI-beteiligt | [26] |
+| curl Bug-Bounty: AI-Slop-Anteil | ~20 % der Reports (Mitte 2025); Confirmed-Rate <5 %; Programm-Ende Feb 2026 | [27] |
 | Neue Content-Farm-Sites pro Monat | 300–500 | [19] |
 | YouTube-Empfehlungen Slop für Neu-User | 21–33 % (Kapwing 2025) | [23] |
 | YouTube-Kids Slop-Anteil | ~40 % (NYT März 2026) | [18] |
@@ -280,8 +286,8 @@ AISlop
 ```yaml
 ontology:
   id: ai-slop-ontology
-  version: 1.0.0
-  date: 2026-05-20
+  version: 1.1.0
+  date: 2026-07-10
   rootClass: AISlop
   classes:
     AISlop:
@@ -298,7 +304,7 @@ ontology:
 
   modalities:
     TextSlop:
-      subtypes: [ArticleSlop, BookSlop, RecipeSlop, AcademicSlop, ProductReviewSlop, Workslop]
+      subtypes: [ArticleSlop, BookSlop, RecipeSlop, AcademicSlop, PeerReviewSlop, SecurityReportSlop, ProductReviewSlop, Workslop]
       detectionMethods: [repetitionRatio, buzzwordDetection, templatePhrases, punctuationAnomalies, informationDensity, perplexityDistribution]
     ImageSlop:
       subtypes: [EngagementBaitImage, DeceptiveProductImage, PoliticalSlopImage, ArtSlop]
@@ -363,8 +369,8 @@ ontology:
 
   actors:
     ContentFarm:
-      knownCount: 3006
-      countDate: 2026-03
+      knownCount: 3749
+      countDate: 2026-06-23
       source: newsguard
     SoloMonetizer:
       regions: [India, Philippines, Kenya, Vietnam]
@@ -510,6 +516,23 @@ Scientific American (Nov 2025). *AI Slop—How Every Media Revolution Breeds Rub
 - Russell et al. (2025). *Indicators of AI-written text*. (Referenziert in Shaib et al. 2025.)
 - Chakrabarty et al. (2024, 2025a, 2025b). Editing-Taxonomien für AI-Writing.
 
+### Neu in v1.1.0 (Juli 2026)
+[25] Deezer Newsroom (20 Apr 2026). *AI-generated tracks represent 44% of new uploaded music* (~75.000 Tracks/Tag; 1–3 % der Streams; ~85 % davon Fraud). https://newsroom-deezer.com/2026/04/ai-generated-tracks-represent-44-of-new-uploaded-music/ — Detektor für Fremdkataloge seit 11 Jun 2026 (TechCrunch). Spotify: 75 Mio.+ Spam-Tracks entfernt (12 Monate bis Sep 2025).
+
+[26] Organization Science Editorial-Studie (2026). *More Versus Better: Artificial Intelligence, Incentives, and the Emerging Crisis in Peer Review*. https://pubsonline.informs.org/doi/10.1287/orsc.2026.ed.v37.n3 — ~7.000 Submissions / 10.000+ Reviews (2021–2026), Pangram-Detection; +42 % Submissions, Flesch Reading Ease −1,28 SD, >30 % KI-beteiligte Reviews. Vgl. Forbes (30 Apr 2026).
+
+[27] Stenberg, D. (14 Jul 2025). *Death by a thousand slops*; (26 Jan 2026). *The end of the curl bug-bounty*. https://daniel.haxx.se/blog/2026/01/26/the-end-of-the-curl-bug-bounty/ — ~20 % AI-Slop-Reports, Confirmed-Rate <5 %, HackerOne-Programm beendet Feb 2026. → Klasse `SecurityReportSlop`.
+
+[28] Nishal, S., Sax, M., & Kieslich, K. (10 Jun 2026). *Why AI Slop Matters, but Not Like That*. arXiv:2606.12285 / ACM AI Letters. https://arxiv.org/abs/2606.12285 — soziotechnische Kritik an Kommers et al. [10]; fordert kontextuelle, kulturell verankerte Slop-Forschung.
+
+[29] Sem-Detect (2026). *Semantic Level Detection of AI Generated Peer-Reviews*. arXiv:2605.21713. https://arxiv.org/pdf/2605.21713 — Detection-Methode für `PeerReviewSlop`.
+
+[30] ANU / PNAS (2026). Trainierbarkeit menschlicher AI-Gesichtserkennung via Hyper-Typikalität ("more typical than real faces"); near-perfect Accuracy nach Kurztraining. Berichtet: Gizmodo. — Neues Image-Signal `HyperTypicality`.
+
+[31] Keisha, F., Wu, Z., Wang, Z., Koshiyama, A., & Treleaven, P. (2025). *Knowledge Collapse in LLMs: When Fluency Survives but Facts Fail under Recursive Synthetic Training*. arXiv:2509.04796; NeurIPS 2025 Workshop. — 3-Stadien-Modell (A: Preservation, B: "Confidently Wrong", C: Instruction Collapse); domänenspezifisches Training verzögert Accuracy-Zerfall um 15×.
+
+Weitere: Science-Editorial *Resisting AI slop* (2026, DOI 10.1126/science.aee8267); Ansari (SSRN 5649410) *AI Slop and Data Pollution*; NTIRE 2026 Challenge (arXiv:2604.11487) zur Robustheit von AI-Bild-Detektoren; NewsGuard AI Tracking Center (23 Jun 2026): 3.749 Content-Farmen [24].
+
 ### Quellen-Hub
 - Simon Willison's `slop`-Tag-Übersicht: https://simonwillison.net/tags/slop/ — laufender Curation-Stream seit 2024.
 
@@ -520,6 +543,7 @@ Scientific American (Nov 2025). *AI Slop—How Every Media Revolution Breeds Rub
 | Version | Datum | Änderung |
 |---------|-------|----------|
 | 1.0.0 | 2026-05-20 | Initial release; konsolidiert Shaib et al. 2025, Madsen & Puyt 2025, Shumailov et al. 2024, 22 Detection-Techniken, 12 Harm-Klassen, 16 verwandte Konzepte. |
+| 1.1.0 | 2026-07-10 | Neue Klassen `SecurityReportSlop` (curl-Fall) und `PeerReviewSlop` (Organization Science); neues Image-Signal `HyperTypicality` (PNAS 2026); Schlüsselzahlen aktualisiert (NewsGuard 3.749; Deezer 44 %; Spotify 75 Mio.); 7 neue Referenzen [25]–[31]; alle Kernzitate verifiziert (Shaib arXiv:2509.19163, Madsen & Puyt SSRN 5558018, Kommers arXiv:2601.06060, Keisha arXiv:2509.04796). |
 
 **Empfohlener Update-Rhythmus:** Quartal (neue Modellgenerationen → neue Slop-Patterns); ad-hoc bei grossen NewsGuard-Updates oder neuen akademischen Taxonomien.
 

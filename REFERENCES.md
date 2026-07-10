@@ -1,4 +1,4 @@
-# Quellen- und Referenzliste — AI Slop Ontology v0.1
+# Quellen- und Referenzliste — AI Slop Ontology v1.1.0
 
 ## Begriffe und Definitionen
 
@@ -44,3 +44,14 @@
 28. **Wikipedia, AI slop** — Umfassende Übersicht mit kulturellen/politischen Beispielen.
 29. **Hypogenic AI, Predicting Slop Before It Happens** (GitHub) — Genre Prediction Research, Datasets.
 30. **Carrigan (2026), Engagement Farming** — Politische Ökonomie des Slop.
+
+## Neu in v1.1.0 (Juli 2026)
+
+31. **NewsGuard AI Tracking Center (23.06.2026)** — 3.749 AI-Content-Farm-Sites in 16 Sprachen. https://www.newsguardtech.com/special-reports/ai-tracking-center/
+32. **Organization Science (2026), More Versus Better: AI, Incentives, and the Emerging Crisis in Peer Review** — +42 % Submissions seit ChatGPT; Flesch Reading Ease −1,28 SD; >30 % KI-beteiligte Reviews. https://pubsonline.informs.org/doi/10.1287/orsc.2026.ed.v37.n3
+33. **Science (2026), Resisting AI slop** — Editorial. DOI 10.1126/science.aee8267
+34. **Stenberg (2025/26), Death by a thousand slops / The end of the curl bug-bounty** — curl beendet HackerOne-Programm (Feb 2026) wegen AI-Slop-Reports. https://daniel.haxx.se/blog/2026/01/26/the-end-of-the-curl-bug-bounty/
+35. **Nishal, Sax & Kieslich (2026), Why AI Slop Matters, but Not Like That** (arXiv:2606.12285) — Soziotechnische Kritik an Kommers et al.; Agenda für kontextuelle Slop-Forschung.
+36. **Sem-Detect (arXiv:2605.21713)** — Semantische Detection KI-generierter Peer-Reviews.
+37. **ANU/PNAS (2026), Human detection of AI faces via hyper-typicality** — Menschen auf near-perfect Accuracy trainierbar; Basis für Image-Signal `HyperTypicality`. (Bericht: Gizmodo)
+38. **Deezer Newsroom (20.04.2026 / 11.06.2026)** — 44 % AI-Anteil an Neu-Uploads (~75.000/Tag; 1–3 % der Streams, ~85 % Fraud); öffentlicher AI-Musik-Detektor für Fremdkataloge. https://newsroom-deezer.com/2026/04/ai-generated-tracks-represent-44-of-new-uploaded-music/
