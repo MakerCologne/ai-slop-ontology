@@ -227,12 +227,14 @@ def find_term_matches(text_lower: str, terms: list) -> dict:
     if a longer term already covers a span (e.g. "rich tapestry"), a shorter
     term inside that span (e.g. "tapestry") is not counted again.
 
-    Returns {term: occurrence_count} for matched terms.
+    Returns {term_lowercase: occurrence_count} for matched terms. Keys are
+    lowercased so callers can index lookup tables built with lowered terms
+    even when the input term list has mixed case.
     """
     spans = []
     for term in terms:
         for m in re.finditer(_term_pattern(term), text_lower):
-            spans.append((m.start(), m.end(), term))
+            spans.append((m.start(), m.end(), term.lower()))
     # Longest match wins; ties resolved by position
     spans.sort(key=lambda x: (-(x[1] - x[0]), x[0]))
     occupied = []

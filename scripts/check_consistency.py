@@ -64,7 +64,17 @@ def main() -> int:
     except ImportError:
         print("note: pyyaml not installed, skipping YAML version check")
 
-    # 4. Multilingual coverage matches between JSON DB and skill scorer
+    # 4. Type patterns match between JSON DB and skill classifier
+    import slop_classifier
+    skill_pattern_types = {name for name, td in
+                           slop_classifier.SLOP_TYPE_PATTERNS.items() if td["patterns"]}
+    json_pattern_types = set(
+        oj["signals"]["text"].get("typePatterns", {}).get("types", {}))
+    check(skill_pattern_types == json_pattern_types,
+          f"Type-pattern drift: skill classifier={sorted(skill_pattern_types)} vs "
+          f"ontology.json typePatterns={sorted(json_pattern_types)}")
+
+    # 5. Multilingual coverage matches between JSON DB and skill scorer
     import slop_scorer
     json_langs = {k for k, v in oj["signals"]["multilingual"].items()
                   if isinstance(v, dict) and "buzzwords" in v}
@@ -79,6 +89,7 @@ def main() -> int:
             print(f"  ✗ {e}")
         return 1
     print(f"Consistency check passed ({len(json_types)} slop types, "
+          f"{len(json_pattern_types)} pattern-bearing types, "
           f"{len(json_langs)} languages, dates and versions aligned).")
     return 0
 

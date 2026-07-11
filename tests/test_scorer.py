@@ -34,6 +34,16 @@ class TestTermMatching(unittest.TestCase):
         counts = find_term_matches("delve here and delve there", ["delve"])
         self.assertEqual(counts, {"delve": 2})
 
+    def test_mixed_case_custom_terms(self):
+        # Codex review PR #2 (comment 2): custom tiers with mixed-case terms
+        # raised KeyError because matched keys kept the original casing.
+        counts = find_term_matches("a game-changing tool", ["Game-Changing"])
+        self.assertEqual(counts, {"game-changing": 1})
+        count, hits = buzzword_score("a game-changing tool",
+                                     {"tier1": ["Game-Changing"]})
+        self.assertEqual(count, 1)
+        self.assertEqual(hits, ["game-changing (tier1)"])
+
     def test_phrase_with_apostrophe(self):
         counts = find_term_matches(
             "in today's rapidly evolving world", ["in today's rapidly evolving"]

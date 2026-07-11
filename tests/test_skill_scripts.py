@@ -66,6 +66,13 @@ class TestSkillScorer(unittest.TestCase):
         self.assertIn("rich tapestry", hits)
         self.assertNotIn("tapestry", hits)
 
+    def test_mixed_case_custom_tier_resolves(self):
+        # Codex review PR #2 (comment 2): mixed-case custom tiers were binned
+        # into tier "unknown" because matched keys kept the original casing.
+        _, _, tiers = slop_scorer.buzzword_score(
+            "a game-changing tool", {"tier1": {"words": ["Game-Changing"]}})
+        self.assertEqual(tiers, {"tier1": ["game-changing"]})
+
     def test_heavy_slop_flagged(self):
         text = (
             "In today's rapidly evolving digital landscape, it's important to note "

@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.2.1] — 2026-07-10
+
+Behebt die drei Codex-Review-Kommentare aus PR #2 (alle P2):
+
+1. **Multilingual-Floor im src-Klassifikator** — bereits durch v1.2.0 behoben
+   (Multilingual-Signal hat Severity `high`, Noisy-OR ergibt 0,49 ≥ 0,40);
+   jetzt durch expliziten Regressionstest abgesichert.
+2. **KeyError bei Custom-Tiers mit Groß-/Kleinschreibung** —
+   `find_term_matches` liefert Term-Keys jetzt lowercased (beide Engines),
+   sodass Lookup-Tabellen mit gelowerten Keys immer treffen. Vorher:
+   `buzzword_score(text, {"tier": ["Game-Changing"]})` → KeyError (src)
+   bzw. Tier „unknown" (Skill).
+3. **Neue Slop-Typen im src-Klassifikator verdrahtet** — die Typ-Muster
+   stehen jetzt datengetrieben in `ontology.json`
+   (`signals.text.typePatterns`, 12 Typen) und `classify_text()` erkennt
+   sie (`slop_types` + `TypePattern_*`-Signal ab 2 Treffern, Severity high).
+   Ein Security-Report-Text scorte im src-Klassifikator vorher 0,0 —
+   jetzt ≥ 0,59. Benchmark src-Klassifikator: F1 0,89 → **0,96**.
+   Der Konsistenz-Checker verifiziert Skill ↔ JSON-Typ-Muster-Parität.
+
+Testsuite: 42 → 47 Tests.
+
 ## [1.2.0] — 2026-07-10
 
 Setzt die fünf Follow-up-Vorschläge aus REVIEW-2026-07.md §4 um.

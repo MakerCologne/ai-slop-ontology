@@ -75,6 +75,10 @@ def _severity_for(signal_id: str) -> str:
     # since all other signals are English-based, this is strong evidence.
     if signal_id.startswith("Multilingual_"):
         return "high"
+    # >= 2 distinctive patterns of one slop type (the signal is only emitted
+    # at 2+ hits) identify the type with high confidence.
+    if signal_id.startswith("TypePattern_"):
+        return "high"
     return SIGNAL_SEVERITY.get(signal_id, "medium")
 
 
@@ -130,6 +134,15 @@ class SlopClassifier:
         for cat_name, cat_data in phrase_cats.items():
             self.phrase_categories[cat_name] = [p.lower() for p in cat_data["items"]]
             self.phrase_confidence[cat_name] = cat_data.get("confidence", 0.5)
+
+        # --- Per-type phrase patterns (SecurityReportSlop, Workslop, ...) ---
+        self.type_patterns = {}
+        for type_name, type_def in text_sigs.get("typePatterns", {}).get("types", {}).items():
+            self.type_patterns[type_name] = {
+                "patterns": [p.lower() for p in type_def.get("patterns", [])],
+                "confidence": type_def.get("confidence", 0.8),
+                "description": type_def.get("description", ""),
+            }
 
         # --- Structural indicators ---
         self.structural_indicators = text_sigs.get("structural", {}).get("indicators", [])
@@ -307,6 +320,25 @@ class SlopClassifier:
                 "ListHeavy", 0.50,
                 ">40% list items in text"
             ))
+
+        # ============================================================
+        # 4b. SLOP TYPE PATTERNS (data-driven from ontology.json)
+        # ============================================================
+        type_hits = {}
+        for type_name, type_def in self.type_patterns.items():
+            matched = find_term_matches(text_lower, type_def["patterns"])
+            if matched:
+                type_hits[type_name] = sorted(matched)
+        # >= 2 distinctive patterns of one type are decisive on their own;
+        # a single hit only records the type hypothesis.
+        for type_name, hits in sorted(type_hits.items(), key=lambda kv: -len(kv[1])):
+            result.slop_types.append(type_name)
+            if len(hits) >= 2:
+                result.signals_detected.append(SignalMatch(
+                    f"TypePattern_{type_name}",
+                    min(0.7 + 0.05 * len(hits), 0.9),
+                    f"{len(hits)} distinctive patterns: {', '.join(hits[:6])}"
+                ))
 
         # ============================================================
         # 5. MULTILINGUAL CHECK
