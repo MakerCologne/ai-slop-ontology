@@ -941,6 +941,162 @@
             "confidence": 0.55
           }
         ]
+      },
+      "typePatterns": {
+        "description": "Distinctive per-type phrase patterns; >= 2 hits of one type are decisive evidence",
+        "types": {
+          "SEOContentFarmSlop": {
+            "confidence": 0.8,
+            "description": "SEO-optimized content farm article with no original reporting",
+            "patterns": [
+              "in this article",
+              "we will explore",
+              "table of contents",
+              "let's dive in",
+              "let's break it down",
+              "here are",
+              "top reasons"
+            ]
+          },
+          "AcademicSlop": {
+            "confidence": 0.8,
+            "description": "AI academic text that could describe any paper in any field",
+            "patterns": [
+              "novel approaches",
+              "growing body of literature",
+              "proposing a framework",
+              "existing paradigms",
+              "contemporary challenges",
+              "this paper contributes"
+            ]
+          },
+          "FakeAuthoritySlop": {
+            "confidence": 0.8,
+            "description": "Unsubstantiated authority claims without real citations",
+            "patterns": [
+              "studies have shown",
+              "research shows",
+              "experts say",
+              "it has been proven",
+              "scientists have found",
+              "a growing body of evidence"
+            ]
+          },
+          "WellnessSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated wellness/lifestyle content",
+            "patterns": [
+              "self-care",
+              "isn't selfish",
+              "journey",
+              "embrace your",
+              "inner peace",
+              "mindful",
+              "holistic approach",
+              "cultivating",
+              "fostering"
+            ]
+          },
+          "WikipediaRehash": {
+            "confidence": 0.8,
+            "description": "Rephrased common knowledge with no originality",
+            "patterns": [
+              "is defined as",
+              "is known as",
+              "refers to",
+              "can be described as"
+            ]
+          },
+          "EngagementClickbaitSlop": {
+            "confidence": 0.8,
+            "description": "Engagement-bait content designed for social media virality",
+            "patterns": [
+              "please like",
+              "share if",
+              "nobody helped",
+              "amazing reaction",
+              "you won't believe",
+              "mind-blowing",
+              "here's the kicker"
+            ]
+          },
+          "PropagandaDisinfoSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated disinformation or propaganda content",
+            "patterns": [
+              "they don't want you to know",
+              "wake up",
+              "the truth about",
+              "mainstream media won't",
+              "what they're hiding"
+            ]
+          },
+          "Workslop": {
+            "confidence": 0.8,
+            "description": "AI-generated workplace communication (performance theater)",
+            "patterns": [
+              "per my last email",
+              "circling back",
+              "touching base",
+              "action items",
+              "moving forward",
+              "on the same page",
+              "synergize",
+              "circle back",
+              "align on",
+              "connect offline"
+            ]
+          },
+          "LegalSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated legal content with fabricated precedents — ESPECIALLY DANGEROUS",
+            "patterns": [
+              "it is well established",
+              "precedent clearly shows",
+              "the court has consistently held",
+              "established jurisprudence"
+            ]
+          },
+          "LinkedInSlop": {
+            "confidence": 0.8,
+            "description": "LinkedIn-style inspirational posts with zero substance",
+            "patterns": [
+              "thrilled to announce",
+              "humbled to share",
+              "excited to share",
+              "key takeaway",
+              "game-changer",
+              "grateful for the opportunity"
+            ]
+          },
+          "SecurityReportSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated vulnerability reports that sound technical but contain nothing actionable (curl killed its bug bounty over these, Feb 2026)",
+            "patterns": [
+              "potential vulnerability",
+              "could potentially allow",
+              "may lead to remote code execution",
+              "this vulnerability could",
+              "an attacker could potentially",
+              "severity: critical",
+              "responsible disclosure",
+              "proof of concept below"
+            ]
+          },
+          "PeerReviewSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated peer reviews: narrow, generic feedback without engagement with the actual content (Organization Science 2026: >30% of reviews AI-involved)",
+            "patterns": [
+              "the authors present",
+              "this paper addresses an important",
+              "the manuscript is well written",
+              "minor revisions",
+              "the contribution is unclear",
+              "would benefit from additional experiments",
+              "the related work section"
+            ]
+          }
+        }
       }
     },
     "image": {

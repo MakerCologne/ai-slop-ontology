@@ -64,6 +64,37 @@ class TestSlopClassifier(unittest.TestCase):
             f"expected german signal, got {[s.signal_id for s in result.signals_detected]}",
         )
 
+    def test_german_slop_reaches_suspicious(self):
+        # Codex review PR #2 (comment 1): 3+ non-English markers must not be
+        # collapsed below the documented 0.40 suspicious floor.
+        result = self.clf.classify_text(
+            "Im heutigen schnelllebigen digitalen Zeitalter gilt es zu beachten, "
+            "dass ein ganzheitlicher Ansatz die Synergieeffekte hebt. "
+            "Zusammenfassend lässt sich sagen, dass der Gamechanger ein "
+            "tiefgreifender Wandel ist."
+        )
+        self.assertGreaterEqual(result.overall_slop_score, 0.40)
+
+    def test_security_report_slop_detected(self):
+        # Codex review PR #2 (comment 3): the src classifier must detect the
+        # newly advertised types, not only the skill pipeline.
+        result = self.clf.classify_text(
+            "This vulnerability could potentially allow an attacker to execute "
+            "arbitrary code. Severity: critical. An attacker could potentially "
+            "bypass authentication. Proof of concept below."
+        )
+        self.assertIn("SecurityReportSlop", result.slop_types)
+        self.assertGreaterEqual(result.overall_slop_score, 0.40)
+
+    def test_peer_review_slop_detected(self):
+        result = self.clf.classify_text(
+            "The authors present an interesting approach. The manuscript is "
+            "well written and would benefit from additional experiments. "
+            "Minor revisions are recommended."
+        )
+        self.assertIn("PeerReviewSlop", result.slop_types)
+        self.assertGreaterEqual(result.overall_slop_score, 0.40)
+
     def test_code_hardcoded_secret_escalates(self):
         result = self.clf.classify_code('api_key = "sk-abcdef1234567890"')
         self.assertTrue(

@@ -37,6 +37,7 @@ TERM_SETS = [
     ["in conclusion", "in conclusion,"],
     ["realm", "the realm of"],
     ["im digitalen zeitalter", "ganzheitlicher ansatz"],
+    ["Rich Tapestry", "DELVE"],  # mixed case must normalize identically
 ]
 
 
