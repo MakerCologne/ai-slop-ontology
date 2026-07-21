@@ -26,13 +26,14 @@ Each folder contains:
 - `ontology.rdf` — RDF/XML accepted by the Playground importer
 - `metadata.json` — catalogue metadata accepted by the community catalogue
 
-To contribute them upstream, copy the seven folders into:
+The files already use the target contribution layout under:
 
 ```text
-catalogue/community/hikaman/
+integrations/ontology-playground/catalogue/community/hikaman/
 ```
 
-Then run:
+For a Microsoft catalogue contribution, copy the seven folders into the root
+`catalogue/community/hikaman/` directory of an Ontology Playground fork. Then run:
 
 ```bash
 npm run catalogue:build
@@ -44,6 +45,18 @@ npm run build
 The adapter uses explicit `owl:ObjectProperty` relationships such as
 `isSubtypeOf`, `supports`, `causes` and `mitigates`, because the current
 Playground graph parser does not render `rdfs:subClassOf` as visible graph edges.
+
+## Validation
+
+From the AI Slop Ontology repository root:
+
+```bash
+python3 integrations/ontology-playground/validate_adapter.py
+python3 -m unittest tests.test_ontology_playground_adapter
+```
+
+The validator checks XML parsing, metadata fields, manifest parity, class counts,
+exactly one identifier per entity, and local relationship endpoints.
 
 ## Modeling note
 
