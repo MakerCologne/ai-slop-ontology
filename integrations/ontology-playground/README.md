@@ -5,7 +5,7 @@ Import-ready RDF/XML views of the AI Slop Ontology for
 
 The canonical JSON, YAML and Turtle ontologies remain the source of truth. These
 files are deliberately reduced, graph-oriented projections because the Playground
-works best with 5–8 connected entity types per catalogue entry.
+works best with small connected entity sets per catalogue entry.
 
 ## Catalogue entries
 
@@ -15,7 +15,7 @@ works best with 5–8 connected entity types per catalogue entry.
 | `ai-slop-media` | Text, image, video, audio, music, code and multimodal AI Slop | 8 |
 | `ai-slop-domains` | Academic, legal, work, review, security, education and political AI Slop | 8 |
 | `ai-slop-intent` | Engagement, monetization, propaganda, poisoning, search, impersonation and filler | 8 |
-| `work-slop` | Technology-neutral Work Slop overview | 8 |
+| `work-slop` | Compact overview of AI, human-authored and management Work Slop | 4 |
 | `management-slop` | Strategy, jargon, meetings, decisions, metrics, administration and compliance | 8 |
 | `seo-slop` | Technology-neutral SEO Slop types | 8 |
 
