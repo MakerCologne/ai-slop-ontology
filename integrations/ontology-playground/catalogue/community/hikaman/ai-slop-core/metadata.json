@@ -1,0 +1,15 @@
+{
+  "name": "AI Slop Core",
+  "description": "Core concepts connecting AI Slop, Human Slop, Work Slop, SEO Slop, evidence, harms, and mitigation.",
+  "icon": "🧪",
+  "category": "technology",
+  "tags": [
+    "ai-slop",
+    "human-slop",
+    "work-slop",
+    "seo",
+    "risk",
+    "ontology"
+  ],
+  "author": "hikaman"
+}
