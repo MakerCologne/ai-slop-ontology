@@ -10,14 +10,19 @@ CATALOGUE = ROOT / "catalogue" / "community" / "hikaman"
 RDF = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}"
 OWL = "{http://www.w3.org/2002/07/owl#}"
 RDFS = "{http://www.w3.org/2000/01/rdf-schema#}"
-
 ALLOWED_CATEGORIES = {
     "retail", "healthcare", "finance", "manufacturing", "education", "food",
     "media", "events", "technology", "general", "school", "fibo",
 }
 errors = []
+manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
+expected = {view["slug"]: view for view in manifest["views"]}
+folders = sorted(p for p in CATALOGUE.iterdir() if p.is_dir())
 
-for folder in sorted(p for p in CATALOGUE.iterdir() if p.is_dir()):
+if {p.name for p in folders} != set(expected):
+    errors.append("catalogue folders do not match manifest views")
+
+for folder in folders:
     rdf_path = folder / "ontology.rdf"
     metadata_path = folder / "metadata.json"
     if not rdf_path.exists() or not metadata_path.exists():
@@ -35,8 +40,14 @@ for folder in sorted(p for p in CATALOGUE.iterdir() if p.is_dir()):
 
     root = ET.parse(rdf_path).getroot()
     classes = root.findall(f"{OWL}Class")
+    relationships = root.findall(f"{OWL}ObjectProperty")
     if not 3 <= len(classes) <= 8:
         errors.append(f"{folder.name}: expected 3–8 classes, got {len(classes)}")
+    view = expected.get(folder.name, {})
+    if len(classes) != view.get("entities"):
+        errors.append(f"{folder.name}: class count differs from manifest")
+    if len(relationships) != view.get("relationships"):
+        errors.append(f"{folder.name}: relationship count differs from manifest")
 
     class_uris = {c.attrib.get(f"{RDF}about") for c in classes}
     identifiers = {uri: 0 for uri in class_uris}
@@ -47,18 +58,14 @@ for folder in sorted(p for p in CATALOGUE.iterdir() if p.is_dir()):
         uri = domain.attrib.get(f"{RDF}resource")
         if uri not in identifiers:
             continue
-        is_identifier = any(
-            child.tag.endswith("isIdentifier") and (child.text or "").strip().lower() == "true"
-            for child in prop
-        )
-        if is_identifier:
+        if any(child.tag.endswith("isIdentifier") and (child.text or "").strip().lower() == "true" for child in prop):
             identifiers[uri] += 1
 
     for uri, count in identifiers.items():
         if count != 1:
             errors.append(f"{folder.name}: {uri} has {count} identifier properties")
 
-    for rel in root.findall(f"{OWL}ObjectProperty"):
+    for rel in relationships:
         domain = rel.find(f"{RDFS}domain")
         range_el = rel.find(f"{RDFS}range")
         if domain is None or range_el is None:
@@ -74,6 +81,4 @@ if errors:
     for error in errors:
         print(f"  - {error}")
     sys.exit(1)
-
-folders = list(p for p in CATALOGUE.iterdir() if p.is_dir())
 print(f"Adapter validation passed ({len(folders)} catalogue entries).")
