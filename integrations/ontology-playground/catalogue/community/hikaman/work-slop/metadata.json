@@ -1,8 +1,8 @@
 {
   "name": "Work Slop",
-  "description": "Technology-neutral workplace slop covering AI and human production, management, communication, process, coordination, and review.",
+  "description": "Compact technology-neutral overview of AI Workslop, human-authored Work Slop, and Management Slop.",
   "icon": "💼",
   "category": "general",
-  "tags": ["work-slop", "workplace", "management", "communication", "process", "review"],
+  "tags": ["work-slop", "workplace", "ai-workslop", "human-authored", "management"],
   "author": "hikaman"
 }
