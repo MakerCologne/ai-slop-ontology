@@ -1,0 +1,224 @@
+@prefix : <https://example.org/ai-slop-ontology/extensions/human-work-seo#> .
+@prefix core: <https://example.org/ai-slop-ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+:HumanWorkSEOSlopExtension a owl:Ontology ;
+  dc:title "Human, Work and SEO Slop Extension" ;
+  dc:date "2026-07-21" ;
+  owl:versionInfo "0.1.0" ;
+  rdfs:comment "Experimental extension. Grounded-extension labels are ontology proposals, not settled scientific terms." .
+
+:evidenceStatus a owl:DatatypeProperty .
+:generationNeutral a owl:DatatypeProperty .
+
+:SlopFamily a owl:Class .
+:ContentItemOrWorkActivity a owl:Class .
+:HumanSlop a owl:Class ;
+  rdfs:subClassOf :ContentItemOrWorkActivity ;
+  :evidenceStatus "grounded_extension" ;
+  rdfs:label "Human Slop" .
+
+:WorkSlopFamily a owl:Class ;
+  rdfs:subClassOf :SlopFamily ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Work Slop Family" .
+
+:SEOSlop a owl:Class ;
+  rdfs:subClassOf core:ContentItem ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "SEO Slop" .
+
+:HumanWorkSlop a owl:Class ;
+  rdfs:subClassOf :WorkSlopFamily ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral false ;
+  rdfs:label "Human Work Slop" ;
+  rdfs:comment "Human-authored or human-maintained work output whose weak goal contribution and downstream burden are concealed by normal organizational form." .
+
+:AIWorkslop a owl:Class ;
+  rdfs:subClassOf :WorkSlopFamily ;
+  :evidenceStatus "established" ;
+  :generationNeutral false ;
+  rdfs:label "AI Workslop" ;
+  rdfs:comment "AI-generated workplace content that appears polished or complete but lacks context, substance or usefulness and shifts real work to recipients." .
+
+:ManagementSlop a owl:Class ;
+  rdfs:subClassOf :WorkSlopFamily, :HumanSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Management Slop" ;
+  rdfs:comment "Management-produced or management-mandated artifacts, rituals, decisions or controls whose apparent legitimacy exceeds their contribution to organizational goals." .
+
+:StrategySlop a owl:Class ;
+  rdfs:subClassOf :ManagementSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Strategy Slop" ;
+  rdfs:comment "Strategic language or plans that signal direction while remaining deliberately ambiguous, unfalsifiable, unprioritized or disconnected from resource choices." .
+
+:JargonSlop a owl:Class ;
+  rdfs:subClassOf :ManagementSlop, :CommunicationSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Jargon Slop" ;
+  rdfs:comment "Impressive-sounding organizational language that is semantically empty, truth-indifferent or needlessly obscures action." .
+
+:MeetingSlop a owl:Class ;
+  rdfs:subClassOf :ManagementSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Meeting Slop" ;
+  rdfs:comment "A meeting whose participant cost substantially exceeds its objective achievement and that lacks a justified need for synchronous coordination." .
+
+:DecisionSlop a owl:Class ;
+  rdfs:subClassOf :ManagementSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Decision Slop" ;
+  rdfs:comment "A decision artifact or ritual that performs decisiveness without traceable evidence, ownership, constraints or commitment." .
+
+:MetricsSlop a owl:Class ;
+  rdfs:subClassOf :ManagementSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Metrics Slop" ;
+  rdfs:comment "Metrics, dashboards or targets that create a veneer of control while rewarding proxy optimization, output inflation or reporting activity over outcomes." .
+
+:ProcessSlop a owl:Class ;
+  rdfs:subClassOf :ManagementSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Process Slop" ;
+  rdfs:comment "A workflow, approval or procedure that persists, duplicates other controls or expands despite weak contribution to current goals." .
+
+:AdministrativeSlop a owl:Class ;
+  rdfs:subClassOf :ManagementSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Administrative Slop" ;
+  rdfs:comment "Rules and administrative interactions that consume learning, compliance or psychological effort without proportionate contribution to legitimate objectives." .
+
+:ComplianceSlop a owl:Class ;
+  rdfs:subClassOf :AdministrativeSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Compliance Slop" ;
+  rdfs:comment "Compliance artifacts or controls optimized for proof of activity rather than meaningful risk reduction." .
+
+:CommunicationSlop a owl:Class ;
+  rdfs:subClassOf :WorkSlopFamily ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Communication Slop" ;
+  rdfs:comment "Workplace messages that create more interpretation and response work than shared understanding." .
+
+:DocumentationSlop a owl:Class ;
+  rdfs:subClassOf :CommunicationSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Documentation Slop" ;
+  rdfs:comment "Documentation that appears complete but is stale, duplicated, unactionable, untraceable or disconnected from the system it describes." .
+
+:PresentationSlop a owl:Class ;
+  rdfs:subClassOf :CommunicationSlop, :ManagementSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Presentation Slop" ;
+  rdfs:comment "Slides or visual reports whose polish, volume or template conformity masks missing evidence, decisions or audience-specific meaning." .
+
+:CoordinationSlop a owl:Class ;
+  rdfs:subClassOf :WorkSlopFamily ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Coordination Slop" ;
+  rdfs:comment "Coordination mechanisms whose maintenance, synchronization and handoff costs exceed the uncertainty or dependency they resolve." .
+
+:ReviewSlop a owl:Class ;
+  rdfs:subClassOf :WorkSlopFamily ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Review Slop" ;
+  rdfs:comment "A review that performs oversight without engaging the evidence, purpose or consequences of the item reviewed." .
+
+:OpenSourceContributionSlop a owl:Class ;
+  rdfs:subClassOf :WorkSlopFamily ;
+  :evidenceStatus "emerging" ;
+  :generationNeutral false ;
+  rdfs:label "Open Source Contribution Slop" ;
+  rdfs:comment "Plausible but low-quality issues, pull requests, documentation or bug reports that overwhelm open-source review capacity." .
+
+:HiringSlop a owl:Class ;
+  rdfs:subClassOf :WorkSlopFamily ;
+  :evidenceStatus "emerging" ;
+  :generationNeutral false ;
+  rdfs:label "Hiring Slop" ;
+  rdfs:comment "High-volume, templated or AI-optimized hiring artifacts that simulate candidate or employer fit while reducing the signal available to the other side." .
+
+:EducationalSlop a owl:Class ;
+  rdfs:subClassOf core:ContentItem ;
+  :evidenceStatus "established" ;
+  :generationNeutral false ;
+  rdfs:label "Educational Slop" ;
+  rdfs:comment "Low-care AI-generated educational material that competes with authoritative instruction and violates basic instructional or factual quality requirements." .
+
+:Slopaganda a owl:Class ;
+  rdfs:subClassOf core:ContentItem ;
+  :evidenceStatus "emerging" ;
+  :generationNeutral false ;
+  rdfs:label "Slopaganda" ;
+  rdfs:comment "Mass-disseminated AI-generated noise used to manipulate collective attention through semantic saturation, context collapse or cognitive exhaustion, not only through discrete false claims." .
+
+:ScaledContentSlop a owl:Class ;
+  rdfs:subClassOf :SEOSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Scaled Content Slop" ;
+  rdfs:comment "Large volumes of unoriginal or low-value pages produced primarily to manipulate search rankings, regardless of whether humans, AI or automation created them." .
+
+:DoorwayPageSlop a owl:Class ;
+  rdfs:subClassOf :SEOSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Doorway Page Slop" ;
+  rdfs:comment "Near-duplicate pages or sites targeting similar queries, regions or terms that funnel users toward another destination rather than satisfying the query." .
+
+:SiteReputationSlop a owl:Class ;
+  rdfs:subClassOf :SEOSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Site Reputation Slop" ;
+  rdfs:comment "Third-party or detached content placed on an established host mainly to borrow its ranking signals rather than serve the host's audience." .
+
+:ExpiredDomainSlop a owl:Class ;
+  rdfs:subClassOf :SEOSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Expired Domain Slop" ;
+  rdfs:comment "Low-value content placed on a repurposed expired domain primarily to exploit inherited reputation or backlinks." .
+
+:ScrapedRemixSlop a owl:Class ;
+  rdfs:subClassOf :SEOSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Scraped Remix Slop" ;
+  rdfs:comment "Scraped, synonymized, translated, stitched or lightly transformed material republished without substantial original value." .
+
+:SearchSaturationSlop a owl:Class ;
+  rdfs:subClassOf :SEOSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "Search Saturation Slop" ;
+  rdfs:comment "Coordinated clusters of pages or sites designed to occupy many result positions or become overrepresented in retrieval systems." .
+
+:GEOManipulationSlop a owl:Class ;
+  rdfs:subClassOf :SEOSlop ;
+  :evidenceStatus "grounded_extension" ;
+  :generationNeutral true ;
+  rdfs:label "GEO Manipulation Slop" ;
+  rdfs:comment "Content engineered primarily to manipulate generative search or answer systems into citing, repeating or privileging a claim." .
