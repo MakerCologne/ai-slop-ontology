@@ -44,7 +44,23 @@ Returns: `slop_score` (0–1), individual dimension scores, signal breakdown wit
 python3 scripts/slop_classifier.py "TEXT_TO_ANALYZE"
 ```
 
-Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, LinkedInSlop, etc.), signals detected, severity.
+Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, LinkedInSlop, etc.), signals detected, severity, and `rhetorical_patterns` (see below).
+
+### Step 2b: Name rhetorical patterns (detect-only)
+
+```bash
+python3 scripts/rhetorical_patterns.py "TEXT_TO_ANALYZE"
+```
+
+Returns nine sentence-level AI writing shapes as **named patterns with quoted
+evidence** (binary contrast, colon reveal, superficial analysis, negative
+listing/fragmentation, fake-strong verb, synonym cycling, hollow kicker/recap,
+formatting slop, robotic rhythm). These are reported for a human to check and do
+**not** change the numeric score — use them when the ask is "which AI writing
+tics are in this draft?" rather than "how sloppy is it?". Each pattern has a
+`keep_when` guard so genuine voice is not flagged. Data lives in `ontology.json`
+under `signals.text.rhetoricalPatterns`; concept adapted from
+[petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT).
 
 ### Step 3: Interpret results
 

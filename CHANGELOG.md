@@ -1,5 +1,24 @@
 # Changelog
 
+## [Unreleased]
+
+**Rhetorische Muster (detect-only).** Neun Satz-/Absatz-Muster aus dem
+MIT-Skill [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop)
+als benannte Detektoren integriert: Binary Contrast, Colon Reveal, Superficial
+Analysis, Negative Listing/Fragmentation, Fake-strong Verb, Synonym Cycling,
+Hollow Kicker/Recap, Formatting Slop, Robotic Rhythm.
+
+- Datenmodell in `ontology.json` unter `signals.text.rhetoricalPatterns`
+  (Label, Beschreibung, Beispiel, Fix, `keep_when`-Falsch-Positiv-Leitplanke).
+- Detektor `skills/ai-slop-detection/scripts/rhetorical_patterns.py` (nur
+  Standardbibliothek), verdrahtet in `classify_text()` als
+  `result.rhetorical_patterns`.
+- **Detect-only:** benannte Evidenz mit zitierter Zeile, fließt bewusst
+  **nicht** in den numerischen Slop-Score ein — Benchmark unverändert
+  (src-Klassifikator F1 0,96; Skill-Pipeline F1 0,98).
+- Konsistenz-Checker erzwingt Parität JSON ↔ Skill-Modul.
+- Testsuite: 47 → **55 Tests**.
+
 ## [1.2.1] — 2026-07-10
 
 Behebt die drei Codex-Review-Kommentare aus PR #2 (alle P2):
