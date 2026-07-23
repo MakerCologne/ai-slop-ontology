@@ -1097,6 +1097,143 @@
             ]
           }
         }
+      },
+      "rhetoricalPatterns": {
+        "description": "Sentence- and paragraph-level rhetorical shapes that mark AI-assisted prose, independent of any single buzzword.",
+        "detection": "detect-only: each match is a named pattern with a quoted line of evidence for a human to check; NOT folded into the numeric slop score",
+        "attribution": "Pattern set adapted from the 'No AI slop' editing skill by Peter Yang (github.com/petergyang/no-ai-slop, MIT); re-expressed as ontology detectors",
+        "patterns": {
+          "BinaryContrast": {
+            "label": "Binary contrast",
+            "confidence": 0.7,
+            "description": "\"It's not X. It's Y.\" / \"not just X but Y\" / \"the question isn't X, it's Y.\" State Y directly.",
+            "example_slop": "The question isn't the model. It's the eval.",
+            "example_fix": "The eval matters more than the model.",
+            "keep_when": "A genuine correction of a specific misconception, not a rhetorical flourish."
+          },
+          "ColonReveal": {
+            "label": "Colon reveal",
+            "confidence": 0.55,
+            "description": "A short capitalized phrase, a colon, then a lowercase dramatic reveal. Rewrite as a plain sentence.",
+            "example_slop": "The best part: it learns.",
+            "example_fix": "It learns, which is the best part.",
+            "keep_when": "The colon introduces a list, label, quote, ratio, or code."
+          },
+          "SuperficialAnalysis": {
+            "label": "Superficial analysis",
+            "confidence": 0.7,
+            "description": "Trailing '-ing' clause that pretends to explain meaning (highlighting, underscoring, reflecting, showcasing).",
+            "example_slop": "The launch adds file search, highlighting the team's commitment to workflows.",
+            "example_fix": "The launch adds file search, so users find old drafts without leaving the editor.",
+            "keep_when": "The clause states a concrete consequence, not a vague virtue."
+          },
+          "NegativeListingFragmentation": {
+            "label": "Negative listing & dramatic fragmentation",
+            "confidence": 0.65,
+            "description": "\"Not a X. Not a Y. A Z.\" or \"That's it. That's the whole thing.\" or stacked \"X. And Y. And Z.\" Use complete sentences and say Z.",
+            "example_slop": "Not a feature. Not a tool. A movement.",
+            "example_fix": "It's a movement.",
+            "keep_when": "Deliberate, sparing emphasis that fits the writer's spoken rhythm."
+          },
+          "FakeStrongVerb": {
+            "label": "Fake-strong verb",
+            "confidence": 0.6,
+            "description": "\"serves as / acts as / functions as a centralized hub/platform/solution.\" Prefer a plain verb, 'is', or 'has'.",
+            "example_slop": "The app serves as a centralized hub for sponsor management.",
+            "example_fix": "The app tracks sponsors, drafts, due dates, and approvals in one place.",
+            "keep_when": "'serves as' names a literal role and no plainer verb fits."
+          },
+          "SynonymCycling": {
+            "label": "Synonym cycling",
+            "confidence": 0.6,
+            "description": "Rotating near-synonyms for one referent across adjacent sentences (the agent, then the assistant, then the tool). If the clear word is right, repeat it.",
+            "example_slop": "The agent reviews the draft. The assistant scores it. The tool suggests fixes.",
+            "example_fix": "The agent reviews the draft, scores it, and suggests fixes.",
+            "keep_when": "The different words genuinely refer to different things.",
+            "synonym_groups": [
+              [
+                "agent",
+                "assistant",
+                "tool",
+                "bot",
+                "model",
+                "system",
+                "copilot"
+              ],
+              [
+                "app",
+                "platform",
+                "tool",
+                "product",
+                "service",
+                "solution",
+                "software"
+              ],
+              [
+                "company",
+                "firm",
+                "startup",
+                "team",
+                "organization",
+                "organisation"
+              ],
+              [
+                "article",
+                "piece",
+                "post",
+                "essay",
+                "write-up",
+                "writeup"
+              ]
+            ]
+          },
+          "HollowKickerRecap": {
+            "label": "Fake-profound kicker & summary-recap ending",
+            "confidence": 0.6,
+            "description": "A final 'deep' one-liner (aphorism/mic-drop) or a recap paragraph ('In conclusion', 'Ultimately', 'Overall'). End on the last concrete point, takeaway, or next action instead.",
+            "example_slop": "In conclusion, AI is changing everything, and we must adapt.",
+            "example_fix": "(end on the last concrete point already in the draft)",
+            "keep_when": "A genuine call to action or concrete next step, not a restatement.",
+            "recap_openers": [
+              "in conclusion",
+              "ultimately",
+              "overall",
+              "to sum up",
+              "in summary",
+              "all in all",
+              "at the end of the day",
+              "when all is said and done",
+              "in the end",
+              "to wrap up",
+              "to conclude"
+            ],
+            "kicker_openers": [
+              "and that's",
+              "and maybe that's",
+              "because in the end",
+              "that's the real",
+              "and in the end",
+              "that, ultimately, is",
+              "and that is the"
+            ]
+          },
+          "FormattingSlop": {
+            "label": "Formatting slop",
+            "confidence": 0.55,
+            "description": "Emoji in headings, bold sprinkled mid-sentence for emphasis, and em-dash clusters. Format should follow content, not decorate it.",
+            "example_slop": "## 🚀 Key Takeaways",
+            "example_fix": "## Key takeaways",
+            "keep_when": "Emoji or bold is the platform's native style (e.g. a release changelog)."
+          },
+          "RoboticRhythm": {
+            "label": "Robotic rhythm",
+            "confidence": 0.5,
+            "description": "Stacked punchy fragments and repeated sentence shapes — three or more very short sentences in a row. Vary shape only when it helps.",
+            "example_slop": "It works. It scales. It ships. Every time.",
+            "example_fix": "It works, scales, and ships every time.",
+            "keep_when": "A short burst used once, deliberately, for genuine emphasis."
+          }
+        }
       }
     },
     "image": {

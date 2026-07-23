@@ -97,6 +97,34 @@ Regex patterns for: API keys, tokens, passwords, connection strings
 | False authorship | Strong suspicion |
 | Disclosed AI + human review | Rather exonerating |
 
+## Rhetorical Patterns (detect-only)
+
+Sentence- and paragraph-level *shapes* that mark AI-assisted prose, independent
+of any single buzzword. Each match is a **named pattern with a quoted line of
+evidence** for a human to check — it is deliberately **not** folded into the
+numeric slop score (a named pattern is evidence; a score is a guess). Every
+pattern carries a `keep_when` note so genuine human voice is not flagged.
+
+Adapted from the "No AI slop" editing skill by Peter Yang
+([petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop), MIT).
+
+| Pattern | Smells like | Keep when |
+|---------|-------------|-----------|
+| Binary contrast | "It's not X. It's Y." | Genuine correction of a specific misconception |
+| Colon reveal | "The best part: it learns." | Colon introduces a list, label, quote, or code |
+| Superficial analysis | "…, highlighting the team's commitment" | Clause states a concrete consequence |
+| Negative listing / fragmentation | "Not a X. Not a Y. A Z." / "That's it." | Sparing emphasis that fits the writer's rhythm |
+| Fake-strong verb | "serves as a centralized hub" | Names a literal role, no plainer verb fits |
+| Synonym cycling | the agent → the assistant → the tool | The words refer to different things |
+| Hollow kicker / recap | "In conclusion, …" / mic-drop aphorism | A genuine call to action or next step |
+| Formatting slop | emoji headings, mid-sentence bold, em-dash clusters | Platform's native style |
+| Robotic rhythm | 3+ stacked short sentences | One deliberate burst for emphasis |
+
+Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
+`result.rhetorical_patterns` from the classifier's JSON output). The nine
+patterns are mirrored as data in `ontology.json` under
+`signals.text.rhetoricalPatterns`.
+
 ## Statistical/ML Methods
 
 1. **DetectGPT** (Mitchell et al. 2023): Curvature-based probability discrimination

@@ -83,6 +83,15 @@ def main() -> int:
           f"Multilingual drift: ontology.json={sorted(json_langs)} vs "
           f"skill scorer={sorted(skill_langs)}")
 
+    # 6. Rhetorical (detect-only) patterns match between JSON DB and skill module
+    import rhetorical_patterns
+    skill_rhetorical = set(rhetorical_patterns.RHETORICAL_PATTERNS)
+    json_rhetorical = set(
+        oj["signals"]["text"].get("rhetoricalPatterns", {}).get("patterns", {}))
+    check(skill_rhetorical == json_rhetorical,
+          f"Rhetorical-pattern drift: skill module={sorted(skill_rhetorical)} vs "
+          f"ontology.json rhetoricalPatterns={sorted(json_rhetorical)}")
+
     if errors:
         print("CONSISTENCY CHECK FAILED:")
         for e in errors:
@@ -90,6 +99,7 @@ def main() -> int:
         return 1
     print(f"Consistency check passed ({len(json_types)} slop types, "
           f"{len(json_pattern_types)} pattern-bearing types, "
+          f"{len(json_rhetorical)} rhetorical patterns, "
           f"{len(json_langs)} languages, dates and versions aligned).")
     return 0
 

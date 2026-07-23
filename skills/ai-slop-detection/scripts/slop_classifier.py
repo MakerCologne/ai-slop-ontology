@@ -24,6 +24,7 @@ from slop_scorer import (
     information_density, burstiness, trailing_moral, list_heavy,
     punctuation_anomaly_score, mirrored_intro_conclusion, find_term_matches,
 )
+from rhetorical_patterns import find_rhetorical_patterns
 
 
 @dataclass
@@ -48,6 +49,9 @@ class ClassificationResult:
     score: float = 0.0
     countermeasures: list = field(default_factory=list)
     notes: list = field(default_factory=list)
+    # Detect-only: named rhetorical patterns with quoted evidence. These are
+    # reported for the user to check; they do NOT feed the numeric score.
+    rhetorical_patterns: list = field(default_factory=list)
 
 
 # --- Slop Type Pattern Definitions (extended from ontology.json v1.0.0) ---
@@ -292,6 +296,9 @@ def classify_text(text: str) -> ClassificationResult:
     else:
         result.countermeasures = []
 
+    # Detect-only rhetorical patterns (named evidence, no score contribution).
+    result.rhetorical_patterns = find_rhetorical_patterns(text)
+
     return result
 
 
@@ -314,6 +321,11 @@ def format_report(result: ClassificationResult) -> str:
         for s in result.signals:
             lines.append(f"  ⚠️ {s.signal_id} ({s.confidence:.0%}) — {s.evidence}")
 
+    if result.rhetorical_patterns:
+        lines.append(f"\n✍️ Rhetorical patterns ({len(result.rhetorical_patterns)}):")
+        for p in result.rhetorical_patterns:
+            lines.append(f"  • {p['label']} ({p['confidence']:.0%}) — \"{p['evidence']}\"")
+
     if result.countermeasures:
         lines.append(f"\n🛡️ Recommended actions:")
         for c in result.countermeasures:
@@ -328,6 +340,7 @@ def to_dict(result: ClassificationResult) -> dict:
         "score": result.score,
         "slop_types": [{"name": t.name, "score": t.score, "description": t.description} for t in result.slop_types],
         "signals": [{"signal": s.signal_id, "confidence": s.confidence, "evidence": s.evidence} for s in result.signals],
+        "rhetorical_patterns": result.rhetorical_patterns,
         "countermeasures": result.countermeasures,
     }
 

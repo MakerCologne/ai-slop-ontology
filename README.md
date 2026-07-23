@@ -23,6 +23,38 @@ else:
     action = "allow_with_checks"
 ```
 
+## CLI Toolkit (`slop`)
+
+A command-line front-end over the same engine and ontology data. No third-party
+dependencies — the detector uses only the Python standard library.
+
+```bash
+pip install -e .          # exposes the `slop` command (or use `python -m slopkit`)
+
+slop score "In today's rapidly evolving landscape, our holistic platform serves as a hub."
+slop classify --file draft.md          # slop types, signals, dimensions, actions
+slop rhetoric "It's not a tool. It's a movement."   # named AI writing patterns
+echo "text" | slop check -             # combined score + rhetorical report (stdin)
+slop code --lang python app.py         # slop patterns in source code
+slop info                              # signal-database + ontology metadata
+slop benchmark                         # run the labelled-corpus benchmark
+slop selfcheck                         # JSON/TTL/YAML/skill consistency check
+```
+
+| Command | Output |
+|---------|--------|
+| `score` | numeric slop score (0–1) + severity |
+| `classify` | full report: slop types, weighted signals, dimensions, countermeasures |
+| `rhetoric` | detect-only rhetorical patterns as named evidence (not scored) |
+| `check` | `classify` + `rhetoric` in one pass |
+| `code` | code-specific slop (hallucinated packages, hardcoded secrets, comment bloat) |
+| `info` / `benchmark` / `selfcheck` | metadata / evaluation / consistency |
+
+Every text command reads a positional string, `--file PATH`, or stdin (`-`), and
+takes `--json` for machine-readable output.
+
+📖 **Full manual with use cases and tested examples: [docs/USER-GUIDE.md](docs/USER-GUIDE.md)**
+
 ## What is AI Slop?
 
 AI Slop is **not** simply "AI-generated content." It is a **risk profile**. Three necessary conditions must ALL be met:
@@ -48,10 +80,14 @@ Key insight: Carefully curated, verified, and intentionally published AI outputs
 ├── report.md                     ← Deep research report (Round 1)
 ├── report-extended.md            ← Extended research (Round 2)
 ├── RESEARCH-v0.1.md              ← v0.1 research findings
+├── pyproject.toml                ← Packaging + `slop` CLI entry point
+├── slopkit/                      ← CLI toolkit (wraps src/ + rhetorical detector)
+│   ├── cli.py                    ← `slop` subcommands
+│   └── _engine.py                ← composed engine adapter
 ├── src/
 │   ├── classifier.py             ← Python classifier (v1.2)
 │   └── scorer.py                  ← Scoring engine
-├── skills/ai-slop-detection/     ← Agent skill (self-contained scorer + classifier)
+├── skills/ai-slop-detection/     ← Agent skill (self-contained scorer + classifier + rhetoric)
 ├── tests/                        ← Unit tests (python3 -m unittest discover tests)
 └── examples/
     ├── classification-examples.json  ← 8 scored examples

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slopkit"
+version = "0.1.0"
+description = "CLI toolkit for the AI Slop Ontology: score, classify, and detect AI-slop patterns."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "CC-BY-4.0" }
+authors = [{ name = "ai-slop-ontology contributors" }]
+keywords = ["ai-slop", "llm", "content-quality", "detection", "ontology"]
+
+# The detection engine and ontology data use only the Python standard library.
+dependencies = []
+
+[project.optional-dependencies]
+yaml = ["pyyaml"]
+
+[project.scripts]
+slop = "slopkit.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/hikaman/ai-slop-ontology"
+Source = "https://github.com/hikaman/ai-slop-ontology"
+
+[tool.setuptools]
+packages = ["slopkit"]

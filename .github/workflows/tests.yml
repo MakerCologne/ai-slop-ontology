@@ -23,5 +23,10 @@ jobs:
           python -c "import yaml; yaml.safe_load(open('ai_slop_ontology.yaml'))"
       - name: Check JSON/YAML/TTL consistency
         run: python scripts/check_consistency.py
+      - name: Smoke-test the slop CLI
+        run: |
+          python -m slopkit info
+          python -m slopkit selfcheck
+          echo "It's not a tool. It's a movement." | python -m slopkit rhetoric -
       - name: Run benchmark (informational)
         run: python eval/run_benchmark.py
