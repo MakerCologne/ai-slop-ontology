@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+**CLI-Toolkit (`slop`).** Das Projekt hat jetzt eine einheitliche
+Kommandozeile über die kanonische Engine (`src/`) und die Ontologie-Daten —
+neues Paket `slopkit/` mit Entry-Point `slop` (bzw. `python -m slopkit`), ohne
+Fremd-Abhängigkeiten (nur Standardbibliothek).
+
+- Subcommands: `score`, `classify`, `rhetoric`, `check`, `code`, `info`,
+  `benchmark`, `selfcheck`.
+- Eingabe je Befehl: Positional-Text, `--file PATH` oder stdin (`-`); `--json`
+  für maschinenlesbare Ausgabe.
+- Wiederverwendung statt Duplikation: wrappt `src/SlopClassifier` und den
+  detect-only Rhetorik-Detektor; `pyproject.toml` definiert den Entry-Point.
+- CI-Smoke-Test (`slop info`/`selfcheck`/`rhetoric`) ergänzt.
+- Testsuite: 55 → **65 Tests**.
+
 **Rhetorische Muster (detect-only).** Neun Satz-/Absatz-Muster aus dem
 MIT-Skill [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop)
 als benannte Detektoren integriert: Binary Contrast, Colon Reveal, Superficial
