@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+**Fix: `ontology.ttl` parst jetzt (fehlender `xsd:`-Präfix).** Die Turtle-Datei
+nutzte `xsd:string`/`xsd:decimal`, deklarierte aber nie
+`@prefix xsd: <http://www.w3.org/2001/XMLSchema#>` — jeder RDF-Parser scheiterte
+(`Prefix "xsd:" not bound`). Präfix ergänzt; `rdflib` lädt jetzt 1044 Triples.
+
+- CI-Schritt „Parse Turtle serialization" (rdflib) in `tests.yml` ergänzt —
+  belegt die zuvor unbewiesene Aussage „Turtle serialization parses
+  successfully" maschinell.
+- Regressionstest `tests/test_ttl_parses.py` (parst via rdflib; prüft auch ohne
+  rdflib, dass ein genutzter `xsd:`-Präfix deklariert ist).
+
 **Dokumentation & Bedienungsanleitung.** Vollständige Anleitung
 `docs/USER-GUIDE.md` mit Konzepten, Command-Reference, sieben Anwendungsfällen
 (Qualitätscheck, RAG-Filter, CI-Gate, Prosa-Editing, Code-Review,

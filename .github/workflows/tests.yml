@@ -14,13 +14,15 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install optional deps
-        run: pip install pyyaml
+        run: pip install pyyaml rdflib
       - name: Run unit tests
         run: python -m unittest discover tests -v
       - name: Validate data files
         run: |
           python -c "import json; json.load(open('ontology.json'))"
           python -c "import yaml; yaml.safe_load(open('ai_slop_ontology.yaml'))"
+      - name: Parse Turtle serialization
+        run: python -c "import rdflib; g=rdflib.Graph(); g.parse('ontology.ttl', format='turtle'); print(f'ontology.ttl OK: {len(g)} triples')"
       - name: Check JSON/YAML/TTL consistency
         run: python scripts/check_consistency.py
       - name: Smoke-test the slop CLI
