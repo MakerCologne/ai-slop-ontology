@@ -102,6 +102,22 @@ class TestSlopClassifier(unittest.TestCase):
         )
         self.assertGreaterEqual(result.overall_slop_score, 0.70)
 
+    def test_code_hallucinated_package_call_syntax(self):
+        # require("pkg") / import('pkg') call forms must be detected, not just
+        # `import pkg` with whitespace.
+        result = self.clf.classify_code('const p = require("super-fast-json-parser");', "js")
+        self.assertTrue(
+            any(s.signal_id == "InventedPackage" for s in result.signals_detected)
+        )
+
+    def test_code_import_lookalike_is_not_flagged(self):
+        # Words that merely start with a keyword ("important", "useState") must
+        # not be parsed as imports.
+        result = self.clf.classify_code("important = True\nconst useState = init()\n")
+        self.assertFalse(
+            any(s.signal_id == "InventedPackage" for s in result.signals_detected)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

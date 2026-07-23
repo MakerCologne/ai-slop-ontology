@@ -77,19 +77,27 @@ def _result_to_dict(r) -> dict:
 # subcommand implementations
 # --------------------------------------------------------------------------- #
 
+def _gate(args, score: float) -> int:
+    """Exit code for CI gating: 1 when --fail-over is set and score >= it."""
+    threshold = getattr(args, "fail_over", None)
+    if threshold is not None and score >= threshold:
+        return 1
+    return 0
+
+
 def cmd_score(args, eng) -> int:
     text = _read_input(args)
     r = eng.classify_text(text)
     if args.json:
         print(json.dumps({"slop_score": r.overall_slop_score,
                           "severity": r.severity}, indent=2))
-        return 0
+        return _gate(args, r.overall_slop_score)
     icon = _SEVERITY_ICON.get(r.severity, "•")
     print(f"{icon} slop score {r.overall_slop_score:.2f}  [{_bar(r.overall_slop_score)}]  {r.severity}")
     if r.signals_detected:
         top = sorted(r.signals_detected, key=lambda s: -s.confidence)[:3]
         print("  top signals: " + ", ".join(f"{s.signal_id}" for s in top))
-    return 0
+    return _gate(args, r.overall_slop_score)
 
 
 def cmd_classify(args, eng) -> int:
@@ -154,7 +162,7 @@ def cmd_check(args, eng) -> int:
         out = _result_to_dict(r)
         out["rhetorical_patterns"] = findings
         print(json.dumps(out, indent=2))
-        return 0
+        return _gate(args, r.overall_slop_score)
     _print_classification(r)
     print()
     if findings:
@@ -163,7 +171,7 @@ def cmd_check(args, eng) -> int:
             print(f"  • {f['label']} ({f['confidence']:.0%}) — \"{f['evidence']}\"")
     else:
         print("✍️  no rhetorical slop patterns detected")
-    return 0
+    return _gate(args, r.overall_slop_score)
 
 
 def cmd_info(args, eng) -> int:
@@ -224,15 +232,18 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", metavar="<command>")
 
     specs = [
-        ("score", "numeric slop score + severity", cmd_score, True),
-        ("classify", "full classification report", cmd_classify, True),
-        ("rhetoric", "detect-only rhetorical patterns", cmd_rhetoric, True),
-        ("check", "combined score + rhetorical report", cmd_check, True),
+        ("score", "numeric slop score + severity", cmd_score, True, True),
+        ("classify", "full classification report", cmd_classify, True, False),
+        ("rhetoric", "detect-only rhetorical patterns", cmd_rhetoric, True, False),
+        ("check", "combined score + rhetorical report", cmd_check, True, True),
     ]
-    for name, help_text, func, text_args in specs:
+    for name, help_text, func, text_args, gate in specs:
         sp = sub.add_parser(name, help=help_text)
         if text_args:
             _add_text_args(sp)
+        if gate:
+            sp.add_argument("--fail-over", type=float, metavar="THRESHOLD",
+                            help="exit non-zero when the slop score is >= THRESHOLD (CI gating)")
         sp.set_defaults(func=func)
 
     sp_code = sub.add_parser("code", help="classify source code for slop")

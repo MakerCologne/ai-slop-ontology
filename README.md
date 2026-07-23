@@ -53,6 +53,8 @@ slop selfcheck                         # JSON/TTL/YAML/skill consistency check
 Every text command reads a positional string, `--file PATH`, or stdin (`-`), and
 takes `--json` for machine-readable output.
 
+📖 **Full manual with use cases and tested examples: [docs/USER-GUIDE.md](docs/USER-GUIDE.md)**
+
 ## What is AI Slop?
 
 AI Slop is **not** simply "AI-generated content." It is a **risk profile**. Three necessary conditions must ALL be met:

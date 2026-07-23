@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+**Dokumentation & Bedienungsanleitung.** Vollständige Anleitung
+`docs/USER-GUIDE.md` mit Konzepten, Command-Reference, sieben Anwendungsfällen
+(Qualitätscheck, RAG-Filter, CI-Gate, Prosa-Editing, Code-Review,
+Mehrsprachigkeit, Batch), Python-Library-Nutzung, JSON-Integration und FAQ.
+Jeder ```console-Befehl der Anleitung wird von `tests/test_docs_examples.py`
+tatsächlich ausgeführt — die Beispiele können nicht von der funktionierenden
+CLI abdriften. README verlinkt die Anleitung.
+
+- Neu: `slop score`/`check --fail-over THRESHOLD` — Exit-Code 1 bei
+  Score ≥ Schwelle (CI-Gating).
+- Fix: Hallucinated-Package-Erkennung (`InventedPackage`) erkennt jetzt auch
+  Aufruf-/Quote-Formen wie `require("pkg")` / `import('pkg')`, ohne
+  Lookalikes wie `important`/`useState` fälschlich zu treffen.
+- Testsuite: 65 → **69 Tests**.
+
 **CLI-Toolkit (`slop`).** Das Projekt hat jetzt eine einheitliche
 Kommandozeile über die kanonische Engine (`src/`) und die Ontologie-Daten —
 neues Paket `slopkit/` mit Entry-Point `slop` (bzw. `python -m slopkit`), ohne

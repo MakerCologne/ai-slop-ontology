@@ -416,7 +416,11 @@ class SlopClassifier:
         code_sigs = self.ontology["signals"].get("code", {}).get("indicators", [])
 
         # Check for invented packages
-        import_patterns = re.findall(r'(?:import|from|require|use)\s+["\']?([a-zA-Z0-9_-]+)', code)
+        # Match `import foo`, `from "foo"`, and call/quote forms like
+        # require("foo") / import('foo'); the keyword must be followed by
+        # whitespace or an opening paren so words like "important" don't match.
+        import_patterns = re.findall(
+            r'\b(?:import|from|require|use)(?:\s+|\s*\(\s*)["\']?([a-zA-Z0-9_.-]+)', code)
         known_examples = []
         for sig in code_sigs:
             if sig.get("id") == "InventedPackage":
