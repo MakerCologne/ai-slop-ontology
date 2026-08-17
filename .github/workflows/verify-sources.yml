@@ -1,0 +1,22 @@
+name: verify-sources
+
+# Online citation check for the Human/Work/SEO slop extension. Kept separate
+# from the main test workflow because it needs the network: fabricated or dead
+# links surface here without making unit-test CI flaky. Publisher bot-blocks
+# (HTTP 403/429) are treated as inconclusive; only 404/410/DNS failures fail.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC
+
+jobs:
+  resolve-sources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Resolve citation URLs
+        run: python extensions/human-work-seo-slop/verify_sources.py --online

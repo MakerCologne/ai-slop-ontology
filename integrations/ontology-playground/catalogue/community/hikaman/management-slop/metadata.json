@@ -1,0 +1,8 @@
+{
+  "name": "Management Slop",
+  "description": "Management Slop types covering strategy, jargon, meetings, decisions, metrics, administration, and compliance.",
+  "icon": "🧭",
+  "category": "general",
+  "tags": ["management-slop", "strategy", "meetings", "decisions", "metrics", "administration", "compliance"],
+  "author": "hikaman"
+}

@@ -88,6 +88,10 @@ Key insight: Carefully curated, verified, and intentionally published AI outputs
 │   ├── classifier.py             ← Python classifier (v1.2)
 │   └── scorer.py                  ← Scoring engine
 ├── skills/ai-slop-detection/     ← Agent skill (self-contained scorer + classifier + rhetoric)
+├── extensions/
+│   └── human-work-seo-slop/      ← Experimental Human, Work, Management & SEO Slop module
+├── integrations/
+│   └── ontology-playground/      ← Adapter + catalogue entries for the Ontology Playground
 ├── tests/                        ← Unit tests (python3 -m unittest discover tests)
 └── examples/
     ├── classification-examples.json  ← 8 scored examples
@@ -95,6 +99,27 @@ Key insight: Carefully curated, verified, and intentionally published AI outputs
     ├── image-slop-examples.json      ← Image slop instances
     └── code-slop-examples.json       ← Code slop instances
 ```
+
+## Experimental Extension: Human, Work and SEO Slop
+
+`extensions/human-work-seo-slop/` adds a researched, technology-neutral extension without changing the canonical AI Slop definition or classifier.
+
+- **3 grouping/core concepts:** `HumanSlop`, `WorkSlopFamily`, `SEOSlop`
+- **27 concrete types**, including `AIWorkslop`, `HumanWorkSlop`, `ManagementSlop`, `MeetingSlop`, `ProcessSlop`, `MetricsSlop`, `OpenSourceContributionSlop`, `HiringSlop`, `EducationalSlop` and `Slopaganda`
+- **7 SEO subtypes:** scaled content, doorway pages, site-reputation abuse, expired-domain abuse, scraped remix, search saturation and GEO manipulation
+- **11 cross-cutting dimensions:** goal contribution, recipient effort transfer, actionability, verification, coordination, process obsolescence, metric gaming, distribution manipulation and related signals
+- **Evidence-status model:** `established`, `emerging`, `grounded_extension`, `candidate`
+- **False-positive safeguards:** classify artifacts and systems rather than people; AI use, human authorship, jargon, length or inconvenience alone never establish Slop
+
+The established term **Workslop** retains its narrow AI-generated meaning as `AIWorkslop`. `WorkSlopFamily` is a separate grouping class that allows human, AI-assisted and synthetic forms to coexist without collapsing generation modes.
+
+Files:
+
+- `extensions/human-work-seo-slop/RESEARCH.md` — deep research and design rationale
+- `extensions/human-work-seo-slop/human_work_seo_slop.json` — machine-readable taxonomy, rules and sources
+- `extensions/human-work-seo-slop/human_work_seo_slop.ttl` — RDF/Turtle classes
+- `extensions/human-work-seo-slop/examples.json` — candidates and counterexamples
+- `tests/test_human_work_seo_extension.py` — structural and false-positive regression checks
 
 ## Ontology Architecture
 

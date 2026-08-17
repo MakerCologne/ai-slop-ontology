@@ -1,0 +1,8 @@
+{
+  "name": "AI Slop by Medium",
+  "description": "AI Slop types organized by text, image, video, audio, music, code, and multimodal form.",
+  "icon": "🧩",
+  "category": "media",
+  "tags": ["ai-slop", "media", "text", "image", "video", "audio", "music", "code"],
+  "author": "hikaman"
+}

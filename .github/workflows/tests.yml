@@ -28,5 +28,7 @@ jobs:
           python -m slopkit info
           python -m slopkit selfcheck
           echo "It's not a tool. It's a movement." | python -m slopkit rhetoric -
+      - name: Verify extension citation sources (offline)
+        run: python extensions/human-work-seo-slop/verify_sources.py
       - name: Run benchmark (informational)
         run: python eval/run_benchmark.py

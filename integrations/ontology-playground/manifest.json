@@ -1,0 +1,16 @@
+{
+  "adapter_version": "0.1.0",
+  "generated": "2026-07-21",
+  "source_repository": "https://github.com/hikaman/ai-slop-ontology",
+  "target_repository": "https://github.com/microsoft/Ontology-Playground",
+  "catalogue_root": "catalogue/community/hikaman",
+  "views": [
+    {"slug": "ai-slop-core", "name": "AI Slop Core", "entities": 8, "relationships": 9},
+    {"slug": "ai-slop-media", "name": "AI Slop by Medium", "entities": 8, "relationships": 10},
+    {"slug": "ai-slop-domains", "name": "AI Slop by Domain", "entities": 8, "relationships": 7},
+    {"slug": "ai-slop-intent", "name": "AI Slop by Intent", "entities": 8, "relationships": 9},
+    {"slug": "work-slop", "name": "Work Slop", "entities": 4, "relationships": 3},
+    {"slug": "management-slop", "name": "Management Slop", "entities": 8, "relationships": 10},
+    {"slug": "seo-slop", "name": "SEO Slop", "entities": 8, "relationships": 10}
+  ]
+}
