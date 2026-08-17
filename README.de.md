@@ -25,6 +25,41 @@ else:
     action = "allow_with_checks"
 ```
 
+## CLI-Toolkit (`slop`)
+
+Eine Kommandozeile über dieselbe Engine und dieselben Ontologie-Daten. Ohne
+Fremd-Abhängigkeiten — der Detektor nutzt nur die Standardbibliothek.
+
+```bash
+pip install -e .          # stellt den Befehl `slop` bereit (oder `python -m slopkit`)
+
+slop score "In today's rapidly evolving landscape, our holistic platform serves as a hub."
+slop classify --file entwurf.md        # Slop-Typen, Signale, Dimensionen, Maßnahmen
+slop rhetoric "It's not a tool. It's a movement."   # benannte KI-Schreibmuster
+echo "Text" | slop check -             # Score plus Rhetorik-Report (stdin)
+slop code --lang python app.py         # Slop-Muster im Quellcode
+slop info                              # Metadaten zu Signaldatenbank und Ontologie
+slop benchmark                         # Benchmark gegen den gelabelten Korpus
+slop selfcheck                         # Konsistenzprüfung JSON/TTL/YAML/Skill
+```
+
+| Befehl | Ausgabe |
+|---|---|
+| `score` | numerischer Slop-Score (0–1) plus Schweregrad |
+| `classify` | vollständiger Report: Slop-Typen, gewichtete Signale, Dimensionen, Gegenmaßnahmen |
+| `rhetoric` | rhetorische Muster als benannte Evidenz, bewusst ohne Score |
+| `check` | `classify` und `rhetoric` in einem Durchlauf |
+| `code` | Code-Slop: halluzinierte Pakete, hartkodierte Secrets, Kommentar-Wildwuchs |
+| `info` / `benchmark` / `selfcheck` | Metadaten / Evaluation / Konsistenz |
+
+Jeder Textbefehl liest Positionsargument, `--file PFAD` oder stdin (`-`) und
+kennt `--json` für maschinenlesbare Ausgabe. `score` und `check` kennen
+zusätzlich `--fail-over SCHWELLE` und liefern Exit-Code 1 darüber — gedacht als
+CI-Gate.
+
+Die vollständige Anleitung mit Anwendungsfällen und getesteten Beispielen steht
+in [`docs/USER-GUIDE.md`](docs/USER-GUIDE.md) (englisch, kanonisch).
+
 ## Was ist AI Slop?
 
 AI Slop ist **nicht einfach KI-generierter Inhalt**, sondern ein **Risikoprofil**. Drei notwendige Bedingungen müssen gemeinsam erfüllt sein:
@@ -41,12 +76,17 @@ Sorgfältig kuratierte, überprüfte und absichtlich veröffentlichte KI-Hilfsou
 ├── README.md                         Englischer Einstieg, kanonisch
 ├── README.de.md                      Deutscher Einstieg
 ├── docs/
+│   ├── USER-GUIDE.md                 Vollständige CLI-Anleitung, englisch
 │   ├── en/                           Englische Dokumentation
 │   └── de/                           Deutsche Dokumentation
 ├── AI-SLOP-ONTOLOGY.md               Kanonisches Fachmodell, Version 1.2.1
 ├── ai_slop_ontology.yaml             Maschinenlesbare YAML-Ontologie
 ├── ontology.json                     Agentenfreundliches JSON
 ├── ontology.ttl                      RDF/Turtle
+├── slopkit/                          CLI-Toolkit, Entry-Point `slop`
+├── src/                              Klassifikator und Scoring-Engine
+├── skills/ai-slop-detection/         Agenten-Skill, eigenständig lauffähig
+├── tests/                            Unit-Tests (`python -m unittest discover tests`)
 ├── extensions/human-work-seo-slop/   Human-, Work-, Management- und SEO-Slop
 └── integrations/ontology-playground/ Microsoft-Ontology-Playground-Adapter
 ```
@@ -168,8 +208,11 @@ Systemische 7V-Dimensionen nach Madsen und Puyt:
 - zusätzliche Marker für Hindi, Vietnamesisch und Urdu,
 - Konsistenzprüfung für YAML, JSON und Turtle,
 - Paritätstests zwischen den Klassifikations-Engines,
+- neun rhetorische Muster als benannte Detektoren, bewusst ohne Score,
+- CLI-Toolkit `slop` mit CI-Gating über `--fail-over`,
 - Human-/Work-/Management-/SEO-Slop-Erweiterung,
-- Microsoft-Ontology-Playground-Adapter.
+- Microsoft-Ontology-Playground-Adapter,
+- deutsche Parallel-Dokumentation unter `docs/de/`.
 
 ### Version 1.1.x
 

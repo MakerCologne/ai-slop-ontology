@@ -1,6 +1,6 @@
 # Deutsche Dokumentation
 
-**Aktueller Stand:** Ontologie 1.2.1 plus experimentelle Human-/Work-/Management-/SEO-Slop-Erweiterung und Microsoft-Ontology-Playground-Adapter.
+**Aktueller Stand:** Ontologie 1.2.1, CLI-Toolkit `slop`, neun rhetorische Detect-only-Muster sowie die experimentelle Human-/Work-/Management-/SEO-Slop-Erweiterung und der Microsoft-Ontology-Playground-Adapter.
 
 **Sprachen:** [English, kanonisch](../en/README.md) · Deutsch
 
@@ -12,10 +12,15 @@ Technische Klassen-, Property- und Dateinamen bleiben Englisch. Die erklärenden
 - [`ontology.md`](ontology.md) — Taxonomie und Klassifikationslogik
 - [`ontology-structure.md`](ontology-structure.md) — ontologische Grundentscheidungen und Properties
 - [`references.md`](references.md) — Quellen und Referenzen
-- [`changelog.md`](changelog.md) — Versionsverlauf bis 1.2.1
+- [`changelog.md`](changelog.md) — Versionsverlauf inklusive unveröffentlichter Änderungen
 - [`review-2026-07.md`](review-2026-07.md) — Review von Code, Daten und Quellen
 - [`human-work-seo-slop.md`](human-work-seo-slop.md) — aktuelle deutsche Dokumentation der Erweiterung
 - [`ontology-playground.md`](ontology-playground.md) — Import in Microsoft Ontology Playground
+
+## Werkzeuge
+
+- [`../USER-GUIDE.md`](../USER-GUIDE.md) — vollständige Anleitung zum CLI-Toolkit `slop` (englisch, kanonisch); jedes Beispiel darin wird von `tests/test_docs_examples.py` ausgeführt
+- [`../../README.de.md`](../../README.de.md) — deutsche Kurzreferenz der `slop`-Befehle
 
 ## Forschungsberichte
 

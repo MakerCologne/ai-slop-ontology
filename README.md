@@ -1,5 +1,7 @@
 # AI Slop Ontology
 
+**Languages:** English (canonical) · [Deutsch](README.de.md)
+
 A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*. Consolidated from academic research (Shaib et al. 2025; Madsen & Puyt 2025; Shumailov et al. 2024), investigative journalism (404 Media; NYT; Guardian), industry research (NewsGuard; Pangram Labs), and lexicography (Merriam-Webster 2025; Oxford 2024).
 
 **Version:** 1.2.1 | **Date:** 2026-07-10 | **License:** CC BY 4.0
@@ -120,6 +122,30 @@ Files:
 - `extensions/human-work-seo-slop/human_work_seo_slop.ttl` — RDF/Turtle classes
 - `extensions/human-work-seo-slop/examples.json` — candidates and counterexamples
 - `tests/test_human_work_seo_extension.py` — structural and false-positive regression checks
+
+## Microsoft Ontology Playground
+
+`integrations/ontology-playground/` holds seven importable RDF/XML views of the
+ontology — `ai-slop-core`, `ai-slop-media`, `ai-slop-domains`, `ai-slop-intent`,
+`work-slop`, `management-slop` and `seo-slop`. Each catalogue entry carries an
+`ontology.rdf` and a `metadata.json`; `validate_adapter.py` checks XML validity,
+metadata, entity counts, identifiers, relationships and manifest parity.
+
+```bash
+python integrations/ontology-playground/validate_adapter.py
+```
+
+## Documentation Languages
+
+English is canonical for code, class names, properties, YAML, JSON and RDF.
+German explanatory documentation is maintained in parallel:
+
+- [`README.de.md`](README.de.md) — German entry point
+- [`docs/de/`](docs/de/) — German core documents, research reports and changelog
+- [`docs/en/README.md`](docs/en/README.md) — English index and translation policy
+
+Technical identifiers are never translated. Where a translated explanation and a
+machine-readable artifact disagree, the machine-readable artifact wins.
 
 ## Ontology Architecture
 

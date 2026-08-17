@@ -5,6 +5,7 @@
 The current repository-level documents remain the canonical English entry points:
 
 - [`../../README.md`](../../README.md) — project overview
+- [`../USER-GUIDE.md`](../USER-GUIDE.md) — full manual for the `slop` CLI toolkit
 - [`../../ai_slop_ontology.yaml`](../../ai_slop_ontology.yaml) — machine-readable ontology
 - [`../../ontology.json`](../../ontology.json) — agent-oriented JSON
 - [`../../ontology.ttl`](../../ontology.ttl) — RDF/Turtle

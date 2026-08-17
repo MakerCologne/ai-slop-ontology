@@ -2,6 +2,39 @@
 
 ## [Unreleased]
 
+**Human-, Work-, Management- und SEO-Slop-Erweiterung.** Neues Modul
+`extensions/human-work-seo-slop/` — technologieneutral, ohne Eingriff in die
+kanonische AI-Slop-Definition, den Klassifikator oder die Schwellenwerte.
+
+- Drei Gruppierungsbegriffe (`HumanSlop`, `WorkSlopFamily`, `SEOSlop`), 27
+  konkrete Typen, 11 querschnittliche Dimensionen, sieben SEO-Untertypen.
+- **Workslop** bleibt eng KI-bezogen als `AIWorkslop`; `WorkSlopFamily` ist die
+  separate Oberkategorie, damit menschliche, KI-gestützte und synthetische
+  Formen koexistieren, ohne die Generierungsmodi zu vermischen.
+- Evidenzstatus-Modell (`established`, `emerging`, `grounded_extension`,
+  `candidate`) und verbindliche Falsch-Positiv-Regeln: klassifiziert werden
+  Artefakte und Systeme, nie Personen.
+- Artefakte: `human_work_seo_slop.json`, `human_work_seo_slop.ttl`,
+  `examples.json` (Kandidaten und Gegenbeispiele), `RESEARCH.md`.
+- `verify_sources.py` prüft die 20 zitierten Quellen offline auf Struktur und
+  Datumsplausibilität; eigener CI-Schritt `verify-sources`.
+
+**Microsoft-Ontology-Playground-Adapter.** `integrations/ontology-playground/`
+mit sieben importierbaren RDF/XML-Ansichten (`ai-slop-core`, `ai-slop-media`,
+`ai-slop-domains`, `ai-slop-intent`, `work-slop`, `management-slop`,
+`seo-slop`), je `ontology.rdf` plus `metadata.json`, einem Manifest und
+`validate_adapter.py` (XML, Metadaten, Entitätszahlen, Identifier, Beziehungen,
+Manifest-Parität).
+
+**Zweisprachige Dokumentation.** Englisch bleibt kanonisch für Code, Klassen,
+Properties, YAML, JSON und RDF; deutsche Parallel-Dokumentation unter
+`docs/de/` mit eigenem Index, `README.de.md` als deutschem Einstieg und
+`docs/en/README.md` mit der Übersetzungsregel. Technische Identifier werden
+nicht übersetzt; bei Widerspruch gilt das maschinenlesbare Artefakt.
+
+- Testsuite: 69 → **87 Tests** (Erweiterungsstruktur, Falsch-Positiv-Regression,
+  Playground-Adapter, Quellenprüfung).
+
 **Dokumentation & Bedienungsanleitung.** Vollständige Anleitung
 `docs/USER-GUIDE.md` mit Konzepten, Command-Reference, sieben Anwendungsfällen
 (Qualitätscheck, RAG-Filter, CI-Gate, Prosa-Editing, Code-Review,

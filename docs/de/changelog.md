@@ -1,5 +1,86 @@
 # Changelog
 
+## [Unreleased]
+
+**Human-, Work-, Management- und SEO-Slop-Erweiterung.** Neues Modul
+`extensions/human-work-seo-slop/` — technologieneutral, ohne Eingriff in die
+kanonische AI-Slop-Definition, den Klassifikator oder die Schwellenwerte.
+
+- Drei Gruppierungsbegriffe (`HumanSlop`, `WorkSlopFamily`, `SEOSlop`), 27
+  konkrete Typen, 11 querschnittliche Dimensionen, sieben SEO-Untertypen.
+- **Workslop** bleibt eng KI-bezogen als `AIWorkslop`; `WorkSlopFamily` ist die
+  separate Oberkategorie, damit menschliche, KI-gestützte und synthetische
+  Formen koexistieren, ohne die Generierungsmodi zu vermischen.
+- Evidenzstatus-Modell (`established`, `emerging`, `grounded_extension`,
+  `candidate`) und verbindliche Falsch-Positiv-Regeln: klassifiziert werden
+  Artefakte und Systeme, nie Personen.
+- Artefakte: `human_work_seo_slop.json`, `human_work_seo_slop.ttl`,
+  `examples.json` (Kandidaten und Gegenbeispiele), `RESEARCH.md`.
+- `verify_sources.py` prüft die 20 zitierten Quellen offline auf Struktur und
+  Datumsplausibilität; eigener CI-Schritt `verify-sources`.
+
+**Microsoft-Ontology-Playground-Adapter.** `integrations/ontology-playground/`
+mit sieben importierbaren RDF/XML-Ansichten (`ai-slop-core`, `ai-slop-media`,
+`ai-slop-domains`, `ai-slop-intent`, `work-slop`, `management-slop`,
+`seo-slop`), je `ontology.rdf` plus `metadata.json`, einem Manifest und
+`validate_adapter.py` (XML, Metadaten, Entitätszahlen, Identifier, Beziehungen,
+Manifest-Parität).
+
+**Zweisprachige Dokumentation.** Englisch bleibt kanonisch für Code, Klassen,
+Properties, YAML, JSON und RDF; deutsche Parallel-Dokumentation unter
+`docs/de/` mit eigenem Index, `README.de.md` als deutschem Einstieg und
+`docs/en/README.md` mit der Übersetzungsregel. Technische Identifier werden
+nicht übersetzt; bei Widerspruch gilt das maschinenlesbare Artefakt.
+
+- Testsuite: 69 → **87 Tests** (Erweiterungsstruktur, Falsch-Positiv-Regression,
+  Playground-Adapter, Quellenprüfung).
+
+**Dokumentation & Bedienungsanleitung.** Vollständige Anleitung
+`docs/USER-GUIDE.md` mit Konzepten, Command-Reference, sieben Anwendungsfällen
+(Qualitätscheck, RAG-Filter, CI-Gate, Prosa-Editing, Code-Review,
+Mehrsprachigkeit, Batch), Python-Library-Nutzung, JSON-Integration und FAQ.
+Jeder ```console-Befehl der Anleitung wird von `tests/test_docs_examples.py`
+tatsächlich ausgeführt — die Beispiele können nicht von der funktionierenden
+CLI abdriften. README verlinkt die Anleitung.
+
+- Neu: `slop score`/`check --fail-over THRESHOLD` — Exit-Code 1 bei
+  Score ≥ Schwelle (CI-Gating).
+- Fix: Hallucinated-Package-Erkennung (`InventedPackage`) erkennt jetzt auch
+  Aufruf-/Quote-Formen wie `require("pkg")` / `import('pkg')`, ohne
+  Lookalikes wie `important`/`useState` fälschlich zu treffen.
+- Testsuite: 65 → **69 Tests**.
+
+**CLI-Toolkit (`slop`).** Das Projekt hat jetzt eine einheitliche
+Kommandozeile über die kanonische Engine (`src/`) und die Ontologie-Daten —
+neues Paket `slopkit/` mit Entry-Point `slop` (bzw. `python -m slopkit`), ohne
+Fremd-Abhängigkeiten (nur Standardbibliothek).
+
+- Subcommands: `score`, `classify`, `rhetoric`, `check`, `code`, `info`,
+  `benchmark`, `selfcheck`.
+- Eingabe je Befehl: Positional-Text, `--file PATH` oder stdin (`-`); `--json`
+  für maschinenlesbare Ausgabe.
+- Wiederverwendung statt Duplikation: wrappt `src/SlopClassifier` und den
+  detect-only Rhetorik-Detektor; `pyproject.toml` definiert den Entry-Point.
+- CI-Smoke-Test (`slop info`/`selfcheck`/`rhetoric`) ergänzt.
+- Testsuite: 55 → **65 Tests**.
+
+**Rhetorische Muster (detect-only).** Neun Satz-/Absatz-Muster aus dem
+MIT-Skill [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop)
+als benannte Detektoren integriert: Binary Contrast, Colon Reveal, Superficial
+Analysis, Negative Listing/Fragmentation, Fake-strong Verb, Synonym Cycling,
+Hollow Kicker/Recap, Formatting Slop, Robotic Rhythm.
+
+- Datenmodell in `ontology.json` unter `signals.text.rhetoricalPatterns`
+  (Label, Beschreibung, Beispiel, Fix, `keep_when`-Falsch-Positiv-Leitplanke).
+- Detektor `skills/ai-slop-detection/scripts/rhetorical_patterns.py` (nur
+  Standardbibliothek), verdrahtet in `classify_text()` als
+  `result.rhetorical_patterns`.
+- **Detect-only:** benannte Evidenz mit zitierter Zeile, fließt bewusst
+  **nicht** in den numerischen Slop-Score ein — Benchmark unverändert
+  (src-Klassifikator F1 0,96; Skill-Pipeline F1 0,98).
+- Konsistenz-Checker erzwingt Parität JSON ↔ Skill-Modul.
+- Testsuite: 47 → **55 Tests**.
+
 ## [1.2.1] — 2026-07-10
 
 Behebt die drei Codex-Review-Kommentare aus PR #2 (alle P2):
