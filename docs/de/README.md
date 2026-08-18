@@ -14,6 +14,7 @@ Technische Klassen-, Property- und Dateinamen bleiben Englisch. Die erklärenden
 - [`references.md`](references.md) — Quellen und Referenzen
 - [`changelog.md`](changelog.md) — Versionsverlauf inklusive unveröffentlichter Änderungen
 - [`review-2026-07.md`](review-2026-07.md) — Review von Code, Daten und Quellen
+- [`../../REVIEW-2026-08.md`](../../REVIEW-2026-08.md) — Deep Review August 2026 (Packaging, Engine-Drift, Integrationen)
 - [`human-work-seo-slop.md`](human-work-seo-slop.md) — aktuelle deutsche Dokumentation der Erweiterung
 - [`ontology-playground.md`](ontology-playground.md) — Import in Microsoft Ontology Playground
 

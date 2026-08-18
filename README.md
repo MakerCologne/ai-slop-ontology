@@ -79,6 +79,7 @@ Key insight: Carefully curated, verified, and intentionally published AI outputs
 ├── REFERENCES.md                 ← Source list (38 references)
 ├── CHANGELOG.md                  ← Version history
 ├── REVIEW-2026-07.md             ← Deep review findings (code + data audit)
+├── REVIEW-2026-08.md             ← Deep review, Aug 2026 (packaging, engine drift, integrations)
 ├── report.md                     ← Deep research report (Round 1)
 ├── report-extended.md            ← Extended research (Round 2)
 ├── RESEARCH-v0.1.md              ← v0.1 research findings
