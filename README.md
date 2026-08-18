@@ -56,6 +56,13 @@ slop selfcheck                         # JSON/TTL/YAML/skill consistency check
 Every text command reads a positional string, `--file PATH`, or stdin (`-`), and
 takes `--json` for machine-readable output.
 
+**Quoted material.** A document *about* slop quotes slop — this README scores
+0.93 verbatim. Markdown input is therefore stripped of code fences,
+blockquotes, tables, code spans and emphasised example lists before scoring
+(`--no-strip-quotes` to score verbatim, `--strip-quotes` to force it for stdin
+or literal text). Prose that enumerates markers without quoting them still
+scores high, by design: at that point a human should look.
+
 The wheel carries the engine, the agent skill and `ontology.json`, so the
 scoring commands work outside a checkout. `benchmark` and `selfcheck` run repo
 tooling against the corpus and the three serializations and therefore need one
@@ -207,6 +214,10 @@ Volume, Velocity, Variety, Value, Verification, Visibility, Virality
 
 - **Labeled evaluation corpus** (`eval/corpus.jsonl`, 53 examples, 7 languages) and benchmark runner (`eval/run_benchmark.py`)
 - **Calibrated weights** via `eval/calibrate.py`: skill pipeline F1 **0.47 → 0.98** at precision 1.0
+  *in-sample* — the weights are tuned on the same 53-example corpus the score is
+  reported on. Held out (`run_benchmark.py --cross-validate 5`): pipeline F1
+  **0.978**, tuned scorer alone **0.768** (in-sample 0.906). The pipeline holds
+  up because its type-pattern classifier is not fitted to the corpus.
 - **Noisy-OR score aggregation** — independent evidence accumulates instead of being averaged away
 - **New languages:** Hindi, Vietnamese, Urdu markers (closing the §12 language-bias gap)
 - New phrase category `authority_claims`; TTL synchronized; consistency checker (`scripts/check_consistency.py`) wired into CI; engine parity tests

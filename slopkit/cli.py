@@ -24,6 +24,7 @@ from pathlib import Path
 
 from . import __version__
 from ._engine import get_engine, repo_root
+from ._markdown import looks_like_markdown, strip_quoted
 
 
 # --------------------------------------------------------------------------- #
@@ -31,11 +32,26 @@ from ._engine import get_engine, repo_root
 # --------------------------------------------------------------------------- #
 
 def _read_input(args) -> str:
-    if getattr(args, "file", None):
-        return Path(args.file).read_text(encoding="utf-8")
-    text = getattr(args, "text", None)
-    if text is None or text == "-":
-        return sys.stdin.read()
+    """Read the input text, stripping quoted Markdown when that applies.
+
+    Documents *about* slop quote slop. Markdown files are stripped by default
+    (code fences, blockquotes, tables, code spans, example enumerations) so a
+    style guide or a research report is judged on what it asserts, not on what
+    it cites (review 2026-08 §2.4). --no-strip-quotes disables it, and
+    --strip-quotes forces it for stdin or literal text.
+    """
+    from_file = getattr(args, "file", None)
+    if from_file:
+        text = Path(from_file).read_text(encoding="utf-8")
+    else:
+        raw = getattr(args, "text", None)
+        text = sys.stdin.read() if raw is None or raw == "-" else raw
+
+    mode = getattr(args, "strip_quotes", None)
+    strip = mode if mode is not None else bool(from_file and looks_like_markdown(from_file))
+    if strip:
+        text = strip_quoted(text)
+    _read_input.stripped = strip
     return text
 
 
@@ -90,10 +106,14 @@ def cmd_score(args, eng) -> int:
     r = eng.classify_text(text)
     if args.json:
         print(json.dumps({"slop_score": r.overall_slop_score,
-                          "severity": r.severity}, indent=2))
+                          "severity": r.severity,
+                          "quoted_markdown_stripped":
+                              getattr(_read_input, "stripped", False)}, indent=2))
         return _gate(args, r.overall_slop_score)
     icon = _SEVERITY_ICON.get(r.severity, "•")
     print(f"{icon} slop score {r.overall_slop_score:.2f}  [{_bar(r.overall_slop_score)}]  {r.severity}")
+    if getattr(_read_input, "stripped", False):
+        print("  (quoted Markdown ignored — --no-strip-quotes to score verbatim)")
     if r.signals_detected:
         top = sorted(r.signals_detected, key=lambda s: -s.confidence)[:3]
         print("  top signals: " + ", ".join(f"{s.signal_id}" for s in top))
@@ -123,6 +143,8 @@ def cmd_code(args, eng) -> int:
 def _print_classification(r) -> None:
     icon = _SEVERITY_ICON.get(r.severity, "•")
     print(f"{icon} slop score {r.overall_slop_score:.2f}  [{_bar(r.overall_slop_score)}]  {r.severity}")
+    if getattr(_read_input, "stripped", False):
+        print("  (quoted Markdown ignored — --no-strip-quotes to score verbatim)")
     if r.slop_types:
         print("\nslop types:")
         for t in r.slop_types:
@@ -225,6 +247,14 @@ def _add_text_args(p):
                    help="text to analyze; '-' or omitted reads stdin")
     p.add_argument("--file", "-f", help="read input from a file instead")
     p.add_argument("--json", action="store_true", help="machine-readable JSON output")
+    quoting = p.add_mutually_exclusive_group()
+    quoting.add_argument("--strip-quotes", dest="strip_quotes", action="store_true",
+                         default=None,
+                         help="ignore quoted material (code fences, blockquotes, "
+                              "tables, example lists); default for .md input")
+    quoting.add_argument("--no-strip-quotes", dest="strip_quotes",
+                         action="store_false",
+                         help="score the document verbatim, quotations included")
 
 
 def build_parser() -> argparse.ArgumentParser:

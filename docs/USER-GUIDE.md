@@ -121,6 +121,29 @@ $ slop score --file draft.md
 | `slop benchmark` | run the labelled-corpus benchmark (F1 report) |
 | `slop selfcheck` | JSON/TTL/YAML/skill consistency check |
 
+### Quoted material in Markdown
+
+A document *about* slop quotes slop. This guide scores 0.99 verbatim, purely
+because of the examples in its tables and code fences. Markdown input is
+therefore stripped before scoring — fenced code, blockquotes, table rows,
+inline code spans and emphasised example lists are ignored:
+
+```console
+$ slop score --file draft.md
+$ slop score --file draft.md --no-strip-quotes
+$ echo "text with \`quoted markers\`" | slop score - --strip-quotes
+```
+
+| Flag | Effect |
+|------|--------|
+| *(default)* | strip when the input is a `.md`/`.markdown`/`.mdx` file |
+| `--strip-quotes` | strip regardless of input source (stdin, literal text) |
+| `--no-strip-quotes` | score the document verbatim, quotations included |
+
+`--json` reports which mode was used as `quoted_markdown_stripped`. Prose that
+enumerates markers without quoting them still scores high — that is deliberate,
+and the point at which a human should read the flagged lines.
+
 Global help:
 
 ```console

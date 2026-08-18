@@ -17,9 +17,16 @@ Two layers, because a citation can fail in two different ways:
                      publishers routinely block automated clients even for real
                      papers. Meant for a scheduled/manual job, not the main CI.
 
+                     Coverage is reported and enforced: a run in which almost
+                     nothing could be reached used to print "no dead links" and
+                     exit 0, so a blocked proxy or an offline runner looked
+                     exactly like a clean bill of health (review 2026-08 §2.2).
+                     Below --min-verified the run fails as unusable instead.
+
 Usage:
-    python3 verify_sources.py            # offline structural checks
-    python3 verify_sources.py --online   # also resolve URLs
+    python3 verify_sources.py                      # offline structural checks
+    python3 verify_sources.py --online             # also resolve URLs
+    python3 verify_sources.py --online --min-verified 0   # report only
 """
 
 import argparse
@@ -103,20 +110,31 @@ def run_offline(data, as_of: datetime.date):
 
 
 def run_online(sources):
-    """Resolve each URL; returns (results, hard_failures)."""
+    """Resolve each URL; returns (results, hard_failures, verified_count)."""
     import urllib.error
     import urllib.request
 
     results = {}
     hard = []
+    verified = 0
     opener = urllib.request.build_opener()
     opener.addheaders = [("User-Agent", "ai-slop-ontology-source-verifier/1.0")]
 
+    def fetch(url, method):
+        req = urllib.request.Request(url, method=method)
+        with opener.open(req, timeout=20) as resp:
+            return resp.status
+
     for sid, url in sources.items():
         try:
-            req = urllib.request.Request(url, method="HEAD")
-            with opener.open(req, timeout=20) as resp:
-                code = resp.status
+            try:
+                code = fetch(url, "HEAD")
+            except urllib.error.HTTPError as e:
+                # Publishers commonly reject HEAD (403/405) but serve GET.
+                if e.code in (403, 405, 429):
+                    code = fetch(url, "GET")
+                else:
+                    raise
             status = "ok" if code < 400 else f"inconclusive(HTTP {code})"
         except urllib.error.HTTPError as e:
             if e.code in (404, 410):
@@ -132,9 +150,11 @@ def run_online(sources):
                 hard.append(f"{sid}: {url} -> DNS resolution failed")
             else:
                 status = f"inconclusive({reason})"
+        if status == "ok":
+            verified += 1
         results[sid] = (url, status)
 
-    return results, hard
+    return results, hard, verified
 
 
 def main(argv=None) -> int:
@@ -142,6 +162,9 @@ def main(argv=None) -> int:
     parser.add_argument("--online", action="store_true",
                         help="also resolve URLs over the network")
     parser.add_argument("--as-of", help="YYYY-MM-DD used for the arXiv future check")
+    parser.add_argument("--min-verified", type=float, default=0.5,
+                        help="fail --online when fewer than this fraction of "
+                             "sources could actually be resolved (0 disables)")
     args = parser.parse_args(argv)
 
     as_of = (datetime.date.fromisoformat(args.as_of) if args.as_of
@@ -161,18 +184,34 @@ def main(argv=None) -> int:
           + (f"; {len(warnings)} uncited)" if warnings else ")"))
 
     if args.online:
-        results, hard = run_online(data["sources"])
+        results, hard, verified = run_online(data["sources"])
+        total = len(results)
         print("\nOnline resolution:")
         for sid in sorted(results):
             url, status = results[sid]
             mark = "✓" if status == "ok" else ("✗" if status.startswith("not_found") else "?")
             print(f"  {mark} {sid} {status}  {url}")
+
+        dead = len(hard)
+        unreachable = total - verified - dead
+        coverage = verified / total if total else 0.0
+        print(f"\nCoverage: {verified}/{total} verified reachable, "
+              f"{unreachable} not checkable, {dead} dead "
+              f"({coverage:.0%} verified).")
+
         if hard:
             print("\nOnline verification FAILED (dead/nonexistent URLs):")
             for h in hard:
                 print(f"  ✗ {h}")
             return 1
-        print("\nOnline check: no dead links (403/429/timeouts treated as inconclusive).")
+        if coverage < args.min_verified:
+            print(f"\nOnline verification INCONCLUSIVE: only {coverage:.0%} of "
+                  f"sources could be resolved (need {args.min_verified:.0%}). "
+                  f"This says nothing about the citations — check the network, "
+                  f"proxy or rate limits, or rerun with --min-verified 0.")
+            return 1
+        print("\nOnline check passed: no dead links "
+              "(403/429/timeouts treated as inconclusive).")
 
     return 0
 

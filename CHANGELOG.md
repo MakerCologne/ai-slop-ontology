@@ -2,6 +2,47 @@
 
 ## [Unreleased]
 
+**Zitierte Beispiele verzerren die Bewertung nicht mehr.** Ein Dokument über
+Slop zitiert Slop: README (0,93), Bedienungsanleitung (0,99) und das kanonische
+Fachmodell (0,99) stuften sich selbst als `slop_candidate` ein — ausgelöst von
+den Beispielen in Tabellen und Code-Fences.
+
+- Neu `slopkit/_markdown.py`: entfernt Code-Fences, Blockquotes, Tabellenzeilen,
+  Inline-Code und hervorgehobene Beispiel-Aufzählungen; Zeilenstruktur bleibt
+  erhalten, damit Satz- und Absatzsignale weiter greifen.
+- CLI: Markdown-Dateien werden per Default so bewertet; `--no-strip-quotes`
+  bewertet wörtlich, `--strip-quotes` erzwingt es für stdin/Literaltext,
+  `--json` weist den Modus als `quoted_markdown_stripped` aus.
+- Wirkung: README 0,93 → 0,00, ONTOLOGY.md 0,93 → 0,00, Anleitung 0,99 → 0,56,
+  kanonisches Dokument 0,99 → 0,59. Auf dem Korpus ändert sich nichts:
+  27/29 Slop erkannt, 0 Falsch-Positive.
+- Bewusst nicht entfernt: Fließtext-Aufzählungen ohne Zitatform (`report.md`
+  bleibt bei 0,97) und starke Formatierung ohne Liste — Letzteres ist selbst
+  ein Slop-Signal.
+
+**Quellenprüfer meldet Abdeckung statt Zuversicht.** `verify_sources.py
+--online` beendete einen Lauf, in dem keine einzige URL erreichbar war, mit
+„no dead links" und Exit-Code 0.
+
+- Neue Ausgabe: `Coverage: N/M verified reachable, K not checkable, D dead`.
+- Unterhalb `--min-verified` (Default 0,5) endet der Lauf als *inconclusive*
+  mit Exit-Code 1 — ein Lauf, der nichts prüfen konnte, ist kein Freibrief.
+- HEAD-Ablehnungen (403/405/429) werden mit GET wiederholt, bevor sie als
+  „nicht prüfbar" gelten.
+
+**Ehrliche Benchmark-Zahlen.** `eval/run_benchmark.py` weist den Standardlauf
+jetzt als *in-sample* aus — die Gewichte des Skill-Scorers werden von
+`eval/calibrate.py` auf genau diesem Korpus optimiert — und kennt
+`--cross-validate K` für eine Holdout-Schätzung (stratifizierte k-fache
+Kreuzvalidierung, Neu-Kalibrierung auf k-1 Folds).
+
+- Ergebnis bei 5 Folds: **Pipeline F1 0,978** (in-sample 0,982) — die Pipeline
+  hält, weil ihr Typ-Muster-Klassifikator nicht auf den Korpus gefittet ist;
+  der kalibrierte Scorer allein fällt von 0,906 auf **0,768** (Fold-Streuung
+  0,333–1,0).
+- Per-Sprache-Genauigkeiten unter fünf Beispielen werden nicht mehr als Zahl
+  ausgegeben (`de=n/a (n=4)`), statt „1.0" aus zwei Sätzen zu behaupten.
+
 **Human-, Work-, Management- und SEO-Slop-Erweiterung.** Neues Modul
 `extensions/human-work-seo-slop/` — technologieneutral, ohne Eingriff in die
 kanonische AI-Slop-Definition, den Klassifikator oder die Schwellenwerte.

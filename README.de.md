@@ -58,6 +58,13 @@ kennt `--json` für maschinenlesbare Ausgabe. `score` und `check` kennen
 zusätzlich `--fail-over SCHWELLE` und liefern Exit-Code 1 darüber — gedacht als
 CI-Gate.
 
+**Zitiertes Material.** Ein Dokument *über* Slop zitiert Slop — diese Datei
+scort wörtlich 0,93. Markdown-Eingaben werden daher vor der Bewertung von
+Code-Fences, Blockquotes, Tabellen, Inline-Code und hervorgehobenen
+Beispiel-Aufzählungen befreit (`--no-strip-quotes` für die wörtliche Bewertung,
+`--strip-quotes` erzwingt es für stdin oder Literaltext). Fließtext, der Marker
+ohne Zitatform aufzählt, scort weiterhin hoch — dort soll ein Mensch hinsehen.
+
 Das Wheel enthält Engine, Agenten-Skill und `ontology.json`; die Scoring-Befehle
 laufen daher auch außerhalb eines Checkouts. `benchmark` und `selfcheck` nutzen
 Repo-Werkzeuge (Korpus, drei Serialisierungen) und brauchen einen Checkout —
@@ -209,7 +216,10 @@ Systemische 7V-Dimensionen nach Madsen und Puyt:
 
 - gelabelter Evaluationskorpus mit 53 Beispielen in sieben Sprachen,
 - Benchmark- und Kalibrierungswerkzeuge,
-- F1-Anstieg der Skill-Pipeline von 0,47 auf 0,98 bei Präzision 1,0,
+- F1-Anstieg der Skill-Pipeline von 0,47 auf 0,98 bei Präzision 1,0 —
+  *in-sample*, denn die Gewichte sind auf demselben 53-Beispiel-Korpus
+  kalibriert. Kreuzvalidiert (`run_benchmark.py --cross-validate 5`):
+  Pipeline F1 **0,978**, kalibrierter Scorer allein **0,768** (in-sample 0,906),
 - Noisy-OR-Aggregation,
 - zusätzliche Marker für Hindi, Vietnamesisch und Urdu,
 - Konsistenzprüfung für YAML, JSON und Turtle,
