@@ -152,11 +152,17 @@ For URLs and search results, check these additional signals:
 - **Publication pattern** — Mass upload? Cross-platform repost?
 - **Provenance** — C2PA metadata? Platform AI labels?
 
+## Detector coverage
+
+Text and code have working detectors in this skill. Image, video and audio
+indicators are documented for your own review — no script computes them; treat
+them as a checklist, not as a score.
+
 ## Advanced References
 
 - **Detection signals (22 techniques):** `references/detection-signals.md`
 - **Scored examples (8 cases):** `references/slop-examples.md`
-- **Full ontology (459 signals):** `../../ontology.json` (repo root)
+- **Full ontology (233 scored text signals: 107 buzzwords, 114 phrases, 7 structural, 5 punctuation):** `../../ontology.json` (repo root)
 
 ## Output Format
 

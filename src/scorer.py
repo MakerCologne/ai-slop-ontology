@@ -134,89 +134,28 @@ def list_heavy(text: str) -> bool:
     return len(lines) > 3 and list_lines / len(lines) > 0.4
 
 
-def slop_score(
-    text: str,
-    buzzword_tiers: Optional[dict] = None,
-    weights: Optional[dict] = None
-) -> dict:
-    """
-    Compute a comprehensive slop score for text.
-
-    Returns dict with individual scores and overall score (0-1).
-    """
-    if buzzword_tiers is None:
-        buzzword_tiers = {
-            "tier1": ["delve", "realm", "tapestry", "landscape"],
-            "tier2": ["unleash", "unlock", "harness", "leverage"],
-            "tier3": ["paradigm", "synergy", "robust"],
-            "tier4": ["cutting-edge", "state-of-the-art", "game-changing"]
-        }
-
-    if weights is None:
-        weights = {
-            "density": 0.25,
-            "repetition": 0.15,
-            "burstiness": 0.15,
-            "buzzwords": 0.20,
-            "punctuation": 0.10,
-            "trailing_moral": 0.05,
-            "list_heavy": 0.10
-        }
-
-    density = information_density(text)
-    rep = repetition_ratio(text)
-    burst = burstiness(text)
-    buzz_count, buzz_hits = buzzword_score(text, buzzword_tiers)
-    punct = punctuation_anomaly_score(text)
-
-    # Normalize to 0-1 (higher = more slop)
-    num_sentences = len([s for s in re.split(r'[.!?]+', text) if s.strip()])
-    density_slop = max(0, (0.50 - density) / 0.50)  # below 0.50 is increasingly slop
-    rep_slop = min(1, rep / 0.30)  # above 0.30 is definitely slop
-    # Burstiness is only meaningful with >= 3 sentences; neutral otherwise
-    burst_slop = max(0, (5 - burst) / 5) if num_sentences >= 3 else 0.0
-    buzz_slop = min(1, buzz_count / 6)  # 6+ buzzwords = definite slop
-    punct_slop = min(1, (punct["emDashRate"] + punct["ellipsisRate"] + punct["exclamationRate"]) / 2)
-    moral_slop = 1.0 if trailing_moral(text) else 0.0
-    list_slop = 1.0 if list_heavy(text) else 0.0
-
-    overall = (
-        weights["density"] * density_slop +
-        weights["repetition"] * rep_slop +
-        weights["burstiness"] * burst_slop +
-        weights["buzzwords"] * buzz_slop +
-        weights["punctuation"] * punct_slop +
-        weights["trailing_moral"] * moral_slop +
-        weights["list_heavy"] * list_slop
-    )
-
-    return {
-        "overall": round(min(overall, 1.0), 3),
-        "dimensions": {
-            "density": round(density, 3),
-            "densitySlop": round(density_slop, 3),
-            "repetition": round(rep, 3),
-            "repetitionSlop": round(rep_slop, 3),
-            "burstiness": round(burst, 2),
-            "burstinessSlop": round(burst_slop, 3),
-            "buzzwordCount": buzz_count,
-            "buzzwordSlop": round(buzz_slop, 3),
-            "punctuationSlop": round(punct_slop, 3),
-            "trailingMoral": moral_slop == 1.0,
-            "listHeavy": list_slop == 1.0,
-        },
-        "buzzwordHits": buzz_hits,
-        "punctuationRates": punct,
-    }
+# The aggregate lives in src/classifier.py (SlopClassifier), which reads the
+# tiers, phrases and severities from ontology.json and aggregates with
+# noisy-OR. A second, hand-weighted slop_score() with its own 14-word buzzword
+# list used to sit here; nothing but its own demo ever called it, so it is
+# gone rather than pretending to be a second supported entry point
+# (review 2026-08 §3.4).
 
 
 if __name__ == "__main__":
-    test = """In today's fast-paced digital landscape, leveraging cutting-edge AI solutions
+    import json
+
+    from classifier import SlopClassifier
+
+    demo = """In today's fast-paced digital landscape, leveraging cutting-edge AI solutions
     is paramount for businesses seeking to unlock their full potential. The key is to
     find balance between innovation and practicality, as studies have shown that a robust
-    approach can deliver game-changing results. It's important to note that self-care
-    isn't selfish — it's a fundamental aspect of maintaining the synergy needed to thrive."""
+    approach can deliver game-changing results."""
 
-    result = slop_score(test)
-    import json
-    print(json.dumps(result, indent=2))
+    result = SlopClassifier("ontology.json").classify_text(demo)
+    print(json.dumps({
+        "slop_score": result.overall_slop_score,
+        "severity": result.severity,
+        "signals": [s.signal_id for s in result.signals_detected],
+        "dimensions": {k: v.value for k, v in result.dimensions.items()},
+    }, indent=2))

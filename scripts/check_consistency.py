@@ -11,6 +11,8 @@ facts that matter:
   - the YAML ontology version matches the canonical document's front matter
   - multilingual language sets match between ontology.json and the skill scorer
   - the skill's inlined signal data still equals what ontology.json generates
+  - the human-work-seo-slop extension's JSON and TTL carry the same types
+    and dimensions
 
 Run:  python3 scripts/check_consistency.py
 """
@@ -118,6 +120,30 @@ def main() -> int:
           f"Rhetorical-pattern drift: skill module={sorted(skill_rhetorical)} vs "
           f"ontology.json rhetoricalPatterns={sorted(json_rhetorical)}")
 
+    # 8. The human-work-seo-slop extension ships JSON and TTL as well. The
+    #    core had a JSON/TTL check; the extension had none, and its eleven
+    #    dimensions existed only in the JSON (review 2026-08 §3.3).
+    ext_dir = os.path.join(ROOT, "extensions", "human-work-seo-slop")
+    with open(os.path.join(ext_dir, "human_work_seo_slop.json")) as f:
+        ext = json.load(f)
+    with open(os.path.join(ext_dir, "human_work_seo_slop.ttl")) as f:
+        ext_ttl = f.read()
+
+    for t in sorted({t["id"] for t in ext["types"]}):
+        check(f":{t} a owl:Class" in ext_ttl,
+              f"Extension drift: type '{t}' missing in human_work_seo_slop.ttl")
+
+    def _camel(identifier):
+        head, *rest = identifier.split("_")
+        return head + "".join(w.capitalize() for w in rest)
+
+    ttl_dimensions = set(re.findall(r"^:([A-Za-z0-9_]+) a :Dimension", ext_ttl,
+                                    re.MULTILINE))
+    json_dimensions = {_camel(d["id"]) for d in ext["dimensions"]}
+    check(ttl_dimensions == json_dimensions,
+          f"Extension dimension drift: TTL={sorted(ttl_dimensions)} vs "
+          f"JSON={sorted(json_dimensions)}")
+
     if errors:
         print("CONSISTENCY CHECK FAILED:")
         for e in errors:
@@ -131,7 +157,8 @@ def main() -> int:
           f"{len(json_pattern_types)} pattern-bearing types, "
           f"{len(json_rhetorical)} rhetorical patterns, "
           f"{len(json_langs)} languages, {n_terms} signal terms in sync, "
-          f"dates and versions aligned).")
+          f"{len(ext['types'])} extension types + {len(ext['dimensions'])} "
+          f"dimensions in sync, dates and versions aligned).")
     return 0
 
 

@@ -13,9 +13,11 @@ from scorer import (
     information_density,
     list_heavy,
     repetition_ratio,
-    slop_score,
     trailing_moral,
 )
+from classifier import SlopClassifier
+
+ONTOLOGY = os.path.join(os.path.dirname(__file__), "..", "ontology.json")
 
 
 class TestTermMatching(unittest.TestCase):
@@ -74,11 +76,21 @@ class TestDimensions(unittest.TestCase):
         self.assertFalse(list_heavy("just\nplain\nlines\nof prose"))
 
 
-class TestSlopScore(unittest.TestCase):
+class TestAggregateScoring(unittest.TestCase):
+    """The aggregate is SlopClassifier; scorer.py only holds the primitives."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.clf = SlopClassifier(ONTOLOGY)
+
+    def score(self, text):
+        return self.clf.classify_text(text).overall_slop_score
+
     def test_short_text_burstiness_neutral(self):
         # Regression: 1-2 sentence texts must not be penalized for uniformity
-        result = slop_score("The quarterly report shows revenue grew 4 percent.")
-        self.assertEqual(result["dimensions"]["burstinessSlop"], 0.0)
+        r = self.clf.classify_text("The quarterly report shows revenue grew 4 percent.")
+        self.assertNotIn("UniformSentenceLength",
+                         [s.signal_id for s in r.signals_detected])
 
     def test_buzzword_overlap_not_double_counted(self):
         tiers = {"tier1": ["tapestry", "rich tapestry"]}
@@ -91,7 +103,7 @@ class TestSlopScore(unittest.TestCase):
             "The bridge opened in 1932. It spans 503 metres across the harbour. "
             "Engineers used 52,800 tonnes of steel. Six million rivets hold it together."
         )
-        self.assertLess(slop_score(clean)["overall"], 0.4)
+        self.assertLess(self.score(clean), 0.4)
 
     def test_sloppy_text_scores_higher_than_clean(self):
         sloppy = (
@@ -104,7 +116,12 @@ class TestSlopScore(unittest.TestCase):
             "The bridge opened in 1932. It spans 503 metres across the harbour. "
             "Engineers used 52,800 tonnes of steel. Six million rivets hold it together."
         )
-        self.assertGreater(slop_score(sloppy)["overall"], slop_score(clean)["overall"])
+        self.assertGreater(self.score(sloppy), self.score(clean))
+
+    def test_scorer_module_exposes_no_second_aggregate(self):
+        import scorer
+        self.assertFalse(hasattr(scorer, "slop_score"),
+                         "a second, uncalibrated aggregate is back in src/scorer.py")
 
 
 if __name__ == "__main__":

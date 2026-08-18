@@ -1,4 +1,4 @@
-# Quellen- und Referenzliste — AI Slop Ontology v1.1.0
+# Quellen- und Referenzliste — AI Slop Ontology v1.2.1
 
 ## Begriffe und Definitionen
 

@@ -1,20 +1,38 @@
 # English Documentation
 
-**Canonical language:** English for code-facing artifacts, class names, properties, YAML, JSON and RDF.
+**Languages:** English · [Deutsch](../de/README.md)
 
-The current repository-level documents remain the canonical English entry points:
+## What is in which language
 
-- [`../../README.md`](../../README.md) — project overview
-- [`../USER-GUIDE.md`](../USER-GUIDE.md) — full manual for the `slop` CLI toolkit
-- [`../../ai_slop_ontology.yaml`](../../ai_slop_ontology.yaml) — machine-readable ontology
-- [`../../ontology.json`](../../ontology.json) — agent-oriented JSON
-- [`../../ontology.ttl`](../../ontology.ttl) — RDF/Turtle
-- [`../../extensions/human-work-seo-slop/README.md`](../../extensions/human-work-seo-slop/README.md) — extension overview
-- [`../../extensions/human-work-seo-slop/RESEARCH.md`](../../extensions/human-work-seo-slop/RESEARCH.md) — extension research
-- [`../../integrations/ontology-playground/README.md`](../../integrations/ontology-playground/README.md) — Microsoft Ontology Playground adapter
+Identifiers are English everywhere and are never translated: class names,
+properties, signal ids, file names and the contents of `ai_slop_ontology.yaml`,
+`ontology.json`, `ontology.ttl` and the extension files.
 
-The current German documentation is available under [`../de/`](../de/).
+The project's explanatory documents are written in German. That is the current
+state of the repository, stated plainly here because this page used to claim
+the opposite — it listed the repository-level documents as "canonical English
+entry points" while `ONTOLOGY.md`, `ONTOLOGY-STRUCTURE.md`, `REFERENCES.md`,
+`CHANGELOG.md` and the review documents are all German (review 2026-08 §3.2).
 
-## Translation policy
+| Document | Language |
+|----------|----------|
+| [`../../README.md`](../../README.md) — project overview | English |
+| [`../USER-GUIDE.md`](../USER-GUIDE.md) — full `slop` CLI manual | English |
+| [`../../skills/ai-slop-detection/SKILL.md`](../../skills/ai-slop-detection/SKILL.md) — agent skill | English |
+| [`../../extensions/human-work-seo-slop/`](../../extensions/human-work-seo-slop/) — extension README and research | English |
+| [`../../integrations/ontology-playground/README.md`](../../integrations/ontology-playground/README.md) — Playground adapter | English |
+| [`../../AI-SLOP-ONTOLOGY.md`](../../AI-SLOP-ONTOLOGY.md) — canonical model | German |
+| [`../../ONTOLOGY.md`](../../ONTOLOGY.md), [`../../ONTOLOGY-STRUCTURE.md`](../../ONTOLOGY-STRUCTURE.md) | German |
+| [`../../REFERENCES.md`](../../REFERENCES.md), [`../../CHANGELOG.md`](../../CHANGELOG.md) | German |
+| [`../../REVIEW-2026-07.md`](../../REVIEW-2026-07.md), [`../../REVIEW-2026-08.md`](../../REVIEW-2026-08.md) | German |
+| [`../../report.md`](../../report.md), [`../../report-extended.md`](../../report-extended.md), [`../../RESEARCH-v0.1.md`](../../RESEARCH-v0.1.md) | German |
 
-Technical identifiers are not translated. English remains authoritative when a translated explanation and a machine-readable artifact disagree. German documents are maintained as current explanatory counterparts rather than independent ontology definitions.
+Machine-readable artifacts win over any prose explanation, in either language.
+
+## Translating a document
+
+Replace it, do not copy it. A German document that gets an English version
+becomes one English document plus, if still wanted, one German document that
+links to it — never two files with the same content drifting apart.
+`tests/test_documentation_layout.py` fails when a file under `docs/de/` or
+`docs/en/` duplicates a document at the repository root.

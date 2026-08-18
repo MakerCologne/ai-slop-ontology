@@ -77,7 +77,7 @@ def _result_to_dict(r) -> dict:
         "severity": r.severity,
         "slop_types": list(r.slop_types),
         "signals": [
-            {"signal": s.signal_id, "confidence": s.confidence,
+            {"signal": s.signal_id, "confidence": round(s.confidence, 3),
              "severity": s.severity, "evidence": s.evidence}
             for s in r.signals_detected
         ],

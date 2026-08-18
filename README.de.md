@@ -90,8 +90,8 @@ Sorgfältig kuratierte, überprüfte und absichtlich veröffentlichte KI-Hilfsou
 ├── README.de.md                      Deutscher Einstieg
 ├── docs/
 │   ├── USER-GUIDE.md                 Vollständige CLI-Anleitung, englisch
-│   ├── en/                           Englische Dokumentation
-│   └── de/                           Deutsche Dokumentation
+│   ├── en/README.md                  Welches Dokument ist in welcher Sprache
+│   └── de/                           Deutscher Index + Erweiterungs-Doku
 ├── AI-SLOP-ONTOLOGY.md               Kanonisches Fachmodell, Version 1.2.1
 ├── ai_slop_ontology.yaml             Maschinenlesbare YAML-Ontologie
 ├── ontology.json                     Agentenfreundliches JSON
@@ -104,7 +104,12 @@ Sorgfältig kuratierte, überprüfte und absichtlich veröffentlichte KI-Hilfsou
 └── integrations/ontology-playground/ Microsoft-Ontology-Playground-Adapter
 ```
 
-Die aktuelle deutsche Dokumentation beginnt unter [`docs/de/`](docs/de/). Ältere Forschungsberichte bleiben erhalten, sind dort aber klar als historische Arbeitsstände gekennzeichnet.
+Die deutschen Fachdokumente liegen im Wurzelverzeichnis; [`docs/de/`](docs/de/)
+ist der Index dazu und enthält nur, was es sonst nirgends gibt. Bis August 2026
+lagen dort byte-identische Kopien von neun Wurzeldokumenten — rund 2.000 doppelt
+gepflegte Zeilen, die bereits auseinanderzulaufen begannen. Jedes Dokument
+existiert jetzt genau einmal, abgesichert durch
+`tests/test_documentation_layout.py`.
 
 ## Experimentelle Erweiterung: Human, Work, Management und SEO Slop
 

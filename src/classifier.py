@@ -109,6 +109,17 @@ class ClassificationResult:
     buzzword_report: dict = field(default_factory=dict)
     phrase_report: dict = field(default_factory=dict)
 
+    # The self-contained skill engine names the same two fields `score` and
+    # `signals`. Both names work on both engines so callers do not need an
+    # adapter per engine (review 2026-08 §4.4).
+    @property
+    def score(self) -> float:
+        return self.overall_slop_score
+
+    @property
+    def signals(self) -> list:
+        return self.signals_detected
+
 
 class SlopClassifier:
     """Classify content using the AI Slop Ontology signal database."""

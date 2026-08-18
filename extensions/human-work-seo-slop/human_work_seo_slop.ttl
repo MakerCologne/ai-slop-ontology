@@ -222,3 +222,59 @@
   :generationNeutral true ;
   rdfs:label "GEO Manipulation Slop" ;
   rdfs:comment "Content engineered primarily to manipulate generative search or answer systems into citing, repeating or privileging a claim." .
+
+# --- Cross-cutting assessment dimensions ---
+# Mirrors "dimensions" in human_work_seo_slop.json; scripts/check_consistency.py
+# fails when the two drift apart.
+
+:Dimension a owl:Class ;
+  rdfs:label "Assessment Dimension" ;
+  rdfs:comment "A reusable, cross-cutting property used to assess an artifact or activity; not a type." .
+
+:hasDimension a owl:ObjectProperty ;
+  rdfs:domain :ContentItemOrWorkActivity ;
+  rdfs:range :Dimension .
+
+:goalContributionDeficit a :Dimension ;
+  rdfs:label "Goal contribution deficit" ;
+  rdfs:comment "The artifact or activity contributes little to the goal it is nominally produced for." .
+
+:recipientEffortTransfer a :Dimension ;
+  rdfs:label "Recipient effort transfer" ;
+  rdfs:comment "Effort the producer saved is transferred to recipients as interpretation, verification or rework." .
+
+:superficialCompetence a :Dimension ;
+  rdfs:label "Superficial competence" ;
+  rdfs:comment "Form signals competence — structure, register, formatting — that the content does not carry." .
+
+:actionabilityDeficit a :Dimension ;
+  rdfs:label "Actionability deficit" ;
+  rdfs:comment "The output does not enable a decision or a next step for its audience." .
+
+:verificationDeficit a :Dimension ;
+  rdfs:label "Verification deficit" ;
+  rdfs:comment "Claims, figures or citations are passed on without the checking the context requires." .
+
+:coordinationOverhead a :Dimension ;
+  rdfs:label "Coordination overhead" ;
+  rdfs:comment "The artifact creates alignment, clarification or meeting load out of proportion to its value." .
+
+:processObsolescence a :Dimension ;
+  rdfs:label "Process obsolescence" ;
+  rdfs:comment "The activity persists after the purpose that justified it has gone." .
+
+:metricGaming a :Dimension ;
+  rdfs:label "Metric gaming" ;
+  rdfs:comment "Production is steered by a measure rather than by the outcome the measure stands for." .
+
+:distributionManipulation a :Dimension ;
+  rdfs:label "Distribution manipulation" ;
+  rdfs:comment "Reach is engineered — search, feed, recommendation or answer systems — rather than earned." .
+
+:scaleRepetition a :Dimension ;
+  rdfs:label "Scale repetition" ;
+  rdfs:comment "Value depends on volume and repetition rather than on any individual instance." .
+
+:truthIndifference a :Dimension ;
+  rdfs:label "Truth indifference" ;
+  rdfs:comment "Correctness is neither asserted nor denied; it is simply not part of the production process." .

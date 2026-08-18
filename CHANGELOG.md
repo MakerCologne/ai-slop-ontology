@@ -2,6 +2,53 @@
 
 ## [Unreleased]
 
+**Dokumentation entspricht wieder den Daten.** Behauptete Zahlen werden jetzt
+von Tests gegen die Daten geprüft (`tests/test_doc_claims.py`).
+
+- `SKILL.md` sprach von „459 signals"; die Datenbank hat 233 gezählte
+  Textsignale (107 Buzzwords, 114 Phrasen, 7 strukturelle, 5 Interpunktion) —
+  korrigiert samt Aufschlüsselung.
+- README zählte 38 Referenzen, `REFERENCES.md` listet 39; die Überschrift dort
+  stand noch auf v1.1.0.
+- `signals.version`/`lastUpdated` in `ontology.json` sind jetzt als eigenständig
+  gepflegte Signaldatenbank ausgewiesen statt als scheinbarer Widerspruch.
+- **Detektor-Abdeckung ausgewiesen:** Jeder Indikator trägt `detector`
+  (`implemented` oder `documented_only`). Text und Code haben Detektoren; Bild,
+  Video und Audio sind dokumentiert, aber von nichts berechnet — das steht jetzt
+  in README und SKILL.md, statt Multimodalität zu suggerieren.
+
+**Dokumentation existiert genau einmal.** `docs/de/` enthielt byte-identische
+Kopien von neun deutschen Wurzeldokumenten (~2.000 Zeilen), abgesichert durch
+eine Handpflege-Regel — die bereits versagte: Changelog und Referenzen waren
+schon auseinandergelaufen.
+
+- Die neun Kopien sind entfernt; `docs/de/README.md` verlinkt die Originale und
+  behält nur, was es dort exklusiv gibt.
+- `docs/en/README.md` bezeichnete die deutschen Wurzeldokumente als „canonical
+  English entry points" — ersetzt durch eine Tabelle, welches Dokument tatsächlich
+  in welcher Sprache vorliegt.
+- `tests/test_documentation_layout.py` verhindert neue Kopien, prüft die
+  Sprachangaben und alle relativen Links.
+
+**Erweiterung: TTL vollständig, Parität geprüft.** Die elf Dimensionen existierten
+nur als nackte Bezeichner im JSON — ohne Definition und ohne Entsprechung im
+TTL, obwohl README und Doku sie als Bewertungsmodell führen.
+
+- Jede Dimension hat jetzt Label und Definition (JSON) und ein
+  `:Dimension`-Individuum (TTL); `human_work_seo_slop.json` ist eingerückt
+  statt einzeilig, damit Änderungen im Diff lesbar sind.
+- `check_consistency.py` prüft Typen und Dimensionen JSON ↔ TTL auch für die
+  Erweiterung — bisher galt das nur für den Kern.
+
+**Aufräumen.**
+
+- `src/scorer.py:slop_score()` entfernt: eine zweite, unkalibrierte
+  Aggregation mit eigener 14-Wort-Buzzwordliste, die außer ihrer eigenen Demo
+  niemand aufrief. Die Primitiven bleiben; die Aggregation ist `SlopClassifier`.
+- Beide Engines verstehen jetzt beide Namen (`score`/`overall_slop_score`,
+  `signals`/`signals_detected`); `SignalMatch` trägt in beiden ein `severity`.
+- `--json` rundet Confidences (vorher `0.7999999999999999`).
+
 **Zitierte Beispiele verzerren die Bewertung nicht mehr.** Ein Dokument über
 Slop zitiert Slop: README (0,93), Bedienungsanleitung (0,99) und das kanonische
 Fachmodell (0,99) stuften sich selbst als `slop_candidate` ein — ausgelöst von

@@ -42,6 +42,7 @@ class SignalMatch:
     signal_id: str
     confidence: float
     evidence: str
+    severity: str = "medium"  # critical | high | medium | low
 
 
 @dataclass
@@ -62,6 +63,17 @@ class ClassificationResult:
     # Detect-only: named rhetorical patterns with quoted evidence. These are
     # reported for the user to check; they do NOT feed the numeric score.
     rhetorical_patterns: list = field(default_factory=list)
+
+    # src/classifier.py names the same two fields `overall_slop_score` and
+    # `signals_detected`. Both names work on both engines so callers do not
+    # need an adapter per engine (review 2026-08 §4.4).
+    @property
+    def overall_slop_score(self) -> float:
+        return self.score
+
+    @property
+    def signals_detected(self) -> list:
+        return self.signals
 
 
 # --- Slop Type Pattern Definitions (extended from ontology.json v1.0.0) ---

@@ -613,7 +613,7 @@
     "version": "1.0.0",
     "lastUpdated": "2026-05-20",
     "source": "Consolidated from Shaib et al. 2025, empirical observation, community detection (Reddit r/LocalLLaMA, HN), slopdetector.org, glukhov.org, Willison 2024",
-    "note": "Signal words are PROBABILISTIC indicators, not proof. Human writers use some of these too. Threshold-based scoring required.",
+    "note": "Signal words are PROBABILISTIC indicators, not proof. Human writers use some of these too. Threshold-based scoring required. The signals block carries its own version and lastUpdated: the signal database is maintained independently of the ontology version in AI-SLOP-ONTOLOGY.md.",
     "text": {
       "buzzwords": {
         "description": "Words disproportionately used by LLMs vs humans. Tier = signal strength.",
@@ -1284,55 +1284,66 @@
         {
           "id": "ExtraLimbs",
           "description": "Additional limbs, fingers, distorted features",
-          "confidence": 0.9
+          "confidence": 0.9,
+          "detector": "documented_only"
         },
         {
           "id": "UnnaturalSmoothness",
           "description": "Flawless textures with no variation",
-          "confidence": 0.7
+          "confidence": 0.7,
+          "detector": "documented_only"
         },
         {
           "id": "DistortedText",
           "description": "Garbled text within images",
-          "confidence": 0.95
+          "confidence": 0.95,
+          "detector": "documented_only"
         },
         {
           "id": "SymmetryAnomaly",
           "description": "Overly symmetric patterns",
-          "confidence": 0.7
+          "confidence": 0.7,
+          "detector": "documented_only"
         },
         {
           "id": "UncannyFaces",
           "description": "Faces with subtle but detectable wrongness",
-          "confidence": 0.75
+          "confidence": 0.75,
+          "detector": "documented_only"
         },
         {
           "id": "WatermarkRemnants",
           "description": "Getty/iStock watermark fragments",
-          "confidence": 0.9
+          "confidence": 0.9,
+          "detector": "documented_only"
         },
         {
           "id": "NonsensicalText",
           "description": "Letters that don't form real words",
-          "confidence": 0.95
+          "confidence": 0.95,
+          "detector": "documented_only"
         },
         {
           "id": "ShrimpJesus",
           "description": "Bizarre AI imagery mixing unrelated concepts",
-          "confidence": 0.85
+          "confidence": 0.85,
+          "detector": "documented_only"
         },
         {
           "id": "HyperRealisticStyle",
           "description": "Over-polished, no imperfections",
-          "confidence": 0.6
+          "confidence": 0.6,
+          "detector": "documented_only"
         },
         {
           "id": "HyperTypicality",
           "description": "AI-generated faces look 'more typical than real faces' (regression to the mathematical average). Humans are trainable to near-perfect detection using this cue (ANU/PNAS 2026).",
           "confidence": 0.7,
-          "modality": "image"
+          "modality": "image",
+          "detector": "documented_only"
         }
-      ]
+      ],
+      "detectorCoverage": "Text and code are the modalities with a working detector. Image, video and audio indicators are documented for human and multi-modal review; no code in this repository computes them."
     },
     "video": {
       "description": "Artifacts in AI-generated video.",
@@ -1340,29 +1351,35 @@
         {
           "id": "FrameFlicker",
           "description": "Inconsistent objects between frames",
-          "confidence": 0.85
+          "confidence": 0.85,
+          "detector": "documented_only"
         },
         {
           "id": "LipSyncMismatch",
           "description": "Audio-visual desync",
-          "confidence": 0.9
+          "confidence": 0.9,
+          "detector": "documented_only"
         },
         {
           "id": "MorphingArtifacts",
           "description": "Objects morph unnaturally",
-          "confidence": 0.8
+          "confidence": 0.8,
+          "detector": "documented_only"
         },
         {
           "id": "TemporalInconsistency",
           "description": "Background changes between cuts",
-          "confidence": 0.75
+          "confidence": 0.75,
+          "detector": "documented_only"
         },
         {
           "id": "UniformLighting",
           "description": "No natural shadow variation",
-          "confidence": 0.65
+          "confidence": 0.65,
+          "detector": "documented_only"
         }
-      ]
+      ],
+      "detectorCoverage": "Text and code are the modalities with a working detector. Image, video and audio indicators are documented for human and multi-modal review; no code in this repository computes them."
     },
     "code": {
       "description": "Patterns in AI-generated code.",
@@ -1376,34 +1393,41 @@
             "ts-migrate-parser",
             "fast-data-processor",
             "advanced-math-utils"
-          ]
+          ],
+          "detector": "implemented"
         },
         {
           "id": "HardcodedSecret",
           "description": "API keys/passwords in code",
-          "confidence": 0.95
+          "confidence": 0.95,
+          "detector": "implemented"
         },
         {
           "id": "ExcessiveComments",
           "description": "Comment on every line including obvious ones",
-          "confidence": 0.6
+          "confidence": 0.6,
+          "detector": "implemented"
         },
         {
           "id": "GenericErrorHandling",
           "description": "except Exception: pass patterns",
-          "confidence": 0.55
+          "confidence": 0.55,
+          "detector": "documented_only"
         },
         {
           "id": "OverlyVerboseNaming",
           "description": "Extremely long descriptive variable names everywhere",
-          "confidence": 0.5
+          "confidence": 0.5,
+          "detector": "documented_only"
         },
         {
           "id": "HallucinatedAPI",
           "description": "Methods that don't exist in the library",
-          "confidence": 0.85
+          "confidence": 0.85,
+          "detector": "documented_only"
         }
-      ]
+      ],
+      "detectorCoverage": "InventedPackage, HardcodedSecret and ExcessiveComments are computed by src/classifier.py:classify_code. GenericErrorHandling and OverlyVerboseNaming are documented only."
     },
     "audio": {
       "description": "Patterns in AI-generated audio/music.",
@@ -1411,24 +1435,29 @@
         {
           "id": "UniformTiming",
           "description": "Metronomic precision, no human micro-timing",
-          "confidence": 0.6
+          "confidence": 0.6,
+          "detector": "documented_only"
         },
         {
           "id": "LackOfDynamics",
           "description": "Compressed dynamic range",
-          "confidence": 0.55
+          "confidence": 0.55,
+          "detector": "documented_only"
         },
         {
           "id": "UncannyVoice",
           "description": "Slight artifacts in speech synthesis",
-          "confidence": 0.7
+          "confidence": 0.7,
+          "detector": "documented_only"
         },
         {
           "id": "GenericChordProgression",
           "description": "I-V-vi-IV loop without variation",
-          "confidence": 0.4
+          "confidence": 0.4,
+          "detector": "documented_only"
         }
-      ]
+      ],
+      "detectorCoverage": "Text and code are the modalities with a working detector. Image, video and audio indicators are documented for human and multi-modal review; no code in this repository computes them."
     },
     "multilingual": {
       "description": "Language-specific AI slop markers (DE/FR/ES + HI/VI/UR added 2026-07)",

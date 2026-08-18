@@ -89,7 +89,7 @@ Key insight: Carefully curated, verified, and intentionally published AI outputs
 ├── ontology.ttl                  ← RDF/Turtle (semantic web)
 ├── ONTOLOGY.md                   ← Human-readable taxonomy overview
 ├── ONTOLOGY-STRUCTURE.md         ← Property-based model & class hierarchy
-├── REFERENCES.md                 ← Source list (38 references)
+├── REFERENCES.md                 ← Source list (39 references)
 ├── CHANGELOG.md                  ← Version history
 ├── REVIEW-2026-07.md             ← Deep review findings (code + data audit)
 ├── REVIEW-2026-08.md             ← Deep review, Aug 2026 (packaging, engine drift, integrations)
@@ -108,6 +108,9 @@ Key insight: Carefully curated, verified, and intentionally published AI outputs
 │   └── human-work-seo-slop/      ← Experimental Human, Work, Management & SEO Slop module
 ├── integrations/
 │   └── ontology-playground/      ← Adapter + catalogue entries for the Ontology Playground
+├── scripts/
+│   ├── check_consistency.py      ← JSON/TTL/YAML/skill/extension parity (CI gate)
+│   └── sync_skill_signals.py     ← regenerates the skill's signal data from ontology.json
 ├── tests/                        ← Unit tests (python3 -m unittest discover tests)
 └── examples/
     ├── classification-examples.json  ← 8 scored examples
@@ -151,15 +154,34 @@ python integrations/ontology-playground/validate_adapter.py
 
 ## Documentation Languages
 
-English is canonical for code, class names, properties, YAML, JSON and RDF.
-German explanatory documentation is maintained in parallel:
+Identifiers are English everywhere — class names, properties, signal ids, and
+the contents of the YAML, JSON and RDF files — and are never translated. The
+explanatory documents are mostly German: this README, `docs/USER-GUIDE.md` and
+the agent skill are English; the canonical model, taxonomy, references,
+changelog and reviews are German.
 
 - [`README.de.md`](README.de.md) — German entry point
-- [`docs/de/`](docs/de/) — German core documents, research reports and changelog
-- [`docs/en/README.md`](docs/en/README.md) — English index and translation policy
+- [`docs/en/README.md`](docs/en/README.md) — which document is in which language
+- [`docs/de/README.md`](docs/de/README.md) — German index
 
-Technical identifiers are never translated. Where a translated explanation and a
-machine-readable artifact disagree, the machine-readable artifact wins.
+Each document exists exactly once. `docs/de/` previously held byte-identical
+copies of nine German root documents; they are gone, and
+`tests/test_documentation_layout.py` fails if a copy comes back. Where a prose
+explanation and a machine-readable artifact disagree, the artifact wins.
+
+## Detector coverage
+
+The ontology describes slop in six modalities; the code in this repository
+computes signals for two of them.
+
+| Modality | Status |
+|----------|--------|
+| Text | detector — 233 signals, 12 type patterns, 9 rhetorical patterns, 6 non-English marker sets |
+| Code | detector — hallucinated packages, hardcoded secrets, comment bloat |
+| Image, video, audio | documented only — indicators are for human and multi-modal review, nothing computes them |
+
+Every indicator in `ontology.json` carries a `detector` field (`implemented` or
+`documented_only`) so an agent can tell the two apart.
 
 ## Ontology Architecture
 
