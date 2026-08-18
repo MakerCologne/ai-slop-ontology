@@ -17,14 +17,24 @@ from collections import Counter
 from dataclasses import dataclass, field
 from typing import Optional
 
-from slop_scorer import (
-    BUZZWORD_TIERS, PHRASE_CATEGORIES, MULTILINGUAL_BUZZWORDS,
-    MORAL_PATTERNS, AUTHORITY_PATTERNS,
-    buzzword_score, phrase_category_score, multilingual_buzzword_score,
-    information_density, burstiness, trailing_moral, list_heavy,
-    punctuation_anomaly_score, mirrored_intro_conclusion, find_term_matches,
-)
-from rhetorical_patterns import find_rhetorical_patterns
+try:  # direct execution / sys.path use — how the skill normally runs
+    from slop_scorer import (
+        BUZZWORD_TIERS, PHRASE_CATEGORIES, MULTILINGUAL_BUZZWORDS,
+        MORAL_PATTERNS, AUTHORITY_PATTERNS,
+        buzzword_score, phrase_category_score, multilingual_buzzword_score,
+        information_density, burstiness, trailing_moral, list_heavy,
+        punctuation_anomaly_score, mirrored_intro_conclusion, find_term_matches,
+    )
+    from rhetorical_patterns import find_rhetorical_patterns
+except ImportError:  # packaged into a wheel as slopkit.skill
+    from .slop_scorer import (
+        BUZZWORD_TIERS, PHRASE_CATEGORIES, MULTILINGUAL_BUZZWORDS,
+        MORAL_PATTERNS, AUTHORITY_PATTERNS,
+        buzzword_score, phrase_category_score, multilingual_buzzword_score,
+        information_density, burstiness, trailing_moral, list_heavy,
+        punctuation_anomaly_score, mirrored_intro_conclusion, find_term_matches,
+    )
+    from .rhetorical_patterns import find_rhetorical_patterns
 
 
 @dataclass

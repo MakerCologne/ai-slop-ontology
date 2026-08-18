@@ -30,5 +30,12 @@ jobs:
           echo "It's not a tool. It's a movement." | python -m slopkit rhetoric -
       - name: Verify extension citation sources (offline)
         run: python extensions/human-work-seo-slop/verify_sources.py
+      - name: Install from wheel and run outside the checkout
+        run: |
+          python -m venv /tmp/wheeltest
+          /tmp/wheeltest/bin/pip install --quiet .
+          cd /tmp
+          /tmp/wheeltest/bin/slop info
+          /tmp/wheeltest/bin/slop score "delve into the rich tapestry of synergy"
       - name: Run benchmark (informational)
         run: python eval/run_benchmark.py

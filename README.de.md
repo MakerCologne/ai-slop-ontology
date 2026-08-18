@@ -31,7 +31,8 @@ Eine Kommandozeile über dieselbe Engine und dieselben Ontologie-Daten. Ohne
 Fremd-Abhängigkeiten — der Detektor nutzt nur die Standardbibliothek.
 
 ```bash
-pip install -e .          # stellt den Befehl `slop` bereit (oder `python -m slopkit`)
+pip install .             # stellt den Befehl `slop` überall bereit
+pip install -e .          # oder editierbar aus einem Checkout (bzw. `python -m slopkit`)
 
 slop score "In today's rapidly evolving landscape, our holistic platform serves as a hub."
 slop classify --file entwurf.md        # Slop-Typen, Signale, Dimensionen, Maßnahmen
@@ -56,6 +57,11 @@ Jeder Textbefehl liest Positionsargument, `--file PFAD` oder stdin (`-`) und
 kennt `--json` für maschinenlesbare Ausgabe. `score` und `check` kennen
 zusätzlich `--fail-over SCHWELLE` und liefern Exit-Code 1 darüber — gedacht als
 CI-Gate.
+
+Das Wheel enthält Engine, Agenten-Skill und `ontology.json`; die Scoring-Befehle
+laufen daher auch außerhalb eines Checkouts. `benchmark` und `selfcheck` nutzen
+Repo-Werkzeuge (Korpus, drei Serialisierungen) und brauchen einen Checkout —
+`SLOP_REPO_ROOT` darauf zeigen lassen oder im Repo ausführen.
 
 Die vollständige Anleitung mit Anwendungsfällen und getesteten Beispielen steht
 in [`docs/USER-GUIDE.md`](docs/USER-GUIDE.md) (englisch, kanonisch).

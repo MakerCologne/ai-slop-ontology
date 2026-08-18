@@ -197,7 +197,12 @@ def cmd_info(args, eng) -> int:
 def _run_script(rel_path: str, extra=None) -> int:
     script = repo_root() / rel_path
     if not script.exists():
-        print(f"error: {rel_path} not found in repo", file=sys.stderr)
+        # benchmark/selfcheck run repo tooling against the corpus and the three
+        # serializations; an installed wheel ships neither.
+        print(f"error: {rel_path} is only available in a checkout of "
+              f"github.com/hikaman/ai-slop-ontology (set SLOP_REPO_ROOT to "
+              f"point at one). Scoring commands work without it.",
+              file=sys.stderr)
         return 2
     cmd = [sys.executable, str(script)] + (extra or [])
     return subprocess.run(cmd, cwd=str(repo_root())).returncode

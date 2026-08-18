@@ -6,10 +6,11 @@ ontology.json is the source of truth; ontology.ttl and ai_slop_ontology.yaml
 are maintained by hand. This script fails (exit 1) when they drift on the
 facts that matter:
 
-  - every DOMAIN_SLOP / TEXT_SLOP type in JSON exists in the TTL
+  - the slop types in JSON and TTL are the same set (both directions)
   - dc:date matches between JSON and TTL
   - the YAML ontology version matches the canonical document's front matter
   - multilingual language sets match between ontology.json and the skill scorer
+  - the skill's inlined signal data still equals what ontology.json generates
 
 Run:  python3 scripts/check_consistency.py
 """
@@ -21,6 +22,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "skills", "ai-slop-detection", "scripts"))
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
 errors = []
 
@@ -38,13 +40,27 @@ def main() -> int:
     with open(os.path.join(ROOT, "AI-SLOP-ONTOLOGY.md")) as f:
         canonical = f.read()
 
-    # 1. Slop types present in the TTL
-    json_types = set(oj["slopTypes"].get("DOMAIN_SLOP", {})) | set(
-        oj["slopTypes"].get("TEXT_SLOP", {})
-    )
-    for t in sorted(json_types):
-        check(f":{t} a :SlopType" in ttl,
+    # 1. Slop types agree in BOTH directions.
+    #    Comparing only TEXT_SLOP and DOMAIN_SLOP used to hide 13 JSON types
+    #    absent from the TTL and 12 TTL-only ones, five of which were the same
+    #    concept under a second name (review 2026-08).
+    #
+    #    BY_FORM holds axes (surreal↔banal, mass↔personalized), not types.
+    #    WorkSlopFamily/AIWorkslop are defined by the human-work-seo-slop
+    #    extension; the core TTL only references them from the harm graph.
+    AXIS_GROUPS = {"BY_FORM"}
+    EXTENSION_OWNED = {"WorkSlopFamily", "AIWorkslop"}
+
+    json_types = {t for group, types in oj["slopTypes"].items()
+                  if group not in AXIS_GROUPS for t in types}
+    ttl_types = set(re.findall(r"^:([A-Za-z0-9_]+) a :SlopType", ttl, re.MULTILINE))
+
+    for t in sorted(json_types - ttl_types):
+        check(False,
               f"TTL drift: slop type '{t}' from ontology.json missing in ontology.ttl")
+    for t in sorted(ttl_types - json_types - EXTENSION_OWNED):
+        check(False,
+              f"JSON drift: slop type '{t}' from ontology.ttl missing in ontology.json")
 
     # 2. Dates aligned
     ttl_date = re.search(r'dc:date "([\d-]+)"', ttl)
@@ -83,7 +99,17 @@ def main() -> int:
           f"Multilingual drift: ontology.json={sorted(json_langs)} vs "
           f"skill scorer={sorted(skill_langs)}")
 
-    # 6. Rhetorical (detect-only) patterns match between JSON DB and skill module
+    # 6. The skill's inlined signal data is byte-identical to what
+    #    ontology.json generates. Buzzword tiers, phrase categories,
+    #    authority patterns and multilingual markers had all drifted before
+    #    this check existed (review 2026-08 §1.3) — comparing only the
+    #    language names or the type-pattern keys never touched them.
+    import sync_skill_signals
+    check(sync_skill_signals.main(["--check"]) == 0,
+          "Skill signal data drifted from ontology.json — "
+          "run python3 scripts/sync_skill_signals.py")
+
+    # 7. Rhetorical (detect-only) patterns match between JSON DB and skill module
     import rhetorical_patterns
     skill_rhetorical = set(rhetorical_patterns.RHETORICAL_PATTERNS)
     json_rhetorical = set(
@@ -97,10 +123,15 @@ def main() -> int:
         for e in errors:
             print(f"  ✗ {e}")
         return 1
+    n_terms = sum(len(t["words"]) for t in
+                  oj["signals"]["text"]["buzzwords"]["tiers"].values())
+    n_terms += sum(len(c["items"]) for c in
+                   oj["signals"]["text"]["phrases"]["categories"].values())
     print(f"Consistency check passed ({len(json_types)} slop types, "
           f"{len(json_pattern_types)} pattern-bearing types, "
           f"{len(json_rhetorical)} rhetorical patterns, "
-          f"{len(json_langs)} languages, dates and versions aligned).")
+          f"{len(json_langs)} languages, {n_terms} signal terms in sync, "
+          f"dates and versions aligned).")
     return 0
 
 

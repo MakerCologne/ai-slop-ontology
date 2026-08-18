@@ -230,6 +230,11 @@
           "YouTube Kids AI alphabet videos",
           "278 AI YouTube channels"
         ]
+      },
+      "Brainrot": {
+        "label": "Brainrot",
+        "description": "Low-attention reward content optimized for endless consumption (Italian brainrot, Fruit Love Island).",
+        "medium": "Video"
       }
     },
     "AUDIO_SLOP": {
@@ -385,6 +390,18 @@
           "Organization Science editorial study 2026",
           "Sem-Detect (arXiv:2605.21713)"
         ]
+      },
+      "LegalSlop": {
+        "label": "Legal Slop",
+        "description": "AI-generated legal documents with invented precedents, false norms and unvalidated citations. Particularly dangerous because it looks professional.",
+        "medium": "Text",
+        "normative": "EpistemicPollution"
+      },
+      "GoogleScaledContentAbuse": {
+        "label": "Scaled Content Abuse (Google)",
+        "description": "Google's policy definition: many pages produced primarily for search manipulation rather than to help users — generative AI without added value, scraping, stitching, meaningless keyword pages.",
+        "medium": "Text",
+        "normative": "EpistemicPollution"
       }
     },
     "BY_PURPOSE": {
@@ -422,6 +439,21 @@
       "SpamNoiseSlop": {
         "label": "Spam/Noise Slop",
         "description": "Füllmaterial ohne klaren Zweck."
+      },
+      "RecommendationPoisoningSlop": {
+        "label": "Recommendation Poisoning Slop",
+        "description": "AI content placed or replicated to distort recommendation, retrieval or agent selection systems.",
+        "normative": "EpistemicPollution"
+      },
+      "ImpersonationSlop": {
+        "label": "Impersonation Slop",
+        "description": "AI-generated content imitating a person, organization, artist, brand or authoritative source without legitimate authorization or clarity.",
+        "normative": "EconomicFraud"
+      },
+      "PlaceholderPublishingSlop": {
+        "label": "Placeholder Publishing Slop",
+        "description": "Draft-like or filler AI output published as finished content without sufficient review, evidence or audience-specific purpose.",
+        "normative": "NonconsensualImposition"
       }
     },
     "BY_FORM": {
@@ -439,6 +471,16 @@
         "axis": "Human Oversight",
         "low": "Reines AI — kein menschlicher Input",
         "high": "AI-assisted mit minimal Edits"
+      }
+    },
+    "RELATED_PHENOMENA": {
+      "Slom": {
+        "label": "Slom",
+        "description": "AI spam subset (Willison): the overlap between slop and spam."
+      },
+      "Necromemetics": {
+        "label": "Necromemetics",
+        "description": "Post-violence meme economy (Koebler)."
       }
     }
   },
@@ -647,7 +689,8 @@
               "in the grand scheme of things",
               "not only... but also",
               "it's important to remember",
-              "it's crucial to understand"
+              "it's crucial to understand",
+              "landscape"
             ]
           },
           "tier3_moderate": {
@@ -679,7 +722,6 @@
               "leveling the playing field",
               "moving the needle",
               "doubling down",
-              "doubling down on",
               "doubling down on"
             ]
           },
@@ -1405,7 +1447,7 @@
           "die Synergieeffekte",
           "ganzheitlicher Ansatz",
           "der Gamechanger",
-          "aufAugenhöhe",
+          "auf Augenhöhe",
           "Best Practices"
         ],
         "note": "German AI output often mixes Denglisch (English loanwords) with formal register"

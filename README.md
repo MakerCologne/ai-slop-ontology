@@ -31,7 +31,8 @@ A command-line front-end over the same engine and ontology data. No third-party
 dependencies — the detector uses only the Python standard library.
 
 ```bash
-pip install -e .          # exposes the `slop` command (or use `python -m slopkit`)
+pip install .             # exposes the `slop` command anywhere
+pip install -e .          # or editable, from a checkout (or use `python -m slopkit`)
 
 slop score "In today's rapidly evolving landscape, our holistic platform serves as a hub."
 slop classify --file draft.md          # slop types, signals, dimensions, actions
@@ -54,6 +55,11 @@ slop selfcheck                         # JSON/TTL/YAML/skill consistency check
 
 Every text command reads a positional string, `--file PATH`, or stdin (`-`), and
 takes `--json` for machine-readable output.
+
+The wheel carries the engine, the agent skill and `ontology.json`, so the
+scoring commands work outside a checkout. `benchmark` and `selfcheck` run repo
+tooling against the corpus and the three serializations and therefore need one
+(point `SLOP_REPO_ROOT` at it, or run them from the repo).
 
 📖 **Full manual with use cases and tested examples: [docs/USER-GUIDE.md](docs/USER-GUIDE.md)**
 

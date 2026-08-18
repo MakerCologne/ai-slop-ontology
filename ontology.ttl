@@ -120,7 +120,7 @@
 
 # --- Level 1: By Visual Pattern (Image) ---
 
-:ShrimpJesusSlop a :SlopType ;
+:SurrealEngagementBait a :SlopType ;
     rdfs:label "Surreal Engagement Bait" ;
     rdfs:comment "Bizarre, surreal AI images designed for maximum engagement. Named after the 'Shrimp Jesus' meme. Exploits the uncanny." ;
     :hasMedium :Image ;
@@ -143,14 +143,14 @@
 
 # --- Level 1: By Audio/Video Pattern ---
 
-:FakeArtistMusicSlop a :SlopType ;
+:FakeArtistMusic a :SlopType ;
     rdfs:label "Fake Artist Music Slop" ;
     rdfs:comment "AI-generated music attributed to non-existent artists. Accumulates streams before detection." ;
     :hasMedium :Audio ;
     :detectedBy :AudioFingerprintAnalysis , :ArtistVerification ;
     :hasNormativeFraming :EconomicFraud .
 
-:AIGeneratedVideoContent a :SlopType ;
+:AIGeneratedVideo a :SlopType ;
     rdfs:label "AI-Generated Video Slop" ;
     rdfs:comment "Mass-produced AI video content, especially children's content and educational videos with misinformation." ;
     :hasMedium :Video ;
@@ -159,14 +159,14 @@
 
 # --- Level 1: By Code Pattern ---
 
-:HallucinatedPackageSlop a :SlopType ;
+:HallucinatedPackage a :SlopType ;
     rdfs:label "Hallucinated Package Slop" ;
     rdfs:comment "AI suggests non-existent libraries/packages, enabling 'slopsquatting' attacks." ;
     :hasMedium :Code ;
     :detectedBy :PackageRegistryVerification ;
     :hasNormativeFraming :SecurityRisk .
 
-:UniformCodeSlop a :SlopType ;
+:UniformCode a :SlopType ;
     rdfs:label "Uniform Code Slop" ;
     rdfs:comment "Overly clean, generic code style with no human customization or iterative history." ;
     :hasMedium :Code ;
@@ -1209,10 +1209,96 @@
     :hasMedium :Text ;
     :hasNormativeFraming :EpistemicPollution .
 
-:WorkSlop a :SlopType ;
-    rdfs:label "Work Slop" ;
+:WorkSlopFamily a :SlopType ;
+    rdfs:label "Work Slop Family" ;
     rdfs:comment "Internal reports, presentations, memos. Looks professional, saves sender time, costs receiver time. Invisible Cost Shift." ;
     :hasMedium :Text ;
+    :hasNormativeFraming :NonconsensualImposition .
+
+:EngagementClickbaitSlop a :SlopType ;
+    rdfs:label "Engagement/Clickbait Slop" ;
+    rdfs:comment "Optimized for viral potential — motivational and emotional bait (Veteran Birthday Signs, Shrimp Jesus, cat soap operas)." ;
+    :hasNormativeFraming :AttentionEconomyExploitation .
+
+:SEOContentFarmSlop a :SlopType ;
+    rdfs:label "SEO/Content Farm Slop" ;
+    rdfs:comment "Keyword-stuffed pages produced for programmatic advertising revenue." ;
+    :hasMedium :Text ;
+    :hasNormativeFraming :EpistemicPollution .
+
+:PropagandaDisinfoSlop a :SlopType ;
+    rdfs:label "Propaganda/Disinfo Slop" ;
+    rdfs:comment "Politically motivated AI content, including AI images and coordinated Spamouflage campaigns." ;
+    :hasNormativeFraming :EpistemicPollution .
+
+:MonetizationSlop a :SlopType ;
+    rdfs:label "Monetization Slop (Slop Farmers)" ;
+    rdfs:comment "Content produced for direct revenue: platform bonus programs, fake shops, affiliate farming." ;
+    :hasNormativeFraming :EconomicFraud .
+
+:SpamNoiseSlop a :SlopType ;
+    rdfs:label "Spam/Noise Slop" ;
+    rdfs:comment "Filler material with no discernible purpose beyond occupying a channel." ;
+    :hasNormativeFraming :NonconsensualImposition .
+
+# --- Root class and medium groupings ---
+# :AISlop was used as the domain of five relationship properties without ever
+# being declared, and the medium groupings existed only as group keys in
+# ontology.json (review 2026-08).
+
+:AISlop a owl:Class ;
+    rdfs:label "AI Slop" ;
+    rdfs:comment "Content whose generation is primarily AI, whose human care and verification are absent, and which is distributed unsolicited. The risk profile, not the generation mode." .
+
+:TextSlop a owl:Class ;
+    rdfs:subClassOf :AISlop ;
+    rdfs:label "Text Slop" ;
+    :hasMedium :Text .
+
+:ImageSlop a owl:Class ;
+    rdfs:subClassOf :AISlop ;
+    rdfs:label "Image Slop" ;
+    :hasMedium :Image .
+
+:VideoSlop a owl:Class ;
+    rdfs:subClassOf :AISlop ;
+    rdfs:label "Video Slop" ;
+    :hasMedium :Video .
+
+:AudioSlop a owl:Class ;
+    rdfs:subClassOf :AISlop ;
+    rdfs:label "Audio Slop" ;
+    :hasMedium :Audio .
+
+:MusicSlop a owl:Class ;
+    rdfs:subClassOf :AudioSlop ;
+    rdfs:label "Music Slop" .
+
+:CodeSlop a owl:Class ;
+    rdfs:subClassOf :AISlop ;
+    rdfs:label "Code Slop" ;
+    :hasMedium :Code .
+
+:MultimodalSlop a owl:Class ;
+    rdfs:subClassOf :AISlop ;
+    rdfs:label "Multimodal Slop" ;
+    rdfs:comment "Slop combining several media, e.g. AI narration over AI video with AI-written captions." .
+
+# --- Intent types ---
+
+:RecommendationPoisoningSlop a :SlopType ;
+    rdfs:label "Recommendation Poisoning Slop" ;
+    rdfs:comment "AI content placed or replicated to distort recommendation, retrieval, or agent selection systems." ;
+    :hasNormativeFraming :EpistemicPollution .
+
+:ImpersonationSlop a :SlopType ;
+    rdfs:label "Impersonation Slop" ;
+    rdfs:comment "AI-generated content imitating a person, organization, artist, brand, or authoritative source without legitimate authorization or clarity." ;
+    :hasNormativeFraming :EconomicFraud .
+
+:PlaceholderPublishingSlop a :SlopType ;
+    rdfs:label "Placeholder Publishing Slop" ;
+    rdfs:comment "Draft-like or filler AI output published as finished content without sufficient review, evidence, or audience-specific purpose. Includes published 'As an AI language model' artifacts." ;
     :hasNormativeFraming :NonconsensualImposition .
 
 # ============================================================================
@@ -1375,8 +1461,8 @@
     rdfs:label "Necromemetics" ;
     rdfs:comment "Post-violence meme economy (Koebler)." .
 
-:Workslop a :SlopType ;
-    rdfs:label "Workslop" ;
+:AIWorkslop a :SlopType ;
+    rdfs:label "AI Workslop" ;
     rdfs:comment "AI-generated workplace content that saves sender time but costs receiver time. 40% of employees affected; ~1h56m rework per instance." ;
     dc:source "Niederhoffer et al. HBR 2025" ;
     :hasNormativeFraming :NonconsensualImposition .
@@ -1397,7 +1483,7 @@
 
 :enables a owl:ObjectProperty ;
     rdfs:domain :AISlop ;
-    rdfs:range :Workslop .
+    rdfs:range :AIWorkslop .
 
 :hasHarm a owl:ObjectProperty ;
     rdfs:domain :AISlop ;

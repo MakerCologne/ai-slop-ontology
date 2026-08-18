@@ -10,12 +10,31 @@ from collections import Counter
 from typing import Optional
 
 
+# Signal entries may carry placeholders: [X] stands for one word, [N] for a
+# number ("here are [N] ways", "in the age of [X]"). Without expansion these
+# entries are escaped literally and can never match (review 2026-08 §1.2).
+_PLACEHOLDER = re.compile(r'\[[xn]\]')
+_PLACEHOLDER_REGEX = {'[x]': r'[\w-]+', '[n]': r'\d+'}
+
+
 def _term_pattern(term: str) -> str:
-    """Regex for a term with word boundaries where the term edge is a word char."""
-    t = term.lower()
-    left = r'\b' if t[0].isalnum() else ''
-    right = r'\b' if t[-1].isalnum() else ''
-    return left + re.escape(t) + right
+    """Regex for a term with word boundaries where the term edge is a word char.
+
+    [X] expands to one word, [N] to a number; an empty term never matches.
+    """
+    t = term.lower().strip()
+    if not t:
+        return r'(?!)'
+    parts, pos = [], 0
+    for m in _PLACEHOLDER.finditer(t):
+        parts.append(re.escape(t[pos:m.start()]))
+        parts.append(_PLACEHOLDER_REGEX[m.group(0)])
+        pos = m.end()
+    parts.append(re.escape(t[pos:]))
+    body = ''.join(parts)
+    left = r'\b' if (t[0].isalnum() or t[0] == '[') else ''
+    right = r'\b' if (t[-1].isalnum() or t[-1] == ']') else ''
+    return left + body + right
 
 
 def find_term_matches(text_lower: str, terms: list) -> dict:

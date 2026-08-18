@@ -25,39 +25,43 @@ BUZZWORD_TIERS = {
     "tier1_critical": {
         "confidence": 0.9,
         "words": [
-            "delve", "delving", "tapestry", "rich tapestry", "realm", "the realm of",
-            "navigating the landscape", "in today's rapidly evolving", "in today's ever-changing",
-            "it's worth noting that", "serves as a testament", "paints a vivid picture",
-            "a testament to", "at its core", "delve deeper", "let's dive in",
-            "embark on a journey", "whether you're a seasoned", "game-changer", "game changing"
+            "delve", "delving", "tapestry", "rich tapestry", "realm",
+            "the realm of", "navigating the landscape",
+            "in today's rapidly evolving", "in today's ever-changing",
+            "it's worth noting that", "serves as a testament",
+            "paints a vivid picture", "a testament to", "at its core",
+            "delve deeper", "let's dive in", "embark on a journey",
+            "whether you're a seasoned", "game-changer", "game changing"
         ]
     },
     "tier2_high": {
         "confidence": 0.8,
         "words": [
-            "unlock", "unleash", "harness", "leverage", "leverage the power of",
-            "elevate", "elevating", "empower", "empowering", "foster", "fostering",
-            "spearhead", "spearheading", "cultivate", "cultivating", "catalyst",
-            "a catalyst for", "cornerstone", "beacon", "a beacon of", "pivotal",
-            "paramount", "indispensable", "imperative", "multifaceted", "nuanced",
-            "robust", "seamless", "comprehensive", "holistic", "transformative",
+            "unlock", "unleash", "harness", "leverage",
+            "leverage the power of", "elevate", "elevating", "empower",
+            "empowering", "foster", "fostering", "spearhead", "spearheading",
+            "cultivate", "cultivating", "catalyst", "a catalyst for",
+            "cornerstone", "beacon", "a beacon of", "pivotal", "paramount",
+            "indispensable", "imperative", "multifaceted", "nuanced", "robust",
+            "seamless", "comprehensive", "holistic", "transformative",
             "revolutionary", "groundbreaking", "innovative", "cutting-edge",
             "state-of-the-art", "the power of", "at the end of the day",
             "in the grand scheme of things", "not only... but also",
             "it's important to remember", "it's crucial to understand",
-            # Original tier1-4 retained
-            "landscape", "dynamic"
+            "landscape"
         ]
     },
     "tier3_moderate": {
         "confidence": 0.6,
         "words": [
-            "synergy", "paradigm", "paradigm shift", "ecosystem", "in this space",
-            "optimize", "streamline", "agile", "disrupt", "disruption", "scalable",
-            "sustainable", "leveraging AI", "the intersection of", "bridging the gap",
+            "synergy", "paradigm", "paradigm shift", "ecosystem",
+            "in this space", "optimize", "streamline", "dynamic", "agile",
+            "disrupt", "disruption", "scalable", "sustainable",
+            "leveraging AI", "the intersection of", "bridging the gap",
             "tip of the iceberg", "silver bullet", "one-size-fits-all",
-            "punching above its weight", "sweet spot", "the elephant in the room",
-            "leveling the playing field", "moving the needle", "doubling down"
+            "punching above its weight", "sweet spot",
+            "the elephant in the room", "leveling the playing field",
+            "moving the needle", "doubling down", "doubling down on"
         ]
     },
     "tier4_weak": {
@@ -65,108 +69,118 @@ BUZZWORD_TIERS = {
         "words": [
             "innovate", "innovation", "efficient", "effective", "strategic",
             "proactive", "best practices", "value proposition", "stakeholder",
-            "value-added", "results-driven", "forward-thinking", "future-proof",
-            "next-generation", "mission-critical", "actionable insights",
-            "deep dive", "deep-dive"
+            "value-added", "results-driven", "forward-thinking",
+            "future-proof", "next-generation", "mission-critical",
+            "actionable insights", "deep dive", "deep-dive"
         ]
-    }
+    },
 }
 
 PHRASE_CATEGORIES = {
     "hedging_qualifiers": {
         "confidence": 0.75,
         "phrases": [
-            "it's worth noting", "it's important to note", "it's important to remember",
-            "it's crucial to understand", "it's essential to recognize", "while this may vary",
+            "it's worth noting", "it's important to note",
+            "it's important to remember", "it's crucial to understand",
+            "it's essential to recognize", "while this may vary",
             "it's safe to say", "needless to say", "worth mentioning",
-            "it goes without saying", "one thing is certain", "it's no secret that",
-            "it's no surprise that", "an important consideration", "it bears repeating",
-            "notably", "importantly", "crucially"
+            "it goes without saying", "one thing is certain",
+            "it's no secret that", "it's no surprise that",
+            "an important consideration", "it bears repeating", "notably",
+            "importantly", "crucially"
         ]
     },
     "generic_transitions": {
         "confidence": 0.7,
         "phrases": [
-            "in conclusion", "to sum up", "to summarize", "as previously mentioned",
-            "furthermore", "moreover", "additionally", "in addition",
-            "on the other hand", "by the same token", "with that in mind",
-            "that being said", "having said that", "at the end of the day",
-            "when all is said and done", "taking a step back", "with that said",
-            "as we've explored", "as we've seen", "in this article, we've",
-            "in this blog post, we've"
+            "in conclusion", "to sum up", "to summarize",
+            "as previously mentioned", "furthermore", "moreover",
+            "additionally", "in addition", "on the other hand",
+            "by the same token", "with that in mind", "that being said",
+            "having said that", "at the end of the day",
+            "when all is said and done", "taking a step back",
+            "with that said", "as we've explored", "as we've seen",
+            "in this article, we've", "in this blog post, we've"
         ]
     },
     "opening_formulas": {
         "confidence": 0.8,
         "phrases": [
-            "in today's rapidly evolving landscape", "in today's ever-changing world",
-            "in today's digital age", "in an increasingly interconnected world",
+            "in today's rapidly evolving landscape",
+            "in today's ever-changing world", "in today's digital age",
+            "in an increasingly interconnected world",
             "as the digital landscape continues to evolve",
-            "in recent years,", "in the age of", "welcome to the world of",
-            "whether you're a seasoned", "have you ever wondered", "imagine a world where",
-            "picture this"
+            "the world of [X] is undergoing a profound transformation",
+            "in recent years, [X] has emerged as", "in the age of [X]",
+            "welcome to the world of",
+            "whether you're a seasoned [X] or just starting out",
+            "have you ever wondered", "imagine a world where", "picture this"
         ]
     },
     "closing_formulas": {
         "confidence": 0.8,
         "phrases": [
-            "in conclusion,", "to wrap things up,", "as we look to the future,",
-            "the future of", "only time will tell", "one thing is for certain",
+            "in conclusion,", "to wrap things up,",
+            "as we look to the future,", "the future of [X] is bright",
+            "only time will tell", "one thing is for certain",
             "the possibilities are endless", "the bottom line is",
-            "as we move forward", "embrace the future",
-            "stay ahead of the curve", "the journey doesn't end here", "until next time"
+            "at the end of the day", "as we move forward",
+            "embrace the future", "stay ahead of the curve",
+            "the journey doesn't end here", "until next time"
         ]
     },
     "metaphor_abuse": {
         "confidence": 0.75,
         "phrases": [
-            "rich tapestry", "navigating the landscape", "serves as a testament",
-            "paints a vivid picture", "tip of the iceberg", "spearheading a revolution",
-            "bridging the gap between", "the holy grail of", "the elephant in the room",
-            "a double-edged sword", "the perfect storm", "a perfect blend of",
-            "a delicate balance", "a harmonious blend", "the backbone of",
-            "the cornerstone of", "the lifeblood of", "the driving force behind",
-            "at the heart of", "a world of difference", "a beacon of hope",
-            "a sea of"
+            "rich tapestry", "navigating the landscape",
+            "serves as a testament", "paints a vivid picture",
+            "tip of the iceberg", "spearheading a revolution",
+            "bridging the gap between", "the holy grail of",
+            "the elephant in the room", "a double-edged sword",
+            "the perfect storm", "a perfect blend of", "a delicate balance",
+            "a harmonious blend", "the backbone of", "the cornerstone of",
+            "the lifeblood of", "the driving force behind", "at the heart of",
+            "a world of difference", "a game of [X]", "a beacon of hope",
+            "a sea of [X]", "opening pandora's box"
         ]
     },
     "listicle_tells": {
         "confidence": 0.7,
         "phrases": [
             "let's explore", "let's dive into", "let's break it down",
-            "here are", "top reasons", "things you need to know",
-            "you might be wondering", "the short answer is", "the long answer is",
+            "here are [N] ways", "top [N] reasons",
+            "[N] things you need to know", "you might be wondering",
+            "the short answer is", "the long answer is",
             "but wait, there's more", "here's the thing", "here's the kicker",
             "pro tip:", "fun fact:", "key takeaway:", "bottom line:"
         ]
-    }
+    },
 }
 
 MULTILINGUAL_BUZZWORDS = {
     "german": [
         "im heutigen schnelllebigen", "es gilt zu beachten", "nunmehr",
-        "im digitalen Zeitalter", "die sich ständig wandelnde", "sowohl als auch",
-        "es ist wichtig zu betonen", "im Folgenden",
+        "im digitalen Zeitalter", "die sich ständig wandelnde",
+        "sowohl als auch", "es ist wichtig zu betonen", "im Folgenden",
         "zusammenfassend lässt sich sagen", "ein tiefgreifender Wandel",
-        "die Synergieeffekte", "ganzheitlicher Ansatz", "der Gamechanger"
+        "die Synergieeffekte", "ganzheitlicher Ansatz", "der Gamechanger",
+        "auf Augenhöhe", "Best Practices"
     ],
     "french": [
         "il est important de noter", "dans le paysage actuel",
         "dans un monde en constante évolution", "il convient de souligner",
-        "force est de constater", "rappelons que", "en somme", "en fin de compte"
+        "force est de constater", "rappelons que", "en somme",
+        "en fin de compte"
     ],
     "spanish": [
         "en el paisaje actual", "es importante destacar", "cabe señalar que",
         "en conclusión", "en el mundo de hoy", "no cabe duda de que"
     ],
-    # Added 2026-07: high-slop-volume languages where detection tooling is
-    # weakest (ontology §12). Markers are the formulaic phrases LLMs produce
-    # when translating the English opening/hedging/closing templates.
     "hindi": [
         "आज की तेज़ रफ़्तार दुनिया में", "यह ध्यान रखना महत्वपूर्ण है",
-        "निष्कर्ष में", "डिजिटल युग में", "संक्षेप में कहें तो",
-        "गेम चेंजर", "समग्र दृष्टिकोण", "महत्वपूर्ण भूमिका निभाता है",
-        "आइए जानते हैं", "यह कहना सुरक्षित है"
+        "निष्कर्ष में", "डिजिटल युग में", "संक्षेप में कहें तो", "गेम चेंजर",
+        "समग्र दृष्टिकोण", "महत्वपूर्ण भूमिका निभाता है", "आइए जानते हैं",
+        "यह कहना सुरक्षित है"
     ],
     "vietnamese": [
         "trong thế giới ngày nay", "trong thời đại số",
@@ -178,7 +192,7 @@ MULTILINGUAL_BUZZWORDS = {
         "آج کی تیز رفتار دنیا میں", "یہ بات قابل ذکر ہے", "ڈیجیٹل دور میں",
         "خلاصہ یہ ہے کہ", "اہم کردار ادا کرتا ہے", "اس میں کوئی شک نہیں",
         "آئیے جانتے ہیں", "مجموعی طور پر"
-    ]
+    ],
 }
 
 STRUCTURAL_INDICATORS = [
@@ -200,7 +214,7 @@ MORAL_PATTERNS = [
 AUTHORITY_PATTERNS = [
     "studies have shown", "research shows", "experts say",
     "it has been proven", "scientists have found", "researchers discovered",
-    "recent studies", "a growing body of evidence",
+    "recent studies", "a growing body of evidence"
 ]
 
 
@@ -213,12 +227,31 @@ STOPWORDS = {
 }
 
 
+# Signal entries may carry placeholders: [X] stands for one word, [N] for a
+# number ("here are [N] ways", "in the age of [X]"). Without expansion these
+# entries are escaped literally and can never match (review 2026-08 §1.2).
+_PLACEHOLDER = re.compile(r'\[[xn]\]')
+_PLACEHOLDER_REGEX = {'[x]': r'[\w-]+', '[n]': r'\d+'}
+
+
 def _term_pattern(term: str) -> str:
-    """Regex for a term with word boundaries where the term edge is a word char."""
-    t = term.lower()
-    left = r'\b' if t[0].isalnum() else ''
-    right = r'\b' if t[-1].isalnum() else ''
-    return left + re.escape(t) + right
+    """Regex for a term with word boundaries where the term edge is a word char.
+
+    [X] expands to one word, [N] to a number; an empty term never matches.
+    """
+    t = term.lower().strip()
+    if not t:
+        return r'(?!)'
+    parts, pos = [], 0
+    for m in _PLACEHOLDER.finditer(t):
+        parts.append(re.escape(t[pos:m.start()]))
+        parts.append(_PLACEHOLDER_REGEX[m.group(0)])
+        pos = m.end()
+    parts.append(re.escape(t[pos:]))
+    body = ''.join(parts)
+    left = r'\b' if (t[0].isalnum() or t[0] == '[') else ''
+    right = r'\b' if (t[-1].isalnum() or t[-1] == ']') else ''
+    return left + body + right
 
 
 def find_term_matches(text_lower: str, terms: list) -> dict:

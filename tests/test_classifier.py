@@ -119,5 +119,36 @@ class TestSlopClassifier(unittest.TestCase):
         )
 
 
+class TestScoringDetails(unittest.TestCase):
+    """Review 2026-08 §4.1/§4.5."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.clf = SlopClassifier(os.path.join(ROOT, "ontology.json"))
+
+    def test_phrase_in_two_categories_counts_once(self):
+        # "at the end of the day" is both a generic transition and a closing
+        # formula; on its own it must not reach the severe-pattern threshold.
+        r = self.clf.classify_text("At the end of the day the report was filed.")
+        ids = [s.signal_id for s in r.signals_detected]
+        self.assertNotIn("PhrasePatternSevere", ids)
+        cats = [c for c, hits in r.phrase_report.items()
+                if "at the end of the day" in hits]
+        self.assertEqual(sorted(cats), ["closing_formulas", "generic_transitions"])
+
+    def test_code_has_a_clean_band(self):
+        # A single low-severity signal must not read as "ai_assisted" code.
+        code = "# comment\n" * 2 + "x = 1\n"
+        r = self.clf.classify_code(code, "python")
+        self.assertLess(r.overall_slop_score, 0.25)
+        self.assertEqual(r.severity, "clean")
+
+    def test_template_phrases_are_detected(self):
+        r = self.clf.classify_text(
+            "Here are 5 ways to win. In the age of AI, a sea of options awaits. "
+            "The future of work is bright.")
+        self.assertGreater(r.overall_slop_score, 0.4)
+
+
 if __name__ == "__main__":
     unittest.main()

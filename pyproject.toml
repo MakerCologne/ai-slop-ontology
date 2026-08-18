@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
 
 [project]
 name = "slopkit"
-version = "0.1.0"
+version = "0.2.0"
 description = "CLI toolkit for the AI Slop Ontology: score, classify, and detect AI-slop patterns."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -25,5 +25,33 @@ slop = "slopkit.cli:main"
 Homepage = "https://github.com/hikaman/ai-slop-ontology"
 Source = "https://github.com/hikaman/ai-slop-ontology"
 
-[tool.setuptools]
+# The detectors and the signal database live outside the package directory so
+# that src/ stays the canonical engine and the agent skill stays self-contained.
+# They are placed into the wheel here instead of being copied in the repo, so
+# there is exactly one copy of every file under version control.
+[tool.hatch.build.targets.wheel]
 packages = ["slopkit"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src" = "slopkit/engine"
+"skills/ai-slop-detection/scripts" = "slopkit/skill"
+"ontology.json" = "slopkit/data/ontology.json"
+"AI-SLOP-ONTOLOGY.md" = "slopkit/data/AI-SLOP-ONTOLOGY.md"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "slopkit/",
+  "src/",
+  "skills/",
+  "scripts/",
+  "eval/",
+  "tests/",
+  "examples/",
+  "extensions/",
+  "integrations/",
+  "ontology.json",
+  "ontology.ttl",
+  "ai_slop_ontology.yaml",
+  "*.md",
+  "LICENSE",
+]

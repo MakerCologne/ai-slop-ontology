@@ -19,9 +19,12 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 try:
-    from scorer import find_term_matches
-except ImportError:  # allow import as package module
-    from src.scorer import find_term_matches
+    from scorer import find_term_matches            # direct / sys.path use
+except ImportError:
+    try:
+        from .scorer import find_term_matches       # packaged (slopkit.engine)
+    except ImportError:
+        from src.scorer import find_term_matches    # repo root on sys.path
 
 
 def _trailing_moral(text):
@@ -45,8 +48,10 @@ class SignalMatch:
     severity: str = "medium"  # critical | high | medium | low
 
 
-# Severity assignment per signal type, used by the documented scoring formula
-# slop_score = min(1.0, sum(weights[severity] * confidence) / max(1, n))
+# Severity assignment per signal type. Feeds the noisy-OR aggregation in
+# classify_text/classify_code:
+#   slop_score = 1 - Π(1 - weights[severity] * confidence)
+# plus the escalation rule (any critical, or >= 2 high -> at least 0.70).
 SIGNAL_SEVERITY = {
     "CriticalBuzzword": "critical",
     "BuzzwordOveruse_Severe": "high",
@@ -227,10 +232,13 @@ class SlopClassifier:
             for p in phrases:
                 term_to_cats.setdefault(p, []).append(cat_name)
                 all_phrases.append(p)
+        # A phrase listed in two categories ("at the end of the day" is both a
+        # generic transition and a closing formula) is reported under both but
+        # counted once, so it cannot reach the severe threshold on its own.
         for p in find_term_matches(text_lower, all_phrases):
             for cat_name in term_to_cats[p]:
                 phrase_hits.setdefault(cat_name, []).append(p)
-                total_phrase_hits += 1
+            total_phrase_hits += 1
 
         result.phrase_report = phrase_hits
 
@@ -462,8 +470,10 @@ class SlopClassifier:
                 result.severity = "slop_candidate"
             elif result.overall_slop_score >= 0.40:
                 result.severity = "suspicious"
-            else:
+            elif result.overall_slop_score >= 0.25:
                 result.severity = "ai_assisted"
+            else:
+                result.severity = "clean"
 
         return result
 
