@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.2.0] — 2026-08-25 (Batch G — SSOT #49, Human-Voice #21, FU-Register)
+
+### #49: SSOT — ontology.json als Source of Truth, Drift CI-erzwungen (pragmatisch)
+
+- Analyse (Bericht burn-batch-g.md): doppelt gepflegte Signal-Daten sind
+  (a) ontology.json ↔ skills/ai-slop-detection/references/ontology.json
+  (Byte-Kopie), (b) Inline-Matchlisten (BUZZWORD_TIERS,
+  PHRASE_CATEGORIES, …) in den Skill-Skripten — korpuskalibriert, NICHT
+  Teil der Ontology, (c) src/-Engine ↔ Skill-Engine (Verhaltens-Parität
+  via tests/test_engine_sync.py).
+- `scripts/generate_signal_defs.py`: deterministische, nur-Daten-Projektion
+  von ontology.json nach `src/signal_defs_generated.py` (kein Code, kein
+  Verhalten).
+- `scripts/check_ssot.py` (Offline-Gate, kein Netz): C1 Skill-Kopie
+  byte-identisch, C2 generierte Datei aktuell, C3 jede signaltragende
+  Top-Level-Konstante der Detektionsmodule im SSOT-Register mit Quelle
+  und Status (29 Einträge); bewusste Abweichungen als ALLOWLIST
+  dokumentiert. Läuft als Test (tests/test_ssot.py) — Drift ist künftig
+  CI-erzwungen.
+- Bewusst NICHT in #49: volle Migration aller Module auf die generierten
+  Daten (Aufwandsschätzung im Bericht); nur Sync-Check + generierte Datei
+  als Option.
+
 ## [2.1.0] — 2026-08-25 (Batch F — FN-getriebener Signalausbau)
 
 ### FN-Serien 0101-0606: fuenf neue Phrase-Kategorien aus echten FN-Texten
