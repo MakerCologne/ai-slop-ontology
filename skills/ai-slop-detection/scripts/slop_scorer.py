@@ -22,6 +22,7 @@ from collections import Counter
 from typing import Optional
 
 import fp_guards
+import genre_profiles
 import provenance_signals
 
 # Single source of truth for the decision threshold (issue #23): guards and
@@ -497,7 +498,15 @@ def mirrored_intro_conclusion(text: str) -> bool:
     return overlap > 0.6
 
 
-def slop_score(text: str, weights: Optional[dict] = None) -> dict:
+def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None) -> dict:
+    # Issue #42: explicit genre register profile (no auto-detection).
+    # Exemptions apply to SIGNAL matching only (composed with the #23 quote
+    # exemption); structural dimensions keep the full text. The genre also
+    # raises the decision threshold for risk classification — provenance
+    # floors and >= 2-family escalation keep their original strength.
+    genre_profile = None
+    if genre is not None:
+        genre_profile = genre_profiles.get_profile(genre)
     if weights is None:
         # Calibrated 2026-07 via eval/calibrate.py (coordinate ascent on
         # eval/corpus.jsonl, precision floor 0.95): F1 0.47 -> 0.89 at
@@ -530,6 +539,12 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     # Structural dimensions (density, burstiness, repetition) keep the
     # full text.
     signal_text = fp_guards.strip_quotes(text)
+    if genre_profile is not None:
+        signal_text = genre_profiles.strip_exempt_terms(
+            signal_text, genre_profile["exempt_terms"])
+        weights = dict(weights)
+        for k in genre_profile.get("zero_weights", []):
+            weights[k] = 0.0
     buzz_count, buzz_hits, buzz_tiers = buzzword_score(signal_text)
     phrase_matches = phrase_category_score(signal_text)
     multilingual_matches = multilingual_buzzword_score(signal_text)
@@ -653,13 +668,16 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     if strong_families >= 2:
         overall = max(overall, DECISION_THRESHOLD)
 
+    decision_threshold = (
+        genre_profile["decision_threshold"] if genre_profile else DECISION_THRESHOLD
+    )
     score = round(min(overall, 1.0), 3)
 
     if score >= 0.90:
         risk = "⚫ Malicious/Severe"
     elif score >= 0.70:
         risk = "🔴 Slop"
-    elif score >= DECISION_THRESHOLD:
+    elif score >= decision_threshold:
         risk = "🟠 Suspicious"
     elif score >= 0.25:
         risk = "🟡 AI-Assisted"
@@ -668,7 +686,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
 
     if score >= 0.70:
         action = "Do not cite. Do not store as fact. Require independent verification."
-    elif score >= DECISION_THRESHOLD:
+    elif score >= decision_threshold:
         action = "Use only as weak signal. Cross-check with primary sources."
     elif score >= 0.25:
         action = "Use with cross-checking."
@@ -679,6 +697,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
         "slop_score": score,
         "risk_level": risk,
         "action": action,
+        **({"genre": genre} if genre else {}),
         "dimensions": {
             "information_density": round(density, 3),
             "repetition_ratio": round(rep, 3),
@@ -780,6 +799,21 @@ if __name__ == "__main__":
     use_json = "--json" in sys.argv
     args = [a for a in sys.argv[1:] if a != "--json"]
 
+    # Issue #42: explicit genre-register profile (--genre legal|academic|...)
+    genre = None
+    if "--genre" in args:
+        i = args.index("--genre")
+        if i + 1 >= len(args):
+            print("Error: --genre requires a name", file=sys.stderr)
+            sys.exit(2)
+        genre = args[i + 1]
+        try:
+            genre_profiles.get_profile(genre)
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(2)
+        args = args[:i] + args[i + 2:]
+
     # --file PATH: explicit file input (preferred)
     file_path = None
     if "--file" in args:
@@ -815,11 +849,11 @@ if __name__ == "__main__":
               file=sys.stderr)
         text = " ".join(args)
     else:
-        print("Usage: python3 slop_scorer.py [--json] (--file PATH | - | \"Text\")",
+        print("Usage: python3 slop_scorer.py [--json] [--genre NAME] (--file PATH | - | \"Text\")",
               file=sys.stderr)
         sys.exit(1)
 
-    result = slop_score(text)
+    result = slop_score(text, genre=genre)
 
     if use_json:
         print(json.dumps(result, indent=2))

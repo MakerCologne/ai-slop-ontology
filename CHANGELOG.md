@@ -2,6 +2,23 @@
 
 ## [Unreleased — Batch B]
 
+### #42: Genre-Register-Profile (False-Positive-Guards für legitime Stile)
+
+- Neues Modul `genre_profiles.py`: Profile legal / academic / marketing /
+  technical als reine Konfiguration — je Genre eine Liste exempter Terme
+  (z. B. „pursuant to" legal-exempt, „cutting-edge"/„state-of-the-art"
+  marketing-exempt, „furthermore"/„moreover" academic-exempt), auf 0
+  gesetzte Gewichte für register-konventionelle Merkmale (Passiv/uniforme
+  Satzlängen academic, Listen technical) und erhöhter Decision-Threshold.
+- Nur explizites Opt-in: `--genre <name>` im Skill-CLI bzw. `genre=`-Parameter
+  an `slop_score()` — KEINE Auto-Erkennung (bewusst out of scope).
+- Exemptions wirken nur auf Signal-Matching (komponiert mit #23-Quote-
+  Exemption); Strukturdimensionen messen den Volltext. Provenance-Floors
+  und ≥-2-Familien-Eskalation behalten ursprüngliche Stärke — Genre-Profile
+  können echten Slop nicht unter die Schwelle waschen (Test deckt das ab).
+- Unbekanntes Genre → ValueError / CLI-Exit 2. Standard-Texte ohne Flag
+  unverändert (128→144 Tests grün; Gate + Benchmark F1 0,982 unverändert).
+
 ### FU-1: #24-Intensifier-Fix (review-batch-a.md §6, MEDIUM)
 
 - `adverb_stats()`: Intensifier-Spans werden aus Zähler UND Nenner der
