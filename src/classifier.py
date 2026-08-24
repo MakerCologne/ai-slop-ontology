@@ -56,6 +56,7 @@ SIGNAL_SEVERITY = {
     "ExcessiveHedging": "medium",
     "MetaphorAbuse": "medium",
     "FakeAuthorityPattern": "high",
+    "WeaselAttribution": "high",
     "EmDashExcess": "medium",
     "EllipsisExcess": "low",
     "ExclamationExcess": "low",
@@ -265,6 +266,26 @@ class SlopClassifier:
                 "FakeAuthorityPattern", 0.80,
                 f"Unsubstantiated authority: {', '.join(phrase_hits['authority_claims'])}"
             ))
+
+        # Editor-tell categories (issue #8): >= 2 hits of one category are
+        # decisive evidence, mirroring the typePatterns threshold.
+        EDITOR_TELL_SIGNALS = {
+            "emphasis_crutches": ("EmphasisCrutch", 0.70,
+                                  "Emphasis crutches: {hits}"),
+            "meta_commentary": ("MetaCommentary", 0.65,
+                                "Meta-commentary instead of content: {hits}"),
+            "rhetorical_setups": ("RhetoricalSetup", 0.65,
+                                  "Rhetorical setups: {hits}"),
+            "vague_declaratives": ("VagueDeclarative", 0.65,
+                                   "Vague declaratives: {hits}"),
+            "weasel_attribution": ("WeaselAttribution", 0.75,
+                                   "Weasel attribution: {hits}"),
+        }
+        for cat, (signal_id, conf, tmpl) in EDITOR_TELL_SIGNALS.items():
+            if cat in phrase_hits and len(phrase_hits[cat]) >= 2:
+                result.signals_detected.append(SignalMatch(
+                    signal_id, conf, tmpl.format(hits=', '.join(phrase_hits[cat]))
+                ))
 
         # ============================================================
         # 3. PUNCTUATION ANOMALIES

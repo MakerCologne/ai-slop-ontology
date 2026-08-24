@@ -8,7 +8,7 @@
   "dc:title": "AI Slop Ontology",
   "dc:description": "Machine-readable ontology for classifying, detecting, and reasoning about AI-generated slop content.",
   "dc:creator": "Stefan / BTM.one",
-  "dc:date": "2026-08-24",
+  "dc:date": "2026-08-25",
   "dc:source": "Shaib et al. 2025, Kommers et al. 2026, Nishal et al. 2026, SlopDetector.org, MINT Lab 2026, NewsGuard 2026",
   "mediaTypes": {
     "Text": {
@@ -860,6 +860,75 @@
               "researchers discovered",
               "recent studies",
               "a growing body of evidence"
+            ]
+          },
+          "emphasis_crutches": {
+            "confidence": 0.7,
+            "description": "Editor tells: emphasis scaffolding that substitutes for a strong claim",
+            "items": [
+              "let that sink in",
+              "full stop",
+              "end of story",
+              "no pun intended",
+              "make no mistake",
+              "simply put",
+              "read that again",
+              "mic drop"
+            ]
+          },
+          "meta_commentary": {
+            "confidence": 0.7,
+            "description": "Editor tells: prose about the document instead of the subject",
+            "items": [
+              "the rest of this essay",
+              "the remainder of this document",
+              "in this section, we will",
+              "in the next section",
+              "as we'll see later",
+              "throughout this article",
+              "without further ado",
+              "in the following paragraphs"
+            ]
+          },
+          "rhetorical_setups": {
+            "confidence": 0.7,
+            "description": "Editor tells: stage-setting questions and reveals instead of claims",
+            "items": [
+              "plot twist:",
+              "what if i told you",
+              "here's a thought",
+              "guess what",
+              "believe it or not",
+              "sounds too good to be true",
+              "you might ask",
+              "fair question"
+            ]
+          },
+          "vague_declaratives": {
+            "confidence": 0.65,
+            "description": "Editor tells: stakes asserted without specifics",
+            "items": [
+              "the stakes are high",
+              "the stakes couldn't be higher",
+              "timing is everything",
+              "context matters",
+              "there's a lot to unpack",
+              "more than meets the eye"
+            ]
+          },
+          "weasel_attribution": {
+            "confidence": 0.75,
+            "description": "Editor tells: anonymous consensus instead of verifiable sources",
+            "items": [
+              "experts agree",
+              "widely regarded as",
+              "it is widely accepted",
+              "many believe",
+              "some say",
+              "critics argue",
+              "people are saying",
+              "sources say",
+              "insiders claim"
             ]
           }
         }

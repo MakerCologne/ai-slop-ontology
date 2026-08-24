@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.4.0] — 2026-08-25
+
+**Phrase-Datenbank: fünf Editor-Tell-Kategorien (#8).** Die Phrase-Kategorien
+zielten bisher auf Essay-/SEO-Slop; die Daily-Driver-Tics fehlten:
+
+- `emphasis_crutches` („let that sink in", „full stop")
+- `meta_commentary` („the rest of this essay…")
+- `rhetorical_setups` („plot twist:", „what if I told you")
+- `vague_declaratives` („the stakes are high")
+- `weasel_attribution` („experts agree", „widely regarded as")
+
+Je Kategorie gelten ≥2 Treffer als entscheidendes Signal (wie bei
+typePatterns): neue Signale EmphasisCrutch, MetaCommentary, RhetoricalSetup,
+VagueDeclarative, WeaselAttribution (WeaselAttribution Severity high) — in
+beiden Engines (src + Skill) parallel implementiert, Daten in `ontology.json`
+und `slop_scorer.PHRASE_CATEGORIES` gespiegelt. Quellen:
+hardikpandya/stop-slop references/phrases.md; petergyang/no-ai-slop.
+
+- Testsuite: 68 → **72 Tests**.
+
 ## [1.3.0] — 2026-08-24
 
 **Rhetorische Muster: Wikipedia-„Signs of AI writing"-Set (#7).** Sechs neue
