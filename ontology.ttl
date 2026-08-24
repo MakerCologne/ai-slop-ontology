@@ -9,7 +9,7 @@
     dc:title "AI Slop Ontology" ;
     dc:description "A machine-readable ontology for classifying, detecting, and reasoning about AI-generated slop content across all media types." ;
     dc:creator "Stefan / BTM.one" ;
-    dc:date "2026-07-10" ;
+    dc:date "2026-08-24" ;
     dc:source "Shaib et al. 2025, Kommers et al. 2026, Nishal et al. 2026, SlopDetector.org, MINT Lab 2026, NewsGuard 2026" ;
     rdfs:comment "Designed for agent consumption — agents can load this ontology to understand, classify, detect, and countermeasure AI slop." .
 

@@ -39,7 +39,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(code, 0)
         data = json.loads(out)
         self.assertGreater(data["signals"]["total_signals"], 100)
-        self.assertEqual(len(data["rhetorical_patterns"]), 9)
+        self.assertEqual(len(data["rhetorical_patterns"]), 15)
         self.assertIn("german", data["signals"]["languages"])
 
     def test_score_slop_vs_clean(self):
