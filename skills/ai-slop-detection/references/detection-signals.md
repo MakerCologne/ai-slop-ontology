@@ -45,6 +45,14 @@ Benchmark-Korpus (eval/corpus.jsonl, slop-0101/slop-0504), Beleg-Disziplin
   Authority (Serie slop-0202) — "it is important to note",
   "industry reports suggest", "a pivotal moment", "studies show",
   "here's what nobody tells you", ...
+- `wiki_promo` (conf 0.75): Wiki-/Promo-Boilerplate (Serien slop-0303/
+  0403/0606) — "garnered recognition", "setting the stage for",
+  "curated compilation", "plays a crucial role", "boasts a vibrant",
+  "commitment to excellence", ...
+- `assistant_signoff` (conf 0.75): Assistant-Sign-off- und Weasel-
+  Boilerplate (Serien slop-0303/0606) — "let me know if you'd like more
+  detail", "of course! here's the summary", "based on available
+  information", "up to my last training update", "some critics argue", ...
 
 ### Punctuation Anomalies
 - Em-dash rate > 0.5 per sentence

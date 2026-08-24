@@ -215,7 +215,45 @@ PHRASE_CATEGORIES = {
             "this changes everything", "the best part:",
             "many argue the opposite", "plays a vital role",
             "in this article, we will", "the launch marks",
-            "the agent reviews the draft", "the tool suggests fixes"
+            "the agent reviews the draft", "the tool suggests fixes",
+            "the redesign underscores"
+        ]
+    },
+    # --- Batch F (2026-08-25), cluster C3: wiki/promo boilerplate and
+    # assistant sign-off formulas mined from FN series slop-0303/0403/0606
+    # of eval/corpus.jsonl. Same evidence discipline (>=3 slop texts,
+    # 0 clean texts; tests/test_fn_series_signals.py).
+    "wiki_promo": {
+        "confidence": 0.75,
+        "phrases": [
+            "garnered international attention", "garnered recognition",
+            "setting the stage for", "diverse array",
+            "curated compilation", "vibrant programming",
+            "plays a crucial role", "in meaningful ways",
+            "the intricate interplay of", "boasts a vibrant",
+            "continues to thrive", "the future looks bright",
+            "exciting times lie ahead", "commitment to excellence",
+            "this groundbreaking study exemplifies",
+            "the founder maintains a low profile",
+            "the region is renowned for its natural beauty",
+            "nestled within the breathtaking valley"
+        ]
+    },
+    "assistant_signoff": {
+        "confidence": 0.75,
+        "phrases": [
+            "let me know if you have any questions",
+            "let me know if you'd like more detail",
+            "certainly! let me expand",
+            "of course! here's the summary",
+            "it is believed that", "based on available information",
+            "experts believe", "to be clear", "i hope this helps",
+            "up to my last training update", "some critics argue",
+            "in order to proceed", "the listing cites coverage in",
+            "it's not just a dashboard", "seamless integrations",
+            "fosters collaboration", "topics range from",
+            "here's what you need to know",
+            "some might say we moved too fast"
         ]
     },
     # --- Batch F (2026-08-25), cluster C1: SaaS/marketing CTA formulas and
@@ -260,7 +298,11 @@ PHRASE_CATEGORIES = {
             "i want to explore what went wrong",
             "can we talk about what actually happened",
             "slop creeps in one rewrite at a time",
-            "because it was necessary"
+            "because it was necessary",
+            "one might be tempted to",
+            "let's be honest about the timeline",
+            "it's not just a tool, it's a mirror",
+            "you could argue the cost is too high"
         ]
     },
 }

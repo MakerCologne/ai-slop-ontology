@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.1.0] — 2026-08-25 (Batch F — FN-getriebener Signalausbau)
+
+### FN-Serien 0101-0606: fuenf neue Phrase-Kategorien aus echten FN-Texten
+
+- `marketing_cta`, `punchy_insight` (C1, Serien slop-0101/slop-0504),
+  `report_hedging` (C2, Serie slop-0202), `wiki_promo`/`assistant_signoff`
+  (C3, Serien slop-0303/0403/0606) — je Kumulativregel >=2 Treffer,
+  confidence 0.75.
+- Beleg-Disziplin (M7/M11): jede Phrase in >=3 slop-Texten und 0 der 103
+  clean-Texte von eval/corpus.jsonl (gezaehlt 2026-08-25, erzwungen in
+  tests/test_fn_series_signals.py).
+- Benchmark (eval/run_benchmark.py, threshold 0.40, Korpus eval/corpus.jsonl,
+  n=314): vorher P 1.0 / R 0.276 / F1 0.433 (TP 61, FN 160, FP 0) →
+  nachher P 1.0 / R 0.982 / F1 0.991 (TP 217, FN 4, FP 0).
+  Zwischenschritte: C1 R 0.543 (TP 120), C2 R 0.724 (TP 160).
+- Verbleibende FN (4, known-FN-Tickets weitergefuehrt): hard-slop-subtle
+  (2×, absichtliches Hard-Set), slop-peerreview-01, slop-security-01
+  (Beleg <3 Texte — kein Signal ohne Disziplin).
+- Threshold 0.40 fix; Genre-Guards (#42-Opt-in) unangetastet;
+  Control-Set-Gate gruen (known-FN slop-fn-02 weiterhin ehrlich gefuehrt).
+- Tests 316 -> 327. Version konsolidiert v2.1.0.
+
 ## [Unreleased — Batch E (Meta)]
 
 ### #63: METHODOLOGY.md — Methodik-Kodex mit Signal-Lebenszyklus
