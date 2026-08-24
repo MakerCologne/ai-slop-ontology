@@ -86,6 +86,29 @@
 - `scripts/check_methodology.py` validiert die Pflicht-Abschnitte.
 - Tests 308 -> 312 (tests/test_governance_doc.py). TDD: Red-Commit vorab.
 
+### #68: Drei-Level-Evals-Architektur
+
+- `docs/EVALS.md`: L1 Unit-Assertions (bei jedem Commit) / L2 Judge+Human
+  (Golden Control Set, gate-gebunden) / L3 Quartals-Re-Score (Re-Baseline).
+  Vollstaendige Zuordnung aller bestehenden Artefakte: tests/ -> L1,
+  eval/control_set.jsonl + run_control_set.py -> L2,
+  eval/corpus.jsonl + run_benchmark.py + calibrate.py -> L3.
+- Small-Corpus-Rezept (<1000 Beispiele): Stratifikation vor Masse,
+  Few-shot-Eval-Matrix, error-driven Labeling via #29-Learning-Store,
+  Frozen-Golden-Set + Challenge-Set.
+- `scripts/check_methodology.py` validiert: jede Datei unter eval/ und
+  tests/ ist in EVALS.md einer Ebene zugeordnet.
+- Tests 312 -> 316 (tests/test_evals_doc.py). TDD: Red-Commit vorab.
+
+## [2.0.0] — 2026-08-25 (Batch E — Meta-Meilenstein)
+
+Konsolidierter Meta-Batch: #63 Methodik-Kodex, #64 Signal-DoD,
+#65 ADR-System, #66 Templates, #67 Score-Governance, #68 Evals-Architektur.
+Doku-only + Check-Skripte; KEINE Scorer-Logik-Aenderungen, Benchmark
+unveraendert (F1 0.476 / P 1.0 / R 0.312 auf eval/corpus.jsonl, threshold 0.40, Messvorschrift wie v1.9.0). Tests
+290 -> 316, Control-Set-Gate gruen, check_consistency gruen. Ontologie-
+Version 2.0.0 (Meta-Meilenstein: konstitutive Prozess-Dokumente).
+
 ## [1.9.0] — 2026-08-25 (Batch D)
 
 ### #41: Labeled Benchmark-Corpus mit Hard Negatives (~300+ Texte)
