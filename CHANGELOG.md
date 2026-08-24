@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased — Batch C in Arbeit]
+
+### #13: Mikro-Muster detect-only (false agency, false range, recap ending, heading-repeated)
+
+- Neues Modul `micro_patterns.py`: vier detect-only Signale mit je keep_when-Guard
+  und Positiv-/Negativ-Tests: FalseAgency (geschlossene Listen: Subjekt
+  decision/data/strategy/system/market × Verb emerges/decides/believes/realizes/knows),
+  FalseRange („from the X to the Y“ mit Grand-Sweep-Platzhalter-Heuristik),
+  RecapEnding (Opener + >=30% Content-Word-Overlap mit dem Intro),
+  HeadingRepeatedBelowItself (Heading + Folgesatz beginnt mit denselben 2+ Inhaltswörtern).
+- Abgrenzung (#46): RecapEnding feuert nur bei Opener UND messbarer Restatement-Overlap —
+  Opener allein bleibt HollowKickerRecap (rhetorical_patterns). Kein Einfluss auf
+  slop_score — detect-only.
+- Tests 172 → 184 grün; Gate, Consistency, Benchmark unverändert.
+
 ## [1.7.0] — 2026-08-24 (Batch B)
 
 ### #26: BinaryContrast-Erweiterung (deep/01 §2.5)
