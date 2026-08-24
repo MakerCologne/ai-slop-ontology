@@ -123,6 +123,88 @@ RHETORICAL_PATTERNS = {
         "example_fix": "It works, scales, and ships every time.",
         "keep_when": "A short burst used once, deliberately, for genuine emphasis.",
     },
+    # --- Wikipedia "Signs of AI writing" additions (issue #7) ---
+    "ThroatClearing": {
+        "label": "Throat-clearing opener",
+        "confidence": 0.6,
+        "description": 'The text opens with a padded framing sentence ("In today\'s '
+                       '"world...", "Look, ...", "Let\'s be honest: ...") before any concrete '
+                       '"content. Start with the point.',
+        "example_slop": "In today's world, effective team communication matters more than ever.",
+        "example_fix": "We cut meeting time by a third last quarter.",
+        "keep_when": "The opener names the specific stake or audience of what follows.",
+        "openers": [
+            "in today's world", "in today's day and age", "in this day and age",
+            "in an era where", "in an age where", "in a world where",
+            "we live in a world", "look,", "so,", "let's be honest",
+            "let's face it", "here's the truth", "it goes without saying",
+            "needless to say", "in our modern world",
+        ],
+    },
+    "FauxInsightSetup": {
+        "label": "Faux-insight setup",
+        "confidence": 0.65,
+        "description": 'A teaser that promises hidden knowledge ("Here\'s the thing nobody '
+                       '"tells you...", "What most people get wrong about...") instead of '
+                       '"stating the claim. State the claim, then support it.',
+        "example_slop": "Here's the thing nobody tells you about remote work.",
+        "example_fix": "Remote work has tradeoffs; our team measured both sides over two years.",
+        "keep_when": "The hidden knowledge is genuinely non-obvious and the text delivers it immediately.",
+        "setups": [
+            "here's the thing nobody tells you", "nobody tells you",
+            "what most people get wrong", "most people think",
+            "the secret to", "the truth about", "a little-known fact",
+            "nobody talks about", "what they don't tell you",
+        ],
+    },
+    "ImportancePuffery": {
+        "label": "Importance puffery",
+        "confidence": 0.6,
+        "description": 'Empty significance markers ("a testament to", "pivotal moment", "more '
+                       '"important than ever") that assert importance instead of showing it.',
+        "example_slop": "The launch is a pivotal moment for the industry.",
+        "example_fix": "The API v2 launch cut customer latency by half within a week.",
+        "keep_when": "A measurable historical claim (growth numbers, dates) backs the importance.",
+        "markers": [
+            "a testament to", "testament to", "pivotal moment", "watershed moment",
+            "more important than ever", "more relevant than ever", "unprecedented",
+            "ever-evolving landscape", "ever-changing landscape",
+        ],
+    },
+    "ForcedTriad": {
+        "label": "Forced triad",
+        "confidence": 0.55,
+        "description": 'A slogan-shaped "X, Y, and Z" list of three parallel adjectives '
+                       '"(fast, reliable, and scalable)" where a triad is forced for '
+                       '"rhythm, not content.',
+        "example_slop": "The dashboard is fast, reliable, and scalable.",
+        "example_fix": "The dashboard answers the 95th-percentile query in 80 ms.",
+        "keep_when": "Three genuinely distinct, individually meaningful items — not one claim stretched to three.",
+    },
+    "RepeatedOpenings": {
+        "label": "Repeated sentence openings",
+        "confidence": 0.55,
+        "description": 'Three or more sentences open with the same word ("The team... The '
+                       '"team... The team..."). Vary the subjects.',
+        "example_slop": "The team shipped the billing page. The team then rewrote the search. The team also fixed login.",
+        "example_fix": "The team shipped the billing page, then rewrote search, then fixed login.",
+        "keep_when": "Deliberate anaphora that fits the writer's rhythm, used sparingly.",
+    },
+    "ChatbotLeftover": {
+        "label": "Chatbot leftovers",
+        "confidence": 0.8,
+        "description": 'Assistant-register phrases pasted into prose ("I hope this helps", "Great '
+                       '"question!", "Happy to help"). Remove them; they are not content.',
+        "example_slop": "The config option is documented in the README. I hope this helps!",
+        "example_fix": "The config option is documented in the README.",
+        "keep_when": "An actual chat transcript, not running prose.",
+        "phrases": [
+            "i hope this helps", "great question", "happy to help",
+            "as an ai", "i'm just an ai", "you're absolutely right",
+            "that's a great point", "as of my last update",
+            "let me know if you have any questions",
+        ],
+    },
 }
 
 
@@ -170,6 +252,13 @@ _FAKE_STRONG_VERB = re.compile(
 )
 
 _MID_SENTENCE_BOLD = re.compile(r"[a-z0-9,;]\s+\*\*[^*\n]{1,40}\*\*\s+[a-z]")
+
+# Forced-triad suffix classes: two or more of the three items must share one.
+_TRIAD_SUFFIXES = (
+    "able", "ible", "ful", "less", "ous", "ive", "ing", "ed", "al", "ic", "ly", "y",
+)
+
+_CHATBOT_PHRASES = None  # filled from RHETORICAL_PATTERNS["ChatbotLeftover"]["phrases"]
 _HEADING = re.compile(r"(?m)^#{1,6}\s+(.+)$")
 _EMPHASIS_BOLD_HEADING = None  # headings handled separately
 
@@ -295,6 +384,63 @@ def find_rhetorical_patterns(text: str):
                 break
         else:
             run = 0
+
+    # 10. Throat clearing — a padded opener at the very start of the text.
+    first_para = re.split(r"\n\s*\n", text.strip(), maxsplit=1)[0].lstrip().lower()
+    meta = RHETORICAL_PATTERNS["ThroatClearing"]
+    if any(first_para.startswith(op) for op in meta["openers"]):
+        add("ThroatClearing", "opening: " + _snippet(first_para, 0, 80))
+
+    # 11. Faux-insight setup — teaser promising hidden knowledge.
+    meta = RHETORICAL_PATTERNS["FauxInsightSetup"]
+    for setup in meta["setups"]:
+        idx = lowered.find(setup)
+        if idx >= 0:
+            add("FauxInsightSetup", _snippet(lowered, idx, idx + 80))
+            break
+
+    # 12. Importance puffery — empty significance markers.
+    meta = RHETORICAL_PATTERNS["ImportancePuffery"]
+    for marker in meta["markers"]:
+        idx = lowered.find(marker)
+        if idx >= 0:
+            add("ImportancePuffery", _snippet(lowered, idx, idx + 80))
+            break
+
+    # 13. Forced triad — "X, Y, and Z" of one-word adjectives where at
+    #     least two items share a suffix class; digits or colons before the
+    #     list mark concrete content, not a slogan.
+    for m in re.finditer(r"\b([a-z]+),\s+([a-z]+),\s+and\s+([a-z]+)\b", lowered):
+        items = (m.group(1), m.group(2), m.group(3))
+        if len(set(items)) < 3:
+            continue
+        prefix = lowered[max(0, m.start() - 30):m.start()]
+        if ":" in prefix or re.search(r"\d", prefix):
+            continue
+        suffix_hits = [
+            sum(1 for it in items if it.endswith(sfx)) for sfx in _TRIAD_SUFFIXES
+        ]
+        if max(suffix_hits, default=0) >= 2:
+            add("ForcedTriad", "" + ", ".join(items))
+            break
+
+    # 14. Repeated sentence openings — 3+ sentences starting with the same word.
+    opener_counts = {}
+    for s in sents:
+        words_in = s.split()
+        if words_in:
+            opener_counts.setdefault(words_in[0].lower(), []).append(words_in[0])
+    for opener, occurrences in opener_counts.items():
+        if len(occurrences) >= 3:
+            add("RepeatedOpenings", f"{len(occurrences)} sentences start with '{opener}'")
+            break
+
+    # 15. Chatbot leftovers — assistant-register phrases in running prose.
+    for phrase in RHETORICAL_PATTERNS["ChatbotLeftover"]["phrases"]:
+        idx = lowered.find(phrase)
+        if idx >= 0:
+            add("ChatbotLeftover", _snippet(lowered, idx, idx + 80))
+            break
 
     return findings
 

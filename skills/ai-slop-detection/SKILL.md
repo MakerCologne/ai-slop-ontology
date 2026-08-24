@@ -52,15 +52,18 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 python3 scripts/rhetorical_patterns.py "TEXT_TO_ANALYZE"
 ```
 
-Returns nine sentence-level AI writing shapes as **named patterns with quoted
+Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
 evidence** (binary contrast, colon reveal, superficial analysis, negative
 listing/fragmentation, fake-strong verb, synonym cycling, hollow kicker/recap,
-formatting slop, robotic rhythm). These are reported for a human to check and do
+formatting slop, robotic rhythm, plus the Wikipedia "Signs of AI writing" set:
+throat-clearing openers, faux-insight setups, importance puffery, forced
+triads, repeated sentence openings, chatbot leftovers). These are reported for a human to check and do
 **not** change the numeric score — use them when the ask is "which AI writing
 tics are in this draft?" rather than "how sloppy is it?". Each pattern has a
 `keep_when` guard so genuine voice is not flagged. Data lives in `ontology.json`
 under `signals.text.rhetoricalPatterns`; concept adapted from
-[petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT).
+[petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
+[Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
 ### Step 3: Interpret results
 

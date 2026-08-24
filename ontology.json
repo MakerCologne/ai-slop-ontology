@@ -8,7 +8,7 @@
   "dc:title": "AI Slop Ontology",
   "dc:description": "Machine-readable ontology for classifying, detecting, and reasoning about AI-generated slop content.",
   "dc:creator": "Stefan / BTM.one",
-  "dc:date": "2026-07-10",
+  "dc:date": "2026-08-24",
   "dc:source": "Shaib et al. 2025, Kommers et al. 2026, Nishal et al. 2026, SlopDetector.org, MINT Lab 2026, NewsGuard 2026",
   "mediaTypes": {
     "Text": {
@@ -1232,6 +1232,78 @@
             "example_slop": "It works. It scales. It ships. Every time.",
             "example_fix": "It works, scales, and ships every time.",
             "keep_when": "A short burst used once, deliberately, for genuine emphasis."
+          },
+          "ThroatClearing": {
+            "label": "Throat-clearing opener",
+            "confidence": 0.6,
+            "description": "The text opens with a padded framing sentence ('In today's world...', 'Look, ...', 'Let's be honest: ...') before any concrete content. Start with the point.",
+            "example_slop": "In today's world, effective team communication matters more than ever.",
+            "example_fix": "We cut meeting time by a third last quarter.",
+            "keep_when": "The opener names the specific stake or audience of what follows.",
+            "openers": [
+              "in today's world", "in today's day and age", "in this day and age",
+              "in an era where", "in an age where", "in a world where",
+              "we live in a world", "look,", "so,", "let's be honest",
+              "let's face it", "here's the truth", "it goes without saying",
+              "needless to say", "in our modern world"
+            ]
+          },
+          "FauxInsightSetup": {
+            "label": "Faux-insight setup",
+            "confidence": 0.65,
+            "description": "A teaser that promises hidden knowledge ('Here's the thing nobody tells you...', 'What most people get wrong about...') instead of stating the claim. State the claim, then support it.",
+            "example_slop": "Here's the thing nobody tells you about remote work.",
+            "example_fix": "Remote work has tradeoffs; our team measured both sides over two years.",
+            "keep_when": "The hidden knowledge is genuinely non-obvious and the text delivers it immediately.",
+            "setups": [
+              "here's the thing nobody tells you", "nobody tells you",
+              "what most people get wrong", "most people think",
+              "the secret to", "the truth about", "a little-known fact",
+              "nobody talks about", "what they don't tell you"
+            ]
+          },
+          "ImportancePuffery": {
+            "label": "Importance puffery",
+            "confidence": 0.6,
+            "description": "Empty significance markers ('a testament to', 'pivotal moment', 'more important than ever') that assert importance instead of showing it.",
+            "example_slop": "The launch is a pivotal moment for the industry.",
+            "example_fix": "The API v2 launch cut customer latency by half within a week.",
+            "keep_when": "A measurable historical claim (growth numbers, dates) backs the importance.",
+            "markers": [
+              "a testament to", "testament to", "pivotal moment", "watershed moment",
+              "more important than ever", "more relevant than ever", "unprecedented",
+              "ever-evolving landscape", "ever-changing landscape"
+            ]
+          },
+          "ForcedTriad": {
+            "label": "Forced triad",
+            "confidence": 0.55,
+            "description": "A slogan-shaped 'X, Y, and Z' list of three parallel adjectives ('fast, reliable, and scalable') where a triad is forced for rhythm, not content.",
+            "example_slop": "The dashboard is fast, reliable, and scalable.",
+            "example_fix": "The dashboard answers the 95th-percentile query in 80 ms.",
+            "keep_when": "Three genuinely distinct, individually meaningful items — not one claim stretched to three."
+          },
+          "RepeatedOpenings": {
+            "label": "Repeated sentence openings",
+            "confidence": 0.55,
+            "description": "Three or more sentences open with the same word ('The team... The team... The team...'). Vary the subjects.",
+            "example_slop": "The team shipped the billing page. The team then rewrote the search. The team also fixed login.",
+            "example_fix": "The team shipped the billing page, then rewrote search, then fixed login.",
+            "keep_when": "Deliberate anaphora that fits the writer's rhythm, used sparingly."
+          },
+          "ChatbotLeftover": {
+            "label": "Chatbot leftovers",
+            "confidence": 0.8,
+            "description": "Assistant-register phrases pasted into prose ('I hope this helps', 'Great question!', 'Happy to help'). Remove them; they are not content.",
+            "example_slop": "The config option is documented in the README. I hope this helps!",
+            "example_fix": "The config option is documented in the README.",
+            "keep_when": "An actual chat transcript, not running prose.",
+            "phrases": [
+              "i hope this helps", "great question", "happy to help",
+              "as an ai", "i'm just an ai", "you're absolutely right",
+              "that's a great point", "as of my last update",
+              "let me know if you have any questions"
+            ]
           }
         }
       }

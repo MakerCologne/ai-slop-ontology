@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0] — 2026-08-24
+
+**Rhetorische Muster: Wikipedia-„Signs of AI writing"-Set (#7).** Sechs neue
+detect-only-Muster aus Wikipedia:Signs_of_AI_writing / blader/humanizer /
+petergyang/no-ai-slop: ThroatClearing, FauxInsightSetup, ImportancePuffery,
+ForcedTriad, RepeatedOpenings, ChatbotLeftover — je mit `keep_when`-Guard und
+zitierte Evidenz; weiterhin bewusst nicht im numerischen Score.
+
+- Detektor-Erweiterung `skills/ai-slop-detection/scripts/rhetorical_patterns.py`
+  + Spiegelung in `ontology.json` (`signals.text.rhetoricalPatterns`, 9 → 15
+  Muster; Paritätstest + Konsistenz-Checker decken beide ab).
+- Guards gegen Fehlalarme: ThroatClearing nur am Textanfang, ForcedTriad nur
+  bei Slogan-Form (Suffix-Klasse, keine Zahlen-/Label-Listen),
+  RepeatedOpenings erst ab 3 Sätzen mit gleichem Opener.
+- Testsuite: 69 → **72 Tests**.
+
 ## [Unreleased]
 
 **Dokumentation & Bedienungsanleitung.** Vollständige Anleitung
