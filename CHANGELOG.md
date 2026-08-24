@@ -1,5 +1,24 @@
 # Changelog
 
+## [Unreleased — Batch E (Meta)]
+
+### #63: METHODOLOGY.md — Methodik-Kodex mit Signal-Lebenszyklus
+
+- `docs/METHODOLOGY.md`: die 11 Querprinzipien M1-M11 (Test-Oracle-Pflicht,
+  Guard-/keep_when-Systematik, SSOT, Learning-Loops, Empirie-vor-Ausbau,
+  Provenance, Prozess-Zustandsmaschine, Determinismus-vor-LLM,
+  Goodhart-Resistenz, Minimum-Intervention, Forschungs-Pipeline) — je mit
+  Beschreibung, Anker-Issues und Durchsetzungsmechanismus. Quelle: Meta-
+  Abstraktion ueber #1-#62 (research/slop-ontology-gap-2026-08-24/
+  meta-abstraktion.md, externe Forschung, nicht Teil des Repos).
+- Signal-Lebenszyklus nursery->beta->stable->deprecated->retired mit
+  Zustandsuebergaengen, Governance-Regeln und Spezifikation des
+  `status`/`status_since`/`replaces`-Felds fuer ontology.json (Spezifikation;
+  Migration der bestehenden Signale ist Follow-up).
+- `scripts/check_methodology.py`: Offline-Konsistenz-Checks — M1-M11 und
+  Lebenszyklus vorhanden; jede #N-Referenz steht in der Konsistenz-Liste des
+  Dokuments selbst. Keine API-Calls.
+- Tests 290 -> 294 (tests/test_methodology_doc.py). TDD: Red-Commit dfb1fa7.
 ## [1.9.0] — 2026-08-25 (Batch D)
 
 ### #41: Labeled Benchmark-Corpus mit Hard Negatives (~300+ Texte)
