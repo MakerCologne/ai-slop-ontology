@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased — Batch C in Arbeit]
+## [1.8.0] — 2026-08-24 (Batch C)
 
 ### #34: Signal fabricated-proof-metrics (+ Claim-Register-Disziplin am eigenen CHANGELOG)
 
@@ -126,6 +126,14 @@
 - Tests 184 -> 190 grün; Gate grün; Benchmark (eval/corpus.jsonl) F1 0,982 unverändert.
 - Prozessnotiz: Commits waren kurzzeitig auf master-Basis verwaist (fremder
   Checkout im Shared-Worktree); Chain per cherry-pick wiederhergestellt.
+
+### Version konsolidiert: 1.8.0 (README, yaml, MD) — Batch C abgeschlossen
+
+- Zehn Issues (#13, #14, #25, #27, #28, #29, #31, #32, #33, #34) als
+  lineare Branch-Kette auf master (keine Merges, alle Branches gepusht).
+- Tests 172 -> 250 grün; Control-Set-Gate grün (KNOWN-FN slop-fn-02-Ticket
+  weitergeführt); Consistency grün; Benchmark F1 0,982 (eval/corpus.jsonl)
+  unverändert.
 
 ### #13: Mikro-Muster detect-only (false agency, false range, recap ending, heading-repeated)
 
