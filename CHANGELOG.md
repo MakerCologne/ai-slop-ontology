@@ -33,6 +33,25 @@
 - Tests 294 -> 299 (tests/test_signal_dod.py mit Fixture-Repo: ok/FAIL/WARN/
   Infra + CLI Report/strict). TDD: Red-Commit vorab.
 
+### #65: ADR-System adr/ mit 7 Rueckdokumentationen
+
+- `adr/0000-madr-template.md`: MADR-Blaupause (Frontmatter-Status, Context,
+  Decision Drivers, Considered Options >=2, Decision Outcome, Consequences,
+  Confirmation) — Vorlage verifiziert aus methoden-fundament.md S1 (extern).
+- 7 Rueckdokumentationen (alle Status: accepted, je >=2 Optionen):
+  0001 Detector-only statt Rewriter (#30 vs #38), 0002 SSOT ontology.json
+  (#49), 0003 Golden-Control-Set-FN-Gate (MS-I1), 0004 Genre-Opt-in statt
+  Auto-Erkennung (#42), 0005 Benchmark-Korpus-Disziplin & ehrliche Zahlen
+  (F1 0.982 -> 0.476 Praxisfall, #41), 0006 Detect-only-Module ausserhalb
+  des Scorers (#9, #46-Praevention), 0007 Git-only-Burn-Modus bei
+  API-Ausfall (D001-Praxisfall).
+- Burn-Log (research/slop-ontology-gap-2026-08-24/burn-log.md, D001-D012)
+  wird in jedem ADR als externe Quelle zitiert, nicht kopiert.
+- `scripts/check_methodology.py` erweitert: ADR-Pflichtfelder
+  (Status/Context/Decision/Consequences, accepted, >=2 Options) werden
+  validiert, sobald adr/ existiert.
+- Tests 299 -> 304 (tests/test_adr.py). TDD: Red-Commit vorab.
+
 ## [1.9.0] — 2026-08-25 (Batch D)
 
 ### #41: Labeled Benchmark-Corpus mit Hard Negatives (~300+ Texte)
