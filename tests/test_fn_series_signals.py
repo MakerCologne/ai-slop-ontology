@@ -47,6 +47,35 @@ def clean_texts():
 TH = 0.40
 
 
+class TestBoilerplateSignals(unittest.TestCase):
+    """C3 — wiki/promo boilerplate + assistant sign-off formulas
+    (series 0303/0403/0606).
+
+    Real corpus lines (examples):
+      slop-0606-001: "Of course! Here's the summary you asked for. The
+        platform boasts a vibrant marketplace ... Let me know if you'd like
+        more detail on any section. Certainly! Let me expand on that."
+      slop-0403-001: "The festival has garnered recognition for its vibrant
+        programming, setting the stage for future growth."
+      slop-0303-001: "It is believed that the manuscript predates the fire.
+        Based on available information, the outage lasted two hours."
+    """
+
+    def _assert_series_detected(self, prefix):
+        misses = [d["id"] for d in series_texts(prefix)
+                  if slop_scorer.slop_score(d["text"])["slop_score"] < TH]
+        self.assertEqual(misses, [], f"undetected {prefix} items: {misses[:5]}")
+
+    def test_series_0303_weasel_boilerplate_detected(self):
+        self._assert_series_detected("slop-0303-")
+
+    def test_series_0403_wiki_promo_detected(self):
+        self._assert_series_detected("slop-0403-")
+
+    def test_series_0606_assistant_signoff_detected(self):
+        self._assert_series_detected("slop-0606-")
+
+
 class TestReportHedgingSignals(unittest.TestCase):
     """C2 — business/report hedging + fake-authority formulas (series 0202).
 
@@ -116,6 +145,12 @@ class TestPhraseEvidenceDiscipline(unittest.TestCase):
 
     def test_report_hedging_evidence(self):
         self._check("report_hedging")
+
+    def test_wiki_promo_evidence(self):
+        self._check("wiki_promo")
+
+    def test_assistant_signoff_evidence(self):
+        self._check("assistant_signoff")
 
 
 if __name__ == "__main__":
