@@ -69,6 +69,23 @@
   Testkriterium). Tests 304 -> 308 (tests/test_templates.py).
   TDD: Red-Commit vorab.
 
+### #67: Score-Governance-Dokument (Goodhart-Regelwerk)
+
+- `docs/SCORE-GOVERNANCE.md` mit vier Pflicht-Abschnitten:
+  Optimierungs-Freigaben je Metrik (Composite slop_score nie direktes
+  Ziel; Precision/Recall-Freigaben; Gewichte nur aus Korpus-Statistik;
+  Threshold 0.40 ausserhalb Re-Baseline gesperrt; Voice-Metriken nur
+  Non-Regression; Benchmark-Korpus nie im laufenden Loop), Guardrail-
+  Pflicht je Score-/Gewichtsaenderung (Control Set + Benchmark +
+  Voice-Budget + SSOT-Parity, mit Praxisfaellen Batch A Kalibrierung und
+  #14 Gewichtsreduktion 0.03 -> 0.02), Re-Baseline-Kalender (quartalsweise,
+  #47/#12, inkl. Signal-Status-Uebergaengen nach #63), Change-Protokoll-
+  Pflicht (Messung vorher/nachher am Control Set UND Benchmark,
+  dokumentiert im CHANGELOG; Verstoß = Review-Blocker).
+- Praxisfall F1 0.982 -> 0.476 als Lehrfall kodifiziert (ADR-0005).
+- `scripts/check_methodology.py` validiert die Pflicht-Abschnitte.
+- Tests 308 -> 312 (tests/test_governance_doc.py). TDD: Red-Commit vorab.
+
 ## [1.9.0] — 2026-08-25 (Batch D)
 
 ### #41: Labeled Benchmark-Corpus mit Hard Negatives (~300+ Texte)
