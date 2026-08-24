@@ -2,6 +2,17 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #33: Instruktions-Slop-Modul (CLAUDE.md/AGENTS.md/SKILL.md-artige Dateien)
+
+- Neues Modul `instruction_slop.py`, vier detect-only Signale mit Evidence +
+  keep_when: generic-advice („write clean code“, „be thorough“, „follow best
+  practices“), obvious (Regeln, die der Agent ohnehin tut: „use git“),
+  too-vague („improve quality“ — Imperativ ohne messbares Objekt),
+  contradiction („always X“ + „never X“ mit normalisiertem identischem X).
+- Negative Tests sichern: konkrete prüfbare Anweisungen („Run pytest tests -q
+  before every push“) feuern keines der Signale. Tests 233 -> 243 grün;
+  Gate, Consistency, Benchmark unverändert.
+
 ### #32: Signal reinventing-wheel (heuristisch, detect-only)
 
 - Neues Modul `reinventing_wheel.py`: AST-Parsing, Ratcliff/Obershelp-
