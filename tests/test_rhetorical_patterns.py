@@ -29,6 +29,27 @@ class RhetoricalDetectionTests(unittest.TestCase):
             "HollowKickerRecap": "We shipped it fast.\n\nIn conclusion, AI changes everything and we must adapt.",
             "FormattingSlop": "## \U0001F680 Key Takeaways\nWe cut deploy time from 40 to 4 minutes.",
             "RoboticRhythm": "It works. It scales. It ships. Every run.",
+            "ThroatClearing": (
+                "In today's world, effective team communication matters more than ever. "
+                "We cut meeting time by a third last quarter."
+            ),
+            "FauxInsightSetup": (
+                "Here's the thing nobody tells you about remote work: it has tradeoffs. "
+                "Our team measured both sides over two years."
+            ),
+            "ImportancePuffery": (
+                "The launch of the new API is a pivotal moment for the industry. "
+                "Version 2 shipped on March 3rd and cut latency by half."
+            ),
+            "ForcedTriad": "The dashboard is fast, reliable, and scalable.",
+            "RepeatedOpenings": (
+                "The team shipped the billing page. The team then rewrote the search. "
+                "The team also fixed login. After that, everyone took a week off."
+            ),
+            "ChatbotLeftover": (
+                "The config option is documented in the README. "
+                "I hope this helps! Let me know if you have any other questions."
+            ),
         }
         for pattern_id, text in cases.items():
             self.assertIn(pattern_id, ids(text), f"{pattern_id} did not fire on its example")
@@ -36,6 +57,31 @@ class RhetoricalDetectionTests(unittest.TestCase):
     def test_binary_contrast_variants(self):
         self.assertIn("BinaryContrast", ids("It's not a bug. It's a feature."))
         self.assertIn("BinaryContrast", ids("This is not just fast but also cheap to run."))
+
+    def test_throat_clearing_needs_opener_at_start(self):
+        # The same phrase mid-text is ordinary reference, not throat-clearing.
+        self.assertNotIn(
+            "ThroatClearing",
+            ids("Two years ago we rebuilt search. In today's world, speed wins."),
+        )
+
+    def test_forced_triad_ignores_concrete_lists(self):
+        self.assertNotIn("ForcedTriad", ids("Ingredients: flour, water, salt, and yeast."))
+        self.assertNotIn(
+            "ForcedTriad",
+            ids("We interviewed 12 nurses, 9 doctors, and 3 administrators in April."),
+        )
+
+    def test_repeated_openings_need_three(self):
+        self.assertNotIn(
+            "RepeatedOpenings",
+            ids("The team shipped fast. The team then rested. Everyone returned Tuesday."),
+        )
+
+    def test_new_patterns_have_keep_when_guards(self):
+        for pid in ("ThroatClearing", "FauxInsightSetup", "ImportancePuffery",
+                    "ForcedTriad", "RepeatedOpenings", "ChatbotLeftover"):
+            self.assertTrue(RHETORICAL_PATTERNS[pid]["keep_when"].strip())
 
     def test_clean_prose_has_no_findings(self):
         clean = [
