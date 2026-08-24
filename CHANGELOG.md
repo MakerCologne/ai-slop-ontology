@@ -2,6 +2,20 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #14: portability_score als 14. Dimension
+
+- Neues Modul `portability.py`: Satz ist portabel, wenn kein Großschreibungs-Token
+  (außer Satzanfang), keine Zahl, kein Zitat/Code, kein URL/Pfad/„@“-Anker.
+  Rate > 0,5 => geringgewichtetes Signal (Gewicht 0,02, nie Eskalations-Familie).
+- Deutsch getestet: Nominal-Großschreibung blockiert Portabilität konservativ;
+  absichtlich kleingeschriebener Text bleibt messbar portabel (DE+EN-Tests).
+- Doku: SKILL.md „13 Detection Dimensions“ -> „14“ (inkl. Frontmatter-Description).
+- Gewicht bewusst von 0,03 auf 0,02 reduziert: Copula-FP-Regressionstest
+  (faktischer Text 0,401 >= 0,40) zeigte die Grenze — gemessen, nicht geraten.
+- Tests 184 -> 190 grün; Gate grün; Benchmark F1 0,982 unverändert.
+- Prozessnotiz: Commits waren kurzzeitig auf master-Basis verwaist (fremder
+  Checkout im Shared-Worktree); Chain per cherry-pick wiederhergestellt.
+
 ### #13: Mikro-Muster detect-only (false agency, false range, recap ending, heading-repeated)
 
 - Neues Modul `micro_patterns.py`: vier detect-only Signale mit je keep_when-Guard

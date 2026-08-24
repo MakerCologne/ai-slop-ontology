@@ -1,6 +1,6 @@
 ---
 name: ai-slop-detection
-description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.2.0. Analyze content for syntheticity signals, quality deficits, and slop patterns across 13 detection dimensions with 100+ buzzword signals, 7 phrase categories, multilingual detection (DE/FR/ES/HI/VI/UR), and 14 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
+description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.2.0. Analyze content for syntheticity signals, quality deficits, and slop patterns across 14 detection dimensions with 100+ buzzword signals, 7 phrase categories, multilingual detection (DE/FR/ES/HI/VI/UR), and 14 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
 ---
 
 # AI Slop Detection v2
@@ -98,7 +98,7 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 - ALWAYS escalate (regardless of slop_score) for: legal, medical, political, financial, child safety, identity impersonation content
 - **LegalSlop** and **AcademicSlop** are ESPECIALLY DANGEROUS — they look professional but contain fabricated citations
 
-## 13 Detection Dimensions
+## 14 Detection Dimensions
 
 1. **Information Density** — unique_words/total_words (< 0.40 = slop)
 2. **Repetition Ratio** — most_common_token/total_tokens (> 0.20 = slop)
@@ -113,6 +113,7 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 11. **Multilingual AI Patterns** — DE/FR/ES characteristic patterns
 12. **Mirrored Intro↔Conclusion** — conclusion restates intro
 13. **Structural Signals** — composite of uniform structure patterns
+14. **Portability** (v1.8.0) — rate of sentences with no proper names, numbers, quotes, or code (> 0.5 = low-weighted genericity signal, weight 0.02; German noun capitals conservatively block portability)
 
 ## 14 Slop Types
 

@@ -24,6 +24,7 @@ from typing import Optional
 import fp_guards
 import genre_profiles
 import input_norm
+import portability
 import provenance_signals
 import tokenizer
 
@@ -535,6 +536,9 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             "multilingual": 0.04,
             "mirrored": 0.05,
             "structural": 0.08,
+            # Issue #14: portability as 14th dimension — low-weighted weak
+            # signal (rate > 0.5), never an escalation family.
+            "portability": 0.02,
         }
 
     density = information_density(text)
@@ -593,6 +597,9 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     verbose_slop = min(1, max(0, (avg_sentence_len - 20)) / 15)
     multi_slop = min(1, total_multi / 3)
     mirrored_slop = 1.0 if mirrored_intro_conclusion(text) else 0.0
+    # Portability (#14): fraction of sentences with no names/numbers/quotes.
+    port = portability.portability_stats(text)
+    portability_slop = 1.0 if port["rate"] > 0.5 else 0.0
 
     # Structural signals count
     struct_signals = 0
@@ -617,7 +624,8 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         weights["verbosity"] * verbose_slop +
         weights["multilingual"] * multi_slop +
         weights["mirrored"] * mirrored_slop +
-        weights["structural"] * struct_slop
+        weights["structural"] * struct_slop +
+        weights["portability"] * portability_slop
     )
 
     # Non-English texts get diluted by the English-only dimensions (buzzwords,
@@ -721,6 +729,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             "has_trailing_moral": moral_slop == 1.0,
             "is_list_heavy": list_slop == 1.0,
             "has_mirrored_intro_conclusion": mirrored_slop == 1.0,
+            "portability_rate": port["rate"],
         },
         "dimension_scores": {
             "density_slop": round(density_slop, 3),
@@ -735,6 +744,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             "verbosity_slop": round(verbose_slop, 3),
             "multilingual_slop": round(multi_slop, 3),
             "mirrored_slop": mirrored_slop,
+            "portability_slop": portability_slop,
             "provenance_slop": round(prov_slop, 3),
             "copula_slop": copula_slop,
             "adverb_slop": adverb_slop,
@@ -749,6 +759,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             "moral_detected": moral_slop == 1.0,
             "list_heavy": list_slop == 1.0,
             "mirrored_intro_conclusion": mirrored_slop == 1.0,
+            "high_portability": portability_slop == 1.0,
             "provenance": prov_matches,
         }
     }
