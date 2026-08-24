@@ -23,6 +23,7 @@ from typing import Optional
 
 import fp_guards
 import genre_profiles
+import input_norm
 import provenance_signals
 
 # Single source of truth for the decision threshold (issue #23): guards and
@@ -499,6 +500,9 @@ def mirrored_intro_conclusion(text: str) -> bool:
 
 
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None) -> dict:
+    # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
+    # and zero-width obfuscation of telltale words must not bypass signals.
+    text = input_norm.normalize(text)
     # Issue #42: explicit genre register profile (no auto-detection).
     # Exemptions apply to SIGNAL matching only (composed with the #23 quote
     # exemption); structural dimensions keep the full text. The genre also

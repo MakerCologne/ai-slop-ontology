@@ -2,6 +2,19 @@
 
 ## [Unreleased — Batch B]
 
+### #40: Input-Normalization & Anti-Evasion-Layer
+
+- Neues Modul `input_norm.py`, angewendet VOR allen Metriken in `slop_score()`:
+  (1) Unicode-NFKC (faltet u. a. FULLWIDTH-Formen), (2) Zero-Width-Strip
+  (ZWSP/ZWNJ/ZWJ U+200B–200D, BOM U+FEFF), (3) Homoglyph-Mapping der
+  minimalen kyrillisch/lateinischen Verwechslungspaare а→a, е→e, о→o,
+  р→p, с→c, х→x (nach NFKC, da NFKC skriptübergreifende Lookalikes nicht
+  faltet). Idempotent; bewusst keine vollständige Confusables-Tabelle
+  (Scope-Grenze, dokumentiert).
+- Evasion-Tests: „dеlvе“ (kyrillisch е), „del\u200bve“, „ｄｅｌｖｅ“ triggern
+  nach Normalisierung den Buzzword-Signal-Pfad wie der Klartext.
+- Tests 144 → 154 grün; Gate, Consistency, Benchmark F1 0,982 unverändert.
+
 ### #42: Genre-Register-Profile (False-Positive-Guards für legitime Stile)
 
 - Neues Modul `genre_profiles.py`: Profile legal / academic / marketing /
