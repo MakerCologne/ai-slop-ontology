@@ -35,7 +35,13 @@ class FixtureRepo:
             f.write(base_md)
         run_git(self.dir, "add", "-A")
         run_git(self.dir, "commit", "-q", "-m", "base")
-        self.base = "HEAD"
+        # resolve to a SHA: a literal "HEAD" would be re-resolved at diff
+        # time (after the head commit) and compare head against itself.
+        # (Fixture bugfix after Red — TESTS_MODIFIED_AFTER_RED, documented in
+        # CHANGELOG #10: base-commit capture, assertions unchanged.)
+        self.base = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=self.dir,
+            capture_output=True, text=True, check=True).stdout.strip()
         # head commit
         with open(os.path.join(self.dir, "notes.md"), "a") as f:
             f.write("\nIn today's fast-paced world, it's worth noting that "
@@ -83,7 +89,13 @@ class ScoredWindowsTests(unittest.TestCase):
         self.assertNotIn("environment", text)
 
     def test_context_limited_to_three_lines(self):
-        lines = [f"line {i}" for i in range(10)]
+        # lines end with commas so the continuation heuristic keeps stitching;
+        # the assertion checks the +-3 limit itself.
+        # (Fixture lines adjusted after Red — TESTS_MODIFIED_AFTER_RED,
+        # documented in CHANGELOG #10: trigger-rule compliance, the ctx-limit
+        # assertion (2, 8) is unchanged.)
+        lines = [f"line {i}," for i in range(10)]
+        lines[5] = "line five,"
         wins = scored_windows(lines, changed_indices=[5], ctx=3)
         self.assertEqual(wins[0], (2, 8))
 

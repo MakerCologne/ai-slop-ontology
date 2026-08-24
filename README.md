@@ -2,7 +2,7 @@
 
 A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*. Consolidated from academic research (Shaib et al. 2025; Madsen & Puyt 2025; Shumailov et al. 2024), investigative journalism (404 Media; NYT; Guardian), industry research (NewsGuard; Pangram Labs), and lexicography (Merriam-Webster 2025; Oxford 2024).
 
-**Version:** 1.8.0 | **Date:** 2026-08-24 | **License:** CC BY 4.0
+**Version:** 1.9.0 | **Date:** 2026-08-25 | **License:** CC BY 4.0
 
 ## Quick Start
 
@@ -49,6 +49,18 @@ slop selfcheck                         # JSON/TTL/YAML/skill consistency check
 | `check` | `classify` + `rhetoric` in one pass |
 | `code` | code-specific slop (hallucinated packages, hardcoded secrets, comment bloat) |
 | `info` / `benchmark` / `selfcheck` | metadata / evaluation / consistency |
+
+Diff mode and code-slop checker (issues #9/#10, Batch D):
+
+```bash
+python3 skills/ai-slop-detection/scripts/slop_scorer.py --diff main..feature   # scores ONLY new/changed lines
+python3 scripts/code_slop_check.py --file src/helper.ts                  # detect-only code-slop findings
+```
+
+`--diff` evaluates text files (`.md`/`.txt`) with the text scorer and routes code
+files to `code_slop.py` (see #9); binaries and lock files are skipped; changed
+lines get a ±3-line context window for sentence fragments. Exit 1 when any new
+slop crosses the threshold.
 
 Every text command reads a positional string, `--file PATH`, or stdin (`-`), and
 takes `--json` for machine-readable output.

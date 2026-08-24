@@ -52,7 +52,34 @@
   try/except, Single-Mock, Clean-Code). Benchmark unverändert
   (P 1.0 / R 0.312 / F1 0.476, eval/corpus.jsonl), Gate grün, Consistency grün.
 
-### (Batch D läuft weiter: #10 diff-Modus — Eintrag folgt.)
+### #10: Diff-Modus — Bewertung nur neuer/geänderter Zeilen
+
+- Neues Modul `diff_mode.py`: `slop_scorer.py --diff <base>..<head>` wertet
+  NUR neue/geänderte Zeilen aus (differenzielle Disziplin nach
+  brianlovin/deslop, deep/07). Textdateien (.md/.markdown/.txt) mit dem
+  Text-Scorer; Code-Dateien (.ts/.py/...) werden an code_slop (#9)
+  weitergereicht (Integration dokumentiert: Findings der Head-Version,
+  gefiltert auf geänderte Zeilenfenster). Guards: Binärdateien (NUL-Byte-
+  Check) und Lock-Files (package-lock.json, yarn.lock, *.lock, ...) werden
+  immer übersprungen. Kontextfenster ±3 Zeilen nur für Satzfragmente
+  (Heuristik: Komma-/Funktionswort-Fortsetzung nach oben, fehlender
+  Satzschluss nach unten; unchange Kontextzeilen werden nie allein
+  bewertet).
+- Ausgabe pro Datei: Score + Top-Signale der neuen Zeilen; CLI-Exit 1 wenn
+  eine Text-Datei >= 0.40 oder Code-Findings vorliegen; 2 bei Syntax-Fehler
+  der Range.
+- Tests 276 -> 290 grün (Fixtur-Repo: git init in tmp, 2 Commits, Slop-/
+  Clean-/Lock-/Binär-/Code-Datei; Fenster-Heuristik separat getestet).
+  TESTS_MODIFIED_AFTER_RED: yes (2 Fälle, nur Fixtures, Assertions unberührt):
+  (a) Base-Commit wurde als Literal "HEAD" statt SHA erfasst (Diff verglich
+  head mit head), (b) ctx-Limit-Test nutzte synthetische Zeilen ohne
+  Fortsetzungs-Marker. Benchmark unverändert (P 1.0 / R 0.312 / F1 0.476,
+  eval/corpus.jsonl), Gate grün, Consistency grün.
+
+### Konsolidierung v1.9.0
+
+- Versionen konsolidiert: README, ai_slop_ontology.yaml, AI-SLOP-ONTOLOGY.md
+  auf 1.9.0 (2026-08-25). check_consistency grün. Tests: 250 -> 290 grün.
 
 ## [1.8.0] — 2026-08-24 (Batch C)
 

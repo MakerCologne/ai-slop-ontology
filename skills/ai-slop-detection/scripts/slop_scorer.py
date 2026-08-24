@@ -846,6 +846,45 @@ if __name__ == "__main__":
     use_json = "--json" in sys.argv
     args = [a for a in sys.argv[1:] if a != "--json"]
 
+    # Issue #10: diff mode — score ONLY new/changed lines of a git range.
+    # See diff_mode.py for routing (text vs code via #9) and guards.
+    if "--diff" in args:
+        i = args.index("--diff")
+        if i + 1 >= len(args):
+            print("Error: --diff requires a range base..head", file=sys.stderr)
+            sys.exit(2)
+        spec = args[i + 1]
+        if ".." not in spec:
+            print("Error: --diff expects base..head (got " + spec + ")",
+                  file=sys.stderr)
+            sys.exit(2)
+        base, head = spec.split("..", 1)
+        if not base or not head:
+            print("Error: --diff expects base..head (got " + spec + ")",
+                  file=sys.stderr)
+            sys.exit(2)
+        import diff_mode
+        report = diff_mode.diff_scores(base, head, os.getcwd())
+        flagged = False
+        if not report:
+            print("diff: no scorable changed lines")
+        for entry in report:
+            if entry["kind"] == "text":
+                mark = "FLAG" if entry["slop_score"] >= 0.40 else "ok"
+                top = ", ".join(entry["top_signals"][:3]) or "-"
+                print(f"{mark}  {entry['file']}  score {entry['slop_score']:.3f}  "
+                      f"({entry['lines_evaluated']} changed lines)  top: {top}")
+                if entry["slop_score"] >= 0.40:
+                    flagged = True
+            else:
+                for finding in entry["code_findings"]:
+                    print(f"FLAG  {entry['file']}:{finding['line']}  "
+                          f"[{finding['id']}] {finding['evidence']}")
+                    flagged = True
+                if not entry["code_findings"]:
+                    print(f"ok   {entry['file']}  (code, no findings)")
+        sys.exit(1 if flagged else 0)
+
     # Issue #29: false-positive learning store — record a reviewed FP for a
     # specific sample, then exit. No scoring happens in mark mode.
     def _opt(name):
