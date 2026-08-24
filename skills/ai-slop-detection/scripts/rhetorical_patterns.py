@@ -216,6 +216,15 @@ _BINARY_CONTRAST = [
     re.compile(r"\bnot\s+just\s+[^.?!,]{2,50}?\s+but\s+(?:also\s+)?\w", re.IGNORECASE),
     re.compile(r"\bthe\s+(?:question|point|problem|issue|goal)\s+(?:isn'?t|is not|wasn'?t)\b"
                r"[^.?!]{2,60}?[.,]?\s+it'?s\b", re.IGNORECASE),
+    # Issue #26 — remaining variants from deep/01 §2.5 (structures.md):
+    # "X isn't just Y — it's Z" (em-dash or hyphen separator)
+    re.compile(r"\b\w+\s+isn'?t\s+just\s+[^.?!]{2,60}?\s+[—–-]\s*it'?s\b",
+               re.IGNORECASE),
+    # "No longer X, now Y"
+    re.compile(r"\bno\s+longer\s+[^.?!]{2,60}?,\s+now\b", re.IGNORECASE),
+    # "Gone are the days of X, replaced by Y"
+    re.compile(r"\bgone\s+are\s+the\s+days\s+(?:of\s+)?[^.?!]{2,60}?\s+replaced\s+by\b",
+               re.IGNORECASE),
 ]
 
 # Short Capitalized phrase, colon, lowercase reveal that is not a list (no comma).

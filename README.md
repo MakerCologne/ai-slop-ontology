@@ -2,7 +2,7 @@
 
 A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*. Consolidated from academic research (Shaib et al. 2025; Madsen & Puyt 2025; Shumailov et al. 2024), investigative journalism (404 Media; NYT; Guardian), industry research (NewsGuard; Pangram Labs), and lexicography (Merriam-Webster 2025; Oxford 2024).
 
-**Version:** 1.6.0 | **Date:** 2026-08-24 | **License:** CC BY 4.0
+**Version:** 1.7.0 | **Date:** 2026-08-24 | **License:** CC BY 4.0
 
 ## Quick Start
 

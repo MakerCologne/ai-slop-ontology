@@ -1,6 +1,19 @@
 # Changelog
 
-## [Unreleased — Batch B]
+## [1.7.0] — 2026-08-24 (Batch B)
+
+### #26: BinaryContrast-Erweiterung (deep/01 §2.5)
+
+- Vorab geprüft: „It's not X, it's Y“ war bereits gedeckt (erstes Muster
+  matcht die Komma-Variante) — Regressionstest ergänzt. Drei fehlende
+  Varianten als Regex hinzugefügt: „X isn't just Y — it's Z“ (Em-Dash/
+  Bindestrich-Separator), „No longer X, now Y“, „Gone are the days of X,
+  replaced by Y“ — exakt die Varianten aus der Quellen-Struktur-Liste.
+- Negative Tests: schlichte Aussage und „no longer“ ohne Kontrast-Teil
+  feuern nicht.
+- Tests 165 → 172 grün; Gate, Consistency, Benchmark F1 0,982 unverändert.
+
+### Version konsolidiert: 1.7.0 (README, yaml, MD)
 
 ### #43: Tokenizer-Refaktor — CJK-fähige Metrik-Basis
 
