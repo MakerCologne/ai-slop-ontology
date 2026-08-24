@@ -211,7 +211,7 @@ PHRASE_CATEGORIES = {
             "stands as a testament to", "here's what nobody tells you",
             "the release solidifies its position",
             "serves as a centralized hub", "as you can see",
-            "going forward", "the update underscores", "in other words",
+            "the update underscores",
             "this changes everything", "the best part:",
             "many argue the opposite", "plays a vital role",
             "in this article, we will", "the launch marks",
@@ -270,8 +270,8 @@ PHRASE_CATEGORIES = {
             "the short answer is yes", "this is where things get interesting",
             "trusted by startups and enterprises alike",
             "trusted by thousands of teams worldwide", "ready to get started",
-            "loved by developers", "the good news is", "final thoughts:",
-            "key takeaways from this post", "the bad news is",
+            "loved by developers", "final thoughts:",
+            "key takeaways from this post",
             "this raises an important question", "think about it this way",
             "99.9% uptime", "the future of work is collaborative"
         ]
@@ -303,6 +303,28 @@ PHRASE_CATEGORIES = {
             "let's be honest about the timeline",
             "it's not just a tool, it's a mirror",
             "you could argue the cost is too high"
+        ]
+    },
+    # --- FU-12 (Batch G, review-batch-f Empfehlung 2): Generic-Phrase-
+    # Watchlist. Diese Phrasen sind in menschlicher Alltags-/Arbeitsprosa
+    # alltaeglich (Review-F-Gegenproben 0.400/0.556 auf rein generischer
+    # Basis). Eigene Kategorie mit confidence 0.65 (unter der 0.75-Single-
+    # Hit-Eskalationsschwelle) und ERHOEHTER Kumulativschwelle min_hits=3
+    # (statt 2): einzeln/paarweise = menschlich, 3+ Treffer = Saettigung.
+    # Umfang nach Messung: nur die vier Phrasen aus der FU-12-Aufgabe
+    # (in other words, going forward, the good/bad news is). Die zusaetz-
+    # lichen Review-Kandidaten (to be clear, as you can see, the best
+    # part:) bleiben in ihren Kategorien: Messung 2026-08-25 zeigte, dass
+    # 'to be clear' als Korroboration von 'based on available information'
+    # den einzigen Beleg von slop-0303-021 traegt (Benchmark-Regression
+    # R 0.982 -> 0.977). Nachziehen erst mit Clean-Genre 'menschliche
+    # Arbeitsprosa' (FU-13). Beleg-Disziplin wie Batch F.
+    "generic_phrases": {
+        "confidence": 0.65,
+        "min_hits": 3,
+        "phrases": [
+            "in other words", "going forward",
+            "the good news is", "the bad news is"
         ]
     },
 }
@@ -695,7 +717,15 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     cop = copula_stats(text)
     adv = adverb_stats(text)
     # Cumulative rule (#23): a phrase category only scores with >= 2 hits.
-    total_phrases = fp_guards.effective_phrase_count(phrase_matches)
+    # FU-12: categories may declare a raised minimum ("min_hits", e.g.
+    # generic_phrases >= 3) — everyday human prose uses those singly.
+    category_mins = {
+        name: cat.get("min_hits")
+        for name, cat in PHRASE_CATEGORIES.items()
+        if isinstance(cat, dict) and "min_hits" in cat
+    }
+    total_phrases = fp_guards.effective_phrase_count(
+        phrase_matches, category_mins)
     total_multi = sum(len(v) for v in multilingual_matches.values())
 
     sentences = tokenizer.split_sentences(text)

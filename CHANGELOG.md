@@ -2,6 +2,53 @@
 
 ## [2.2.0] — 2026-08-25 (Batch G — SSOT #49, Human-Voice #21, FU-Register)
 
+### FU-Batch (FU-2..FU-12 aus review-batch-c/d/f, burn-log.md)
+
+- **FU-2 (#25):** UniversalQuantifiers exemptiert Regel-/Instruktionstext —
+  pragmatische Heuristik: imperativer Satzanfang („Always run…/Never
+  push…") ODER Zeilen unter Rules/Guidelines/Policy-Heading
+  (quantifiers.py). Detect-only, Score-Wirkung 0.
+- **FU-3 (#13):** FalseAgency-Fachsprache-Exemption: realizes a
+  gain/profit/loss/return (FINANCE_OBJECTS-Tupel, micro_patterns.py);
+  „realizes the vision" bleibt Treffer.
+- **FU-4 (#34):** SOURCE_REFS-Jahreszweig von \b\d{4}\b auf
+  \b(19|20)\d{2}\b eingeengt — Nicht-Jahres-Vierstelligziffern (1024
+  Samples, ADR-0005) unterdruecken nicht mehr als Pseudo-Beleg; Jahre
+  unterdruecken weiterhin (FP-averse Richtung beibehalten). Eigner
+  CHANGELOG-Claim (ADR-0005-Praxisfall) dadurch belegpflichtig geworden —
+  Belegverweis ergaenzt (Ironie-Test gruen).
+- **FU-5 (#9):** as_any_casts ignoriert Kommentar-Zeilen (# / //) —
+  Python-Kommentar „use this as any other helper" feuerte bisher.
+- **FU-7:** Dev-Claim-Korrektur im CHANGELOG: die fruehere „je 9–12“-Angabe
+  war ueberzogen —> gemessen 3–12, Median ~7 (Review D, FU-7/FU-8).
+- **FU-10:** README-Benchmark-Sektion in SKILL.md gespiegelt — mit
+  Messreferenz (eval/run_benchmark.py, eval/corpus.jsonl n=314,
+  threshold 0.40) und In-sample-Caveat (Review F).
+- **FU-12 (Messung vorher/nachher, eval/run_benchmark.py --threshold
+  0.40, eval/corpus.jsonl n=314):** Generic-Phrase-Watchlist — „in other
+  words", "going forward", "the good/bad news is" in eigene Kategorie
+  generic_phrases (confidence 0.65 < 0.75-Eskalationsschwelle,
+  Kumulativschwelle erhoeht: min_hits=3 statt 2).
+  - Reviewer-Gegenproben (review-batch-f): P1 0.400 -> **0.099**, P2
+    0.556 -> **0.331** — beide unter Threshold, wie gefordert.
+  - Benchmark vorher P 1.0 / R 0.982 / F1 0.991 (TP 217, FN 4, FP 0) ->
+    nachher **identisch** (P 1.0 / R 0.982, F1 0.991; TP 217, FN 4,
+    FP 0; jeweils eval/run_benchmark.py gegen eval/corpus.jsonl).
+    Zwischenmessung mit voller 7-Phrase-Watchlist (inkl. to be
+    clear/as you can see/the best part:) kostete slop-0303-021
+    (R 0.977, gleicher Messaufbau) -> Umfang auf die 4 Aufgaben-
+    Phrasen begrenzt; Rest wartet auf Clean-Genre Arbeitsprosa (FU-13).
+  - FU-12-Tests nach Red angepasst (TESTS_MODIFIED_AFTER_RED: yes,
+    Grund: Messergebnis — 7-Phrase-Umfang verstiess gegen die
+    Benchmark-Verteidigungsvorgabe).
+- **Nicht in diesem Batch** (Bericht burn-batch-g.md): FU-6 (toter
+  No-op-Block in analyze_code — Aufräumen ohne Verhaltensrelevanz),
+  FU-8 (#10 --repo-Flag/Doku), FU-9 (Berichtstypo en 295 -> 297 — extern,
+  nicht im Repo), FU-11 (Held-out-Re-Validierung — an #41-Zuwachs
+  gebunden), FU-13 (Clean-Genre Arbeitsprosa — Korpus-Erweiterung).
+
+## [2.2.0] — 2026-08-25 (Batch G — SSOT #49, Human-Voice #21, FU-Register)
+
 ### #21: references/human-voice.md — positives Gegenprofil (reine Referenz, kein Scorer)
 
 - Die 6 Soul-Prinzipien (Quelle: poteto/noodle unslop „Adding soul",

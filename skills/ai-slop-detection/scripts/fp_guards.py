@@ -25,6 +25,9 @@ THRESHOLDS = {
     "DECISION_THRESHOLD": 0.40,   # >= threshold => "Suspicious" or worse
     "QUOTE_MIN_CHARS": 40,        # quoted spans longer than this are exempt
     "PHRASE_MIN_HITS": 2,         # hits per phrase category before scoring
+    # FU-12: generic watchlist phrases need a raised cumulative bar —
+    # they are everyday human prose when they appear once or twice.
+    "GENERIC_PHRASE_MIN_HITS": 3,
 }
 
 # ASCII double/single quotes and curly variants. Nested/unbalanced quotes are
@@ -46,10 +49,17 @@ def strip_quotes(text: str) -> str:
     return result
 
 
-def effective_phrase_count(phrase_matches: dict) -> int:
-    """Total phrase hits counting only categories with >= PHRASE_MIN_HITS."""
+def effective_phrase_count(phrase_matches: dict, category_min_hits: dict = None) -> int:
+    """Total phrase hits counting only categories that meet their minimum.
+
+    Default minimum is PHRASE_MIN_HITS (2); FU-12 lets a category declare
+    a raised minimum via PHRASE_CATEGORIES[cat]["min_hits"] (passed here
+    as category_min_hits, e.g. {"generic_phrases": 3}).
+    """
+    category_min_hits = category_min_hits or {}
     total = 0
-    for hits in phrase_matches.values():
-        if len(hits) >= THRESHOLDS["PHRASE_MIN_HITS"]:
+    for cat, hits in phrase_matches.items():
+        minimum = category_min_hits.get(cat, THRESHOLDS["PHRASE_MIN_HITS"])
+        if len(hits) >= minimum:
             total += len(hits)
     return total
