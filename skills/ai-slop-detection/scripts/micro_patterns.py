@@ -25,6 +25,17 @@ import re
 INANIMATE_SUBJECTS = ["decision", "data", "strategy", "system", "market"]
 HUMAN_VERBS = ["emerges", "decides", "believes", "realizes", "knows"]
 
+# FU-3 (#13, review-batch-c): "realizes a gain/profit/loss/return" is
+# standard finance register (Fachsprache), not false agency. Closed
+# finance tuples — "realizes the vision" stays a hit.
+FINANCE_OBJECTS = ("gain", "gains", "profit", "profits", "loss",
+                   "losses", "return", "returns", "revenue")
+_FINANCE_REALIZES = re.compile(
+    r"\brealiz(?:es?|ed|ing)\s+(?:a|an|the|their|its)?\s*"
+    r"(?:" + "|".join(FINANCE_OBJECTS) + r")\b",
+    re.IGNORECASE,
+)
+
 # Grand-sweep endpoints for FalseRange: gesture-at-scale placeholders from
 # cosmology/history/tech. Both endpoints must be from this list (or a matched
 # grand noun) for the pattern to fire — an everyday "from X to Y" in one
@@ -66,6 +77,10 @@ def _false_agency(sentences: list):
     )
     for s in sentences:
         if pat.match(s):
+            # FU-3: finance register — "The system realizes a gain…" is
+            # bookkeeping language, not anthropomorphism.
+            if _FINANCE_REALIZES.search(s):
+                continue
             return s
     return None
 
@@ -126,9 +141,10 @@ MICRO_PATTERNS = {
         "example_slop": "The data decides what matters next quarter.",
         "example_fix": "The growth team decides what matters next quarter.",
         "keep_when": "Deliberate, clearly marked personification (e.g. quoted or set off "
-                     "as a metaphor), and 'emerges' describing genuine systemic emergence "
-                     "('order emerges from feedback'), which the verb list still matches "
-                     "only for the named subjects.",
+                     "as a metaphor), 'emerges' describing genuine systemic emergence "
+                     "('order emerges from feedback'), and FU-3 finance register "
+                     "('realizes a gain/profit/loss' — Fachsprache, not agency), which "
+                     "the verb list still matches only for the named subjects.",
     },
     "FalseRange": {
         "label": "False from-X-to-Y range",

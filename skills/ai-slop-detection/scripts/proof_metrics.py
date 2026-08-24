@@ -40,9 +40,13 @@ METRIC_NUMBERS = [
     re.compile(r"\b(?:of|is|reaches|at)\s+\d[.,]\d{1,3}\b", re.IGNORECASE),
 ]
 
+# FU-4 (#34, review-batch-c): the year-suppression branch is narrowed to
+# actual years \b(19|20)\d{2}\b. Before, ANY four-digit number (1024
+# samples, port 8080) suppressed the signal as if it were a citation.
+# Bare years still suppress — FP-averse direction, deliberately kept.
 SOURCE_REFS = re.compile(
     r"(?i)(corpus|korpus)|\beval(?:uation)?\b|https?://|doi\.org|10\.\d{4,}|"
-    r"et al\.|\(\s*\d{4}\s*\)|\b\d{4}\b",
+    r"et al\.|\(\s*\d{4}\s*\)|\b(?:19|20)\d{2}\b",
 )
 
 

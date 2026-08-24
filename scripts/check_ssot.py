@@ -78,10 +78,13 @@ SSOT_REGISTER = {
         "AUTHORITY_CLAIMS": ("corpus-calibrated", "deviation"),
         "COUNTED_SOURCE": ("corpus-calibrated", "deviation"),
         "CITATION_MARKERS": ("corpus-calibrated", "deviation"),
+        "RULE_SECTION_HEADINGS": ("corpus-calibrated", "deviation"),
+        "IMPERATIVE_LEAD": ("corpus-calibrated", "deviation"),
     },
     "micro_patterns.py": {
         "INANIMATE_SUBJECTS": ("corpus-calibrated", "deviation"),
         "HUMAN_VERBS": ("corpus-calibrated", "deviation"),
+        "FINANCE_OBJECTS": ("corpus-calibrated", "deviation"),
         "GRAND_ENDPOINTS": ("corpus-calibrated", "deviation"),
         "RECAP_OPENERS": ("corpus-calibrated", "deviation"),
         "MICRO_PATTERNS": ("corpus-calibrated", "deviation"),

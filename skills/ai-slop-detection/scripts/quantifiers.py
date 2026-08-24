@@ -50,12 +50,61 @@ CITATION_MARKERS = re.compile(
     r"doi\.org|10\.\d{4,}|https?://",
 )
 
+# FU-2 (#25, review-batch-c): rule/instruction language is legitimate —
+# "Always run the tests. Never push to master." is a ruleset, not a
+# universal claim. Two pragmatic context guards (detect-only, no score
+# impact either way):
+#   (a) imperative guard: a hit whose sentence STARTS with always/never
+#       followed by a verb-ish word ("Always run…", "Never push…") —
+#       instruction form, exempt.
+#   (b) section guard: lines under a Rules/Guidelines/Policy-style
+#       heading (markdown # or ALL-CAPS line) — the whole section is
+#       policy text, exempt.
+RULE_SECTION_HEADINGS = re.compile(
+    r"^(?:#{1,6}\s+|\*\*\s*)?(rules|guidelines|policy|policies|"
+    r"instructions|coding standards|contributing(\s+guidelines)?)\b",
+    re.IGNORECASE,
+)
+IMPERATIVE_LEAD = re.compile(
+    r"^(always|never)\s+[a-z]+", re.IGNORECASE,
+)
+
+
+def _in_rule_section(text: str, offset: int) -> bool:
+    """True if `offset` sits in a section under a rule-like heading."""
+    current_heading_is_rule = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped and (stripped.startswith("#") or stripped.isupper()):
+            current_heading_is_rule = bool(
+                RULE_SECTION_HEADINGS.match(stripped))
+            continue
+        line_start = text.find(line)
+        if line_start <= offset < line_start + len(line) + 1:
+            return current_heading_is_rule
+    return False
+
+
+def _is_instructional(text: str, phrase: str, offset: int) -> bool:
+    """Pragmatic heuristic: imperative sentence start or rules section."""
+    if phrase in ("always", "never"):
+        sentence_start = max(text.rfind(".", 0, offset),
+                             text.rfind("!", 0, offset),
+                             text.rfind("?", 0, offset),
+                             text.rfind("\n", 0, offset)) + 1
+        lead = text[sentence_start:sentence_start + 40].lstrip()
+        if IMPERATIVE_LEAD.match(lead):
+            return True
+    return _in_rule_section(text, offset)
+
 
 def _find_universal_quantifiers(text: str) -> list:
     hits = []
     lowered = text.lower()
     for q in UNIVERSAL_QUANTIFIERS:
         for m in re.finditer(r"\b" + re.escape(q) + r"\b", lowered):
+            if _is_instructional(text, q, m.start()):
+                continue  # FU-2: rule/policy register, not a universal claim
             hits.append({"phrase": q, "offset": m.start()})
     return hits
 
@@ -71,7 +120,10 @@ def find_quantifier_signals(text: str) -> dict:
             "evidence": ", ".join(h["phrase"] for h in quant_hits),
             "keep_when": "Deliberate rhetorical universals in obviously "
                          "subjective prose (opinion pieces, speeches) — one "
-                         "occurrence never fires anyway.",
+                         "occurrence never fires anyway. FU-2: imperative "
+                         "rule text (sentence-initial Always/Never) and "
+                         "Rules/Guidelines sections are exempt as policy "
+                         "register, not universal claims.",
         })
 
     has_authority = any(

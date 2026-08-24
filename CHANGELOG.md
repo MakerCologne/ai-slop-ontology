@@ -142,7 +142,9 @@
   #47/#12, inkl. Signal-Status-Uebergaengen nach #63), Change-Protokoll-
   Pflicht (Messung vorher/nachher am Control Set UND Benchmark,
   dokumentiert im CHANGELOG; Verstoß = Review-Blocker).
-- Praxisfall F1 0.982 -> 0.476 als Lehrfall kodifiziert (ADR-0005).
+- Praxisfall F1 0.982 -> 0.476 als Lehrfall kodifiziert (ADR-0005; Messungen
+  je eval/run_benchmark.py + eval/corpus.jsonl, siehe die Eintraege 1.8.0
+  und 2.1.0).
 - `scripts/check_methodology.py` validiert die Pflicht-Abschnitte.
 - Tests 308 -> 312 (tests/test_governance_doc.py). TDD: Red-Commit vorab.
 
