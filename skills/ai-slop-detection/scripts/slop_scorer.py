@@ -25,6 +25,7 @@ import fp_guards
 import genre_profiles
 import input_norm
 import provenance_signals
+import tokenizer
 
 # Single source of truth for the decision threshold (issue #23): guards and
 # risk levels share fp_guards.THRESHOLDS instead of scattered magic numbers.
@@ -304,14 +305,16 @@ def find_term_matches(text_lower: str, terms: list) -> dict:
 
 
 def information_density(text: str) -> float:
-    words = re.findall(r'\b\w+\b', text.lower())
+    # #43: CJK-capable tokenization — whitespace words for space languages,
+    # per-character tokens for CJK runs (no new language signals).
+    words = tokenizer.tokenize_words(text)
     if not words:
         return 0.0
     return len(set(words)) / len(words)
 
 
 def repetition_ratio(text: str) -> float:
-    words = re.findall(r'\b\w+\b', text.lower())
+    words = tokenizer.tokenize_words(text)
     if not words:
         return 0.0
     counts = Counter(words)
@@ -319,10 +322,10 @@ def repetition_ratio(text: str) -> float:
 
 
 def burstiness(text: str) -> float:
-    sentences = [s.strip() for s in re.split(r'[.!?]+', text) if s.strip()]
+    sentences = tokenizer.split_sentences(text)
     if len(sentences) < 2:
         return 0.0
-    lengths = [len(s.split()) for s in sentences]
+    lengths = [len(tokenizer.tokenize_words(s)) for s in sentences]
     mean = sum(lengths) / len(lengths)
     variance = sum((l - mean) ** 2 for l in lengths) / len(lengths)
     return variance ** 0.5
@@ -466,7 +469,7 @@ def multilingual_buzzword_score(text: str) -> dict:
 
 
 def punctuation_anomaly_score(text: str) -> dict:
-    sentences = [s for s in re.split(r'[.!?]+', text) if s.strip()]
+    sentences = tokenizer.split_sentences(text)
     n = len(sentences) or 1
     return {
         "emDashRate": round((text.count('\u2014') + text.count('\u2013')) / n, 3),
@@ -488,7 +491,7 @@ def list_heavy(text: str) -> bool:
 
 def mirrored_intro_conclusion(text: str) -> bool:
     """Check if conclusion restates introduction with synonym substitution."""
-    sentences = [s.strip() for s in re.split(r'[.!?]+', text) if s.strip()]
+    sentences = tokenizer.split_sentences(text)
     if len(sentences) < 4:
         return False
     intro_words = set(re.findall(r'\b\w+\b', sentences[0].lower())) - STOPWORDS
@@ -565,9 +568,9 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     total_phrases = fp_guards.effective_phrase_count(phrase_matches)
     total_multi = sum(len(v) for v in multilingual_matches.values())
 
-    sentences = [s.strip() for s in re.split(r'[.!?]+', text) if s.strip()]
+    sentences = tokenizer.split_sentences(text)
     num_sentences = len(sentences) or 1
-    avg_sentence_len = len(re.findall(r'\b\w+\b', text)) / num_sentences
+    avg_sentence_len = len(tokenizer.tokenize_words(text)) / num_sentences
 
     # Normalize
     density_slop = max(0, (0.50 - density) / 0.50)

@@ -2,6 +2,23 @@
 
 ## [Unreleased — Batch B]
 
+### #43: Tokenizer-Refaktor — CJK-fähige Metrik-Basis
+
+- Neues Modul `tokenizer.py`: `tokenize_words()` (Whitespace-Wörter für
+  Space-Sprachen unverändert, pro-Zeichen-Tokenisierung für CJK-Läufe,
+  CJK-Interpunktion ausgeschlossen) und `split_sentences()` (ASCII `.!?`
+  plus CJK-Satzenden `。！？`).
+- Verdrahtet in `information_density`, `repetition_ratio`, `burstiness`,
+  `punctuation_anomaly_score`, `mirrored_intro_conclusion` und die
+  Satz-/Wortbasis von `slop_score()` — chinesische Texte liefern jetzt
+  sinnvolle word_count/Dichte/Repetition/Burstiness-Werte statt
+  1-Satz-1-Mega-Token-Müll.
+- Abgrenzung: KEINE neuen Sprach-Signale (Buzzword-Detection bleibt
+  Sprach-DB-getrieben wie bisher — das ist #53); `adverb_stats` bleibt
+  bewusst englisch (-ly), dokumentiert.
+- Tests 154 → 165 grün (alle bestehenden Space-Sprachen-Tests unverändert
+  grün); Gate, Consistency, Benchmark F1 0,982 unverändert.
+
 ### #40: Input-Normalization & Anti-Evasion-Layer
 
 - Neues Modul `input_norm.py`, angewendet VOR allen Metriken in `slop_score()`:
