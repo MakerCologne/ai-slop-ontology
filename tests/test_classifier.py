@@ -23,6 +23,27 @@ class TestSlopClassifier(unittest.TestCase):
         self.assertNotIn("description", stats["languages"])
         self.assertIn("german", stats["languages"])
 
+    def test_editor_tell_categories_present_in_ontology(self):
+        # issue #8: five editor-tell phrase categories must exist in the data
+        stats = self.clf.get_signal_stats()
+        for cat in ("emphasis_crutches", "meta_commentary", "rhetorical_setups",
+                    "vague_declaratives", "weasel_attribution"):
+            self.assertIn(cat, stats["phrase_categories"])
+
+    def test_weasel_attribution_two_hits_signal(self):
+        text = ("Experts agree that the approach works. It is widely regarded as "
+                "the safest option. The manual documents torque values on page 12.")
+        result = self.clf.classify_text(text)
+        ids = [s.signal_id for s in result.signals_detected]
+        self.assertIn("WeaselAttribution", ids)
+
+    def test_editor_tell_single_hit_no_category_signal(self):
+        # one hit alone is not decisive evidence (>= 2 threshold, issue #8)
+        result = self.clf.classify_text(
+            "Let that sink in. The bridge opened in 1932 and spans 503 metres.")
+        ids = [s.signal_id for s in result.signals_detected]
+        self.assertNotIn("EmphasisCrutch", ids)
+
     def test_clean_text(self):
         result = self.clf.classify_text(
             "The bridge opened in 1932. It spans 503 metres. "
