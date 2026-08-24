@@ -503,7 +503,8 @@ def mirrored_intro_conclusion(text: str) -> bool:
     return overlap > 0.6
 
 
-def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None) -> dict:
+def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
+              not_slop_store=None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
     # and zero-width obfuscation of telltale words must not bypass signals.
     text = input_norm.normalize(text)
@@ -759,6 +760,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             "moral_detected": moral_slop == 1.0,
             "list_heavy": list_slop == 1.0,
             "mirrored_intro_conclusion": mirrored_slop == 1.0,
+            "exempted": [],
             "high_portability": portability_slop == 1.0,
             "provenance": prov_matches,
         }
