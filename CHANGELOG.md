@@ -2,6 +2,20 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #31: Kategorie generated-docs (detect-only, Code-Kontext)
+
+- Neues Modul `generated_docs.py`: ARCHITECTURE.md/CONTRIBUTING.md/
+  PHILOSOPHY.md/GOALS.md, deren letzter berührender Commit innerhalb der
+  letzten 5 Repo-Commits liegt UND generische Füllphrasen enthält
+  („this document outlines“, „well-structured“, „maintainable“) => Hit
+  {file, category, age_commits, filler_phrases, keep_when}.
+- Entscheidungen: Frische via Commit-Hash-Mitgliedschaft in rev-list -n5
+  (Timestamps scheitern an sekundengleichen Batch-Commits, gemessen in der
+  Fixtur); untracked Dateien ohne Commit-Evidenz werden übersprungen
+  (konservativ). Beide Bedingungen (frisch UND Füllphrasen) müssen gelten.
+- Temp-Dir-Git-Fixtures; Tests 224 -> 229 grün; Gate, Consistency,
+  Benchmark unverändert.
+
 ### #29: False-Positive-Learning-Store (not_slop.jsonl)
 
 - Neues Modul `learning_store.py`: JSONL-Store {signal_id, sample_hash,
