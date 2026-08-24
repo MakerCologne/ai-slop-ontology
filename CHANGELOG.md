@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased — Batch B]
+
+### FU-1: #24-Intensifier-Fix (review-batch-a.md §6, MEDIUM)
+
+- `adverb_stats()`: Intensifier-Spans werden aus Zähler UND Nenner der
+  -ly-Rate ausgeschlossen (Span-Überlappung, analog `copula_stats`) — 4 der
+  5 Intensifier enden selbst auf -ly und zählten sonst doppelt. Reiner
+  Intensifier-Text (≥ 40 Wörter) misst jetzt Rate 0,0 → `adverb_slop` 0,0
+  statt 1,0 (Reviewer-Messung 0,136 → 1,0 vor dem Fix); das
+  Intensifier-Signal feuert unverändert weiter.
+- Tests 128 → 133 grün; Control-Set-Gate und Consistency-Check grün;
+  Benchmark unverändert (F1 0,982).
+
 ## [1.6.0] — 2026-08-24
 
 ### MS-I1: CLI-Härtung + Control-Set-Gate

@@ -408,17 +408,32 @@ def adverb_stats(text: str) -> dict:
 
     Intensifier hits are reported but only AMPLIFY an adverb rate that is
     already above threshold (see slop_score); they never contribute alone.
+    FU-1 (review-batch-a.md §6): 4 of the 5 intensifiers end in -ly and were
+    double-counted into the -ly rate. Intensifiers are their own signal, so
+    their spans are excluded from BOTH the numerator and the denominator of
+    the rate — a pure-intensifier text measures rate 0.0, never adverb_slop.
     """
-    words = re.findall(r"\b\w+ly\b", text.lower())
-    total = re.findall(r"\b\w+\b", text.lower())
-    intensifiers = find_term_matches(text.lower(), INTENSIFIERS)
-    intensifier_count = sum(intensifiers.values())
-    rate = len(words) / len(total) if total else 0.0
+    text_lower = text.lower()
+    total = re.findall(r"\b\w+\b", text_lower)
+    intensifier_spans = []
+    for m in re.finditer(r"(?:" + "|".join(_term_pattern(w) for w in INTENSIFIERS) + r")",
+                         text_lower):
+        intensifier_spans.append(m.span())
+    intensifiers = len(intensifier_spans)
+    # -ly words minus intensifier spans (span-overlap exclusion like copula_stats)
+    ly_spans = [m.span() for m in re.finditer(r"\b\w+ly\b", text_lower)]
+    pure_ly = sum(
+        1 for ws, we in ly_spans
+        if not any(ws < ie and we > i_s for i_s, ie in intensifier_spans)
+    )
+    # denominator: all words except the intensifier occurrences themselves
+    denom = len(total) - intensifiers
+    rate = pure_ly / denom if denom > 0 else 0.0
     return {
-        "ly_words": len(words),
+        "ly_words": pure_ly,
         "total_words": len(total),
         "rate": round(rate, 4),
-        "intensifiers": intensifier_count,
+        "intensifiers": intensifiers,
     }
 
 def phrase_category_score(text: str) -> dict:
