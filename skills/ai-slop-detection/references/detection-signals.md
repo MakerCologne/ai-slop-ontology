@@ -41,6 +41,10 @@ Benchmark-Korpus (eval/corpus.jsonl, slop-0101/slop-0504), Beleg-Disziplin
   "the implications are significant", "here's why that matters",
   "the real challenge is not what you think", "mistakes were made along
   the way", "the window is closing", ...
+- `report_hedging` (conf 0.75): Business-/Berichts-Hedging und Fake-
+  Authority (Serie slop-0202) — "it is important to note",
+  "industry reports suggest", "a pivotal moment", "studies show",
+  "here's what nobody tells you", ...
 
 ### Punctuation Anomalies
 - Em-dash rate > 0.5 per sentence

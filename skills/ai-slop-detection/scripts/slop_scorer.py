@@ -199,6 +199,25 @@ PHRASE_CATEGORIES = {
             "people are saying", "sources say", "insiders claim"
         ]
     },
+    # --- Batch F (2026-08-25), cluster C2: business/report hedging and
+    # fake-authority report formulas mined from FN series slop-0202 of
+    # eval/corpus.jsonl. Same evidence discipline as C1 (>=3 slop texts,
+    # 0 clean texts; tests/test_fn_series_signals.py).
+    "report_hedging": {
+        "confidence": 0.75,
+        "phrases": [
+            "it is important to note", "industry reports suggest",
+            "a pivotal moment", "studies show", "the key point is",
+            "stands as a testament to", "here's what nobody tells you",
+            "the release solidifies its position",
+            "serves as a centralized hub", "as you can see",
+            "going forward", "the update underscores", "in other words",
+            "this changes everything", "the best part:",
+            "many argue the opposite", "plays a vital role",
+            "in this article, we will", "the launch marks",
+            "the agent reviews the draft", "the tool suggests fixes"
+        ]
+    },
     # --- Batch F (2026-08-25), cluster C1: SaaS/marketing CTA formulas and
     # punchy "insight-porn" formulas mined from the FN series slop-0101/
     # slop-0504 of eval/corpus.jsonl. Evidence discipline (M7): every phrase
