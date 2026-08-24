@@ -198,7 +198,52 @@ PHRASE_CATEGORIES = {
             "many believe", "some say", "critics argue",
             "people are saying", "sources say", "insiders claim"
         ]
-    }
+    },
+    # --- Batch F (2026-08-25), cluster C1: SaaS/marketing CTA formulas and
+    # punchy "insight-porn" formulas mined from the FN series slop-0101/
+    # slop-0504 of eval/corpus.jsonl. Evidence discipline (M7): every phrase
+    # in >= 3 slop corpus texts, in 0 of the 103 clean texts (counted
+    # 2026-08-25, enforced by tests/test_fn_series_signals.py).
+    "marketing_cta": {
+        "confidence": 0.75,
+        "phrases": [
+            "start your free trial today", "book a demo",
+            "what does this mean for your team", "all in one place",
+            "here's the catch", "to put it simply",
+            "the short answer is yes", "this is where things get interesting",
+            "trusted by startups and enterprises alike",
+            "trusted by thousands of teams worldwide", "ready to get started",
+            "loved by developers", "the good news is", "final thoughts:",
+            "key takeaways from this post", "the bad news is",
+            "this raises an important question", "think about it this way",
+            "99.9% uptime", "the future of work is collaborative"
+        ]
+    },
+    "punchy_insight": {
+        "confidence": 0.75,
+        "phrases": [
+            "the implications are significant", "here's why that matters",
+            "this matters because", "the window is closing",
+            "that's the tradeoff", "here's what i find interesting",
+            "what most people get wrong", "the part everyone misses",
+            "the decision was reached", "let me walk you through",
+            "in today's market",
+            "the real challenge is not what you think", "the uncomfortable truth",
+            "a feature, not a bug", "the deepest problem",
+            "i'll say it again", "i'm going to be honest with you",
+            "hint: start with the boring part", "it feels like a shortcut",
+            "mistakes were made along the way",
+            "this is genuinely hard to get right",
+            "the conversation moves toward practical tradeoffs",
+            "the answer isn't more tools", "here's the problem though",
+            "let me be clear about one thing", "solving the wrong problem",
+            "another post for another time", "the reality is that most",
+            "i want to explore what went wrong",
+            "can we talk about what actually happened",
+            "slop creeps in one rewrite at a time",
+            "because it was necessary"
+        ]
+    },
 }
 
 MULTILINGUAL_BUZZWORDS = {

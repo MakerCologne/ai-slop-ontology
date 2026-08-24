@@ -31,6 +31,17 @@ Detailed detection techniques from the AI Slop Ontology. Use when deeper analysi
 
 ≥2 template phrases → signal (confidence ≥ 0.75)
 
+**Batch F (2026-08-25)** — zwei neue Kategorien aus den FN-Serien des
+Benchmark-Korpus (eval/corpus.jsonl, slop-0101/slop-0504), Beleg-Disziplin
+≥3 slop-Texte / 0 clean-Texte (tests/test_fn_series_signals.py):
+- `marketing_cta` (conf 0.75): SaaS-CTA- und Social-Proof-Formeln —
+  "start your free trial today", "book a demo", "trusted by startups and
+  enterprises alike", "99.9% uptime", "ready to get started", ...
+- `punchy_insight` (conf 0.75): Insight-Porn-/Throat-Clearing-Formeln —
+  "the implications are significant", "here's why that matters",
+  "the real challenge is not what you think", "mistakes were made along
+  the way", "the window is closing", ...
+
 ### Punctuation Anomalies
 - Em-dash rate > 0.5 per sentence
 - Ellipsis rate > 0.3 per sentence

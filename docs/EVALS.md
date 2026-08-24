@@ -44,6 +44,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `tests/test_docs_examples.py` — Doku-Beispiele stimmen mit Scorer-Verhalten überein (#48)
 - `tests/test_engine_sync.py` — SSOT-Parity Scorer↔ontology.json (ADR-0002)
 - `tests/test_evals_doc.py` — diese Zuordnung prüfen (#68, Meta)
+- `tests/test_fn_series_signals.py` — Batch-F-FN-Serien (0101-0606) + Beleg-Disziplin (>=3 slop-, 0 clean-Texte)
 - `tests/test_fp_guards.py` — #23 Guards (Quote-Exemption, Kumulativregel)
 - `tests/test_generated_docs.py` — #34 generierte Doku/CHANGELOG
 - `tests/test_genre_profiles.py` — #42 Genre-Opt-in-Profile (ADR-0004)
