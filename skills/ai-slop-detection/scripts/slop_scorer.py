@@ -6,14 +6,16 @@ v2.1: word-boundary matching, overlap deduplication (longest match wins),
 case-insensitive multilingual matching, burstiness neutral for short texts.
 
 Usage:
-    python3 slop_scorer.py "Text to analyze"
-    python3 slop_scorer.py --json "Text to analyze"
-    echo "Text to analyze" | python3 slop_scorer.py -
+    python3 slop_scorer.py --file text.txt          # preferred
+    python3 slop_scorer.py text.txt                 # existing path auto-detected
+    echo "text" | python3 slop_scorer.py -
+    python3 slop_scorer.py "inline text"            # deprecated, warns
 
 Returns slop_score (0-1) with dimension breakdown.
 """
 
 import json
+import os
 import re
 import sys
 from collections import Counter
@@ -446,7 +448,10 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     # std-dev of sentence lengths is ~0 by construction, which would falsely
     # push every short text toward slop. Treat it as neutral instead.
     burst_slop = max(0, (5 - burst) / 5) if num_sentences >= 3 else 0.0
-    buzz_slop = min(1, buzz_count / 8)
+    buzz_slop = min(1, buzz_count / 6)  # 6+ buzzwords = definite slop
+    # (divisor aligned with src/scorer.py; was 8 — MS-I1 calibration 2026-08-24,
+    # see eval/control_set.jsonl slop-fn-01, 3 tier-2 buzzwords + 2 phrase hits
+    # scored only 0.279 and slipped under the threshold)
     phrase_slop = min(1, total_phrases / 4)
     punct_slop = min(1, (punct["emDashRate"] + punct["ellipsisRate"] + punct["exclamationRate"]) / 2)
     moral_slop = 1.0 if trailing_moral(text) else 0.0
@@ -500,6 +505,12 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
         moral_slop == 1.0,
         mirrored_slop == 1.0,
     ])
+    # Independent marker families agreeing is decisive on its own: 3+ tier
+    # buzzwords AND >= 2 phrase-category hits in the same text (control-set
+    # case slop-fn-01: "In today's digital age ... harness ... unlock ...").
+    # Mirrors the ontology's ">= 2 high-severity signals" rule.
+    if buzz_slop >= 0.5 and phrase_slop >= 0.5:
+        strong_signals += 1
     if strong_signals >= 3:
         overall = max(overall, 0.40)
 
@@ -623,10 +634,44 @@ if __name__ == "__main__":
     use_json = "--json" in sys.argv
     args = [a for a in sys.argv[1:] if a != "--json"]
 
-    if args[0] == "-":
+    # --file PATH: explicit file input (preferred)
+    file_path = None
+    if "--file" in args:
+        i = args.index("--file")
+        if i + 1 >= len(args):
+            print("Error: --file requires a path", file=sys.stderr)
+            sys.exit(2)
+        file_path = args[i + 1]
+        args = args[:i] + args[i + 2:]
+
+    if file_path is not None:
+        if not os.path.isfile(file_path):
+            print(f"Error: No such file: {file_path}", file=sys.stderr)
+            sys.exit(2)
+        with open(file_path, encoding="utf-8", errors="replace") as f:
+            text = f.read()
+    elif args and args[0] == "-":
         text = sys.stdin.read()
-    else:
+    elif args and os.path.isfile(args[0]):
+        # Auto-detection: a positional arg that is an existing file is read
+        # as file content. (MS-I1 bug: it used to be scored as literal argv
+        # text, producing artifacts like "Avg sentence 3.0 words".)
+        if len(args) > 1:
+            print("Error: multiple args with a file path is ambiguous; "
+                  "pass the file alone or use --file", file=sys.stderr)
+            sys.exit(2)
+        file_path = args[0]
+        with open(file_path, encoding="utf-8", errors="replace") as f:
+            text = f.read()
+    elif args:
+        print("Warning: scoring inline argv text is deprecated; "
+              "use --file PATH or pipe via stdin (\"-\") instead.",
+              file=sys.stderr)
         text = " ".join(args)
+    else:
+        print("Usage: python3 slop_scorer.py [--json] (--file PATH | - | \"Text\")",
+              file=sys.stderr)
+        sys.exit(1)
 
     result = slop_score(text)
 

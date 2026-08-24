@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased 1.6.0] — 2026-08-24 (Batch A, in Review)
+
+### MS-I1: CLI-Härtung + Control-Set-Gate
+
+- `slop_scorer.py`-CLI: `--file PATH` (explizit), Auto-Erkennung existierender
+  Dateipfade als Positional-Argument (fixt den Bug, dass Pfade als Text
+  gescort wurden — „Avg sentence 3.0 words"-Symptom), Deprecation-Warnung
+  für Inline-argv-Text.
+- `eval/control_set.jsonl`: 10 handgeschriebene Texte (5 Slop / 5 harte
+  Negative: Technik-Postmortem, Vertragsprosa, Paper-Abstract,
+  Router-Konfig, Kochrezept).
+- `eval/run_control_set.py`: Gate — alle Slop ≥ 0,40, alle Negativen < 0,40,
+  dokumentierte FNs als KNOWN-FN erlaubt.
+- Minimale Kalibrierung (dokumentiert, ehrlich): Buzzword-Norm 8 → 6
+  (Deckungsgleich mit `src/scorer.py`-Kommentar „6+ buzzwords = definite
+  slop") + kombinierte Eskalationsregel (buzz_slop ≥ 0,5 UND phrase_slop
+  ≥ 0,5). Hebt `slop-fn-01` von 0,279 auf 0,40; Corpus-Benchmark
+  unverändert (Pipeline F1 0,982, P 1,0). Bekannter FN bleibt
+  `slop-fn-02` (0,314, Business-Listicle-Muster außerhalb der Phrase-DB)
+  — als KNOWN-FN im Gate dokumentiert.
+
 ## [1.5.0] — 2026-08-25
 
 **Formatting-Slop-Doktrin + Banned-Words-Abgleich (#16).**
