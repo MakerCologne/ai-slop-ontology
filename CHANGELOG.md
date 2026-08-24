@@ -8,7 +8,7 @@
   `report_hedging` (C2, Serie slop-0202), `wiki_promo`/`assistant_signoff`
   (C3, Serien slop-0303/0403/0606) — je Kumulativregel >=2 Treffer,
   confidence 0.75.
-- Beleg-Disziplin (M7/M11): jede Phrase in >=3 slop-Texten und 0 der 103
+- Beleg-Disziplin (M7/M11): jede Phrase in >=3 slop-Texten und 0 der 93
   clean-Texte von eval/corpus.jsonl (gezaehlt 2026-08-25, erzwungen in
   tests/test_fn_series_signals.py).
 - Benchmark (eval/run_benchmark.py, threshold 0.40, Korpus eval/corpus.jsonl,

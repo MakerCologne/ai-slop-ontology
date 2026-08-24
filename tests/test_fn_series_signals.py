@@ -6,7 +6,7 @@ are recovered with new phrase categories mined from the FN texts
 themselves. Evidence discipline per METHODOLOGY M7 (Empirie-vor-Ausbau):
 
   - every new phrase occurs in >= 3 slop corpus texts (counted),
-  - every new phrase occurs in 0 of the 103 clean corpus texts (counted,
+  - every new phrase occurs in 0 of the 93 clean corpus texts (counted,
     asserted in TestPhraseEvidenceDiscipline).
 
 Threshold stays 0.40 (fp_guards.THRESHOLDS). Hard gate: FP must stay 0.

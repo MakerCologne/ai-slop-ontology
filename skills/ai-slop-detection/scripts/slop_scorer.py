@@ -259,7 +259,7 @@ PHRASE_CATEGORIES = {
     # --- Batch F (2026-08-25), cluster C1: SaaS/marketing CTA formulas and
     # punchy "insight-porn" formulas mined from the FN series slop-0101/
     # slop-0504 of eval/corpus.jsonl. Evidence discipline (M7): every phrase
-    # in >= 3 slop corpus texts, in 0 of the 103 clean texts (counted
+    # in >= 3 slop corpus texts, in 0 of the 93 clean texts (counted
     # 2026-08-25, enforced by tests/test_fn_series_signals.py).
     "marketing_cta": {
         "confidence": 0.75,
