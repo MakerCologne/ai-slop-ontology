@@ -2,6 +2,17 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #25: Universalquantoren-Rate + Quellen-Diskrepanz (detect-only)
+
+- Neues Modul `quantifiers.py`: UniversalQuantifiers (Subjekt-Quantoren
+  everyone knows/we all/nobody/no one/always/never, kumulativ >= 2 Vorkommen
+  => Signal; ein einzelnes feuert bewusst nicht) und SourceDiscrepanz
+  (Authority-Claim „studies show“ + gezählte Quellen „three studies“ ohne
+  jegliche Zitat-Marker im Text => Signal).
+- Abgrenzung (#46): weasel_attribution-Phrasen und AUTHORITY_PATTERNS im Scorer
+  bleiben unverändert (doppeln nicht); Test sichert, dass kein neuer Scorer-
+  Weight entsteht. Tests 190 -> 198 grün; Gate, Consistency, Benchmark unverändert.
+
 ### #14: portability_score als 14. Dimension
 
 - Neues Modul `portability.py`: Satz ist portabel, wenn kein Großschreibungs-Token
