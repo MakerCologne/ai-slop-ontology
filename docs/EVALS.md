@@ -43,6 +43,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)
 - `tests/test_docs_examples.py` — Doku-Beispiele stimmen mit Scorer-Verhalten überein (#48)
 - `tests/test_engine_sync.py` — SSOT-Parity Scorer↔ontology.json (ADR-0002)
+- `tests/test_ssot.py` — #49 SSOT-Gate (check_ssot.py: Ontology-Kopie, Generated-View, Konstanten-Register)
 - `tests/test_evals_doc.py` — diese Zuordnung prüfen (#68, Meta)
 - `tests/test_fn_series_signals.py` — Batch-F-FN-Serien (0101-0606) + Beleg-Disziplin (>=3 slop-, 0 clean-Texte)
 - `tests/test_fp_guards.py` — #23 Guards (Quote-Exemption, Kumulativregel)
