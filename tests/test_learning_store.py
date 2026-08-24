@@ -19,6 +19,10 @@ SLOP_TEXT = (
     "robust solutions unlock the power of synergy. Ultimately, the "
     "lesson is that innovation matters."
 )
+# Buzzwords only — no second strong family, so the exemption can actually
+# lower the weighted sum instead of hitting the >= 2-family floor (which
+# exemptions deliberately cannot wash away, see genre_profiles tests).
+BUZZ_TEXT = "The synergy unleashes robust leverage and the tapestry of the realm."
 
 
 class LearningStoreTests(unittest.TestCase):
@@ -59,9 +63,9 @@ class ScorerIntegrationTests(unittest.TestCase):
     def test_exempted_signal_is_removed_and_reported(self):
         with tempfile.TemporaryDirectory() as td:
             path = os.path.join(td, "not_slop.jsonl")
-            learning_store.add_entry(path, "buzzwords", SLOP_TEXT)
-            base = slop_score(SLOP_TEXT)
-            exempted = slop_score(SLOP_TEXT, not_slop_store=path)
+            learning_store.add_entry(path, "buzzwords", BUZZ_TEXT)
+            base = slop_score(BUZZ_TEXT)
+            exempted = slop_score(BUZZ_TEXT, not_slop_store=path)
             self.assertIn("buzzwords", exempted["signals"]["exempted"])
             self.assertLess(
                 exempted["slop_score"], base["slop_score"],
@@ -82,7 +86,7 @@ class CliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             doc = os.path.join(td, "text.md")
             with open(doc, "w", encoding="utf-8") as f:
-                f.write(SLOP_TEXT)
+                f.write(BUZZ_TEXT)
             store = os.path.join(td, "not_slop.jsonl")
             mark = subprocess.run(
                 [sys.executable, self.SCORER, "--mark-not-slop", "buzzwords",

@@ -2,6 +2,26 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #29: False-Positive-Learning-Store (not_slop.jsonl)
+
+- Neues Modul `learning_store.py`: JSONL-Store {signal_id, sample_hash,
+  note, date, added_by}; sample_hash = sha256(text)[:16]. Persistenz rein
+  dateibasiert (append-only), kein Server/API.
+- Scorer-Integration: slop_score(..., not_slop_store=path) — Signal-Familien
+  (buzzwords, phrases, multilingual, provenance, fake_authority,
+  trailing_moral, mirrored, portability), deren ID + Sample-Hash im Store
+  stehen, werden aus der Bewertung entfernt und im Output als
+  signals.exempted dokumentiert. Die >=2-Familien-Eskalation bleibt:
+  Exemptions waschen echten Mehrfamilien-Slop nicht unter die Schwelle
+  (Test deckt den Floor-Fall).
+- CLI: --mark-not-slop SIGNAL_ID --file PATH [--store|--note|--by] (ohne
+  --file: Exit 2); Score-Modus: --not-slop-store PATH, Default-Autoerkennung
+  not_slop.jsonl neben der bewerteten Datei.
+- Test-Fixtur-Anpassung dokumentiert: ursprüngliche Integrations-Fixtur traf
+  neben Buzzwords eine zweite starke Familie (Hedging+Moral) => Floor — auf
+  reine Buzzword-Fixtur umgestellt, damit die Exemption-Mechanik geprüft wird.
+- Tests 218 -> 224 grün; Gate, Consistency, Benchmark F1 0,982 unverändert.
+
 ### #28: Markdown-Struktur-Anomalien (detect-only)
 
 - Neues Modul `markup_anomalies.py`: HeadingLevelJump (+2 Level, z. B. ## -> ####;

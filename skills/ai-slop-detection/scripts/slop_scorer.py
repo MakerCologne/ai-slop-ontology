@@ -24,6 +24,7 @@ from typing import Optional
 import fp_guards
 import genre_profiles
 import input_norm
+import learning_store
 import portability
 import provenance_signals
 import tokenizer
@@ -550,6 +551,16 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     # documentation, meta-analysis) do not inherit the example's signals.
     # Structural dimensions (density, burstiness, repetition) keep the
     # full text.
+    # Learning store (#29): reviewed false positives. Signal families whose
+    # id + this sample's hash are in the store are excluded from the
+    # evaluation and reported as exempted.
+    exempted_families = set()
+    if not_slop_store is not None:
+        entries = (learning_store.load_store(not_slop_store)
+                   if isinstance(not_slop_store, str) else list(not_slop_store))
+        exempted_families = learning_store.exemptions_for(
+            entries, learning_store.sample_hash(text))
+
     signal_text = fp_guards.strip_quotes(text)
     if genre_profile is not None:
         signal_text = genre_profiles.strip_exempt_terms(
@@ -558,14 +569,22 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         for k in genre_profile.get("zero_weights", []):
             weights[k] = 0.0
     buzz_count, buzz_hits, buzz_tiers = buzzword_score(signal_text)
+    if "buzzwords" in exempted_families:
+        buzz_count, buzz_hits, buzz_tiers = 0, [], {}
     phrase_matches = phrase_category_score(signal_text)
+    if "phrases" in exempted_families:
+        phrase_matches = {}
     multilingual_matches = multilingual_buzzword_score(signal_text)
+    if "multilingual" in exempted_families:
+        multilingual_matches = {}
     punct = punctuation_anomaly_score(text)
     # Provenance markers (#20): deterministic AI-pipeline artifacts. High
     # confidence — counted per match, never stripped by quote exemption
     # (a quoted artifact still proves the source text passed through a
     # pipeline).
     prov_matches = provenance_signals.provenance_hits(text)
+    if "provenance" in exempted_families:
+        prov_matches = {}
     prov_count = sum(len(v) for v in prov_matches.values())
     cop = copula_stats(text)
     adv = adverb_stats(text)
@@ -591,16 +610,24 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     phrase_slop = min(1, total_phrases / 4)
     punct_slop = min(1, (punct["emDashRate"] + punct["ellipsisRate"] + punct["exclamationRate"]) / 2)
     moral_slop = 1.0 if trailing_moral(text) else 0.0
+    if "trailing_moral" in exempted_families:
+        moral_slop = 0.0
     list_slop = 1.0 if list_heavy(text) else 0.0
     authority_matches = find_term_matches(signal_text.lower(), AUTHORITY_PATTERNS)
+    if "fake_authority" in exempted_families:
+        authority_matches = {}
     auth_count = len(authority_matches)
     auth_slop = min(1, auth_count / 2)
     verbose_slop = min(1, max(0, (avg_sentence_len - 20)) / 15)
     multi_slop = min(1, total_multi / 3)
     mirrored_slop = 1.0 if mirrored_intro_conclusion(text) else 0.0
+    if "mirrored" in exempted_families:
+        mirrored_slop = 0.0
     # Portability (#14): fraction of sentences with no names/numbers/quotes.
     port = portability.portability_stats(text)
     portability_slop = 1.0 if port["rate"] > 0.5 else 0.0
+    if "portability" in exempted_families:
+        portability_slop = 0.0
 
     # Structural signals count
     struct_signals = 0
@@ -760,7 +787,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             "moral_detected": moral_slop == 1.0,
             "list_heavy": list_slop == 1.0,
             "mirrored_intro_conclusion": mirrored_slop == 1.0,
-            "exempted": [],
+            "exempted": sorted(exempted_families),
             "high_portability": portability_slop == 1.0,
             "provenance": prov_matches,
         }
@@ -819,6 +846,35 @@ if __name__ == "__main__":
     use_json = "--json" in sys.argv
     args = [a for a in sys.argv[1:] if a != "--json"]
 
+    # Issue #29: false-positive learning store — record a reviewed FP for a
+    # specific sample, then exit. No scoring happens in mark mode.
+    def _opt(name):
+        if name in args:
+            i = args.index(name)
+            if i + 1 >= len(args):
+                print(f"Error: {name} requires a value", file=sys.stderr)
+                sys.exit(2)
+            return args[i + 1]
+        return None
+
+    if "--mark-not-slop" in args:
+        signal_id = _opt("--mark-not-slop")
+        mark_file = _opt("--file")
+        if mark_file is None or not os.path.isfile(mark_file):
+            print("Error: --mark-not-slop requires --file PATH (existing file)",
+                  file=sys.stderr)
+            sys.exit(2)
+        store = _opt("--store") or os.path.join(
+            os.path.dirname(os.path.abspath(mark_file)), "not_slop.jsonl")
+        with open(mark_file, encoding="utf-8", errors="replace") as f:
+            sample = f.read()
+        entry = learning_store.add_entry(
+            store, signal_id=signal_id, sample_text=sample,
+            note=_opt("--note") or "", added_by=_opt("--by") or "manual")
+        print(f"Marked '{signal_id}' as not-slop for {mark_file} "
+              f"(hash {entry['sample_hash']}, store: {store})")
+        sys.exit(0)
+
     # Issue #42: explicit genre-register profile (--genre legal|academic|...)
     genre = None
     if "--genre" in args:
@@ -833,6 +889,10 @@ if __name__ == "__main__":
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(2)
         args = args[:i] + args[i + 2:]
+
+    # Issue #29: explicit learning-store path; default: not_slop.jsonl next
+    # to the scored file (auto-detected only for --file input).
+    not_slop_store = _opt("--not-slop-store")
 
     # --file PATH: explicit file input (preferred)
     file_path = None
@@ -873,7 +933,13 @@ if __name__ == "__main__":
               file=sys.stderr)
         sys.exit(1)
 
-    result = slop_score(text, genre=genre)
+    if not_slop_store is None and file_path is not None:
+        default_store = os.path.join(
+            os.path.dirname(os.path.abspath(file_path)), "not_slop.jsonl")
+        if os.path.isfile(default_store):
+            not_slop_store = default_store
+
+    result = slop_score(text, genre=genre, not_slop_store=not_slop_store)
 
     if use_json:
         print(json.dumps(result, indent=2))
