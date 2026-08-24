@@ -2,6 +2,15 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #32: Signal reinventing-wheel (heuristisch, detect-only)
+
+- Neues Modul `reinventing_wheel.py`: AST-Parsing, Ratcliff/Obershelp-
+  Ähnlichkeit (difflib.SequenceMatcher) > 0,8 über Name+Signatur zweier
+  Funktionen im selben Modul; feuert nur, wenn der Docstring der neuen
+  Funktion die existierende NICHT referenziert („delegates to X“ =>
+  bewusster Shim => kein Hit). Syntaxfehler => leer (konservativ).
+- Tests 229 -> 233 grün; Gate, Consistency, Benchmark unverändert.
+
 ### #31: Kategorie generated-docs (detect-only, Code-Kontext)
 
 - Neues Modul `generated_docs.py`: ARCHITECTURE.md/CONTRIBUTING.md/
