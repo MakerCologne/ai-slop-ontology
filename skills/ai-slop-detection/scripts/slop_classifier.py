@@ -157,6 +157,21 @@ def classify_text(text: str) -> ClassificationResult:
         evidence = f"Found {total_phrases}: " + ", ".join(all_phrases[:8])
         result.signals.append(SignalMatch("AIPhrasePattern", 0.75 + min(total_phrases * 0.02, 0.15), evidence))
 
+    # Editor-tell categories (issue #8): >= 2 hits of one category are
+    # decisive evidence — mirrors src/classifier.py EDITOR_TELL_SIGNALS.
+    EDITOR_TELL_SIGNALS = {
+        "emphasis_crutches": ("EmphasisCrutch", 0.70, "Emphasis crutches: {hits}"),
+        "meta_commentary": ("MetaCommentary", 0.65, "Meta-commentary instead of content: {hits}"),
+        "rhetorical_setups": ("RhetoricalSetup", 0.65, "Rhetorical setups: {hits}"),
+        "vague_declaratives": ("VagueDeclarative", 0.65, "Vague declaratives: {hits}"),
+        "weasel_attribution": ("WeaselAttribution", 0.75, "Weasel attribution: {hits}"),
+    }
+    for cat, (signal_id, conf, tmpl) in EDITOR_TELL_SIGNALS.items():
+        hits = phrase_matches.get(cat, [])
+        if len(hits) >= 2:
+            result.signals.append(SignalMatch(
+                signal_id, conf, tmpl.format(hits=", ".join(hits))))
+
     # 3. Punctuation Anomaly
     punct = punctuation_anomaly_score(text)
     if punct["emDashRate"] > 0.5:

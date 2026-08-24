@@ -139,6 +139,47 @@ PHRASE_CATEGORIES = {
             "but wait, there's more", "here's the thing", "here's the kicker",
             "pro tip:", "fun fact:", "key takeaway:", "bottom line:"
         ]
+    },
+    # --- Editor tells (issue #8): daily-driver tics beyond essay/SEO slop ---
+    "emphasis_crutches": {
+        "confidence": 0.7,
+        "phrases": [
+            "let that sink in", "full stop", "end of story", "no pun intended",
+            "make no mistake", "simply put", "read that again", "mic drop"
+        ]
+    },
+    "meta_commentary": {
+        "confidence": 0.7,
+        "phrases": [
+            "the rest of this essay", "the remainder of this document",
+            "in this section, we will", "in the next section",
+            "as we'll see later", "throughout this article",
+            "without further ado", "in the following paragraphs"
+        ]
+    },
+    "rhetorical_setups": {
+        "confidence": 0.7,
+        "phrases": [
+            "plot twist:", "what if i told you", "here's a thought", "guess what",
+            "believe it or not", "sounds too good to be true",
+            "you might ask", "fair question"
+        ]
+    },
+    "vague_declaratives": {
+        "confidence": 0.65,
+        "phrases": [
+            "the stakes are high", "the stakes couldn't be higher",
+            "timing is everything", "context matters",
+            "there's a lot to unpack", "more than meets the eye"
+        ]
+    },
+    "weasel_attribution": {
+        "confidence": 0.75,
+        "phrases": [
+            "experts agree", "widely regarded as", "it is widely accepted",
+            "many believe", "some say", "critics argue",
+            "people are saying", "sources say", "insiders claim"
+        ]
     }
 }
 

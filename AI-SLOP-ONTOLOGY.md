@@ -1,7 +1,7 @@
 ---
 title: "AI Slop Ontology"
-version: "1.3.0"
-date: "2026-07-10"
+version: "1.4.0"
+date: "2026-08-25"
 language: "de/en (bilingual; technical terms in English)"
 intended_consumers: ["LLM agents", "quality-assurance pipelines", "content moderation", "researchers"]
 license: "CC BY 4.0 (recommended)"
