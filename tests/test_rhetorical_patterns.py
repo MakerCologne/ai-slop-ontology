@@ -83,6 +83,63 @@ class RhetoricalDetectionTests(unittest.TestCase):
                     "ForcedTriad", "RepeatedOpenings", "ChatbotLeftover"):
             self.assertTrue(RHETORICAL_PATTERNS[pid]["keep_when"].strip())
 
+    def test_formatting_slop_title_case_headings(self):
+        text = (
+            "## Key Takeaways From The Report\n"
+            "We cut deploy time from 40 to 4 minutes.\n\n"
+            "## Why This Matters For Your Team\n"
+            "The savings paid for two new hires."
+        )
+        self.assertIn("FormattingSlop", ids(text))
+
+    def test_formatting_slop_spares_sentence_case_headings(self):
+        text = (
+            "## Key takeaways from the report\n"
+            "We cut deploy time from 40 to 4 minutes.\n\n"
+            "## Why this matters for your team\n"
+            "The savings paid for two new hires."
+        )
+        self.assertNotIn("FormattingSlop", ids(text))
+
+    def test_formatting_slop_curly_double_quotes(self):
+        self.assertIn(
+            "FormattingSlop",
+            ids('She said \u201cyes\u201d immediately. The contract was signed in March.'),
+        )
+
+    def test_formatting_slop_hyphenated_pairs(self):
+        text = (
+            "The new process is cross-functional and data-driven, which keeps "
+            "our user-facing docs current. We shipped it in week two."
+        )
+        self.assertIn("FormattingSlop", ids(text))
+
+    def test_formatting_slop_single_hyphenated_word_is_fine(self):
+        text = (
+            "We rewrote the open-source library. It now builds in 90 seconds "
+            "instead of 12 minutes."
+        )
+        self.assertNotIn("FormattingSlop", ids(text))
+
+    def test_formatting_slop_em_dash_doctrine_short_copy(self):
+        # short copy: even a single em dash is a tell (no-ai-slop doctrine)
+        self.assertIn(
+            "FormattingSlop",
+            ids("We shipped it fast \u2014 and on budget. The client renewed."),
+        )
+
+    def test_formatting_slop_em_dash_long_draft_allows_two(self):
+        # long draft: 1-2 em dashes are allowed by the doctrine
+        body = ("The team rebuilt the billing flow in March. "
+                "Checkout went from 40 seconds to 9 \u2014 measured on the 95th "
+                "percentile, not the median. Refunds now clear in a day. "
+                "Support tickets dropped by half. The auditor signed off in "
+                "May. Two engineers moved to search. One joined sales ops. "
+                "The second em dash appears here \u2014 and that is still fine "
+                "under the doctrine. Payments volume doubled by June.")
+        self.assertNotIn("FormattingSlop", ids(body))
+
+
     def test_clean_prose_has_no_findings(self):
         clean = [
             "We shipped the billing page on Tuesday. It cut checkout time from 40 seconds to 9.",
