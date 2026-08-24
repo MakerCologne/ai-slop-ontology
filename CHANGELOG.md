@@ -2,6 +2,22 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #28: Markdown-Struktur-Anomalien (detect-only)
+
+- Neues Modul `markup_anomalies.py`: HeadingLevelJump (+2 Level, z. B. ## -> ####;
+  reine Abstiege feuern nie), ExcessiveThematicBreaks (>2 pro 1000 Wörter, mit
+  absoluter Untergrenze von 3 Breaks als Kurztext-FP-Guard), TitleCaseHeadings
+  (>70% der Headings durchgehend kapitalisiert), SingleRowTable (Tabelle mit
+  exakt einer Datenzeile), BoldMidSentenceDensity (>2 Sätze mit inline **bold**
+  je Absatz).
+- Abgrenzung (#46): FormattingSlop (rhetorical_patterns) deckt Emoji-Headings/
+  Bold-Sprenkel als Muster-Instanz — hier geht es um dokumentweite Struktur-
+  Raten über die Markdown-Quelle, kein Score-Einfluss.
+- TESTS_MODIFIED_AFTER_RED: yes — Negativ-Fixtur „Level-Abstieg“ enthielt
+  versehentlich einen +2-Aufstieg (1->3); gegen die Spez ist genau das ein
+  Treffer. Fixtur auf echten Abstieg (2->1) ohne vorherigen Aufstieg korrigiert.
+- Tests 207 -> 217 grün; Gate, Consistency, Benchmark unverändert.
+
 ### #27: Rhythmus-/Opener-Metriken (detect-only)
 
 - Neues Modul `rhythm_openers.py`: UniformLengthRun (3+ konsekutive Sätze mit

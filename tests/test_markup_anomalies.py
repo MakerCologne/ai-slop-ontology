@@ -25,7 +25,7 @@ class HeadingLevelJumpTests(unittest.TestCase):
         self.assertNotIn("HeadingLevelJump", fired(text))
 
     def test_level_decrease_is_fine(self):
-        text = "# Title\n\n### Subsection\n\n## Back up one level\n\nBody text.\n"
+        text = "## Section\n\n# Back at top level\n\nBody text.\n"
         self.assertNotIn("HeadingLevelJump", fired(text))
 
 
