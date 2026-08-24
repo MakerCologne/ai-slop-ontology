@@ -130,13 +130,18 @@ class RhetoricalDetectionTests(unittest.TestCase):
 
     def test_formatting_slop_em_dash_long_draft_allows_two(self):
         # long draft: 1-2 em dashes are allowed by the doctrine
-        body = ("The team rebuilt the billing flow in March. "
+        body = ("The team rebuilt the billing flow in March and shipped it behind a flag. "
                 "Checkout went from 40 seconds to 9 \u2014 measured on the 95th "
                 "percentile, not the median. Refunds now clear in a day. "
                 "Support tickets dropped by half. The auditor signed off in "
                 "May. Two engineers moved to search. One joined sales ops. "
                 "The second em dash appears here \u2014 and that is still fine "
-                "under the doctrine. Payments volume doubled by June.")
+                "under the doctrine. Payments volume doubled by June. "
+                "Churn fell three points. The finance lead presented the "
+                "numbers at the quarterly review. Nobody asked for the old "
+                "flow back. The dashboard shows the trend daily. The migration guide was "
+                "updated the same week, and two customers wrote in to say thanks for the "
+                "faster refunds alone.")
         self.assertNotIn("FormattingSlop", ids(body))
 
 

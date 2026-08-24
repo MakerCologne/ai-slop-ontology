@@ -647,7 +647,12 @@
               "in the grand scheme of things",
               "not only... but also",
               "it's important to remember",
-              "it's crucial to understand"
+              "it's crucial to understand",
+              "utilize",
+              "meticulous",
+              "supercharge",
+              "supercharged",
+              "nestled"
             ]
           },
           "tier3_moderate": {
@@ -704,7 +709,8 @@
               "mission-critical",
               "actionable insights",
               "deep dive",
-              "deep-dive"
+              "deep-dive",
+              "quietly"
             ]
           }
         }
@@ -941,7 +947,7 @@
             "pattern": "—",
             "threshold": "> 0.5 per sentence",
             "confidence": 0.85,
-            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output"
+            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged"
           },
           {
             "id": "UniformSentenceLength",
@@ -984,7 +990,8 @@
             "id": "EmDashExcess",
             "char": "—",
             "threshold_per_sentence": 0.5,
-            "confidence": 0.85
+            "confidence": 0.85,
+            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster"
           },
           {
             "id": "EllipsisExcess",
@@ -1008,6 +1015,30 @@
             "id": "EmojiInProfessional",
             "pattern": "emoji in formal/business text",
             "confidence": 0.55
+          },
+          {
+            "id": "TitleCaseHeadings",
+            "pattern": ">= 2 headings in Title Case",
+            "confidence": 0.6,
+            "note": "Human markdown norm is sentence case; generated docs default to Title Case"
+          },
+          {
+            "id": "CurlyQuotes",
+            "pattern": "“ ” in plain text",
+            "confidence": 0.6,
+            "note": "Smart quotes in raw text/markdown are a typeset-output tell"
+          },
+          {
+            "id": "HyphenatedPairRate",
+            "pattern": ">= 2 distinct compound modifiers (cross-functional, data-driven)",
+            "confidence": 0.55,
+            "note": "Stacked hyphenated modifiers are an LLM register tell"
+          },
+          {
+            "id": "BoldMidSentence",
+            "pattern": "**word** inside a running sentence",
+            "confidence": 0.55,
+            "note": "Emphasis bold as decoration rather than structure"
           }
         ]
       },

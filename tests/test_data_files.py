@@ -30,6 +30,12 @@ class TestOntologyJson(unittest.TestCase):
             self.assertIn("words", tier)
             self.assertIsInstance(tier["words"], list)
 
+    def test_formatting_indicator_ids(self):
+        # issue #16: refined formatting-slop indicators present
+        ids = [i["id"] for i in self.o["signals"]["text"]["punctuation"]["indicators"]]
+        for wanted in ("TitleCaseHeadings", "CurlyQuotes", "HyphenatedPairRate", "BoldMidSentence"):
+            self.assertIn(wanted, ids)
+
     def test_hyper_typicality_signal(self):
         ids = [i.get("id") for i in self.o["signals"]["image"]["indicators"]]
         self.assertIn("HyperTypicality", ids)
