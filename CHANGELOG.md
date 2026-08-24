@@ -52,6 +52,23 @@
   validiert, sobald adr/ existiert.
 - Tests 299 -> 304 (tests/test_adr.py). TDD: Red-Commit vorab.
 
+### #66: Issue-/PR-Templates mit Pflichtfeldern
+
+- `.github/ISSUE_TEMPLATE/signal-proposal.md`: Signal-RFC nach Rust-RFC/KEP-
+  Blaupause — Pflichtfelder Signal Name, Kategorie, Severity, Corpus Evidence,
+  Test-Oracle, FP-Analyse, Prior Art, Quellen, Graduation Criteria,
+  depends-on (Sequencing, M5). Lebenszyklus-Start nursery (#63).
+- `.github/ISSUE_TEMPLATE/bug.md`: FP/FN-Bug-Reports mit Pflichtfeldern
+  Signal, Input, Genre/Kontext, Erwartet, Tatsaechlich, Evidence
+  (Scorer-Output, M6-Belegpflicht).
+- `.github/PULL_REQUEST_TEMPLATE.md`: Pflichtfelder Corpus Evidence (bei
+  Score-Aenderung Messung vorher/nachher), Test-Oracle (Red-Commit),
+  FP-Analyse, Prior Art, Signals-DoD-Abhaken (8 Punkte aus docs/SIGNAL-DOD.md)
+  plus Governance-Abschnitt (#67).
+- Verhindert strukturell die Batch-1-Nachbesserungen (11 Issues ohne
+  Testkriterium). Tests 304 -> 308 (tests/test_templates.py).
+  TDD: Red-Commit vorab.
+
 ## [1.9.0] — 2026-08-25 (Batch D)
 
 ### #41: Labeled Benchmark-Corpus mit Hard Negatives (~300+ Texte)
