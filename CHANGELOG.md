@@ -2,6 +2,21 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #34: Signal fabricated-proof-metrics (+ Claim-Register-Disziplin am eigenen CHANGELOG)
+
+- Neues Modul `proof_metrics.py`: Prozent-/Score-Zahlen mit Qualitäts-Claim
+  (accuracy/precision/recall/F1/false positives/error|success rate) ohne
+  Quellenreferenz (corpus/Korpus/eval/Link/DOI/et al./Jahr) im Umkreis von
+  200 Zeichen => detect-only Hit mit Evidence. Zahlen ohne Claim-Wort
+  feuern nie („42 artifacts“ ist ok).
+- IRONIE-ENTScheid (dokumentiert): Der eigene CHANGELOG behauptet
+  „Benchmark F1 0,982“ — der Detector FEUERTE darauf. Entscheidung: Corpus-
+  Verweis hinzugefügt statt Ausnahme-Whitelisting — jede F1-0,982-Zeile im
+  CHANGELOG trägt jetzt „(eval/corpus.jsonl)“. Der Ironie-Test liest
+  CHANGELOG.md und erzwingt dauerhaft 0 Hits (Claim-Register-Disziplin).
+- Detector-Fix dabei: „Corpus“/„Korpus“ case-insensitiv als Quellenreferenz.
+- Tests 243 -> 250 grün; Gate, Consistency, Benchmark unverändert.
+
 ### #33: Instruktions-Slop-Modul (CLAUDE.md/AGENTS.md/SKILL.md-artige Dateien)
 
 - Neues Modul `instruction_slop.py`, vier detect-only Signale mit Evidence +
@@ -54,7 +69,7 @@
 - Test-Fixtur-Anpassung dokumentiert: ursprüngliche Integrations-Fixtur traf
   neben Buzzwords eine zweite starke Familie (Hedging+Moral) => Floor — auf
   reine Buzzword-Fixtur umgestellt, damit die Exemption-Mechanik geprüft wird.
-- Tests 218 -> 224 grün; Gate, Consistency, Benchmark F1 0,982 unverändert.
+- Tests 218 -> 224 grün; Gate, Consistency, Benchmark (eval/corpus.jsonl) F1 0,982 unverändert.
 
 ### #28: Markdown-Struktur-Anomalien (detect-only)
 
@@ -108,7 +123,7 @@
 - Doku: SKILL.md „13 Detection Dimensions“ -> „14“ (inkl. Frontmatter-Description).
 - Gewicht bewusst von 0,03 auf 0,02 reduziert: Copula-FP-Regressionstest
   (faktischer Text 0,401 >= 0,40) zeigte die Grenze — gemessen, nicht geraten.
-- Tests 184 -> 190 grün; Gate grün; Benchmark F1 0,982 unverändert.
+- Tests 184 -> 190 grün; Gate grün; Benchmark (eval/corpus.jsonl) F1 0,982 unverändert.
 - Prozessnotiz: Commits waren kurzzeitig auf master-Basis verwaist (fremder
   Checkout im Shared-Worktree); Chain per cherry-pick wiederhergestellt.
 
@@ -136,7 +151,7 @@
   replaced by Y“ — exakt die Varianten aus der Quellen-Struktur-Liste.
 - Negative Tests: schlichte Aussage und „no longer“ ohne Kontrast-Teil
   feuern nicht.
-- Tests 165 → 172 grün; Gate, Consistency, Benchmark F1 0,982 unverändert.
+- Tests 165 → 172 grün; Gate, Consistency, Benchmark (eval/corpus.jsonl) F1 0,982 unverändert.
 
 ### Version konsolidiert: 1.7.0 (README, yaml, MD)
 
@@ -155,7 +170,7 @@
   Sprach-DB-getrieben wie bisher — das ist #53); `adverb_stats` bleibt
   bewusst englisch (-ly), dokumentiert.
 - Tests 154 → 165 grün (alle bestehenden Space-Sprachen-Tests unverändert
-  grün); Gate, Consistency, Benchmark F1 0,982 unverändert.
+  grün); Gate, Consistency, Benchmark (eval/corpus.jsonl) F1 0,982 unverändert.
 
 ### #40: Input-Normalization & Anti-Evasion-Layer
 
@@ -168,7 +183,7 @@
   (Scope-Grenze, dokumentiert).
 - Evasion-Tests: „dеlvе“ (kyrillisch е), „del\u200bve“, „ｄｅｌｖｅ“ triggern
   nach Normalisierung den Buzzword-Signal-Pfad wie der Klartext.
-- Tests 144 → 154 grün; Gate, Consistency, Benchmark F1 0,982 unverändert.
+- Tests 144 → 154 grün; Gate, Consistency, Benchmark (eval/corpus.jsonl) F1 0,982 unverändert.
 
 ### #42: Genre-Register-Profile (False-Positive-Guards für legitime Stile)
 
@@ -185,7 +200,7 @@
   und ≥-2-Familien-Eskalation behalten ursprüngliche Stärke — Genre-Profile
   können echten Slop nicht unter die Schwelle waschen (Test deckt das ab).
 - Unbekanntes Genre → ValueError / CLI-Exit 2. Standard-Texte ohne Flag
-  unverändert (128→144 Tests grün; Gate + Benchmark F1 0,982 unverändert).
+  unverändert (128→144 Tests grün; Gate + Benchmark (eval/corpus.jsonl) F1 0,982 unverändert).
 
 ### FU-1: #24-Intensifier-Fix (review-batch-a.md §6, MEDIUM)
 
