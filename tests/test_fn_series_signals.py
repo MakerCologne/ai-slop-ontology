@@ -47,6 +47,21 @@ def clean_texts():
 TH = 0.40
 
 
+class TestReportHedgingSignals(unittest.TestCase):
+    """C2 — business/report hedging + fake-authority formulas (series 0202).
+
+    Real corpus lines (examples):
+      slop-0202-002: "It is important to note that the data shows a clear
+        trend. Studies show the payoff compounds over quarters."
+      slop-0202-009: "Industry reports suggest adoption doubled ..."
+    """
+
+    def test_series_0202_report_hedging_detected(self):
+        misses = [d["id"] for d in series_texts("slop-0202-")
+                  if slop_scorer.slop_score(d["text"])["slop_score"] < TH]
+        self.assertEqual(misses, [], f"undetected slop-0202 items: {misses[:5]}")
+
+
 class TestMarketingFormulaSignals(unittest.TestCase):
     """C1 — SaaS/marketing CTA formulas + punchy insight-porn (series 0101/0504).
 
@@ -98,6 +113,9 @@ class TestPhraseEvidenceDiscipline(unittest.TestCase):
 
     def test_punchy_insight_evidence(self):
         self._check("punchy_insight")
+
+    def test_report_hedging_evidence(self):
+        self._check("report_hedging")
 
 
 if __name__ == "__main__":
