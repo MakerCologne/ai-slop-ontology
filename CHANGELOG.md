@@ -21,6 +21,26 @@
   `slop-fn-02` (0,314, Business-Listicle-Muster außerhalb der Phrase-DB)
   — als KNOWN-FN im Gate dokumentiert.
 
+### Issue #23: False-Positive-Guard-Systematik
+
+- Neues Modul `skills/ai-slop-detection/scripts/fp_guards.py`:
+  - **Quote-Exemption**: zitierte Passagen > 40 Zeichen werden aus der
+    Signal-Erkennung (Buzzwords/Phrasen/Authority/Multilingual) entfernt;
+    Kurz-Zitate (< 40 Zeichen) bleiben erhalten. Strukturdimensionen messen
+    weiterhin den Volltext.
+  - **Kumulativregel**: Phrase-Kategorien scorieren erst ab 2 Treffern
+    (Einzel-Treffer werden nur als Signal berichtet, nicht gescort).
+  - **Konsistente Schwellen**: `fp_guards.THRESHOLDS` als Single Source of
+    Truth (DECISION_THRESHOLD, QUOTE_MIN_CHARS, PHRASE_MIN_HITS).
+- Eskalationsregel generalisiert auf „≥ 2 unabhängige Marker-Familien“
+  (Buzzwords ≥ 0,5 | korroborierte Phrase-Kategorien | Authority | Moral |
+  Mirroring | Einzel-Treffer in High-Confidence-Kategorien ≥ 0,75).
+- Regressionstest: technischer Text, der eine Slop-Passage in Anführungs-
+  zeichen zitiert (SKILL.md-/Review-Fall), fällt von 0,70 auf < 0,40.
+- Trade-off dokumentiert: Scorer-Recall auf Corpus 0,828 → 0,862 (besser),
+  Pipeline F1 unverändert 0,982, Precision 1,0.
+- Tests 94 → 105.
+
 ## [1.5.0] — 2026-08-25
 
 **Formatting-Slop-Doktrin + Banned-Words-Abgleich (#16).**

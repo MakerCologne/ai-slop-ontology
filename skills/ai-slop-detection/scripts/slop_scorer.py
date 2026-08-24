@@ -21,6 +21,12 @@ import sys
 from collections import Counter
 from typing import Optional
 
+import fp_guards
+
+# Single source of truth for the decision threshold (issue #23): guards and
+# risk levels share fp_guards.THRESHOLDS instead of scattered magic numbers.
+DECISION_THRESHOLD = fp_guards.THRESHOLDS["DECISION_THRESHOLD"]
+
 # --- Extended Signal Database (from ontology.json v1.0.0) ---
 
 BUZZWORD_TIERS = {
@@ -430,11 +436,18 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     density = information_density(text)
     rep = repetition_ratio(text)
     burst = burstiness(text)
-    buzz_count, buzz_hits, buzz_tiers = buzzword_score(text)
-    phrase_matches = phrase_category_score(text)
-    multilingual_matches = multilingual_buzzword_score(text)
+    # FP guards (#23): buzzword/phrase/multilingual/authority signals are
+    # matched on the quote-stripped text — quoted slop examples (reviews,
+    # documentation, meta-analysis) do not inherit the example's signals.
+    # Structural dimensions (density, burstiness, repetition) keep the
+    # full text.
+    signal_text = fp_guards.strip_quotes(text)
+    buzz_count, buzz_hits, buzz_tiers = buzzword_score(signal_text)
+    phrase_matches = phrase_category_score(signal_text)
+    multilingual_matches = multilingual_buzzword_score(signal_text)
     punct = punctuation_anomaly_score(text)
-    total_phrases = sum(len(v) for v in phrase_matches.values())
+    # Cumulative rule (#23): a phrase category only scores with >= 2 hits.
+    total_phrases = fp_guards.effective_phrase_count(phrase_matches)
     total_multi = sum(len(v) for v in multilingual_matches.values())
 
     sentences = [s.strip() for s in re.split(r'[.!?]+', text) if s.strip()]
@@ -456,7 +469,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     punct_slop = min(1, (punct["emDashRate"] + punct["ellipsisRate"] + punct["exclamationRate"]) / 2)
     moral_slop = 1.0 if trailing_moral(text) else 0.0
     list_slop = 1.0 if list_heavy(text) else 0.0
-    authority_matches = find_term_matches(text.lower(), AUTHORITY_PATTERNS)
+    authority_matches = find_term_matches(signal_text.lower(), AUTHORITY_PATTERNS)
     auth_count = len(authority_matches)
     auth_slop = min(1, auth_count / 2)
     verbose_slop = min(1, max(0, (avg_sentence_len - 20)) / 15)
@@ -493,26 +506,34 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     # phrases, authority claims are all English). If a text hits 3+ multilingual
     # AI markers, that is strong evidence on its own — floor at "Suspicious".
     if total_multi >= 3:
-        overall = max(overall, 0.40)
+        overall = max(overall, DECISION_THRESHOLD)
 
-    # Escalation (mirrors the ontology's ">= 2 high-severity signals" rule):
-    # several strong markers together are decisive even when neutral dimensions
-    # (density, repetition, burstiness) dilute the weighted sum.
-    strong_signals = sum([
+    # Escalation (#23 generalization of the ">= 2 high-severity signals"
+    # ontology rule): two or more independent marker families agreeing are
+    # decisive even when neutral dimensions (density, repetition,
+    # burstiness) dilute the weighted sum. Families:
+    #   - buzzwords >= 50% of the normalization divisor
+    #   - corroborated phrase categories (>= 2 hits, cumulative rule)
+    #   - fake-authority claims
+    #   - trailing moral, mirrored intro/conclusion
+    #   - a single hit in a HIGH-CONFIDENCE phrase category (confidence
+    #     >= 0.75: opening/closing formulas, hedging, metaphor abuse,
+    #     weasel attribution) — a lone "in conclusion," plus buzzwords is
+    #     still two families agreeing.
+    high_conf_single = any(
+        PHRASE_CATEGORIES[cat].get("confidence", 0.7) >= 0.75
+        for cat in phrase_matches
+    )
+    strong_families = sum([
         buzz_slop >= 0.5,
         phrase_slop >= 0.5,
         auth_slop >= 0.5,
         moral_slop == 1.0,
         mirrored_slop == 1.0,
+        high_conf_single,
     ])
-    # Independent marker families agreeing is decisive on its own: 3+ tier
-    # buzzwords AND >= 2 phrase-category hits in the same text (control-set
-    # case slop-fn-01: "In today's digital age ... harness ... unlock ...").
-    # Mirrors the ontology's ">= 2 high-severity signals" rule.
-    if buzz_slop >= 0.5 and phrase_slop >= 0.5:
-        strong_signals += 1
-    if strong_signals >= 3:
-        overall = max(overall, 0.40)
+    if strong_families >= 2:
+        overall = max(overall, DECISION_THRESHOLD)
 
     score = round(min(overall, 1.0), 3)
 
@@ -520,7 +541,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
         risk = "⚫ Malicious/Severe"
     elif score >= 0.70:
         risk = "🔴 Slop"
-    elif score >= 0.40:
+    elif score >= DECISION_THRESHOLD:
         risk = "🟠 Suspicious"
     elif score >= 0.25:
         risk = "🟡 AI-Assisted"
@@ -529,7 +550,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
 
     if score >= 0.70:
         action = "Do not cite. Do not store as fact. Require independent verification."
-    elif score >= 0.40:
+    elif score >= DECISION_THRESHOLD:
         action = "Use only as weak signal. Cross-check with primary sources."
     elif score >= 0.25:
         action = "Use with cross-checking."
