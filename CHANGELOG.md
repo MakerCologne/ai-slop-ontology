@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.9.0] — 2026-08-25 (Batch D)
+
+### #41: Labeled Benchmark-Corpus mit Hard Negatives (~300+ Texte)
+
+- `eval/corpus.jsonl` von 53 auf 314 Zeilen erweitert. Jede Zeile jetzt
+  `{id, label, lang, type, genre, text, source}`.
+- 192 neue Slop-Texte: wörtlich zitierte Original-Slop-Phrasen aus den
+  Deep-Dive-Artefakten (deep/01–07: stop-slop, no-ai-slop, humanizer,
+  Wikipedia, unslop writing+SaaS, poteto) — je 9–12 Phrasen pro Text,
+  Quellenangabe im `source`-Feld. 84 neue Clean-Texte: 69 Hard Negatives
+  handgeschrieben (Juristensprache, Paper-Abstracts, ehrliches Marketing,
+  Konfig-/Fachtexte, Kochrezepte, Lyrik-Passagen) + 15 legitime Texte aus
+  deep-„After"-Beispielen belegt. Belegt-Anteil: 207/314 = 66% (>= 60%-Regel).
+- `eval/run_benchmark.py`: berichtet Precision/Recall/F1 @ Threshold 0.40
+  UND je Genre FP-Rate (fp/n_clean; nur definiert wenn Clean-Items vorhanden,
+  sonst n/a) plus FN-Rate je Genre.
+- NEUE Messung (Messvorschrift: `python3 eval/run_benchmark.py`, threshold
+  0.40, eval/corpus.jsonl, 2026-08-25): skill-pipeline P 1.0 / R 0.312 /
+  F1 0.476 (eval/corpus.jsonl); src-classifier F1 0.669 (eval/corpus.jsonl).
+  Ersetzt die alte Baseline-Zahl F1 0.982 (53-Texte-Corpus, eval/corpus.jsonl
+  v1.8-Stand): Das neue Corpus ist deutlich härter; der Recall-Rückgang
+  konzentriert sich auf Throat-Clearing-/Emphasis-Crutch-Phrasen-Slop aus
+  deep/01+04+06 — exakt die in den Deep-Dives als „FEHLT" dokumentierten
+  Signale. Precision bleibt 1.0, FP-Rate 0.0 in ALLEN Hard-Negative-Genres
+  (legal/academic/marketing/technical/config/recipe/lyric) — das war das
+  FP-Ziel des Issues. Bekannte FNs (slop-fn-02) weitergeführt.
+- Tests 250 -> 261 grün (Benchmark-Runner mit Fixtur-Corpus + Genre-Breakdown
+  getestet; Corpus-Disziplin-Tests: >= 300 Zeilen, Quellenpflicht, 60%-Regel).
+  Control-Set-Gate grün (known-FN weitergeführt), Consistency grün.
+- TESTS_MODIFIED_AFTER_RED: yes (1 Fall) — Red-Test behauptete fälschlich
+  fp_rate=0.0 für ein Genre ohne Clean-Items im eigenen Fixtur-Corpus;
+  Spez verlangt „n/a wenn keine Clean-Items". Nur diese Assertion korrigiert.
+
+### (Batch D läuft weiter: #9 code-slop, #10 diff-Modus — Einträge folgen.)
+
 ## [1.8.0] — 2026-08-24 (Batch C)
 
 ### #34: Signal fabricated-proof-metrics (+ Claim-Register-Disziplin am eigenen CHANGELOG)

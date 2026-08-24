@@ -69,9 +69,10 @@ class BenchmarkRunnerFixtureTests(unittest.TestCase):
     def test_genre_breakdown_reports_fp_rate_per_genre(self):
         for r in self.results:
             per_genre = r["per_genre"]
-            # generic: one slop item, correctly flagged -> fp_rate 0.0, fp 0
-            self.assertEqual(per_genre["generic"]["fp"], 0)
-            self.assertAlmostEqual(per_genre["generic"]["fp_rate"], 0.0)
+            # generic: only the slop item, correctly flagged -> TP, and no
+            # clean item -> fp_rate intentionally undefined (not 0.0)
+            self.assertEqual(per_genre["generic"]["tp"], 1)
+            self.assertNotIn("fp_rate", per_genre["generic"])
             # legal: one clean item, incorrectly flagged -> fp_rate 1.0
             self.assertEqual(per_genre["legal"]["fp"], 1)
             self.assertAlmostEqual(per_genre["legal"]["fp_rate"], 1.0)

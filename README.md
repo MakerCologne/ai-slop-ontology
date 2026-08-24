@@ -147,7 +147,16 @@ Volume, Velocity, Variety, Value, Verification, Visibility, Virality
 
 ## New in v1.2.0
 
-- **Labeled evaluation corpus** (`eval/corpus.jsonl`, 53 examples, 7 languages) and benchmark runner (`eval/run_benchmark.py`)
+- **Labeled evaluation corpus** (`eval/corpus.jsonl`, 314 examples, 7 languages, hard-negative
+g  genres legal/academic/marketing/technical/config/recipe/lyric; 66% of lines sourced from
+  deep-research artifacts — see `source` field per line) and benchmark runner
+  (`eval/run_benchmark.py`, per-genre FP-rate breakdown).
+  Current measurement (skill-pipeline, threshold 0.40, `eval/corpus.jsonl`, 2026-08-25):
+  **Precision 1.000, Recall 0.312, F1 0.476** — the enlarged corpus is substantially
+  harder than the 53-example baseline (F1 0.982 there); the recall drop is concentrated
+  in slop composed of throat-clearing/emphasis-crutch phrases, which are documented
+  ontology gaps (research deep-dives 01–07), not corpus mislabels. Precision holds at
+  1.0 across all hard-negative genres (FP rate 0.0 everywhere).
 - **Calibrated weights** via `eval/calibrate.py`: skill pipeline F1 **0.47 → 0.98** at precision 1.0
 - **Noisy-OR score aggregation** — independent evidence accumulates instead of being averaged away
 - **New languages:** Hindi, Vietnamese, Urdu markers (closing the §12 language-bias gap)

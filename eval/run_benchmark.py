@@ -43,6 +43,7 @@ def evaluate(name: str, score_fn, items: list, threshold: float) -> dict:
     tp = fp = tn = fn = 0
     errors = []
     by_lang = {}
+    by_genre = {}
     for item in items:
         score = score_fn(item["text"])
         predicted_slop = score >= threshold
@@ -50,18 +51,33 @@ def evaluate(name: str, score_fn, items: list, threshold: float) -> dict:
         lang = item.get("lang", "?")
         stats = by_lang.setdefault(lang, {"correct": 0, "total": 0})
         stats["total"] += 1
+        # Issue #41: genre breakdown — FP rate per genre (hard-negative
+        # genres like legal/academic/recipe show where the scorer
+        # over-fires). Lines without a genre are grouped as "unspecified".
+        genre = item.get("genre") or "unspecified"
+        g = by_genre.setdefault(genre, {"n": 0, "n_clean": 0, "n_slop": 0,
+                                        "tp": 0, "fp": 0, "tn": 0, "fn": 0})
+        g["n"] += 1
         if predicted_slop == actual_slop:
             stats["correct"] += 1
         if predicted_slop and actual_slop:
             tp += 1
+            g["tp"] += 1
         elif predicted_slop and not actual_slop:
             fp += 1
+            g["fp"] += 1
             errors.append({"id": item["id"], "kind": "false_positive", "score": round(score, 3)})
         elif not predicted_slop and actual_slop:
             fn += 1
+            g["fn"] += 1
             errors.append({"id": item["id"], "kind": "false_negative", "score": round(score, 3)})
         else:
             tn += 1
+            g["tn"] += 1
+        if actual_slop:
+            g["n_slop"] += 1
+        else:
+            g["n_clean"] += 1
 
     precision = tp / (tp + fp) if tp + fp else 0.0
     recall = tp / (tp + fn) if tp + fn else 0.0
@@ -79,8 +95,25 @@ def evaluate(name: str, score_fn, items: list, threshold: float) -> dict:
         "per_language_accuracy": {
             lang: round(s["correct"] / s["total"], 3) for lang, s in sorted(by_lang.items())
         },
+        "per_genre": genre_report(by_genre),
         "errors": errors,
     }
+
+
+def genre_report(by_genre: dict) -> dict:
+    """Per-genre stats; fp_rate is only reported for genres that have
+    clean (hard-negative) items — an fp rate without negatives is
+    undefined, not zero."""
+    report = {}
+    for genre, g in sorted(by_genre.items()):
+        entry = {"n": g["n"], "n_clean": g["n_clean"], "n_slop": g["n_slop"],
+                 "tp": g["tp"], "fp": g["fp"], "tn": g["tn"], "fn": g["fn"]}
+        if g["n_clean"] > 0:
+            entry["fp_rate"] = round(g["fp"] / g["n_clean"], 3)
+        if g["n_slop"] > 0:
+            entry["fn_rate"] = round(g["fn"] / g["n_slop"], 3)
+        report[genre] = entry
+    return report
 
 
 def run(corpus_path: str = DEFAULT_CORPUS, threshold: float = DEFAULT_THRESHOLD) -> list:
@@ -113,6 +146,10 @@ def format_report(results: list) -> str:
         lines.append(f"  Confusion: TP={r['tp']} FP={r['fp']} TN={r['tn']} FN={r['fn']}")
         lines.append(f"  Per language: " + ", ".join(
             f"{lang}={acc}" for lang, acc in r["per_language_accuracy"].items()))
+        lines.append("  Per genre FP rate (clean items): " + ", ".join(
+            f"{genre}={stats.get('fp_rate', 'n/a')}"
+            f"({stats['fp']}/{stats['n_clean']})"
+            for genre, stats in r["per_genre"].items() if stats["n_clean"] > 0))
         if r["errors"]:
             lines.append("  Misclassified:")
             for e in r["errors"]:
