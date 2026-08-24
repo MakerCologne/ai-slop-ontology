@@ -33,7 +33,26 @@
   fp_rate=0.0 für ein Genre ohne Clean-Items im eigenen Fixtur-Corpus;
   Spez verlangt „n/a wenn keine Clean-Items". Nur diese Assertion korrigiert.
 
-### (Batch D läuft weiter: #9 code-slop, #10 diff-Modus — Einträge folgen.)
+### #9: Code-Slop-Signale als detect-only Modul code_slop.py
+
+- Neues Modul `skills/ai-slop-detection/scripts/code_slop.py` — analog
+  #31/#32 Utility: KEIN Score-Einfluss (Test sichert: keine code_slop-
+  Dimension im Text-Scorer). Signale (Regex/Token-basiert, strukturiert
+  mit Zeile + Evidence + Hint): chained_type_assertions (as X as Y),
+  as_any_casts (gezählt), widen_then_assert (Record<string,unknown>/
+  as unknown + `as`-Cast in derselben Funktion — Funktionsgrenzen-Heuristik
+  inkl. One-Liner), excessive_defensive_try (>= 3 try/except-pass in einer
+  Datei), module_mocking (>= 2 jest.mock/vi.mock/monkeypatch-Dichte).
+- SAFETY:-Kommentar-Konvention als Doku im Modul-Docstring (bewusst NICHT
+  erzwungen — detect-only).
+- CLI-Entscheidung: eigenes `scripts/code_slop_check.py` statt
+  `slop_scorer.py --code` — Code-Slop hat keine Abhängigkeit vom Text-Scorer
+  und soll keine bekommen; Exit-Codes 0/1/2.
+- Tests 261 -> 276 grün (TS/Python-Fixturen, Negative Tests: ehrlicher
+  try/except, Single-Mock, Clean-Code). Benchmark unverändert
+  (P 1.0 / R 0.312 / F1 0.476, eval/corpus.jsonl), Gate grün, Consistency grün.
+
+### (Batch D läuft weiter: #10 diff-Modus — Eintrag folgt.)
 
 ## [1.8.0] — 2026-08-24 (Batch C)
 
