@@ -19,8 +19,8 @@ class UniformLengthRunTests(unittest.TestCase):
     def test_three_consecutive_similar_lengths_fire(self):
         text = (
             "The pipeline failed on Tuesday night. "
-            "The dashboard showed nothing unusual. "
-            "The on-call engineer slept through it. "
+            "The dashboard showed no new anomalies. "
+            "The on-call engineer slept right through. "
             "Then, quite unexpectedly and against every forecast, everything exploded."
         )
         self.assertIn("UniformLengthRun", fired(text))
@@ -37,7 +37,7 @@ class UniformLengthRunTests(unittest.TestCase):
     def test_two_similar_sentences_do_not_fire(self):
         text = (
             "The pipeline failed on Tuesday night. "
-            "The dashboard showed nothing unusual. "
+            "The dashboard showed no new anomalies. "
             "Then everything exploded spectacularly and without warning whatsoever, everywhere."
         )
         self.assertNotIn("UniformLengthRun", fired(text))

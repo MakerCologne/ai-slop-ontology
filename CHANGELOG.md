@@ -2,6 +2,21 @@
 
 ## [Unreleased — Batch C in Arbeit]
 
+### #27: Rhythmus-/Opener-Metriken (detect-only)
+
+- Neues Modul `rhythm_openers.py`: UniformLengthRun (3+ konsekutive Sätze mit
+  Satzlänge ±5%), SelfAnsweredQuestion („Why X? Because Y.“ / „What's the
+  catch? It's simple:“ — Frage + Self-Answer-Paar), LowOpenerDiversity
+  (>30% identische Zweiwort-Opener, min. 4 Sätze).
+- Abgrenzungen (#46): UniformLengthRun (lokale Konsekutiv-Rate) vs.
+  UniformSentenceLength (globaler Std-Dev) vs. RoboticRhythm (Fragment-Stakkato);
+  LowOpenerDiversity (Ganztext-Rate, Zweiwort-Signatur) vs. RepeatedOpenings
+  (adjazentes Muster, ein Wort). Alles detect-only, kein Score-Einfluss.
+- TESTS_MODIFIED_AFTER_RED: yes — Fixtur-Satzlängen im Red-Commit widersprachen
+  der eigenen ±5%-Spez (7 vs. 6 Wörter); auf exakt 6/6/6 korrigiert, um die
+  Spez zu testen statt die Implementierung.
+- Tests 198 -> 207 grün; Gate, Consistency, Benchmark unverändert.
+
 ### #25: Universalquantoren-Rate + Quellen-Diskrepanz (detect-only)
 
 - Neues Modul `quantifiers.py`: UniversalQuantifiers (Subjekt-Quantoren
