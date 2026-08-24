@@ -19,6 +19,20 @@
   Lebenszyklus vorhanden; jede #N-Referenz steht in der Konsistenz-Liste des
   Dokuments selbst. Keine API-Calls.
 - Tests 290 -> 294 (tests/test_methodology_doc.py). TDD: Red-Commit dfb1fa7.
+### #64: Signal-Definition-of-Done — maschinenlesbare Checkliste als PR-Gate
+
+- `docs/SIGNAL-DOD.md`: die 8 Musts (Test-Oracle, FP-Abwaegung, SSOT-Eintrag,
+  Quellenbeleg, Benchmark-Referenz, Kollisions-Check, Sequencing-Disziplin,
+  Prozess-Einbettung) als Checkliste mit Pruefebene (auto/Review).
+- `scripts/check_signal_dod.py`: scannt Signal-Module unter
+  skills/ai-slop-detection/scripts/ heuristisch (Test-Referenz in tests/,
+  keep_when-Doku, SKILL.md-Referenz). Default: Report (exit 0);
+  --strict: exit 1 bei fehlenden Tests. Infra-Module nur Test-Check.
+  Ist-Aufnahme gegen Bestand: 0 FAIL, 9 WARN (keep_when/SKILL-Referenz
+  bei aelteren Signalen — schrittweise nachziehen, s. Report).
+- Tests 294 -> 299 (tests/test_signal_dod.py mit Fixture-Repo: ok/FAIL/WARN/
+  Infra + CLI Report/strict). TDD: Red-Commit vorab.
+
 ## [1.9.0] — 2026-08-25 (Batch D)
 
 ### #41: Labeled Benchmark-Corpus mit Hard Negatives (~300+ Texte)
