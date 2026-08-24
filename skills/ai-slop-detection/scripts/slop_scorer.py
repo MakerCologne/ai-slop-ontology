@@ -392,6 +392,35 @@ def copula_stats(text: str) -> dict:
     rate = len(copula_spans) / total if total else 0.0
     return {"copulas": len(copula_spans), "substitutes": len(sub_spans), "rate": rate}
 
+
+# Issue #24: adverb-rate signal. Delimitation to the #21 voice principles:
+# #21 is a WRITING doctrine (which adverbs to prefer or cut when composing);
+# this dimension only MEASURES the -ly rate of received text and draws no
+# style judgment. Delimitation to #22: adverbs are not verbs, so no span
+# overlap with the copula dimension is possible by construction.
+ADVERB_RATE_THRESHOLD = 0.04   # > 4% -ly words
+ADVERB_MIN_WORDS = 40          # rate is meaningless on very short texts
+INTENSIFIERS = ["very", "really", "extremely", "incredibly", "remarkably"]
+
+
+def adverb_stats(text: str) -> dict:
+    """Count -ly adverbs, total words, rate, and intensifier hits (#24).
+
+    Intensifier hits are reported but only AMPLIFY an adverb rate that is
+    already above threshold (see slop_score); they never contribute alone.
+    """
+    words = re.findall(r"\b\w+ly\b", text.lower())
+    total = re.findall(r"\b\w+\b", text.lower())
+    intensifiers = find_term_matches(text.lower(), INTENSIFIERS)
+    intensifier_count = sum(intensifiers.values())
+    rate = len(words) / len(total) if total else 0.0
+    return {
+        "ly_words": len(words),
+        "total_words": len(total),
+        "rate": round(rate, 4),
+        "intensifiers": intensifier_count,
+    }
+
 def phrase_category_score(text: str) -> dict:
     text_lower = text.lower()
     term_to_cat = {}
@@ -497,6 +526,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     prov_matches = provenance_signals.provenance_hits(text)
     prov_count = sum(len(v) for v in prov_matches.values())
     cop = copula_stats(text)
+    adv = adverb_stats(text)
     # Cumulative rule (#23): a phrase category only scores with >= 2 hits.
     total_phrases = fp_guards.effective_phrase_count(phrase_matches)
     total_multi = sum(len(v) for v in multilingual_matches.values())
@@ -571,6 +601,16 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     #     >= 0.75: opening/closing formulas, hedging, metaphor abuse,
     #     weasel attribution) — a lone "in conclusion," plus buzzwords is
     #     still two families agreeing.
+    # Adverb rate (#24): conditional contribution — fires only above the
+    # rate threshold on texts of sufficient length; intensifiers (very,
+    # really, extremely, incredibly, remarkably) amplify an already-fired
+    # rate but never trigger on their own. Not a strong escalation family.
+    adverb_slop = 0.0
+    if adv["total_words"] >= ADVERB_MIN_WORDS and adv["rate"] > ADVERB_RATE_THRESHOLD:
+        adverb_slop = 0.5
+        if adv["intensifiers"] >= 2:
+            adverb_slop = 1.0
+    overall += weights.get("adverb", 0.0) * adverb_slop
     # Copula rate (#22): conditional contribution only — definition-heavy
     # prose (rate >= 0.9 with >= 4 linking constructions) adds a small
     # weighted amount; never a standalone trigger, never a strong family.
@@ -633,6 +673,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
             "multilingual_matches": total_multi,
             "provenance_markers": prov_count,
             "copula": cop,
+            "adverb": {k: adv[k] for k in ("ly_words", "rate", "intensifiers")},
             "fake_authority_claims": auth_count,
             "avg_sentence_length": round(avg_sentence_len, 1),
             "punctuation": punct,
@@ -655,6 +696,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
             "mirrored_slop": mirrored_slop,
             "provenance_slop": round(prov_slop, 3),
             "copula_slop": copula_slop,
+            "adverb_slop": adverb_slop,
             "structural_slop": round(struct_slop, 3),
         },
         "signals": {

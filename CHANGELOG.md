@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 1.6.0] — 2026-08-24 (Batch A, in Review)
+## [1.6.0] — 2026-08-24
 
 ### MS-I1: CLI-Härtung + Control-Set-Gate
 
@@ -68,6 +68,25 @@
   Buzzword-Spans überlappen („serves as a testament“), werden aus dem
   Nenner ausgeschlossen — keine doppelte Bewertung derselben Passage.
 - Corpus/Control-Set unverändert. Tests 114 → 121.
+
+### Issue #24: Adverb-Rate + Intensifier
+
+- `slop_scorer.adverb_stats()`: -ly-Wörter / Gesamtwörter, Schwelle
+  > 4 % (ADVERB_RATE_THRESHOLD) ab 40 Wörtern Textlänge
+  (ADVERB_MIN_WORDS).
+- Intensifier-Liste (very, really, extremely, incredibly, remarkably) als
+  BEDINGTE Beiträge: ≥ 2 Intensifier verstärken eine bereits getriggerte
+  Adverb-Rate (0,5 → 1,0), tragen aber allein NICHTS bei.
+- Abgrenzung #21 (im Code dokumentiert): #21 ist Schreib-Doktrin (welche
+  Adverben beim Verfassen streichen); dieses Signal misst nur die Rate
+  empfangener Texte, ohne Stil-Urteil. Abgrenzung #22: Adverben sind keine
+  Verben — keine Span-Überlappung mit der Copula-Dimension möglich.
+- Corpus/Control-Set unverändert. Tests 121 → 128.
+
+### Release-Konsolidierung
+
+- Version konsolidiert auf **1.6.0** (README, ai_slop_ontology.yaml,
+  AI-SLOP-ONTOLOGY.md, CHANGELOG). Konsistenz-Check grün.
 
 ## [1.5.0] — 2026-08-25
 
