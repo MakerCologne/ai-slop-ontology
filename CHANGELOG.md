@@ -2,6 +2,21 @@
 
 ## [2.2.0] — 2026-08-25 (Batch G — SSOT #49, Human-Voice #21, FU-Register)
 
+### #21: references/human-voice.md — positives Gegenprofil (reine Referenz, kein Scorer)
+
+- Die 6 Soul-Prinzipien (Quelle: poteto/noodle unslop „Adding soul",
+  deep/06 §3): specific over generic, verbs over nouns, risks and flaws
+  nennen, genuine opinion, numbers and names, sentence-length variation
+  gezielt — je Beschreibung, Vorher/Nachher, Wann-nicht.
+- Code-Soul-Defaults (bl-I4 aus deep/07 simplify-Skill): benannte
+  Funktionen, frühe Returns, Löschen statt Auskommentieren,
+  Preserve-Functionality-Grenze.
+- Kollisions-Doku #21↔#24 (Adverb-Rate): 4 Abgrenzungsregeln
+  (informations tragende Adverbien, max. 1 Intensifier/Absatz,
+  starkes Verb vor Adverb, Detektion gewinnt als Gate).
+- KEINE Scorer-Änderung; tests/test_human_voice.py pint Struktur +
+  SKILL.md-Verlinkung.
+
 ### #49: SSOT — ontology.json als Source of Truth, Drift CI-erzwungen (pragmatisch)
 
 - Analyse (Bericht burn-batch-g.md): doppelt gepflegte Signal-Daten sind

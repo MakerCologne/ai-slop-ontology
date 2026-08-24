@@ -166,6 +166,7 @@ For URLs and search results, check these additional signals:
 - **Detection signals (22 techniques):** `references/detection-signals.md`
 - **Scored examples (8 cases):** `references/slop-examples.md`
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
+- **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
 
 ## Output Format
 
