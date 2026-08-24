@@ -56,6 +56,19 @@
   Artefakt beweist weiterhin den Pipeline-Durchlauf.
 - Corpus/Control-Set unverändert (F1 0,982, Gate grün). Tests 105 → 114.
 
+### Issue #22: Copula-Rate
+
+- `slop_scorer.copula_stats()`: Anteil von is/are/was/were an allen
+  Kopula-Konstruktionen vs. Ersatzverben (serves as, boasts, features,
+  refers to, represents, embodies).
+- Bedingter Score-Beitrag (kleines Gewicht via `weights["copula"]`,
+  Standard 0): Rate ≥ 0,9 mit ≥ 4 Konstruktionen → copula_slop 1,0.
+  Kein Standalone-Trigger, keine Starke-Familie in der Eskalation.
+- #46-Prävention (im Code kommentiert): Ersatzverb-Matches, die mit
+  Buzzword-Spans überlappen („serves as a testament“), werden aus dem
+  Nenner ausgeschlossen — keine doppelte Bewertung derselben Passage.
+- Corpus/Control-Set unverändert. Tests 114 → 121.
+
 ## [1.5.0] — 2026-08-25
 
 **Formatting-Slop-Doktrin + Banned-Words-Abgleich (#16).**

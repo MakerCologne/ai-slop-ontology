@@ -349,6 +349,49 @@ def buzzword_score(text: str, tiers: Optional[dict] = None) -> tuple:
     return len(hits), hits, tier_hits
 
 
+
+# Issue #22: substitute (fake-strong) verbs that vary prose away from the
+# copula. NOTE: several of these strings overlap BUZZWORD_TIERS entries
+# ("serves as a testament", "boasts" family). To prevent double scoring
+# (#46 prevention) copula_stats() excludes substitute matches that overlap
+# a buzzword span — those phrases are already penalized by the buzzword
+# dimension and must not simultaneously lower the copula rate.
+SUBSTITUTE_VERB_PATTERNS = [
+    "serves as", "boasts", "features", "refers to", "represents", "embodies",
+]
+
+
+def copula_stats(text: str) -> dict:
+    """Copula rate: is/are/was/were vs. substitute linking verbs (#22).
+
+    Returns {"copulas", "substitutes", "rate"} where rate = copulas /
+    (copulas + substitutes); 0.0 when neither occurs. Substitute matches
+    overlapping buzzword spans are excluded from the denominator
+    (#46 prevention, see SUBSTITUTE_VERB_PATTERNS note above).
+    """
+    text_lower = text.lower()
+    copula_spans = [m.span() for m in re.finditer(r"\b(?:is|are|was|were)\b", text_lower)]
+    sub_spans = []
+    for m in re.finditer(
+        r"\b(?:" + "|".join(re.escape(v) for v in SUBSTITUTE_VERB_PATTERNS) + r")\b",
+        text_lower,
+    ):
+        # #46 prevention: ignore substitutes that overlap a buzzword match
+        all_terms = [w for t in BUZZWORD_TIERS.values() for w in t["words"]]
+        overlapping = any(
+            m.start() < be and m.end() > bs
+            for bm in re.finditer(
+                r"(?:" + "|".join(_term_pattern(w) for w in all_terms) + r")",
+                text_lower,
+            )
+            for bs, be in [bm.span()]
+        )
+        if not overlapping:
+            sub_spans.append(m.span())
+    total = len(copula_spans) + len(sub_spans)
+    rate = len(copula_spans) / total if total else 0.0
+    return {"copulas": len(copula_spans), "substitutes": len(sub_spans), "rate": rate}
+
 def phrase_category_score(text: str) -> dict:
     text_lower = text.lower()
     term_to_cat = {}
@@ -453,6 +496,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     # pipeline).
     prov_matches = provenance_signals.provenance_hits(text)
     prov_count = sum(len(v) for v in prov_matches.values())
+    cop = copula_stats(text)
     # Cumulative rule (#23): a phrase category only scores with >= 2 hits.
     total_phrases = fp_guards.effective_phrase_count(phrase_matches)
     total_multi = sum(len(v) for v in multilingual_matches.values())
@@ -527,6 +571,11 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     #     >= 0.75: opening/closing formulas, hedging, metaphor abuse,
     #     weasel attribution) — a lone "in conclusion," plus buzzwords is
     #     still two families agreeing.
+    # Copula rate (#22): conditional contribution only — definition-heavy
+    # prose (rate >= 0.9 with >= 4 linking constructions) adds a small
+    # weighted amount; never a standalone trigger, never a strong family.
+    copula_slop = 1.0 if (cop["rate"] >= 0.9 and cop["copulas"] + cop["substitutes"] >= 4) else 0.0
+    overall += weights.get("copula", 0.0) * copula_slop
     # Provenance (#20): any pipeline artifact floors the text at the
     # decision threshold; 2+ markers are treated as decisive evidence.
     prov_slop = min(1, prov_count / 2)
@@ -583,6 +632,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
             "phrase_match_count": total_phrases,
             "multilingual_matches": total_multi,
             "provenance_markers": prov_count,
+            "copula": cop,
             "fake_authority_claims": auth_count,
             "avg_sentence_length": round(avg_sentence_len, 1),
             "punctuation": punct,
@@ -604,6 +654,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
             "multilingual_slop": round(multi_slop, 3),
             "mirrored_slop": mirrored_slop,
             "provenance_slop": round(prov_slop, 3),
+            "copula_slop": copula_slop,
             "structural_slop": round(struct_slop, 3),
         },
         "signals": {
