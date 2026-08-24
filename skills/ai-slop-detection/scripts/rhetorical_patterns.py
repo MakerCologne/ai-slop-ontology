@@ -259,6 +259,13 @@ _TRIAD_SUFFIXES = (
 )
 
 _CHATBOT_PHRASES = None  # filled from RHETORICAL_PATTERNS["ChatbotLeftover"]["phrases"]
+
+# Words that stay lowercase in a normal sentence-case heading, so they do
+# not count toward the title-case ratio.
+_HEADING_STOPWORDS = {
+    "a", "an", "and", "as", "at", "but", "by", "for", "from", "in", "nor",
+    "of", "on", "or", "per", "the", "to", "via", "with", "without",
+}
 _HEADING = re.compile(r"(?m)^#{1,6}\s+(.+)$")
 _EMPHASIS_BOLD_HEADING = None  # headings handled separately
 
@@ -357,7 +364,10 @@ def find_rhetorical_patterns(text: str):
                 if any(last.startswith(op) for op in meta["kicker_openers"]) and len(last.split()) <= 14:
                     add("HollowKickerRecap", "kicker line: " + _snippet(sents[-1], 0, 80))
 
-    # 8. Formatting slop — emoji heading, mid-sentence bold, em-dash cluster.
+    # 8. Formatting slop — emoji heading, mid-sentence bold, em-dash
+    #    doctrine (issue #16: none in short copy, 1-2 in long drafts, never
+    #    clusters), title-case heading rate, curly double quotes, and
+    #    hyphenated-pair rate.
     formatting_evidence = None
     for m in _HEADING.finditer(text):
         if _has_emoji(m.group(1)):
@@ -366,10 +376,41 @@ def find_rhetorical_patterns(text: str):
     if not formatting_evidence and _MID_SENTENCE_BOLD.search(text):
         formatting_evidence = "decorative bold mid-sentence"
     if not formatting_evidence:
-        em = text.count("—") + text.count("–")
+        # Title-case headings: >= 2 headings where most non-stopword words
+        # after the first are capitalized (sentence case is the human norm).
+        title_case = 0
+        headings = 0
+        for m in _HEADING.finditer(text):
+            words = m.group(1).split()
+            headings += 1
+            if len(words) >= 2:
+                rest = words[1:]
+                major = [w for w in rest if w.lower() not in _HEADING_STOPWORDS]
+                if major and sum(1 for w in major if w[:1].isupper()) / len(major) >= 0.7:
+                    title_case += 1
+        if title_case >= 2:
+            formatting_evidence = f"title-case headings: {title_case} of {headings}"
+    if not formatting_evidence:
+        # Curly double quotes in plain prose (straight quotes are the default
+        # in raw text; curly quotes are a typeset/AI tell).
+        if '\u201c' in text or '\u201d' in text:
+            formatting_evidence = "curly double quotes in plain text"
+    if not formatting_evidence:
+        # Hyphenated compound modifiers: >= 2 distinct lowercase pairs like
+        # "cross-functional, data-driven" (a single one is normal usage).
+        pairs = set(re.findall(r"(?<![\w-])([a-z]+-[a-z]+)(?![\w-])", text))
+        if len(pairs) >= 2:
+            formatting_evidence = "hyphenated-pair modifiers: " + ", ".join(sorted(pairs)[:4])
+    if not formatting_evidence:
+        em = text.count("\u2014") + text.count("\u2013")
+        word_count = len(text.split())
         sent_count = max(len(_sentences(text)), 1)
-        if em >= 3 and em / sent_count > 0.5:
+        if em >= 1 and word_count <= 120:
+            formatting_evidence = f"em dash in short copy: {em} in {word_count} words"
+        elif em >= 3 and em / sent_count > 0.5:
             formatting_evidence = f"em-dash cluster: {em} dashes in {sent_count} sentences"
+        elif em > 2 and word_count > 120:
+            formatting_evidence = f"em dashes beyond long-draft allowance: {em} in {word_count} words"
     if formatting_evidence:
         add("FormattingSlop", formatting_evidence)
 

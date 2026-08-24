@@ -60,7 +60,12 @@ throat-clearing openers, faux-insight setups, importance puffery, forced
 triads, repeated sentence openings, chatbot leftovers). These are reported for a human to check and do
 **not** change the numeric score — use them when the ask is "which AI writing
 tics are in this draft?" rather than "how sloppy is it?". Each pattern has a
-`keep_when` guard so genuine voice is not flagged. Data lives in `ontology.json`
+`keep_when` guard so genuine voice is not flagged. The formatting-slop
+pattern also applies the em-dash doctrine (none in short copy under ~120
+words, 1–2 allowed in long drafts, clusters always flagged) and flags
+title-case headings (2+), curly double quotes in plain text, and stacked
+hyphenated compound modifiers (2+ distinct, e.g. "cross-functional,
+data-driven"). Data lives in `ontology.json`
 under `signals.text.rhetoricalPatterns`; concept adapted from
 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
 [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).

@@ -46,7 +46,9 @@ BUZZWORD_TIERS = {
             "in the grand scheme of things", "not only... but also",
             "it's important to remember", "it's crucial to understand",
             # Original tier1-4 retained
-            "landscape", "dynamic"
+            "landscape", "dynamic",
+            # issue #16: no-ai-slop banned-word gap fill
+            "utilize", "meticulous", "supercharge", "supercharged", "nestled",
         ]
     },
     "tier3_moderate": {
@@ -67,7 +69,9 @@ BUZZWORD_TIERS = {
             "proactive", "best practices", "value proposition", "stakeholder",
             "value-added", "results-driven", "forward-thinking", "future-proof",
             "next-generation", "mission-critical", "actionable insights",
-            "deep dive", "deep-dive"
+            "deep dive", "deep-dive",
+            # issue #16: context-dependent no-ai-slop banned word
+            "quietly",
         ]
     }
 }

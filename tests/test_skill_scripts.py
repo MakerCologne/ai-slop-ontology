@@ -90,6 +90,17 @@ class TestSkillScorer(unittest.TestCase):
         self.assertFalse(slop_scorer.mirrored_intro_conclusion(text))
 
 
+class TestBannedWordsDoctrines(unittest.TestCase):
+    """issue #16: banned-word gap fill vs. no-ai-slop list."""
+
+    def test_missing_banned_words_in_tier2(self):
+        for w in ("utilize", "meticulous", "supercharge", "supercharged", "nestled"):
+            self.assertIn(w, slop_scorer.BUZZWORD_TIERS["tier2_high"]["words"], w)
+
+    def test_quietly_in_weak_tier(self):
+        self.assertIn("quietly", slop_scorer.BUZZWORD_TIERS["tier4_weak"]["words"])
+
+
 class TestSkillClassifier(unittest.TestCase):
     def test_clean(self):
         result = classify_text("The bridge opened in 1932. It spans 503 metres.")

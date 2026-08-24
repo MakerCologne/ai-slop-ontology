@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.5.0] — 2026-08-25
+
+**Formatting-Slop-Doktrin + Banned-Words-Abgleich (#16).**
+
+- `FormattingSlop`-Detektor nach no-ai-slop/humanizer-Doktrin verfeinert:
+  Em-Dash-Regel (kein Em-Dash in Kurztext < 120 Wörter; 1–2 in langen
+  Drafts erlaubt; Cluster immer), Title-Case-Heading-Rate (≥ 2), Curly
+  Double Quotes in Plaintext, Hyphenated-Pair-Rate (≥ 2 Compound-Modifier
+  wie „cross-functional, data-driven“). Alles weiterhin detect-only.
+- Neue Punctuation-Indikatoren in `ontology.json`: TitleCaseHeadings,
+  CurlyQuotes, HyphenatedPairRate, BoldMidSentence; EmDashExcess um
+  Doktrin-Schwellen ergänzt.
+- Banned-Words-Lücken geschlossen (Abgleich mit petergyang/no-ai-slop):
+  `utilize`, `meticulous`, `supercharge`, `supercharged`, `nestled` →
+  Tier 2; `quietly` → Tier 4 (kontextabhängig). In `ontology.json` und
+  `slop_scorer.BUZZWORD_TIERS` gespiegelt.
+- Testsuite: 68 → **78 Tests**.
+
 ## [1.4.0] — 2026-08-25
 
 **Phrase-Datenbank: fünf Editor-Tell-Kategorien (#8).** Die Phrase-Kategorien
