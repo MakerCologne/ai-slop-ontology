@@ -22,6 +22,7 @@ from collections import Counter
 from typing import Optional
 
 import fp_guards
+import provenance_signals
 
 # Single source of truth for the decision threshold (issue #23): guards and
 # risk levels share fp_guards.THRESHOLDS instead of scattered magic numbers.
@@ -446,6 +447,12 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     phrase_matches = phrase_category_score(signal_text)
     multilingual_matches = multilingual_buzzword_score(signal_text)
     punct = punctuation_anomaly_score(text)
+    # Provenance markers (#20): deterministic AI-pipeline artifacts. High
+    # confidence — counted per match, never stripped by quote exemption
+    # (a quoted artifact still proves the source text passed through a
+    # pipeline).
+    prov_matches = provenance_signals.provenance_hits(text)
+    prov_count = sum(len(v) for v in prov_matches.values())
     # Cumulative rule (#23): a phrase category only scores with >= 2 hits.
     total_phrases = fp_guards.effective_phrase_count(phrase_matches)
     total_multi = sum(len(v) for v in multilingual_matches.values())
@@ -520,6 +527,12 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
     #     >= 0.75: opening/closing formulas, hedging, metaphor abuse,
     #     weasel attribution) — a lone "in conclusion," plus buzzwords is
     #     still two families agreeing.
+    # Provenance (#20): any pipeline artifact floors the text at the
+    # decision threshold; 2+ markers are treated as decisive evidence.
+    prov_slop = min(1, prov_count / 2)
+    overall += weights.get("provenance", 0.0) * prov_slop
+    if prov_count >= 1:
+        overall = max(overall, DECISION_THRESHOLD)
     high_conf_single = any(
         PHRASE_CATEGORIES[cat].get("confidence", 0.7) >= 0.75
         for cat in phrase_matches
@@ -531,6 +544,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
         moral_slop == 1.0,
         mirrored_slop == 1.0,
         high_conf_single,
+        prov_count >= 1,
     ])
     if strong_families >= 2:
         overall = max(overall, DECISION_THRESHOLD)
@@ -568,6 +582,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
             "buzzword_count": buzz_count,
             "phrase_match_count": total_phrases,
             "multilingual_matches": total_multi,
+            "provenance_markers": prov_count,
             "fake_authority_claims": auth_count,
             "avg_sentence_length": round(avg_sentence_len, 1),
             "punctuation": punct,
@@ -588,6 +603,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
             "verbosity_slop": round(verbose_slop, 3),
             "multilingual_slop": round(multi_slop, 3),
             "mirrored_slop": mirrored_slop,
+            "provenance_slop": round(prov_slop, 3),
             "structural_slop": round(struct_slop, 3),
         },
         "signals": {
@@ -599,6 +615,7 @@ def slop_score(text: str, weights: Optional[dict] = None) -> dict:
             "moral_detected": moral_slop == 1.0,
             "list_heavy": list_slop == 1.0,
             "mirrored_intro_conclusion": mirrored_slop == 1.0,
+            "provenance": prov_matches,
         }
     }
 

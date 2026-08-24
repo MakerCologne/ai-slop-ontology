@@ -41,6 +41,21 @@
   Pipeline F1 unverändert 0,982, Precision 1,0.
 - Tests 94 → 105.
 
+### Issue #20: Provenance-Marker als deterministische Regex-Signale
+
+- Neues Modul `provenance_signals.py` mit vier Marker-Familien:
+  `turn\d+search\d+` (Chat-/Search-Loop-Referenzen),
+  `:contentReference[` (Zitier-Artefakte), Platzhalter-Daten
+  `(19|20)\d\d-XX-XX` (ungefüllte Template-Slots, echte Daten wie
+  2024-03-15 matchen nicht), unsichtbare Unicode-PUA-Zeichen
+  (U+E000–U+F8FF).
+- Kategorie `provenance`, hohe Konfidenz: jeder Treffer floored den Score
+  auf den Decision-Threshold (≥ 0,40 „Suspicious“), 2+ Marker gelten als
+  entscheidend; zusätzlich eigene Familie in der Eskalationsregel.
+- Bewusst NICHT von der Quote-Exemption (#23) ausgenommen: ein zitiertes
+  Artefakt beweist weiterhin den Pipeline-Durchlauf.
+- Corpus/Control-Set unverändert (F1 0,982, Gate grün). Tests 105 → 114.
+
 ## [1.5.0] — 2026-08-25
 
 **Formatting-Slop-Doktrin + Banned-Words-Abgleich (#16).**
