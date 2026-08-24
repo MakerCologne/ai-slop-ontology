@@ -95,15 +95,19 @@ def analyze_code(text: str, lang: str = None) -> dict:
                 "evidence": _CHAINED_CAST.search(line).group(0),
                 "hint": "double cast erases the type system; validate the shape instead"})
 
-    # 2. as-any casts
+    # 2. as-any casts — FU-5 (#9, review-batch-d): comment lines are
+    # prose ("use this as any other helper"), not casts. Skip lines that
+    # are pure comments (# or //); inline trailing comments keep firing on
+    # the code part of the line only.
     for i, line in enumerate(lines, start=1):
-        n = len(_AS_ANY.findall(line))
+        code_part = re.sub(r"(^|\s)(#|//).*$", " ", line)
+        n = len(_AS_ANY.findall(code_part))
         if n:
             counts["as_any_casts"] += n
             if counts["as_any_casts"]:
                 findings.append({
                     "id": "as_any_casts", "line": i,
-                    "evidence": _AS_ANY.search(line).group(0),
+                    "evidence": _AS_ANY.search(code_part).group(0),
                     "hint": "as any hides real type problems; see SAFETY: comment convention"})
         if counts["as_any_casts"] > 0 and i == len(lines) and not any(
                 f["id"] == "as_any_casts" for f in findings):

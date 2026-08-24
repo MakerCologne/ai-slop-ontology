@@ -163,6 +163,21 @@ For URLs and search results, check these additional signals:
 
 ## Advanced References
 
+### Benchmark (Spiegel des README, FU-10)
+
+Gemessen 2026-08-25 (Batch F) mit `eval/run_benchmark.py --threshold 0.40`
+gegen `eval/corpus.jsonl` (n=314 = 221 slop + 93 clean):
+
+- **P 1.0 / R 0.982 / F1 0.991** (TP 217, FN 4, FP 0)
+- Ehrlichkeitsgrenze (Review F): R 0.982 ist **In-sample-Recall** — die
+  Batch-F-Phrasen wurden aus denselben FN-Texten gewonnen; konstruierte
+  menschliche Arbeitsprosa kann 0.400–0.556 erreichen. FP=0 gilt
+  korpusintern (bekannte Grenze, FU-11/FU-13).
+- Control Set: `eval/run_control_set.py` — Gate grün inkl. dokumentierter
+  known-FNs.
+
+## Advanced References (continued)
+
 - **Detection signals (22 techniques):** `references/detection-signals.md`
 - **Scored examples (8 cases):** `references/slop-examples.md`
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)

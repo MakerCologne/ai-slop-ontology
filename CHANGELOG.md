@@ -179,7 +179,9 @@ Version 2.0.0 (Meta-Meilenstein: konstitutive Prozess-Dokumente).
   `{id, label, lang, type, genre, text, source}`.
 - 192 neue Slop-Texte: wörtlich zitierte Original-Slop-Phrasen aus den
   Deep-Dive-Artefakten (deep/01–07: stop-slop, no-ai-slop, humanizer,
-  Wikipedia, unslop writing+SaaS, poteto) — je 9–12 Phrasen pro Text,
+  Wikipedia, unslop writing+SaaS, poteto) — je 3–12 Phrasen pro Text
+  (gemessen, Review D / FU-7: 3–12 verbatim Phrasen, Median ~7 — der
+  fruehere Claim '9–12' war ueberzogen),
   Quellenangabe im `source`-Feld. 84 neue Clean-Texte: 69 Hard Negatives
   handgeschrieben (Juristensprache, Paper-Abstracts, ehrliches Marketing,
   Konfig-/Fachtexte, Kochrezepte, Lyrik-Passagen) + 15 legitime Texte aus

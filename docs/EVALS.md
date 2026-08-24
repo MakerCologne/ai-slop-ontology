@@ -49,6 +49,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `tests/test_fp_guards.py` — #23 Guards (Quote-Exemption, Kumulativregel)
 - `tests/test_human_voice.py` — #21 positive Gegenprofil-Referenz (Struktur-Pinning, kein Scorer)
 - `tests/test_fu_batch_g.py` — FU-Register-Abrechnung Batch G (FU-2/3/4 Red-Fixes aus Reviews C/D)
+- `tests/test_fu_batch_g2.py` — FU-5/7/10 (as_any-Kommentar-Guard, CHANGELOG-Claim, SKILL-Benchmark-Spiegel)
 - `tests/test_generated_docs.py` — #34 generierte Doku/CHANGELOG
 - `tests/test_genre_profiles.py` — #42 Genre-Opt-in-Profile (ADR-0004)
 - `tests/test_governance_doc.py` — #67 Governance-Pflichtabschnitte (Meta)
