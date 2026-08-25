@@ -132,6 +132,7 @@ def test_index_md_alphabetical_and_narrative():
     index = read_dist("index.md")
     entries = load_entries()
     terms = [e["term"] for e in entries.values()]
-    positions = [index.find(t) for t in sorted(terms)]
+    # section headers, not bare substring (see_also references would match early)
+    positions = [index.find("\n## " + t + "\n") for t in sorted(terms)]
     assert all(p >= 0 for p in positions)
     assert positions == sorted(positions), "index.md not alphabetical"

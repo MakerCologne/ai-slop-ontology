@@ -1,0 +1,42 @@
+id: LEX-2026-003
+term: Binary-Contrast
+aliases: [not-X-but-Y, false dichotomy phrase, "It's not X, it's Y"]
+definition: >
+  Rhetorisches Muster "This is not X. It's Y." / "The question isn't X, it's
+  Y." / "It's not just X but Y." — eine kontrastierende Schein-Präzisierung,
+  die KI-Texte auffällig häufig als Pseudo-Insight einsetzen. Lokal seit v1.x
+  als rhetorisches Muster (rhetorical_patterns.py, _BINARY_CONTRAST) erkannt.
+category: pattern
+claims:
+  - statement: >
+      petergyang/no-ai-slop listet Binary contrasts als erstes seiner 25
+      Patterns mit den drei Nennformen "This is not X. It's Y." / "The
+      question isn't X, it's Y." / "It's not just X but Y." und der
+      Umschreib-Empfehlung "→ The eval matters more than the model."
+    sources:
+      - url: https://github.com/petergyang/no-ai-slop
+        quote: >-
+          1. **Binary contrasts** — „This is not X. It's Y." / „The
+          question isn't X, it's Y." / „It's not just X but Y." → „The eval
+          matters more than the model."
+        accessed: "2026-08-24"
+  - statement: >
+      Die lokale Ontology implementiert das Muster in
+      rhetorical_patterns.py (_BINARY_CONTRAST, 3 Regexes), die alle drei bei
+      petergyang genannten Formen covern (Volltext-Verifikation Deep-Dive 02).
+    sources:
+      - url: https://github.com/hikaman/ai-slop-ontology
+        quote: "Binary contrast | **VORHANDEN** | `rhetorical_patterns.py` `_BINARY_CONTRAST` (3 Regexes; covern petergyangs 3 Nennformen)"
+        accessed: "2026-08-25"
+detect:
+  regex:
+    - "it'?s not (just )?.+, it'?s .+"
+    - "the (question|goal) isn'?t .+, it'?s .+"
+counter:
+  measure: >-
+    Direkte Aussage mit Komparativ statt Kontrast-Gerüst („X matters more
+    than Y").
+  keep_when: "Echte, inhaltsvolle Gegenüberstellung mit beidseitiger Substanz."
+status: stable
+version: 1
+see_also: [Throat-Clearing, Human-Voice]

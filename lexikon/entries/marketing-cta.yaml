@@ -1,0 +1,44 @@
+id: LEX-2026-004
+term: Marketing-CTA
+aliases: [marketing_cta, SaaS-CTA-Phrasen]
+definition: >
+  Marketing- und Conversion-Phrasen ("start your free trial today", "book a
+  demo", "trusted by startups and enterprises alike"), die in KI-generiertem
+  Marketing- und Produktext gehäuft auftreten. In der lokalen Ontology als
+  phrase-Kategorie marketing_cta umgesetzt (Issue-Batch F, 20 Phrasen mit
+  Korpus-Belegen).
+category: pattern
+claims:
+  - statement: >
+      Die 20 marketing_cta-Phrasen der lokalen Ontology wurden aus dem
+      FN-Korpus extrahiert und mit Trefferzahlen belegt, z. B. "start your
+      free trial today" (12 slop-Texte), "book a demo" (8), "trusted by
+      startups and enterprises alike" (12), "all in one place" (16) — je 0
+      Clean-Treffer.
+    sources:
+      - url: https://github.com/hikaman/ai-slop-ontology/blob/main/eval/corpus.jsonl
+        quote: "start your free trial today. Most Popular Book a demo with our team. What does this mean for your team? The short answer is yes. [...] But here's the catch: the API rate-limits you anyway."
+        accessed: "2026-08-25"
+  - statement: >
+      Der unabhängige Review (review-batch-f.md) bestätigt die echten
+      LLM-/CTA-Artefakte als "hohe Portabilität — starke Signale", warnt aber
+      zugleich vor generischen marketing_cta/report_hedging-Phrasen als
+      Haupt-FP-Risiko in menschlicher Arbeitsprosa.
+    sources:
+      - url: https://github.com/hikaman/ai-slop-ontology
+        quote: >-
+          „start your free trial today", „trusted by startups and
+          enterprises alike", „99.9% uptime" [...] | **echte
+          LLM-/CTA-Artefakte**, hohe Portabilität — starke Signale
+        accessed: "2026-08-25"
+detect:
+  regex:
+    - "start your free trial"
+    - "book a demo"
+    - "trusted by .+ (alike|worldwide)"
+counter:
+  measure: "Konkrete, belegte Produktaussagen statt Conversion-Formeln."
+  keep_when: "Echte Landingpage/CTA-Kontexte, in denen die Handlungsaufforderung der Zweck des Textes ist."
+status: beta
+version: 1
+see_also: [Throat-Clearing]

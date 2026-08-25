@@ -1,0 +1,48 @@
+id: LEX-2026-005
+term: Human-Voice
+aliases: [adding soul, soul principles, positive Gegenprofil]
+definition: >
+  Counter-Prinzip: Detektion von Slop ist nur "half the job" — das positive
+  Ziel ist eine erkennbare menschliche Stimme. Sechs Soul-Prinzipien
+  (Meinung haben, Rhythmus variieren, Komplexität anerkennen, Ich-Form
+  erlauben, kontrolliertes Chaos, Konkretheit) wirken der sterilen,
+  voiceless-Glättung entgegen, die selbst ein Slop-Signal ist
+  (Over-Sanitization).
+category: counter
+claims:
+  - statement: >
+      potetos "unslop"-Skill (in poteto/noodle) etabliert "Adding soul" als
+      positives Gegenprogramm nach dem Pattern-Removal: "Removal ist nur half
+      the job, sterile, voiceless writing is just as obvious" — mit Prinzipien
+      wie "Have opinions", "Vary rhythm", "Acknowledge complexity", "Use 'I'
+      when it fits".
+    sources:
+      - url: https://www.skills.sh/poteto/noodle/unslop
+        quote: >-
+          „Adding soul" 🆕 (positives Gegenprogramm — Removal ist nur
+          „half the job", „sterile, voiceless writing is just as
+          obvious"): „Have opinions. React to facts instead of neutrally
+          listing pros and cons." / „Vary rhythm. Short sentences. Then
+          longer ones that take their time. Mix it up."
+        accessed: "2026-08-24"
+  - statement: >
+      Die lokale Ontology hat diese Prinzipien als references/human-voice.md
+      übernommen (Issue #21, Batch G); der 4-Schritt-Prozess des Skills
+      endet mit einem iterativen Self-Audit: "What makes this obviously AI
+      generated?" — Fix remaining tells.
+    sources:
+      - url: https://github.com/hikaman/ai-slop-ontology
+        quote: >-
+          Prozess (4 Schritte): 1. Scan für Patterns → 2. „Rewrite —
+          preserve meaning, match intended tone" → 3. „Add soul (see
+          next section)" → 4. Self-Audit: „What makes this obviously AI
+          generated?" Fix remaining tells.
+        accessed: "2026-08-25"
+counter:
+  measure: >
+    Redaktionelle Zielperspektive neben der Detektion: Meinungen, Rhythmus-
+    Variation, erste Person, konkrete Details statt neutraler Auflistung.
+  keep_when: "Nicht anwendbar (Gegenprinzip, kein Detektionssignal)."
+status: beta
+version: 1
+see_also: [Binary-Contrast]

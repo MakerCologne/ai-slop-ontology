@@ -1,0 +1,47 @@
+id: LEX-2026-001
+term: Throat-Clearing
+aliases: [throat clearing openers, faux-candid openings]
+definition: >
+  Gesprochene Aufwärm-Phrasen ("Here's the thing:", "It turns out", "Let me be
+  clear"), die den Punkt aufschieben statt ihn zu machen — ein hochfrequentes
+  KI-Text-Signal auf Phrase-Ebene.
+category: pattern
+claims:
+  - statement: >
+      stop-slop führt 15 Throat-Clearing-Opener explizit als Cut-Kandidaten,
+      darunter "Here's the thing:", "The uncomfortable truth is" und "It turns
+      out", plus die generische Regel "Any 'here's what/this/that' construction
+      is throat-clearing before the point."
+    sources:
+      - url: https://github.com/hardikpandya/stop-slop
+        quote: >-
+          Throat-Clearing Openers (15): „Here's the thing:" · „Here's
+          what [X]" · „Here's this [X]" · „Here's that [X]" · „Here's
+          why [X]" · „The uncomfortable truth is" · „It turns out" ·
+          „The real [X] is" · „Let me be clear"
+        accessed: "2026-08-24"
+  - statement: >
+      Wikipedia "Signs of AI writing" listet Fake-candid openings derselben
+      Familie ("Honestly?", "Look,", "Here's the thing", "The thing is") als
+      eigenständiges Anzeichen KI-generierten Texts.
+    sources:
+      - url: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
+        quote: >-
+          Fake-candid openings — „Honestly?", „Look,", „Here's the
+          thing", „The thing is", „Let me be honest", „Real talk" — als
+          standalone hooks
+        accessed: "2026-08-24"
+detect:
+  regex:
+    - "here's the thing"
+    - "it turns out"
+    - "let me be clear"
+    - "the uncomfortable truth is"
+  hints:
+    - "here's-what/this/that-Konstruktion vor dem eigentlichen Punkt"
+counter:
+  measure: "Direkt mit dem Punkt beginnen; Opener streichen (Minimum-Effective-Edit)."
+  keep_when: "In echter zitierter Rede oder als bewusstes Stilmittel mit Inhalt."
+status: stable
+version: 1
+see_also: [Binary-Contrast, Marketing-CTA]

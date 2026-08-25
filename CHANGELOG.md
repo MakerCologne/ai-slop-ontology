@@ -1,5 +1,64 @@
 # Changelog
 
+## [2.3.0] — 2026-08-25 (Batch H — Loop-Runner #51, Lexikon-Pilot #50)
+
+### #51 DESLOP-LOOP-Orchestrator (additiv, kein Scorer-Pfad)
+
+- **`src/deslop_loop.py`:** Zustandsmaschine DETECT → TRIAGE →
+  FIX-CALLBACK → VERIFY → EXIT-CHECK mit Rollback-Kante (Best-of-N
+  zwischen aktuellem Bestwert und Kandidat) und ESCALATE-Terminal.
+  ADR-0001-konform: Der Runner schreibt selbst NICHT um — der FIX-Schritt
+  ist ein injizierbarer Callback `fix(text, findings) -> candidate`;
+  der löschbasierte Demo-Callback liegt nur in `examples/`, nicht im
+  Produktpfad. Scorer/Classifier unangetastet (reiner Detektor).
+- **Exit-Checks E1–E5** (Loop-Spez, research/slop-loop-pipeline-2026-08-24
+  Abschnitt (e)): E1 Score < Threshold, E2 keine kritischen Signale, E4
+  keine inkubierten Signale (bestätigte Menge ⊆ Baseline-Menge) →
+  EXIT-OK; E3 ε-Stagnation (2 akzeptierte Iterationen mit Δ < ε) und E5
+  maxIter=5 → EXIT-ESCALATE („human review required“) — **nie** ein
+  stiller Durchlauf als Erfolg. Garantie-Aussagen maßstabsgebunden
+  („slop-frei nach Maßstab des Detektors“), Fixpoint ≠ Optimum (#62).
+- **Voice-Budget-Guardrail:** vereinfachte Token-Diff-Rate
+  (Multiset-Ähnlichkeit) ≤ 25 % je Iteration, sonst Kandidat verworfen
+  (Aktion `rejected_budget` im Audit).
+- **Signal-Bestätigung (#58/#61-Konzepte):** Fund geht nur in den Fix,
+  wenn in 2 aufeinanderfolgenden DETECT-Läufen stabil ODER Konfidenz
+  ≥ 0,9.
+- **Audit `runs/<runId>/`:** `manifest.json` (Parameter/Detektor),
+  `iterations.jsonl` (Score vorher/nachher, Findings, Aktion,
+  Budget-Verbrauch), `result.json` (Verdict + Garantie).
+- `scripts/deslop_loop_cli.py` (CLI, Fix-Modul injizierbar), 13 L1-Tests
+  mit deterministischen Fake-Detektoren/Fixern (keine Netzwerk-Abhängigkeit).
+
+### #50 Lexikon-Pilot (Schema-first SSOT)
+
+- **`lexikon/schema/entry.schema.json`:** Entry-Schema (id, term, aliases,
+  definition, category signal/pattern/type/counter, claims[] mit je
+  sources[] {url, quote, accessed}, detect, counter, status
+  nursery/beta/stable konsistent zu METHODOLOGY.md, version, see_also).
+- **5 Pilot-Einträge** in `lexikon/entries/`, jeder Claim belegt mit
+  Quellenzitat: Throat-Clearing (stop-slop + Wikipedia-Signs),
+  Provenance-Marker oaicite/turn0search0 (Wikipedia-Signs),
+  Binary-Contrast (petergyang/no-ai-slop + lokale Umsetzung),
+  Marketing-CTA (Korpus-Belege eval/corpus.jsonl + Review Batch F),
+  Human-Voice als Counter-Eintrag (poteto/noodle unslop-Skill).
+- **`scripts/build_lexikon.py`:** deterministischer Build (keine
+  Timestamps, sortierte Iteration, kanonisches JSON) → Human-Sicht
+  `dist/index.md` (alphabetisch, narrativ mit Belegen) + Agent-Sicht
+  `dist/lexikon.json` + `llms.txt` + `llms-full.txt`; `content_hash` je
+  Eintrag in beiden Sichten; `--check` als Sync-Gate.
+- 10 L1-Tests: Schema-Validierung, Beleg-Pflicht (jeder Claim ≥ 1 Quelle
+  mit url+quote+accessed), Build-Determinismus (zwei Builds identisch),
+  Sync-Gate (dist == Neubau in tmp), llms.txt-Struktur.
+- `docs/LEXIKON.md`: SSOT-Regel (nur entries/ editieren, dist nie) und
+  Build-Kommando.
+
+### Gates
+
+- Control-Set-Gate, Benchmark, Consistency, SSOT-Check unberührt grün
+  (beide Features additiv, keine Scorer-Logik-Änderung).
+- Tests: 357 → 380 grün (13 + 10 neue L1-Tests).
+
 ## [2.2.0] — 2026-08-25 (Batch G — SSOT #49, Human-Voice #21, FU-Register)
 
 ### FU-Batch (FU-2..FU-12 aus review-batch-c/d/f, burn-log.md)

@@ -1,0 +1,40 @@
+id: LEX-2026-002
+term: Provenance-Marker
+aliases: [oaicite, turn0search0, contentReference, PUA-Ziffern, interne Formatierungs-Bugs]
+definition: >
+  Deterministische Artefakte KI-generierter Texte aus der Tool-Interaktion —
+  z. B. ":contentReference[oaicite:N]{index=N}", "turn0search0" (mit
+  Private-Use-Area-Unicode umgeben), "oai_citation" oder nackte PUA-Ziffern.
+  Nahezu false-positive-frei und per Regex maschinell nachweisbar.
+category: signal
+claims:
+  - statement: >
+      Wikipedia "Signs of AI writing" dokumentiert diese Marker als interne
+      Formatierungs-Bugs von ChatGPT und bezeichnet sie als "unambiguous" —
+      ChatGPT: ":contentReference[oaicite:N]{index=N}", "Example+1",
+      "oai_citation", "turn0search0" (mit PUA-Unicode umgeben; Zähler steigt
+      durch den Text).
+    sources:
+      - url: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
+        quote: "Interne Formatierungs-Bugs (unambiguous!) — ChatGPT: `:contentReference[oaicite:N]{index=N}`, `Example+1`, `oai_citation`, `turn0search0` (mit PUA-Unicode umgeben; Zähler steigt durch Text)"
+        accessed: "2026-08-24"
+  - statement: >
+      Die lokale Ontology hat diese Marker mit Issue #20 als deterministische
+      Provenance-Signale übernommen (Batch A, burn-batch-a.md); Deep-Dive 03
+      stufte sie als "stärkstes Einzelsignal der ganzen Wiki-Seite" mit
+      Konfidenz ≈1.0 ein.
+    sources:
+      - url: https://github.com/hikaman/ai-slop-ontology
+        quote: "Deterministische Provenance-Marker (§3.4/Punkt 29): `turn0search0`+PUA-Ziffern, `oaicite`, `2025-XX-XX`, `PASTE_*_HERE` — die lokal komplett fehlen, obwohl sie die höchste mögliche Konfidenz (≈1.0) haben"
+        accessed: "2026-08-25"
+detect:
+  regex:
+    - ":contentReference\\[oaicite:[0-9]+\\]\\{index=[0-9]+\\}"
+    - "turn0search[0-9]+"
+    - "oai_citation"
+counter:
+  measure: "Zitations-Artefakte entfernen und Belege sauber formatieren."
+  keep_when: "Nie legitim — Vorkommen ist immer ein Tool-Artefakt."
+status: stable
+version: 1
+see_also: [Throat-Clearing]
