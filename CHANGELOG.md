@@ -1,5 +1,39 @@
 # Changelog
 
+## [2.5.0] — 2026-08-25 (Batch J — DE-Katalog Teil 2 + FU-17 + #80-Rest)
+
+### #76 DE-Pattern-Katalog Teil 2 (Master-Akzeptanz ≥20 DE-Signale erfüllt)
+
+- 12 neue de_*-Phrase-Kategorien in ontology.json (SSOT): de_transitions,
+  de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle,
+  de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging,
+  de_announcement_cleft — je 6 Phrasen, Konfidenz 0.6, Evidence-Pflicht je
+  Phrase (Wikipedia-Projektseite MIT Namespace-Präfix, RI-1-URL, oder
+  own:-Beleg; ≥2 Belege als FU dokumentiert offen, RI-2-Abweichung).
+- `skills/ai-slop-detection/scripts/structure_metrics.py`: M60
+  SynonymRotation + M61 IsometricUnits (detect-only, sprachagnostisch,
+  bewusst ohne DE-Gate), Schwellen fixture-kalibriert.
+- Signal-DoD je Signal 3/3/2-Fixtures (tests/test_de_catalog_part2.py,
+  tests/test_structure_metrics.py); #46-Kollisionsdisziplin inkl. paarweisem
+  Substring-Check über den gesamten de_*-Layer; EN-Corpus-Sicherheit.
+- DE-Signal-Zähler: 8 (Teil 1) → 22 (≥20 ✓). Mapping-Updates:
+  docs/de-coverage.md.
+
+### FU-17 check_ssot de_*-Phrase-Layer (RI-4)
+
+- Neue Prüfung C4 in scripts/check_ssot.py: DE_LAYER-Pin (16 Kategorien ×
+  ≥6 Items), Evidence-Regel, Wikipedia-Namespace-Präfix; 4
+  Manipulationsproben test-verankert (tests/test_ssot_de_layer.py).
+
+### #80-Rest Genre-Menschtexte
+
+- 16 neue own:handwritten-Fixtures in eval/corpus.jsonl (code +5, generic
+  +5, nonfiction +4, news +2): jedes Clean-Genre ≥6 verifizierte
+  Menschtexte, alle < 0.40 auf beiden Engines; fp_baseline 93 → 109
+  Fixtures; Quartals-Re-Score-Anbindung (#47) in docs/EVALS.md.
+- Benchmark skill-pipeline: P 1.0 / R 0.995 / F1 0.998 (n=330, TP 220 /
+  FP 0 / TN 109 / FN 1 = known-FN; eval/corpus.jsonl). Tests 440 → 469.
+
 ## [2.4.0] — 2026-08-25 (Batch I — [ADAPT]: DE-Layer + FP-Infrastruktur)
 
 Referenz-Adaption humanizer-de v5.22.2 (nur Architektur-Ideen, Lizenz-sicher
