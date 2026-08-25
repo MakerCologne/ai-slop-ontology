@@ -66,6 +66,15 @@ nearby authority carrier changed, e.g. "according to the study" →
 `scripts/anchor_diff.py` exposes `anchor_diff(text_a, text_b)` directly.
 Locale boundary: "3.5" → "3,5" is NOT drift.
 
+### Step 2d: Naturalness-Guard (detect-only, #81)
+
+`scripts/naturalness_guard.py` — `register_drift` (mixed register: ≥2 formal
+vs ≥2 colloquial markers outside quotes) and `over_sanitized` (≥3 distinct
+expanded full forms, zero contractions; suppressed for genre=
+"academic"/"legal"). Both advisory, confidence ≤0.45, never part of the
+numeric score. `modal_particle_anomaly` is an explicit stub until the DE
+layer lands (#76).
+
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
 evidence** (binary contrast, colon reveal, superficial analysis, negative
 listing/fragmentation, fake-strong verb, synonym cycling, hollow kicker/recap,

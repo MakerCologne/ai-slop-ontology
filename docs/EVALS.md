@@ -36,6 +36,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `tests/test_anchor_diff_cli.py` — #78 Anchor-Diff-CLI (--anchor-diff im Diff-Modus)
 - `tests/test_null_edit_contract.py` — #79 Null-Edit-Contract-Gate (93 Hard Negatives clean auf beiden Engines, Null-Edit-Stabilität, Grenzband-Register eval/hardneg_borderline.json)
 - `tests/test_fp_baseline.py` — #80 FP-Baseline-Register (eval/fp_baseline.json, CI-Snapshot `scripts/fp_baseline.py --check`)
+- `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when, modal_particle_anomaly Stub für #76)
 - `tests/test_benchmark_runner.py` — L3-Runner selbst + Korpus-Disziplin (Zeilen, Quellen, 60 %-Regel)
 - `tests/test_binary_contrast_ext.py` — Signal #26 BinaryContrast
 - `tests/test_classifier.py` — src/classifier.py Klassifikation

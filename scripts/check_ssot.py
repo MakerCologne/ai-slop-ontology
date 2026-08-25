@@ -49,6 +49,7 @@ SIGNAL_MODULES = [
     "skills/ai-slop-detection/scripts/instruction_slop.py",
     "skills/ai-slop-detection/scripts/rhetorical_patterns.py",
     "skills/ai-slop-detection/scripts/anchor_diff.py",
+    "skills/ai-slop-detection/scripts/naturalness_guard.py",
 ]
 
 # "source" values:
@@ -107,6 +108,15 @@ SSOT_REGISTER = {
     "anchor_diff.py": {
         "AUTHORITY_CARRIERS": ("closed-list", "deviation"),
     },
+    "naturalness_guard.py": {
+        "FORMAL_MARKERS": ("closed-list", "deviation"),
+        "COLLOQUIAL_MARKERS": ("closed-list", "deviation"),
+        "FULL_FORMS": ("closed-list", "deviation"),
+        "FORMAL_GENRES": ("engine-config", "synced-via-genre_profiles"),
+        "MIN_WORDS_REGISTER": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_SANITIZED": ("engine-config", "fixture-calibrated"),
+        "MIN_FULL_FORMS": ("engine-config", "fixture-calibrated"),
+    },
 }
 
 # ALLOWLIST — conscious deviations (C3): why these lists do not come from
@@ -132,6 +142,11 @@ ALLOWLIST_NOTES = [
     "word list self-derived for the drift heuristic (concept from the "
     "evidence-ledger reference, deep/11; no third-party pattern material "
     "copied). detect-only, never score-dominant — deviation registered.",
+    "naturalness_guard (#81) closed marker lists (FORMAL_MARKERS, "
+    "COLLOQUIAL_MARKERS, FULL_FORMS) are self-derived EN/DE inventories for "
+    "the detect-only advisory signals; MIN_* thresholds are fixture-pinned "
+    "(tests/test_naturalness_guard.py). No third-party pattern material "
+    "copied (register-profile idea adapted as architecture, deep/11).",
 ]
 
 SKIPPED_CONSTANT_KINDS = "compiled regex / private helper (see ALLOWLIST)"
