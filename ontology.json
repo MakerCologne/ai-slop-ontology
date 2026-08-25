@@ -936,6 +936,206 @@
               "sources say",
               "insiders claim"
             ]
+          },
+          "de_calque": {
+            "confidence": 0.6,
+            "description": "DE-Anglizismus-Calques (M45): wörtlich übersetzte EN-KI-Floskeln statt deutscher Idiomatik",
+            "items": [
+              "am ende des tages",
+              "die digitale landschaft",
+              "spielt eine entscheidende rolle",
+              "dient als testament für",
+              "nutzt die kraft von",
+              "lassen sie uns eintauchen in"
+            ],
+            "evidence": {
+              "am ende des tages": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "die digitale landschaft": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "spielt eine entscheidende rolle": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "dient als testament für": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "nutzt die kraft von": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "lassen sie uns eintauchen in": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ]
+            }
+          },
+          "de_ai_vocab": {
+            "confidence": 0.6,
+            "description": "DE-KI-Marker-Vokabular (M64): gehäufte Marketing-Adjektive deutscher KI-Ausgabe",
+            "items": [
+              "nahtlos",
+              "facettenreich",
+              "zukunftsweisend",
+              "maßgeschneidert",
+              "holistisch",
+              "spielverändernd"
+            ],
+            "evidence": {
+              "nahtlos": [
+                {
+                  "source": "own:de-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "facettenreich": [
+                {
+                  "source": "own:de-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "zukunftsweisend": [
+                {
+                  "source": "own:de-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "maßgeschneidert": [
+                {
+                  "source": "own:de-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "holistisch": [
+                {
+                  "source": "own:de-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "spielverändernd": [
+                {
+                  "source": "own:de-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ]
+            }
+          },
+          "de_authority_floskel": {
+            "confidence": 0.6,
+            "description": "DE-Autoritäts-Floskeln (M11/M32): unbenannte Quellen statt Beleg",
+            "items": [
+              "studien zeigen",
+              "experten zufolge",
+              "berichten zufolge",
+              "forschung deutet darauf hin",
+              "es ist allgemein bekannt",
+              "die eigentliche frage ist"
+            ],
+            "evidence": {
+              "studien zeigen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "experten zufolge": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "berichten zufolge": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "forschung deutet darauf hin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "es ist allgemein bekannt": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "die eigentliche frage ist": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ]
+            }
+          },
+          "de_meta_comment": {
+            "confidence": 0.6,
+            "description": "DE-Meta-Kommentar (M3/M33): Prosa über das Dokument statt über den Gegenstand",
+            "items": [
+              "es ist wichtig zu beachten, dass",
+              "hier ist, was sie wissen müssen",
+              "kurz gesagt",
+              "betrachten wir",
+              "lassen sie uns einen blick werfen",
+              "zunächst einmal"
+            ],
+            "evidence": {
+              "es ist wichtig zu beachten, dass": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "hier ist, was sie wissen müssen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "kurz gesagt": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                }
+              ],
+              "betrachten wir": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "lassen sie uns einen blick werfen": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ],
+              "zunächst einmal": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                }
+              ]
+            }
           }
         }
       },
