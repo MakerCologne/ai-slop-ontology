@@ -66,9 +66,21 @@ def test_exit_ok_e1_improving_fix_reaches_threshold(tmp_runs):
 
 
 def test_max_iter_never_silent_pass(tmp_runs):
-    det = ScriptedDetector([(0.9, [fd("A")])] * 100)
+    # small improvements (delta >= epsilon) that never reach the threshold:
+    # loop must exhaust max_iter and ESCALATE (E5), never silent-pass
+    det = ScriptedDetector([
+        (0.90, [fd()]),          # baseline
+        (0.90, [fd()]),          # it1 verify: accepted, delta 0.015
+        (0.885, [fd()]),         # it2 detect+verify baseline side
+        (0.87, [fd()]),          # it2 verify: delta 0.015
+        (0.855, [fd()]),
+        (0.84, [fd()]),
+        (0.825, [fd()]),
+        (0.81, [fd()]),
+        (0.795, [fd()]),
+    ] + [(0.78, [fd()])] * 50)
     loop = DeslopLoop(detector=det, params=LoopParams(max_iter=5), runs_dir=tmp_runs)
-    res = loop.run("stuck slop", fix=lambda t, f: t)
+    res = loop.run("stuck slop", fix=lambda t, f: t + "x")
     assert res.verdict == "EXIT_ESCALATE"
     assert res.exit_check == "E5"
     assert res.iterations == 5
@@ -89,23 +101,25 @@ def test_epsilon_stagnation_escalates(tmp_runs):
 
 
 def test_worse_candidate_rolls_back_to_best(tmp_runs):
+    base = ("alpha beta gamma delta epsilon zeta eta theta iota kappa "
+            "lambda mu nu xi omicron pi rho sigma tau upsilon version")
     det = ScriptedDetector([
-        (0.9, [fd()]), (0.9, [fd()]),       # baseline + confirm
+        (0.9, [fd()]), (0.9, [fd()]),       # baseline + it1 top
         (0.6, [fd()]),                      # good candidate accepted
+        (0.6, [fd()]),                      # it2 top (of accepted best)
         (0.8, [fd()]),                      # worse candidate -> rollback
-        (0.3, []),                          # re-detect of kept best -> exit
-    ])
-    texts = iter(["slop v0", "slop v1", "slop v2"])
-    seen_final = {}
+        (0.3, []),                          # it3 top of kept best -> exit
+    ] + [(0.3, [])] * 50)
+    versions = iter(["one", "two", "three"])
 
     def fixer(t, f):
-        return next(texts)
+        return base.replace("version", next(versions, "final"))
 
     loop = DeslopLoop(detector=det, params=LoopParams(score_threshold=0.4), runs_dir=tmp_runs)
-    res = loop.run("slop v0", fix=fixer)
+    res = loop.run(base, fix=fixer)
     assert res.verdict == "EXIT_OK"
-    # final text is the rolled-back best ("slop v1" was accepted, "slop v2" rejected)
-    assert res.text == "slop v1"
+    # "two" was the accepted best; "three" scored worse and was rolled back
+    assert res.text.endswith("one")
 
 
 def test_voice_budget_violation_rejects_candidate(tmp_runs):
