@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.6.0] — 2026-08-25 (Batch K — #74 Register-Profile v2 + #76-Rest RI-2-FU + #72 L4-Diskurs)
+
+### #74 Register-Profile v2 (Hauptauftrag)
+
+- `skills/ai-slop-detection/scripts/register_profile.py`: `register_profile(text)` → JSON-Stilkarte (mode, deictic_center, address, distance, sentence_shape, word_level, paragraph_openers, particles, punctuation_affinity) — detect-only, Ausgabe im Scorer-Report unter `context` ohne jeden Score-Einfluss.
+- `register_drift_intern(text, genre=)`: Register-Distanz ZWISCHEN Dokument-Hälften (je Hälfte registerrein, Hälften unterschiedlich) — komplementär zu #81 `register_drift` (Ganztext-Mischung; Kollisionsdisziplin #46). Guardrails: „legitim gleichmäßig" (durchgehend ein Register) feuert nie; Genre-Profile #42 respektiert (academic/legal/technical suppressieren, exempt_terms werden gestrippt). DoD 3/3/2 (tests/test_register_profile.py).
+
+### #76-Rest (RI-2-FU + Strukturmetrik-Rest)
+
+- Evidence-Verdichtung: 0 → 63/96 de_*-Phrasen (65,6 %) mit ≥ 2 unabhängigen Belegen (Ziel ≥ 50 %). Zweite Belege: eigene handgeschriebene Belegtexte `eval/de_evidence_texts.jsonl` (16 Texte, source `own:corpus`); Rest (33) dokumentierte Abweichung (docs/de-coverage.md).
+- C4-Erweiterung in scripts/check_ssot.py: Coverage-Pin ≥ 50 % (Manipulationsprobe test-verankert).
+- structure_metrics.py: M66 `fake_analysis_appendix` + M71 `pseudo_nuance` (detect-only, conf 0.5, DoD 3/3/2). M67 nicht dupliziert (schon de_announcement_cleft).
+
+### #72 L4-Referenzkorpus (explorativ)
+
+- `eval/discourse_ref.jsonl` v1: 8 versionierte Artefakte (Rank-ohne-Kriterium-Thread, virale Claims, identische Aufzählungen; Artefakt-Typen aus deep/10 + deep/06; kurze öffentliche Zitate attribuiert; 2 Kontrollartefakte).
+- `skills/ai-slop-detection/scripts/discourse_metrics.py`: `rank_without_criterion` + `identical_enumeration` — explorativ (`exploratory: True`), Konfidenz 0.35, detect-only, DoD 3/3/2.
+
+**Tests 469 → 539 · Pipeline P 1.0 / R 0.995 / F1 0.998 (n=330) · Control/Consistency/SSOT (C1–C4)/Methodology/SIGNAL-DOD/fp-baseline grün · SSOT C3 51 → 70 Konstanten.**
+
 ## [2.5.0] — 2026-08-25 (Batch J — DE-Katalog Teil 2 + FU-17 + #80-Rest)
 
 ### #76 DE-Pattern-Katalog Teil 2 (Master-Akzeptanz ≥20 DE-Signale erfüllt)

@@ -568,7 +568,7 @@
     }
   },
   "signals": {
-    "version": "1.0.0",
+    "version": "2.6.0",
     "lastUpdated": "2026-05-20",
     "source": "Consolidated from Shaib et al. 2025, empirical observation, community detection (Reddit r/LocalLLaMA, HN), slopdetector.org, glukhov.org, Willison 2024",
     "note": "Signal words are PROBABILISTIC indicators, not proof. Human writers use some of these too. Threshold-based scoring required.",
