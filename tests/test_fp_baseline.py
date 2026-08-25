@@ -17,6 +17,7 @@ import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "skills", "ai-slop-detection", "scripts"))
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
 SCRIPT = os.path.join(ROOT, "scripts", "fp_baseline.py")
 BASELINE = os.path.join(ROOT, "eval", "fp_baseline.json")
@@ -99,7 +100,8 @@ class FpBaselineCLI(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             with open(BASELINE, encoding="utf-8") as f:
                 reg = json.load(f)
-            victim = sorted(reg["fixtures"])[0]
+            victim = next(fid for fid in sorted(reg["fixtures"])
+                           if reg["fixtures"][fid]["signals"])
             reg["fixtures"][victim]["signals"] = reg["fixtures"][victim]["signals"][:-1]
             tampered = os.path.join(d, "fp_baseline.json")
             with open(tampered, "w", encoding="utf-8") as f:

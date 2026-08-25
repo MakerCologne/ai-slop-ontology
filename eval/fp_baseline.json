@@ -1,0 +1,385 @@
+{
+  "schema": 1,
+  "generated_from": "eval/corpus.jsonl",
+  "engine": "skills/ai-slop-detection/scripts/slop_scorer.py",
+  "score_tolerance": 0.02,
+  "note": "Tolerated detector outputs per hard-negative fixture (issue #80). CI: scripts/fp_baseline.py --check fails on new signals or score drift beyond tolerance — FP pressure becomes visible before the 0.40 gate breaks.",
+  "fixtures": {
+    "clean-blog-01": {
+      "slop_score": 0.074,
+      "signals": []
+    },
+    "clean-blog-02": {
+      "slop_score": 0.033,
+      "signals": []
+    },
+    "clean-de-01": {
+      "slop_score": 0.22,
+      "signals": []
+    },
+    "clean-de-02": {
+      "slop_score": 0.037,
+      "signals": []
+    },
+    "clean-email-01": {
+      "slop_score": 0.059,
+      "signals": []
+    },
+    "clean-es-01": {
+      "slop_score": 0.053,
+      "signals": []
+    },
+    "clean-essay-01": {
+      "slop_score": 0.071,
+      "signals": []
+    },
+    "clean-fr-01": {
+      "slop_score": 0.242,
+      "signals": []
+    },
+    "clean-hi-01": {
+      "slop_score": 0.147,
+      "signals": []
+    },
+    "clean-history-01": {
+      "slop_score": 0.246,
+      "signals": []
+    },
+    "clean-legal-01": {
+      "slop_score": 0.075,
+      "signals": []
+    },
+    "clean-news-01": {
+      "slop_score": 0.137,
+      "signals": []
+    },
+    "clean-news-02": {
+      "slop_score": 0.086,
+      "signals": []
+    },
+    "clean-qa-01": {
+      "slop_score": 0.102,
+      "signals": []
+    },
+    "clean-recipe-01": {
+      "slop_score": 0.147,
+      "signals": []
+    },
+    "clean-review-01": {
+      "slop_score": 0.126,
+      "signals": []
+    },
+    "clean-science-01": {
+      "slop_score": 0.068,
+      "signals": []
+    },
+    "clean-science-02": {
+      "slop_score": 0.031,
+      "signals": []
+    },
+    "clean-sports-01": {
+      "slop_score": 0.127,
+      "signals": []
+    },
+    "clean-tech-01": {
+      "slop_score": 0.087,
+      "signals": []
+    },
+    "clean-tech-02": {
+      "slop_score": 0.043,
+      "signals": []
+    },
+    "clean-ur-01": {
+      "slop_score": 0.08,
+      "signals": []
+    },
+    "clean-vi-01": {
+      "slop_score": 0.049,
+      "signals": []
+    },
+    "hard-clean-aiassisted-01": {
+      "slop_score": 0.081,
+      "signals": []
+    },
+    "hardneg-001": {
+      "slop_score": 0.072,
+      "signals": [
+        "effective"
+      ]
+    },
+    "hardneg-002": {
+      "slop_score": 0.088,
+      "signals": []
+    },
+    "hardneg-003": {
+      "slop_score": 0.074,
+      "signals": []
+    },
+    "hardneg-004": {
+      "slop_score": 0.072,
+      "signals": []
+    },
+    "hardneg-005": {
+      "slop_score": 0.14,
+      "signals": []
+    },
+    "hardneg-006": {
+      "slop_score": 0.06,
+      "signals": []
+    },
+    "hardneg-007": {
+      "slop_score": 0.037,
+      "signals": []
+    },
+    "hardneg-008": {
+      "slop_score": 0.315,
+      "signals": []
+    },
+    "hardneg-009": {
+      "slop_score": 0.062,
+      "signals": []
+    },
+    "hardneg-010": {
+      "slop_score": 0.045,
+      "signals": []
+    },
+    "hardneg-011": {
+      "slop_score": 0.028,
+      "signals": []
+    },
+    "hardneg-012": {
+      "slop_score": 0.034,
+      "signals": []
+    },
+    "hardneg-013": {
+      "slop_score": 0.09,
+      "signals": [
+        "harness"
+      ]
+    },
+    "hardneg-014": {
+      "slop_score": 0.028,
+      "signals": []
+    },
+    "hardneg-015": {
+      "slop_score": 0.046,
+      "signals": []
+    },
+    "hardneg-016": {
+      "slop_score": 0.09,
+      "signals": []
+    },
+    "hardneg-017": {
+      "slop_score": 0.044,
+      "signals": []
+    },
+    "hardneg-018": {
+      "slop_score": 0.06,
+      "signals": []
+    },
+    "hardneg-019": {
+      "slop_score": 0.104,
+      "signals": []
+    },
+    "hardneg-020": {
+      "slop_score": 0.073,
+      "signals": []
+    },
+    "hardneg-021": {
+      "slop_score": 0.158,
+      "signals": []
+    },
+    "hardneg-022": {
+      "slop_score": 0.026,
+      "signals": []
+    },
+    "hardneg-023": {
+      "slop_score": 0.031,
+      "signals": []
+    },
+    "hardneg-024": {
+      "slop_score": 0.138,
+      "signals": []
+    },
+    "hardneg-025": {
+      "slop_score": 0.08,
+      "signals": []
+    },
+    "hardneg-026": {
+      "slop_score": 0.148,
+      "signals": []
+    },
+    "hardneg-027": {
+      "slop_score": 0.03,
+      "signals": []
+    },
+    "hardneg-028": {
+      "slop_score": 0.112,
+      "signals": []
+    },
+    "hardneg-029": {
+      "slop_score": 0.079,
+      "signals": []
+    },
+    "hardneg-030": {
+      "slop_score": 0.024,
+      "signals": []
+    },
+    "hardneg-031": {
+      "slop_score": 0.084,
+      "signals": []
+    },
+    "hardneg-032": {
+      "slop_score": 0.073,
+      "signals": []
+    },
+    "hardneg-033": {
+      "slop_score": 0.075,
+      "signals": []
+    },
+    "hardneg-034": {
+      "slop_score": 0.044,
+      "signals": []
+    },
+    "hardneg-035": {
+      "slop_score": 0.11,
+      "signals": []
+    },
+    "hardneg-036": {
+      "slop_score": 0.342,
+      "signals": []
+    },
+    "hardneg-037": {
+      "slop_score": 0.063,
+      "signals": []
+    },
+    "hardneg-038": {
+      "slop_score": 0.23,
+      "signals": []
+    },
+    "hardneg-039": {
+      "slop_score": 0.164,
+      "signals": []
+    },
+    "hardneg-040": {
+      "slop_score": 0.062,
+      "signals": []
+    },
+    "hardneg-041": {
+      "slop_score": 0.086,
+      "signals": []
+    },
+    "hardneg-042": {
+      "slop_score": 0.077,
+      "signals": []
+    },
+    "hardneg-043": {
+      "slop_score": 0.282,
+      "signals": []
+    },
+    "hardneg-044": {
+      "slop_score": 0.11,
+      "signals": []
+    },
+    "hardneg-045": {
+      "slop_score": 0.075,
+      "signals": []
+    },
+    "hardneg-046": {
+      "slop_score": 0.089,
+      "signals": []
+    },
+    "hardneg-047": {
+      "slop_score": 0.037,
+      "signals": []
+    },
+    "hardneg-048": {
+      "slop_score": 0.023,
+      "signals": []
+    },
+    "hardneg-049": {
+      "slop_score": 0.323,
+      "signals": []
+    },
+    "hardneg-050": {
+      "slop_score": 0.049,
+      "signals": []
+    },
+    "hardneg-051": {
+      "slop_score": 0.062,
+      "signals": []
+    },
+    "hardneg-052": {
+      "slop_score": 0.06,
+      "signals": []
+    },
+    "hardneg-053": {
+      "slop_score": 0.093,
+      "signals": []
+    },
+    "hardneg-054": {
+      "slop_score": 0.323,
+      "signals": []
+    },
+    "hardneg-055": {
+      "slop_score": 0.154,
+      "signals": []
+    },
+    "hardneg-056": {
+      "slop_score": 0.14,
+      "signals": []
+    },
+    "hardneg-057": {
+      "slop_score": 0.289,
+      "signals": []
+    },
+    "hardneg-058": {
+      "slop_score": 0.14,
+      "signals": []
+    },
+    "hardneg-059": {
+      "slop_score": 0.158,
+      "signals": []
+    },
+    "hardneg-060": {
+      "slop_score": 0.112,
+      "signals": []
+    },
+    "hardneg-061": {
+      "slop_score": 0.286,
+      "signals": []
+    },
+    "hardneg-062": {
+      "slop_score": 0.303,
+      "signals": []
+    },
+    "hardneg-063": {
+      "slop_score": 0.159,
+      "signals": []
+    },
+    "hardneg-064": {
+      "slop_score": 0.258,
+      "signals": []
+    },
+    "hardneg-065": {
+      "slop_score": 0.075,
+      "signals": []
+    },
+    "hardneg-066": {
+      "slop_score": 0.324,
+      "signals": []
+    },
+    "hardneg-067": {
+      "slop_score": 0.059,
+      "signals": []
+    },
+    "hardneg-068": {
+      "slop_score": 0.067,
+      "signals": []
+    },
+    "hardneg-069": {
+      "slop_score": 0.093,
+      "signals": []
+    }
+  }
+}
