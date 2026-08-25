@@ -1,0 +1,57 @@
+# Slop-Lexikon — Volltext
+
+## Binary-Contrast
+
+Rhetorisches Muster "This is not X. It's Y." / "The question isn't X, it's Y." / "It's not just X but Y." — eine kontrastierende Schein-Präzisierung, die KI-Texte auffällig häufig als Pseudo-Insight einsetzen. Lokal seit v1.x als rhetorisches Muster (rhetorical_patterns.py, _BINARY_CONTRAST) erkannt.
+
+- petergyang/no-ai-slop listet Binary contrasts als erstes seiner 25 Patterns mit den drei Nennformen "This is not X. It's Y." / "The question isn't X, it's Y." / "It's not just X but Y." und der Umschreib-Empfehlung "→ The eval matters more than the model."
+  - Quelle: https://github.com/petergyang/no-ai-slop (Zugriff 2026-08-24)
+    Zitat: 1. **Binary contrasts** — „This is not X. It's Y." / „The question isn't X, it's Y." / „It's not just X but Y." → „The eval matters more than the model."
+- Die lokale Ontology implementiert das Muster in rhetorical_patterns.py (_BINARY_CONTRAST, 4 Regexes), die alle drei bei petergyang genannten Formen covern (Volltext-Verifikation Deep-Dive 02).
+  - Quelle: https://github.com/hikaman/ai-slop-ontology (Zugriff 2026-08-25)
+    Zitat: Binary contrast | **VORHANDEN** | `rhetorical_patterns.py` `_BINARY_CONTRAST` (4 Regexes; covern petergyangs 3 Nennformen)
+
+## Human-Voice
+
+Counter-Prinzip: Detektion von Slop ist nur "half the job" — das positive Ziel ist eine erkennbare menschliche Stimme. Sechs Soul-Prinzipien (Meinung haben, Rhythmus variieren, Komplexität anerkennen, Ich-Form erlauben, kontrolliertes Chaos, Konkretheit) wirken der sterilen, voiceless-Glättung entgegen, die selbst ein Slop-Signal ist (Over-Sanitization).
+
+- potetos "unslop"-Skill (in poteto/noodle) etabliert "Adding soul" als positives Gegenprogramm nach dem Pattern-Removal: "Removal ist nur half the job, sterile, voiceless writing is just as obvious" — mit Prinzipien wie "Have opinions", "Vary rhythm", "Acknowledge complexity", "Use 'I' when it fits".
+  - Quelle: https://www.skills.sh/poteto/noodle/unslop (Zugriff 2026-08-24)
+    Zitat: „Adding soul" 🆕 (positives Gegenprogramm — Removal ist nur „half the job", „sterile, voiceless writing is just as obvious"): „Have opinions. React to facts instead of neutrally listing pros and cons." / „Vary rhythm. Short sentences. Then longer ones that take their time. Mix it up."
+- Die lokale Ontology hat diese Prinzipien als references/human-voice.md übernommen (Issue #21, Batch G); der 4-Schritt-Prozess des Skills endet mit einem iterativen Self-Audit: "What makes this obviously AI generated?" — Fix remaining tells.
+  - Quelle: https://github.com/hikaman/ai-slop-ontology (Zugriff 2026-08-25)
+    Zitat: Prozess (4 Schritte): 1. Scan für Patterns → 2. „Rewrite — preserve meaning, match intended tone" → 3. „Add soul (see next section)" → 4. Self-Audit: „What makes this obviously AI generated?" Fix remaining tells.
+
+## Marketing-CTA
+
+Marketing- und Conversion-Phrasen ("start your free trial today", "book a demo", "trusted by startups and enterprises alike"), die in KI-generiertem Marketing- und Produktext gehäuft auftreten. In der lokalen Ontology als phrase-Kategorie marketing_cta umgesetzt (Issue-Batch F, 20 Phrasen mit Korpus-Belegen).
+
+- Die 20 marketing_cta-Phrasen der lokalen Ontology wurden aus dem FN-Korpus extrahiert und mit Trefferzahlen belegt, z. B. "start your free trial today" (12 slop-Texte), "book a demo" (8), "trusted by startups and enterprises alike" (12), "all in one place" (16) — je 0 Clean-Treffer.
+  - Quelle: https://github.com/hikaman/ai-slop-ontology/blob/main/eval/corpus.jsonl (Zugriff 2026-08-25)
+    Zitat: start your free trial today. Most Popular Book a demo with our team. What does this mean for your team? The short answer is yes. [...] But here's the catch: the API rate-limits you anyway.
+- Der unabhängige Review (review-batch-f.md) bestätigt die echten LLM-/CTA-Artefakte als "hohe Portabilität — starke Signale", warnt aber zugleich vor generischen marketing_cta/report_hedging-Phrasen als Haupt-FP-Risiko in menschlicher Arbeitsprosa.
+  - Quelle: https://github.com/hikaman/ai-slop-ontology (Zugriff 2026-08-25)
+    Zitat: „start your free trial today", „trusted by startups and enterprises alike", „99.9% uptime" [...] | **echte LLM-/CTA-Artefakte**, hohe Portabilität — starke Signale
+
+## Provenance-Marker
+
+Deterministische Artefakte KI-generierter Texte aus der Tool-Interaktion — z. B. ":contentReference[oaicite:N]{index=N}", "turn0search0" (mit Private-Use-Area-Unicode umgeben), "oai_citation" oder nackte PUA-Ziffern. Nahezu false-positive-frei und per Regex maschinell nachweisbar.
+
+- Wikipedia "Signs of AI writing" dokumentiert diese Marker als interne Formatierungs-Bugs von ChatGPT und bezeichnet sie als "unambiguous" — ChatGPT: ":contentReference[oaicite:N]{index=N}", "Example+1", "oai_citation", "turn0search0" (mit PUA-Unicode umgeben; Zähler steigt durch den Text).
+  - Quelle: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing (Zugriff 2026-08-24)
+    Zitat: Interne Formatierungs-Bugs (unambiguous!) — ChatGPT: `:contentReference[oaicite:N]{index=N}`, `Example+1`, `oai_citation`, `turn0search0` (mit PUA-Unicode umgeben; Zähler steigt durch Text)
+- Die lokale Ontology hat diese Marker mit Issue #20 als deterministische Provenance-Signale übernommen (Batch A, burn-batch-a.md); Deep-Dive 03 stufte sie als "stärkstes Einzelsignal der ganzen Wiki-Seite" mit Konfidenz ≈1.0 ein.
+  - Quelle: https://github.com/hikaman/ai-slop-ontology (Zugriff 2026-08-25)
+    Zitat: Deterministische Provenance-Marker (§3.4/Punkt 29): `turn0search0`+PUA-Ziffern, `oaicite`, `2025-XX-XX`, `PASTE_*_HERE` — die lokal komplett fehlen, obwohl sie die höchste mögliche Konfidenz (≈1.0) haben
+
+## Throat-Clearing
+
+Gesprochene Aufwärm-Phrasen ("Here's the thing:", "It turns out", "Let me be clear"), die den Punkt aufschieben statt ihn zu machen — ein hochfrequentes KI-Text-Signal auf Phrase-Ebene.
+
+- stop-slop führt 15 Throat-Clearing-Opener explizit als Cut-Kandidaten, darunter "Here's the thing:", "The uncomfortable truth is" und "It turns out", plus die generische Regel "Any 'here's what/this/that' construction is throat-clearing before the point."
+  - Quelle: https://github.com/hardikpandya/stop-slop (Zugriff 2026-08-24)
+    Zitat: Throat-Clearing Openers (15): „Here's the thing:" · „Here's what [X]" · „Here's this [X]" · „Here's that [X]" · „Here's why [X]" · „The uncomfortable truth is" · „It turns out" · „The real [X] is" · „Let me be clear"
+- Wikipedia "Signs of AI writing" listet Fake-candid openings derselben Familie ("Honestly?", "Look,", "Here's the thing", "The thing is") als eigenständiges Anzeichen KI-generierten Texts.
+  - Quelle: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing (Zugriff 2026-08-24)
+    Zitat: Fake-candid openings — „Honestly?", „Look,", „Here's the thing", „The thing is", „Let me be honest", „Real talk" — als standalone hooks
+

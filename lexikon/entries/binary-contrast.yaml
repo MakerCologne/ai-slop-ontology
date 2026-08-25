@@ -22,11 +22,11 @@ claims:
         accessed: "2026-08-24"
   - statement: >
       Die lokale Ontology implementiert das Muster in
-      rhetorical_patterns.py (_BINARY_CONTRAST, 3 Regexes), die alle drei bei
+      rhetorical_patterns.py (_BINARY_CONTRAST, 4 Regexes), die alle drei bei
       petergyang genannten Formen covern (Volltext-Verifikation Deep-Dive 02).
     sources:
       - url: https://github.com/hikaman/ai-slop-ontology
-        quote: "Binary contrast | **VORHANDEN** | `rhetorical_patterns.py` `_BINARY_CONTRAST` (3 Regexes; covern petergyangs 3 Nennformen)"
+        quote: "Binary contrast | **VORHANDEN** | `rhetorical_patterns.py` `_BINARY_CONTRAST` (4 Regexes; covern petergyangs 3 Nennformen)"
         accessed: "2026-08-25"
 detect:
   regex:

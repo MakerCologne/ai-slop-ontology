@@ -1,0 +1,11 @@
+# Slop-Lexikon
+
+> Belegtes Glossar von AI-Slop-Signalen, -Mustern und Gegenprinzipien. Jede Aussage trägt Quelle (URL + Zitat + Zugriffsdatum). Quelle: lexikon/entries/ (SSOT).
+
+- [Binary-Contrast](entries/LEX-2026-003.yaml): Rhetorisches Muster "This is not X. It's Y." / "The question isn't X, it's Y." / "It's not just X but Y." — eine kontrastierende Schein-Präzisierung, die KI-Texte auffällig häufig als Pseudo-Insight einsetzen. Lokal seit v1.x als rhetorisches Muster (rhetorical_patterns.py, _BINARY_CONTRAST) erkannt.
+- [Human-Voice](entries/LEX-2026-005.yaml): Counter-Prinzip: Detektion von Slop ist nur "half the job" — das positive Ziel ist eine erkennbare menschliche Stimme. Sechs Soul-Prinzipien (Meinung haben, Rhythmus variieren, Komplexität anerkennen, Ich-Form erlauben, kontrolliertes Chaos, Konkretheit) wirken der sterilen, voiceless-Glättung entgegen, die selbst ein Slop-Signal ist (Over-Sanitization).
+- [Marketing-CTA](entries/LEX-2026-004.yaml): Marketing- und Conversion-Phrasen ("start your free trial today", "book a demo", "trusted by startups and enterprises alike"), die in KI-generiertem Marketing- und Produktext gehäuft auftreten. In der lokalen Ontology als phrase-Kategorie marketing_cta umgesetzt (Issue-Batch F, 20 Phrasen mit Korpus-Belegen).
+- [Provenance-Marker](entries/LEX-2026-002.yaml): Deterministische Artefakte KI-generierter Texte aus der Tool-Interaktion — z. B. ":contentReference[oaicite:N]{index=N}", "turn0search0" (mit Private-Use-Area-Unicode umgeben), "oai_citation" oder nackte PUA-Ziffern. Nahezu false-positive-frei und per Regex maschinell nachweisbar.
+- [Throat-Clearing](entries/LEX-2026-001.yaml): Gesprochene Aufwärm-Phrasen ("Here's the thing:", "It turns out", "Let me be clear"), die den Punkt aufschieben statt ihn zu machen — ein hochfrequentes KI-Text-Signal auf Phrase-Ebene.
+
+Optional: llms-full.txt enthält alle Einträge mit allen Belegzitaten.

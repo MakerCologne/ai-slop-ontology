@@ -1,0 +1,256 @@
+{
+  "entries": [
+    {
+      "aliases": [
+        "not-X-but-Y",
+        "false dichotomy phrase",
+        "It's not X, it's Y"
+      ],
+      "category": "pattern",
+      "claims": [
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-24",
+              "quote": "1. **Binary contrasts** — „This is not X. It's Y.\" / „The question isn't X, it's Y.\" / „It's not just X but Y.\" → „The eval matters more than the model.\"",
+              "url": "https://github.com/petergyang/no-ai-slop"
+            }
+          ],
+          "statement": "petergyang/no-ai-slop listet Binary contrasts als erstes seiner 25 Patterns mit den drei Nennformen \"This is not X. It's Y.\" / \"The question isn't X, it's Y.\" / \"It's not just X but Y.\" und der Umschreib-Empfehlung \"→ The eval matters more than the model.\"\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-25",
+              "quote": "Binary contrast | **VORHANDEN** | `rhetorical_patterns.py` `_BINARY_CONTRAST` (4 Regexes; covern petergyangs 3 Nennformen)",
+              "url": "https://github.com/hikaman/ai-slop-ontology"
+            }
+          ],
+          "statement": "Die lokale Ontology implementiert das Muster in rhetorical_patterns.py (_BINARY_CONTRAST, 4 Regexes), die alle drei bei petergyang genannten Formen covern (Volltext-Verifikation Deep-Dive 02).\n"
+        }
+      ],
+      "content_hash": "4636a65373fc6bbb",
+      "counter": {
+        "keep_when": "Echte, inhaltsvolle Gegenüberstellung mit beidseitiger Substanz.",
+        "measure": "Direkte Aussage mit Komparativ statt Kontrast-Gerüst („X matters more than Y\")."
+      },
+      "definition": "Rhetorisches Muster \"This is not X. It's Y.\" / \"The question isn't X, it's Y.\" / \"It's not just X but Y.\" — eine kontrastierende Schein-Präzisierung, die KI-Texte auffällig häufig als Pseudo-Insight einsetzen. Lokal seit v1.x als rhetorisches Muster (rhetorical_patterns.py, _BINARY_CONTRAST) erkannt.",
+      "detect": {
+        "regex": [
+          "it'?s not (just )?.+, it'?s .+",
+          "the (question|goal) isn'?t .+, it'?s .+"
+        ]
+      },
+      "id": "LEX-2026-003",
+      "see_also": [
+        "Throat-Clearing",
+        "Human-Voice"
+      ],
+      "status": "stable",
+      "term": "Binary-Contrast",
+      "version": 1
+    },
+    {
+      "aliases": [
+        "adding soul",
+        "soul principles",
+        "positive Gegenprofil"
+      ],
+      "category": "counter",
+      "claims": [
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-24",
+              "quote": "„Adding soul\" 🆕 (positives Gegenprogramm — Removal ist nur „half the job\", „sterile, voiceless writing is just as obvious\"): „Have opinions. React to facts instead of neutrally listing pros and cons.\" / „Vary rhythm. Short sentences. Then longer ones that take their time. Mix it up.\"",
+              "url": "https://www.skills.sh/poteto/noodle/unslop"
+            }
+          ],
+          "statement": "potetos \"unslop\"-Skill (in poteto/noodle) etabliert \"Adding soul\" als positives Gegenprogramm nach dem Pattern-Removal: \"Removal ist nur half the job, sterile, voiceless writing is just as obvious\" — mit Prinzipien wie \"Have opinions\", \"Vary rhythm\", \"Acknowledge complexity\", \"Use 'I' when it fits\".\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-25",
+              "quote": "Prozess (4 Schritte): 1. Scan für Patterns → 2. „Rewrite — preserve meaning, match intended tone\" → 3. „Add soul (see next section)\" → 4. Self-Audit: „What makes this obviously AI generated?\" Fix remaining tells.",
+              "url": "https://github.com/hikaman/ai-slop-ontology"
+            }
+          ],
+          "statement": "Die lokale Ontology hat diese Prinzipien als references/human-voice.md übernommen (Issue #21, Batch G); der 4-Schritt-Prozess des Skills endet mit einem iterativen Self-Audit: \"What makes this obviously AI generated?\" — Fix remaining tells.\n"
+        }
+      ],
+      "content_hash": "8ca8b1ee5819cc8a",
+      "counter": {
+        "keep_when": "Nicht anwendbar (Gegenprinzip, kein Detektionssignal).",
+        "measure": "Redaktionelle Zielperspektive neben der Detektion: Meinungen, Rhythmus- Variation, erste Person, konkrete Details statt neutraler Auflistung.\n"
+      },
+      "definition": "Counter-Prinzip: Detektion von Slop ist nur \"half the job\" — das positive Ziel ist eine erkennbare menschliche Stimme. Sechs Soul-Prinzipien (Meinung haben, Rhythmus variieren, Komplexität anerkennen, Ich-Form erlauben, kontrolliertes Chaos, Konkretheit) wirken der sterilen, voiceless-Glättung entgegen, die selbst ein Slop-Signal ist (Over-Sanitization).",
+      "detect": null,
+      "id": "LEX-2026-005",
+      "see_also": [
+        "Binary-Contrast"
+      ],
+      "status": "beta",
+      "term": "Human-Voice",
+      "version": 1
+    },
+    {
+      "aliases": [
+        "marketing_cta",
+        "SaaS-CTA-Phrasen"
+      ],
+      "category": "pattern",
+      "claims": [
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-25",
+              "quote": "start your free trial today. Most Popular Book a demo with our team. What does this mean for your team? The short answer is yes. [...] But here's the catch: the API rate-limits you anyway.",
+              "url": "https://github.com/hikaman/ai-slop-ontology/blob/main/eval/corpus.jsonl"
+            }
+          ],
+          "statement": "Die 20 marketing_cta-Phrasen der lokalen Ontology wurden aus dem FN-Korpus extrahiert und mit Trefferzahlen belegt, z. B. \"start your free trial today\" (12 slop-Texte), \"book a demo\" (8), \"trusted by startups and enterprises alike\" (12), \"all in one place\" (16) — je 0 Clean-Treffer.\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-25",
+              "quote": "„start your free trial today\", „trusted by startups and enterprises alike\", „99.9% uptime\" [...] | **echte LLM-/CTA-Artefakte**, hohe Portabilität — starke Signale",
+              "url": "https://github.com/hikaman/ai-slop-ontology"
+            }
+          ],
+          "statement": "Der unabhängige Review (review-batch-f.md) bestätigt die echten LLM-/CTA-Artefakte als \"hohe Portabilität — starke Signale\", warnt aber zugleich vor generischen marketing_cta/report_hedging-Phrasen als Haupt-FP-Risiko in menschlicher Arbeitsprosa.\n"
+        }
+      ],
+      "content_hash": "be4238b67f8349de",
+      "counter": {
+        "keep_when": "Echte Landingpage/CTA-Kontexte, in denen die Handlungsaufforderung der Zweck des Textes ist.",
+        "measure": "Konkrete, belegte Produktaussagen statt Conversion-Formeln."
+      },
+      "definition": "Marketing- und Conversion-Phrasen (\"start your free trial today\", \"book a demo\", \"trusted by startups and enterprises alike\"), die in KI-generiertem Marketing- und Produktext gehäuft auftreten. In der lokalen Ontology als phrase-Kategorie marketing_cta umgesetzt (Issue-Batch F, 20 Phrasen mit Korpus-Belegen).",
+      "detect": {
+        "regex": [
+          "start your free trial",
+          "book a demo",
+          "trusted by .+ (alike|worldwide)"
+        ]
+      },
+      "id": "LEX-2026-004",
+      "see_also": [
+        "Throat-Clearing"
+      ],
+      "status": "beta",
+      "term": "Marketing-CTA",
+      "version": 1
+    },
+    {
+      "aliases": [
+        "oaicite",
+        "turn0search0",
+        "contentReference",
+        "PUA-Ziffern",
+        "interne Formatierungs-Bugs"
+      ],
+      "category": "signal",
+      "claims": [
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-24",
+              "quote": "Interne Formatierungs-Bugs (unambiguous!) — ChatGPT: `:contentReference[oaicite:N]{index=N}`, `Example+1`, `oai_citation`, `turn0search0` (mit PUA-Unicode umgeben; Zähler steigt durch Text)",
+              "url": "https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing"
+            }
+          ],
+          "statement": "Wikipedia \"Signs of AI writing\" dokumentiert diese Marker als interne Formatierungs-Bugs von ChatGPT und bezeichnet sie als \"unambiguous\" — ChatGPT: \":contentReference[oaicite:N]{index=N}\", \"Example+1\", \"oai_citation\", \"turn0search0\" (mit PUA-Unicode umgeben; Zähler steigt durch den Text).\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-25",
+              "quote": "Deterministische Provenance-Marker (§3.4/Punkt 29): `turn0search0`+PUA-Ziffern, `oaicite`, `2025-XX-XX`, `PASTE_*_HERE` — die lokal komplett fehlen, obwohl sie die höchste mögliche Konfidenz (≈1.0) haben",
+              "url": "https://github.com/hikaman/ai-slop-ontology"
+            }
+          ],
+          "statement": "Die lokale Ontology hat diese Marker mit Issue #20 als deterministische Provenance-Signale übernommen (Batch A, burn-batch-a.md); Deep-Dive 03 stufte sie als \"stärkstes Einzelsignal der ganzen Wiki-Seite\" mit Konfidenz ≈1.0 ein.\n"
+        }
+      ],
+      "content_hash": "601bd6adbd64e27b",
+      "counter": {
+        "keep_when": "Nie legitim — Vorkommen ist immer ein Tool-Artefakt.",
+        "measure": "Zitations-Artefakte entfernen und Belege sauber formatieren."
+      },
+      "definition": "Deterministische Artefakte KI-generierter Texte aus der Tool-Interaktion — z. B. \":contentReference[oaicite:N]{index=N}\", \"turn0search0\" (mit Private-Use-Area-Unicode umgeben), \"oai_citation\" oder nackte PUA-Ziffern. Nahezu false-positive-frei und per Regex maschinell nachweisbar.",
+      "detect": {
+        "regex": [
+          ":contentReference\\[oaicite:[0-9]+\\]\\{index=[0-9]+\\}",
+          "turn0search[0-9]+",
+          "oai_citation"
+        ]
+      },
+      "id": "LEX-2026-002",
+      "see_also": [
+        "Throat-Clearing"
+      ],
+      "status": "stable",
+      "term": "Provenance-Marker",
+      "version": 1
+    },
+    {
+      "aliases": [
+        "throat clearing openers",
+        "faux-candid openings"
+      ],
+      "category": "pattern",
+      "claims": [
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-24",
+              "quote": "Throat-Clearing Openers (15): „Here's the thing:\" · „Here's what [X]\" · „Here's this [X]\" · „Here's that [X]\" · „Here's why [X]\" · „The uncomfortable truth is\" · „It turns out\" · „The real [X] is\" · „Let me be clear\"",
+              "url": "https://github.com/hardikpandya/stop-slop"
+            }
+          ],
+          "statement": "stop-slop führt 15 Throat-Clearing-Opener explizit als Cut-Kandidaten, darunter \"Here's the thing:\", \"The uncomfortable truth is\" und \"It turns out\", plus die generische Regel \"Any 'here's what/this/that' construction is throat-clearing before the point.\"\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-08-24",
+              "quote": "Fake-candid openings — „Honestly?\", „Look,\", „Here's the thing\", „The thing is\", „Let me be honest\", „Real talk\" — als standalone hooks",
+              "url": "https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing"
+            }
+          ],
+          "statement": "Wikipedia \"Signs of AI writing\" listet Fake-candid openings derselben Familie (\"Honestly?\", \"Look,\", \"Here's the thing\", \"The thing is\") als eigenständiges Anzeichen KI-generierten Texts.\n"
+        }
+      ],
+      "content_hash": "6353708f973c4676",
+      "counter": {
+        "keep_when": "In echter zitierter Rede oder als bewusstes Stilmittel mit Inhalt.",
+        "measure": "Direkt mit dem Punkt beginnen; Opener streichen (Minimum-Effective-Edit)."
+      },
+      "definition": "Gesprochene Aufwärm-Phrasen (\"Here's the thing:\", \"It turns out\", \"Let me be clear\"), die den Punkt aufschieben statt ihn zu machen — ein hochfrequentes KI-Text-Signal auf Phrase-Ebene.",
+      "detect": {
+        "hints": [
+          "here's-what/this/that-Konstruktion vor dem eigentlichen Punkt"
+        ],
+        "regex": [
+          "here's the thing",
+          "it turns out",
+          "let me be clear",
+          "the uncomfortable truth is"
+        ]
+      },
+      "id": "LEX-2026-001",
+      "see_also": [
+        "Binary-Contrast",
+        "Marketing-CTA"
+      ],
+      "status": "stable",
+      "term": "Throat-Clearing",
+      "version": 1
+    }
+  ],
+  "entry_count": 5,
+  "name": "slop-lexikon",
+  "schema": "lexikon/schema/entry.schema.json"
+}
