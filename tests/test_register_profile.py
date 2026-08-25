@@ -44,9 +44,9 @@ def _formal_half():
 
 
 def _colloquial_half():
-    return ("Yeah, honestly the whole thing was kinda wild. Hey, I mean "
-            "the stuff they found was really odd somehow, okay? We just "
-            "sat there and thought, no way this is real, but it was.")
+    return ("Yeah, honestly the whole thing was kinda wild. Hey, you "
+            "know, the stuff they found was really odd somehow, okay? "
+            "You just sat there and thought, no way this is real.")
 
 
 def _uniform_formal():
@@ -192,7 +192,7 @@ class TestRegisterDriftInternGuards:
         loses its purity and no intern drift is reported."""
         weak_formal = ("Furthermore, the results are notable. Moreover, "
                        "the data support the hypothesis across conditions.")
-        doc = weak_formal + " " + _colloquial_half()
+        doc = weak_formal + "\n\n" + _colloquial_half()
         assert rp.register_drift_intern(doc, genre="academic") is None
         # without the genre guard the same doc is flagged (exempt terms
         # still count outside genre profiles)

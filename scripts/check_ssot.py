@@ -52,6 +52,7 @@ SIGNAL_MODULES = [
     "skills/ai-slop-detection/scripts/naturalness_guard.py",
     "skills/ai-slop-detection/scripts/de_typography.py",
     "skills/ai-slop-detection/scripts/structure_metrics.py",
+    "skills/ai-slop-detection/scripts/register_profile.py",
 ]
 
 # "source" values:
@@ -134,6 +135,16 @@ SSOT_REGISTER = {
         "MIN_WORDS_SANITIZED": ("engine-config", "fixture-calibrated"),
         "MIN_FULL_FORMS": ("engine-config", "fixture-calibrated"),
     },
+    "register_profile.py": {
+        "IMPERATIVE_STARTERS": ("closed-list", "deviation"),
+        "MODAL_PARTICLES_DE": ("closed-list", "deviation"),
+        "HEDGE_PARTICLES": ("closed-list", "deviation"),
+        "INTENSIFIER_PARTICLES": ("closed-list", "deviation"),
+        "REGISTER_DRIFT_EXEMPT_GENRES": ("engine-config", "synced-via-genre_profiles"),
+        "MIN_WORDS_DRIFT": ("engine-config", "fixture-calibrated"),
+        "MIN_MARKERS_PER_HALF": ("engine-config", "fixture-calibrated"),
+        "PUNCT_PER_CHARS": ("engine-config", "deviation"),
+    },
 }
 
 # ALLOWLIST — conscious deviations (C3): why these lists do not come from
@@ -176,6 +187,14 @@ ALLOWLIST_NOTES = [
     "DE gate/matcher inventories after de.wikipedia Anzeichen-fuer-KI-"
     "generierte-Inhalte + eigene Beispiele; license-safe re-derivation "
     "(no CC BY-SA pattern material copied), see docs/de-coverage.md.",
+    "register_profile (#74) closed lists (IMPERATIVE_STARTERS, "
+    "MODAL_PARTICLES_DE, HEDGE_PARTICLES, INTENSIFIER_PARTICLES) are "
+    "self-derived EN/DE descriptive inventories for the detect-only "
+    "style card; FORMAL/COLLOQUIAL markers are IMPORTED from "
+    "naturalness_guard (#81) instead of duplicated. MIN_* thresholds are "
+    "fixture-pinned (tests/test_register_profile.py). REGISTER_DRIFT_"
+    "EXEMPT_GENRES is synced with the #42 genre-profile conventions. No "
+    "third-party pattern material copied.",
 ]
 
 

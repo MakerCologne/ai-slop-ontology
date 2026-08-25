@@ -37,6 +37,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `tests/test_null_edit_contract.py` — #79 Null-Edit-Contract-Gate (93 Hard Negatives clean auf beiden Engines, Null-Edit-Stabilität, Grenzband-Register eval/hardneg_borderline.json)
 - `tests/test_fp_baseline.py` — #80 FP-Baseline-Register (eval/fp_baseline.json, CI-Snapshot `scripts/fp_baseline.py --check`)
 - `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when, modal_particle_anomaly Stub für #76)
+- `tests/test_register_profile.py` — #74 Register-Profile v2: Stilkarte (9 Felder, JSON) + register_drift_intern (Hälften-Distanz, detect-only ≤0.5, #42-Genre-Exemptions, Kollisionsdisziplin zu #81 register_drift), Scorer-Kontext-Ausgabe ohne Score-Einfluss
 - `tests/test_de_typography.py` — #76 DE-Typografie M46/M47/M48/M49 (detect-only, DE-Sprachgate, je 3/3/2 Fixtures; Mapping: docs/de-coverage.md)
 - `tests/test_de_vocab_layer.py` — #77 DE-KI-Marker-Vokabular (4 DE-Phrase-Kategorien in ontology.json, Belegpflicht je Phrase, Kollisionsfreiheit, EN-Corpus-Sicherheit)
 - `tests/test_de_catalog_part2.py` — #76 Teil 2: 12 weitere DE-Phrase-Kategorien (Schema, Evidence-Pflicht mit Namespace-Präfix, #46-Kollisionsfreiheit inkl. paarweiser Substring-Check, Signal-DoD 3/3/2 je Kategorie)

@@ -92,6 +92,20 @@ Struktureinheiten mit Wortlängen-Streuung < 1.0). Beide advisory,
 Konfidenz 0.5, nie score-dominant; Schwellen fixture-kalibriert
 (`tests/test_structure_metrics.py`).
 
+### Step 2g: Register-Profile v2 (detect-only, #74)
+
+`scripts/register_profile.py` — zwei Oberflächen: (1) `register_profile(text)`
+liefert eine JSON-Stilkarte (mode, deictic_center, address, distance,
+sentence_shape, word_level, paragraph_openers, particles,
+punctuation_affinity) — der Scorer gibt sie unter `context` im Report aus,
+ohne jeden Score-Einfluss. (2) `register_drift_intern(text, genre=)` —
+Register-Distanz ZWISCHEN Dokument-Hälften (je Hälfte registerrein,
+Hälften unterschiedlich), komplementär zu #81 `register_drift`
+(Ganztext-Mischung; Kollisionsdisziplin: anderer Fallraum, anderes
+Finding-Id). Genre-Profile (#42) werden respektiert: academic/legal/
+technical suppressieren, exempt_terms zählen nicht als Marker. Advisory,
+Konfidenz 0.5 (`tests/test_register_profile.py`).
+
 ### DE-Phrase-Layer (#76/#77, SSOT in ontology.json)
 
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted

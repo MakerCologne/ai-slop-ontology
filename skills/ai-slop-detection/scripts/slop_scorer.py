@@ -28,6 +28,7 @@ import input_norm
 import learning_store
 import portability
 import provenance_signals
+import register_profile
 import tokenizer
 
 # Single source of truth for the decision threshold (issue #23): guards and
@@ -873,11 +874,22 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     else:
         action = "Normal use, standard source checks apply."
 
+    # Issue #74: Register-Profile v2 — detect-only style card in the
+    # report context. NEVER part of the numeric score: no weight, no
+    # dimension, no escalation. Genre (#42) is passed through so the
+    # drift guard respects genre exemptions.
+    register_ctx = register_profile.register_profile(text)
+    register_findings = register_profile.find_register_findings(text, genre=genre)
+
     return {
         "slop_score": score,
         "risk_level": risk,
         "action": action,
         **({"genre": genre} if genre else {}),
+        "context": {
+            "register_profile": register_ctx,
+            "register_findings": register_findings,
+        },
         "dimensions": {
             "information_density": round(density, 3),
             "repetition_ratio": round(rep, 3),
@@ -969,6 +981,18 @@ def format_report(result: dict) -> str:
             lines.append(f"  {lang}: {', '.join(words)}")
     if signals["authority_phrases"]:
         lines.append(f"\n📢 Authority claims: {', '.join(signals['authority_phrases'])}")
+
+    # Issue #74: register context — detect-only style card, advisory.
+    ctx = result.get("context") or {}
+    card = ctx.get("register_profile")
+    if card:
+        lines.append("\n🧭 Register-Kontext (advisory, kein Score-Anteil):")
+        lines.append(
+            f"  mode={card['mode']} | deictic_center={card['deictic_center']} | "
+            f"address={card['address']} | distance={card['distance']} | "
+            f"sentence_shape={card['sentence_shape']['profile']}")
+    for f in ctx.get("register_findings", []):
+        lines.append(f"  ⚠️ {f['id']} (conf {f['confidence']}, detect-only): {f['evidence']}")
 
     return "\n".join(lines)
 
