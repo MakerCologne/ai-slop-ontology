@@ -106,6 +106,15 @@ Finding-Id). Genre-Profile (#42) werden respektiert: academic/legal/
 technical suppressieren, exempt_terms zählen nicht als Marker. Advisory,
 Konfidenz 0.5 (`tests/test_register_profile.py`).
 
+### Step 2h: Diskurs-Metriken (explorativ, detect-only, #72)
+
+`scripts/discourse_metrics.py` — `rank_without_criterion` (Rangliste mit
+≥ 3 nummerierten Positionen ohne jedes Bewertungskriterium) und
+`identical_enumeration` (≥ 3 Sätze mit identischem Anfangs-Frame als
+rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
+Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
+`eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
+
 ### DE-Phrase-Layer (#76/#77, SSOT in ontology.json)
 
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted

@@ -53,6 +53,7 @@ SIGNAL_MODULES = [
     "skills/ai-slop-detection/scripts/de_typography.py",
     "skills/ai-slop-detection/scripts/structure_metrics.py",
     "skills/ai-slop-detection/scripts/register_profile.py",
+    "skills/ai-slop-detection/scripts/discourse_metrics.py",
 ]
 
 # "source" values:
@@ -151,6 +152,13 @@ SSOT_REGISTER = {
         "MIN_MARKERS_PER_HALF": ("engine-config", "fixture-calibrated"),
         "PUNCT_PER_CHARS": ("engine-config", "deviation"),
     },
+    "discourse_metrics.py": {
+        "RANKED_LINE_RE": ("compiled-regex-matcher", "deviation"),
+        "CRITERION_MARKERS": ("closed-list", "deviation"),
+        "MIN_RANKED_ITEMS": ("engine-config", "fixture-calibrated"),
+        "MIN_ENUM_ITEMS": ("engine-config", "fixture-calibrated"),
+        "MAX_ENUM_CONFIDENCE": ("engine-config", "deviation"),
+    },
 }
 
 # ALLOWLIST — conscious deviations (C3): why these lists do not come from
@@ -201,6 +209,14 @@ ALLOWLIST_NOTES = [
     "fixture-pinned (tests/test_register_profile.py). REGISTER_DRIFT_"
     "EXEMPT_GENRES is synced with the #42 genre-profile conventions. No "
     "third-party pattern material copied.",
+    "discourse_metrics (#72) CRITERION_MARKERS is a self-derived EN/DE "
+    "closed list of justification markers for the explorative detect-only "
+    "rank_without_criterion / identical_enumeration signals (concept from "
+    "own deep-dive notes deep/10 + deep/06; reference corpus "
+    "eval/discourse_ref.jsonl, versioned). MIN_* thresholds are "
+    "fixture-pinned (tests/test_discourse_metrics.py). Short public "
+    "quotes in the reference corpus are attributed; no CC BY-SA pattern "
+    "material copied.",
 ]
 
 
