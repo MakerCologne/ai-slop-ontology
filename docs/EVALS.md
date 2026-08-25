@@ -42,6 +42,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `tests/test_de_catalog_part2.py` — #76 Teil 2: 12 weitere DE-Phrase-Kategorien (Schema, Evidence-Pflicht mit Namespace-Präfix, #46-Kollisionsfreiheit inkl. paarweiser Substring-Check, Signal-DoD 3/3/2 je Kategorie)
 - `tests/test_structure_metrics.py` — #76 Teil 2: M60 SynonymRotation + M61 IsometricUnits (detect-only, sprachagnostisch, 3/3/2-Fixtures, Schwellen fixture-kalibriert)
 - `tests/test_ssot_de_layer.py` — FU-17: check_ssot C4 de_*-Phrase-Layer-Pin (16 Kategorien, Evidence-Regel, Namespace-Präfix) mit 4 Manipulationsproben
+- `tests/test_genre_human_texts.py` — #80-Rest: Genre-Menschtexte je Genre ≥6 (own:handwritten), <0.40 auf beiden Engines, fp_baseline-Pin, Quartals-Re-Score-Anbindung (#47)
 - `tests/test_benchmark_runner.py` — L3-Runner selbst + Korpus-Disziplin (Zeilen, Quellen, 60 %-Regel)
 - `tests/test_binary_contrast_ext.py` — Signal #26 BinaryContrast
 - `tests/test_classifier.py` — src/classifier.py Klassifikation
@@ -98,3 +99,5 @@ Für Korpus-Erweiterungen und neue Genres (Quelle: methoden-fundament.md §2, Ha
 4. **Frozen-Golden-Set + Challenge-Set:** eingefrorenes Referenzset für Regression (L2/L3) plus kleines wachsendes Challenge-Set für neue Modellgenerationen (#47/#59).
 
 Konsistenz dieser Zuordnung prüft `scripts/check_methodology.py`: jede Datei unter eval/ (py, jsonl) und tests/ (test_*.py) muss oben vorkommen.
+
+- `eval/corpus.jsonl` human-*-Fixtures (issue #80-Rest): je Genre ≥6 verifizierte Menschtexte; neue Fixtures `own:handwritten` (handgeschrieben verifiziert, Pre-LLM-Stil, keine Kopie geschützter Texte) für code/generic/nonfiction/news, im `fp_baseline.py --check`-Register gepinnt — Quartals-Re-Score (L3, Drift #47) misst Drift gegen dieses Register, Neu-Anreicherung weiterer Genre-Menschtexte läuft über denselben Pin-Mechanismus.

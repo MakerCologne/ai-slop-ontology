@@ -380,6 +380,70 @@
     "hardneg-069": {
       "slop_score": 0.093,
       "signals": []
+    },
+    "human-code-01": {
+      "slop_score": 0.135,
+      "signals": []
+    },
+    "human-code-02": {
+      "slop_score": 0.116,
+      "signals": []
+    },
+    "human-code-03": {
+      "slop_score": 0.046,
+      "signals": []
+    },
+    "human-code-04": {
+      "slop_score": 0.065,
+      "signals": []
+    },
+    "human-code-05": {
+      "slop_score": 0.281,
+      "signals": []
+    },
+    "human-generic-01": {
+      "slop_score": 0.239,
+      "signals": []
+    },
+    "human-generic-02": {
+      "slop_score": 0.268,
+      "signals": []
+    },
+    "human-generic-03": {
+      "slop_score": 0.091,
+      "signals": []
+    },
+    "human-generic-04": {
+      "slop_score": 0.122,
+      "signals": []
+    },
+    "human-generic-05": {
+      "slop_score": 0.096,
+      "signals": []
+    },
+    "human-news-01": {
+      "slop_score": 0.081,
+      "signals": []
+    },
+    "human-news-02": {
+      "slop_score": 0.1,
+      "signals": []
+    },
+    "human-nonfiction-01": {
+      "slop_score": 0.069,
+      "signals": []
+    },
+    "human-nonfiction-02": {
+      "slop_score": 0.079,
+      "signals": []
+    },
+    "human-nonfiction-03": {
+      "slop_score": 0.103,
+      "signals": []
+    },
+    "human-nonfiction-04": {
+      "slop_score": 0.133,
+      "signals": []
     }
   }
 }
