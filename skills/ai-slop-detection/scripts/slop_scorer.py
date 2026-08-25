@@ -17,6 +17,7 @@ Returns slop_score (0-1) with dimension breakdown.
 import json
 import os
 import re
+import subprocess
 import sys
 from collections import Counter
 from typing import Optional
@@ -981,6 +982,53 @@ if __name__ == "__main__":
 
     use_json = "--json" in sys.argv
     args = [a for a in sys.argv[1:] if a != "--json"]
+
+    # Issue #78: anchor-diff mode — protected anchors (numbers, quotes,
+    # URLs, DOIs) must survive rewrites; drift is reported per changed
+    # text file (detect-only, never part of the numeric score).
+    if "--anchor-diff" in args:
+        i = args.index("--anchor-diff")
+        if i + 1 >= len(args):
+            print("Error: --anchor-diff requires a range base..head",
+                  file=sys.stderr)
+            sys.exit(2)
+        spec = args[i + 1]
+        if ".." not in spec or not all(spec.split("..", 1)):
+            print("Error: --anchor-diff expects base..head (got " + spec + ")",
+                  file=sys.stderr)
+            sys.exit(2)
+        base, head = spec.split("..", 1)
+        import diff_mode
+        from anchor_diff import anchor_diff
+        diff_text = subprocess.run(
+            ["git", "diff", "--name-only", "--unified=0", base, head],
+            cwd=os.getcwd(), capture_output=True, text=True, check=True).stdout
+        files = [f for f in diff_text.splitlines() if f.strip()]
+        any_drift = False
+        for name in files:
+            ext = os.path.splitext(name)[1].lower()
+            if ext not in diff_mode.TEXT_EXTS:
+                continue
+            try:
+                old = subprocess.run(
+                    ["git", "show", f"{base}:{name}"], cwd=os.getcwd(),
+                    capture_output=True, text=True, check=True).stdout
+                new = subprocess.run(
+                    ["git", "show", f"{head}:{name}"], cwd=os.getcwd(),
+                    capture_output=True, text=True, check=True).stdout
+            except subprocess.CalledProcessError:
+                continue  # added or deleted file — nothing to compare
+            report = anchor_diff(old, new)
+            if report["has_drift"]:
+                any_drift = True
+                print(f"DRIFT  {name}")
+                for op in ("anchor_lost", "anchor_added", "authority_shift"):
+                    for entry in report[op]:
+                        print(f"       {op:<15} {entry['kind']:<7} "
+                              f"{entry['value']!r:<30} {entry['evidence']}")
+        if not any_drift:
+            print("anchor-diff: no anchor drift in changed text files")
+        sys.exit(0)
 
     # Issue #10: diff mode — score ONLY new/changed lines of a git range.
     # See diff_mode.py for routing (text vs code via #9) and guards.

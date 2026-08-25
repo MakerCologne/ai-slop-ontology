@@ -48,6 +48,7 @@ SIGNAL_MODULES = [
     "skills/ai-slop-detection/scripts/proof_metrics.py",
     "skills/ai-slop-detection/scripts/instruction_slop.py",
     "skills/ai-slop-detection/scripts/rhetorical_patterns.py",
+    "skills/ai-slop-detection/scripts/anchor_diff.py",
 ]
 
 # "source" values:
@@ -103,6 +104,9 @@ SSOT_REGISTER = {
     "rhetorical_patterns.py": {
         "RHETORICAL_PATTERNS": ("corpus-calibrated", "deviation"),
     },
+    "anchor_diff.py": {
+        "AUTHORITY_CARRIERS": ("closed-list", "deviation"),
+    },
 }
 
 # ALLOWLIST — conscious deviations (C3): why these lists do not come from
@@ -124,6 +128,10 @@ ALLOWLIST_NOTES = [
     "concepts — registered as corpus-calibrated data, not separate signal "
     "inventories. Private helpers (_UPPERCASE) are skipped as implementation "
     "detail.",
+    "AUTHORITY_CARRIERS (anchor_diff, #78) is a closed EN/DE authority-marker "
+    "word list self-derived for the drift heuristic (concept from the "
+    "evidence-ledger reference, deep/11; no third-party pattern material "
+    "copied). detect-only, never score-dominant — deviation registered.",
 ]
 
 SKIPPED_CONSTANT_KINDS = "compiled regex / private helper (see ALLOWLIST)"

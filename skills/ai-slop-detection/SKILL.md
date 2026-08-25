@@ -52,6 +52,20 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 python3 scripts/rhetorical_patterns.py "TEXT_TO_ANALYZE"
 ```
 
+### Step 2c: Check anchor drift between two versions (detect-only)
+
+```bash
+python3 scripts/slop_scorer.py --anchor-diff base..head
+```
+
+Compares the protected anchors (numbers incl. locale variants, direct quotes,
+URLs, DOIs) of every changed text file across a git range. Reports
+`anchor_lost` / `anchor_added` / `authority_shift` (a retained number whose
+nearby authority carrier changed, e.g. "according to the study" →
+"researchers report"). Advisory-only, never score-dominant; the module
+`scripts/anchor_diff.py` exposes `anchor_diff(text_a, text_b)` directly.
+Locale boundary: "3.5" → "3,5" is NOT drift.
+
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
 evidence** (binary contrast, colon reveal, superficial analysis, negative
 listing/fragmentation, fake-strong verb, synonym cycling, hollow kicker/recap,
