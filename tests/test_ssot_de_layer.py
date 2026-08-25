@@ -26,14 +26,17 @@ ONTOLOGY = os.path.join(ROOT, "ontology.json")
 
 
 def _run_check(workdir: str) -> subprocess.CompletedProcess:
+    # Immer die Kopie im workdir ausfuehren, damit ROOT auf die mutierte
+    # ontology.json zeigt (nicht auf das Original-Repo).
     return subprocess.run(
-        [sys.executable, os.path.relpath(CHECK, workdir)],
+        [sys.executable, os.path.join(workdir, "scripts", "check_ssot.py")],
         cwd=workdir, capture_output=True, text=True)
 
 
 class DeLayerPin(unittest.TestCase):
     def test_check_green_on_clean_repo(self):
-        r = _run_check(ROOT)
+        r = subprocess.run([sys.executable, CHECK],
+                           capture_output=True, text=True)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertIn("de_*-Phrase-Layer", r.stdout)
 
@@ -62,12 +65,14 @@ class DeLayerPin(unittest.TestCase):
                     shutil.copytree(src, dst,
                                     ignore=shutil.ignore_patterns(
                                         "__pycache__"))
-            # references/ontology.json ist ein Symlink -> neu verlinken
+            # references/ontology.json kann Symlink ODER Kopie sein ->
+            # immer neu als relativer Symlink auf die (mutierte) Root-Datei,
+            # damit C1 gruen bleibt und nur C4 die Manipulation sieht.
             reflink = os.path.join(td, "skills", "ai-slop-detection",
                                    "references", "ontology.json")
-            if os.path.islink(reflink):
+            if os.path.lexists(reflink):
                 os.remove(reflink)
-                os.symlink("../../../ontology.json", reflink)
+            os.symlink("../../../ontology.json", reflink)
             mutate(td)
             return _run_check(td)
 

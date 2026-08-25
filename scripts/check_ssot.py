@@ -178,6 +178,79 @@ ALLOWLIST_NOTES = [
     "(no CC BY-SA pattern material copied), see docs/de-coverage.md.",
 ]
 
+
+# --- FU-17 / RI-4: de_*-Phrase-Layer-Pin (C4) -------------------------------
+# Bewusster Pin: welche de_*-Kategorien existieren und wie viele Items sie
+# haben. Aenderungen am DE-Layer sind damit fuer check_ssot sichtbar (RED in
+# der Suite bleibt die erste Verteidigungslinie; C4 macht Drift CI-faehig,
+# auch ohne die Test-Datei). Evidence-Regel je Phrase: >= 1 Beleg, Wikipedia
+# nur als Projektseiten-URL MIT Namespace-Praefix (/wiki/Wikipedia:...).
+DE_LAYER = {
+    "de_calque": 6,
+    "de_ai_vocab": 6,
+    "de_authority_floskel": 6,
+    "de_meta_comment": 6,
+    "de_transitions": 6,
+    "de_recap": 6,
+    "de_superlativ": 6,
+    "de_symbolik": 6,
+    "de_vague_authority": 6,
+    "de_participle": 6,
+    "de_binary_contrast": 6,
+    "de_false_range": 6,
+    "de_opening": 6,
+    "de_closing": 6,
+    "de_hedging": 6,
+    "de_announcement_cleft": 6,
+}
+
+_DE_WIKI_OK = "/wiki/Wikipedia:Anzeichen"
+
+
+def check_de_phrase_layer(errors: list) -> None:
+    import json
+    with open(os.path.join(ROOT, "ontology.json"), encoding="utf-8") as fh:
+        ontology = json.load(fh)
+    categories = (ontology.get("signals", {}).get("text", {})
+                      .get("phrases", {}).get("categories", {}))
+    de_cats = {c for c in categories if c.startswith("de_")}
+    for cat in sorted(de_cats - set(DE_LAYER)):
+        errors.append(
+            f"C4 FAIL: de_*-Kategorie '{cat}' ist nicht im DE_LAYER-Pin "
+            "dieses Checks — Pin bewusst erweitern (SSOT-Entscheidung "
+            "dokumentieren) oder Kategorie entfernen.")
+    for cat, n_items in sorted(DE_LAYER.items()):
+        if cat not in categories:
+            errors.append(
+                f"C4 FAIL: gepinnte de_*-Kategorie '{cat}' fehlt in "
+                "ontology.json — Pin aktualisieren oder Kategorie "
+                "wiederherstellen.")
+            continue
+        data = categories[cat]
+        items = data.get("items", [])
+        if len(items) < n_items:
+            errors.append(
+                f"C4 FAIL: {cat} hat nur {len(items)} Items, Pin erwartet "
+                f">= {n_items} — Phrasen geloescht? Pin bewusst anpassen.")
+        evidence = data.get("evidence", {})
+        for phrase in items:
+            sources = evidence.get(phrase, [])
+            if not sources:
+                errors.append(
+                    f"C4 FAIL: {cat}:{phrase} ohne Evidence (RI-2: >= 1 "
+                    "Beleg je Phrase; >= 2 als FU offen dokumentiert).")
+                continue
+            for src in sources:
+                source = src.get("source", "")
+                if source.startswith("https://de.wikipedia.org"):
+                    if _DE_WIKI_OK not in source:
+                        errors.append(
+                            f"C4 FAIL: {cat}:{phrase} Wikipedia-Beleg ohne "
+                            "Namespace-Präfix (muss Projektseite "
+                            "'/wiki/Wikipedia:Anzeichen...' sein, RI-1): "
+                            f"{source}")
+
+
 SKIPPED_CONSTANT_KINDS = "compiled regex / private helper (see ALLOWLIST)"
 
 
@@ -278,6 +351,7 @@ def main() -> int:
     check_skill_ontology_copy(errors)
     check_generated_defs(errors)
     check_register(errors)
+    check_de_phrase_layer(errors)
 
     if errors:
         print("SSOT check FAILED:")
@@ -288,7 +362,8 @@ def main() -> int:
     registered = sum(len(v) for v in SSOT_REGISTER.values())
     print(f"SSOT check passed (C1 copy-identical, C2 generated view current, "
           f"C3 {registered} signal constants registered, "
-          f"{len(ALLOWLIST_NOTES)} documented deviation groups).")
+          f"{len(ALLOWLIST_NOTES)} documented deviation groups; "
+          f"C4 de_*-Phrase-Layer: {len(DE_LAYER)} Kategorien gepinnt).")
     return 0
 
 
