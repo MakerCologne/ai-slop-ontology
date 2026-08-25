@@ -50,6 +50,7 @@ SIGNAL_MODULES = [
     "skills/ai-slop-detection/scripts/rhetorical_patterns.py",
     "skills/ai-slop-detection/scripts/anchor_diff.py",
     "skills/ai-slop-detection/scripts/naturalness_guard.py",
+    "skills/ai-slop-detection/scripts/de_typography.py",
 ]
 
 # "source" values:
@@ -108,6 +109,12 @@ SSOT_REGISTER = {
     "anchor_diff.py": {
         "AUTHORITY_CARRIERS": ("closed-list", "deviation"),
     },
+    "de_typography.py": {
+        "_DE_FUNCTION_WORDS": ("closed-list", "deviation"),
+        "_CAP_FUNCTION_WORDS": ("closed-list", "deviation"),
+        "_EN_MONTH_DATE": ("closed-list", "deviation"),
+        "_BRAND_ALLOWLIST": ("closed-list", "deviation"),
+    },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
         "COLLOQUIAL_MARKERS": ("closed-list", "deviation"),
@@ -147,6 +154,11 @@ ALLOWLIST_NOTES = [
     "the detect-only advisory signals; MIN_* thresholds are fixture-pinned "
     "(tests/test_naturalness_guard.py). No third-party pattern material "
     "copied (register-profile idea adapted as architecture, deep/11).",
+    "de_typography (#76) closed lists (DE function words, capitalized "
+    "function words, EN month names, brand allowlist) are self-derived "
+    "DE gate/matcher inventories after de.wikipedia Anzeichen-fuer-KI-"
+    "generierte-Inhalte + eigene Beispiele; license-safe re-derivation "
+    "(no CC BY-SA pattern material copied), see docs/de-coverage.md.",
 ]
 
 SKIPPED_CONSTANT_KINDS = "compiled regex / private helper (see ALLOWLIST)"

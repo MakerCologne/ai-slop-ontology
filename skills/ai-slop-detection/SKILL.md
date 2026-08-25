@@ -75,6 +75,14 @@ expanded full forms, zero contractions; suppressed for genre=
 numeric score. `modal_particle_anomaly` is an explicit stub until the DE
 layer lands (#76).
 
+### Step 2e: DE-Typografie (detect-only, #76 Teil 1)
+
+`scripts/de_typography.py` — deutsche Oberflächen-Marker: falsche
+deutsche Anführungszeichen („Text”), kapitalisierte Funktionswörter in
+Überschriften, englisches Dezimal-/Datumsformat (Versionen exempt),
+Genitiv-Apostroph (Marken-Allowlist). DE-Sprachgate; Coverage-Mapping
+aller 72 Katalog-Muster: `docs/de-coverage.md`.
+
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
 evidence** (binary contrast, colon reveal, superficial analysis, negative
 listing/fragmentation, fake-strong verb, synonym cycling, hollow kicker/recap,
