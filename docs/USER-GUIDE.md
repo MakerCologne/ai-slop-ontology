@@ -391,6 +391,11 @@ score jumpy and the evidence less trustworthy. They stay separate on purpose.
 **Does it detect AI authorship?** No. It detects slop *signals* and *patterns*.
 It never claims a human or a model wrote something.
 
+**Clean-text guarantee (#79):** Texts scoring below the threshold are reported
+as clean and receive no edit recommendations. This contract is enforced by
+the `null_edit` CI gate over all corpus hard negatives — a violation fails
+the suite.
+
 ---
 
 *This guide is part of the [AI Slop Ontology](../README.md). The rhetorical

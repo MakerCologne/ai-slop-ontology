@@ -19,7 +19,7 @@ ONTOLOGY = os.path.join(ROOT, "ontology.json")
 DE_CATEGORIES = ("de_calque", "de_ai_vocab", "de_authority_floskel",
                  "de_meta_comment")
 WIKI_SOURCE = ("https://de.wikipedia.org/wiki/"
-               "Anzeichen_f%C3%BCr_KI-generierte_Inhalte")
+               "Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte")
 
 
 def _ontology():
