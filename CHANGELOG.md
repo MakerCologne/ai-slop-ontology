@@ -1,5 +1,66 @@
 # Changelog
 
+## [2.4.0] — 2026-08-25 (Batch I — [ADAPT]: DE-Layer + FP-Infrastruktur)
+
+Referenz-Adaption humanizer-de v5.22.2 (nur Architektur-Ideen, Lizenz-sicher
+re-deriviert, kein CC-BY-SA-Pattern-Material übernommen; s. docs/de-coverage.md).
+
+### #78 Anchor-Drift (detect-only)
+
+- `skills/ai-slop-detection/scripts/anchor_diff.py`: `anchor_diff(a, b)` →
+  `anchor_lost`/`anchor_added`/`authority_shift` über geschützten Ankern
+  (Zahlen, Zitate, URLs, DOIs); Locale-Kanonisierung „3.5“ == „3,5“.
+  CLI-Flag `--anchor-diff base..head` im Diff-Modus. Nie score-dominant.
+
+### #79 Null-Edit-Contract
+
+- `tests/test_null_edit_contract.py` als L1-Gate: alle 93 Hard Negatives
+  auf beiden Engines < 0.40; Null-Edits (Whitespace/Reflow) ändern den
+  Verdict nicht (Score-Drift ≤ 0.05, dokumentierte Listen-Sensitivität
+  hardneg-042). Grenzband-Register `eval/hardneg_borderline.json`
+  (Top-5: 0.315–0.342; 3 handgeschriebene Grenzfixtures 0.098–0.189).
+
+### #80 FP-Baseline-Register
+
+- `scripts/fp_baseline.py` + `eval/fp_baseline.json`: tolerierte Detektor-
+  Outputs je Hard-Negative-Fixture; CI-Snapshot `--check` (Drift-Typen
+  signal_added/removed, score_drift > 0.02, fixture_missing/unknown).
+
+### #81 Naturalness-Guard (detect-only)
+
+- `skills/ai-slop-detection/scripts/naturalness_guard.py`: `register_drift`
+  (≥2 formale vs ≥2 kollokiale Marker außerhalb von Zitaten) und
+  `over_sanitized` (≥3 expandierte Vollformen, null Kontraktionen;
+  Genre-keep_when academic/legal). Konfidenz ≤ 0.45, nie score-dominant.
+  `modal_particle_anomaly` bewusst Stub bis DE-Inventar (#76-Folge).
+
+### #76 DE-Pattern-Katalog Teil 1
+
+- `docs/de-coverage.md`: alle 72 Muster des Referenz-Katalogs gemappt
+  (Claim-Korrektur: 72, nicht 82) — 20 bestandsgedeckt, 4 neu, 30
+  DE-Variante → #77, 18 NEU (Prioritäten M60/M61), M63 Stub.
+- `skills/ai-slop-detection/scripts/de_typography.py`: Quick Wins M46
+  („Text” statt „Text“), M47 (kapitalisierte Funktionswörter in Headern),
+  M48 (EN-Dezimal/Datumsformat, Versionsnummern exempt), M49 (Genitiv-
+  Apostroph, Marken-Allowlist) — DE-Sprachgate, je 3/3/2 Fixtures.
+
+### #77 DE-KI-Marker-Vokabular (SSOT-Layer)
+
+- `ontology.json` signals.text.phrases.categories: `de_calque`,
+  `de_ai_vocab`, `de_authority_floskel`, `de_meta_comment` (je 6 Phrasen,
+  Konfidenz 0.6), Evidence-Pflicht je Phrase (de.wikipedia „Anzeichen für
+  KI-generierte Inhalte“ oder eigener Beleg); Kollisionsfreiheit zu
+  `multilingual.german` per Test erzwungen; signal_defs regeneriert.
+
+### Messwerte (Batch I)
+
+- Tests: 380 → 440 grün (+18 Subtests).
+- Benchmark skill-pipeline unverändert: P 1.0 / R 0.995 / F1 0.998
+  (eval/corpus.jsonl, n=314, FP=0) — alle Batch-I-Signale detect-only.
+- Control-Set-Gate PASS (bekannter FN slop-fn-02), Consistency/SSOT/
+  Methodology/Signal-DoD grün, fp-baseline --check ohne Drift.
+
+
 ## [2.3.0] — 2026-08-25 (Batch H — Loop-Runner #51, Lexikon-Pilot #50)
 
 ### #51 DESLOP-LOOP-Orchestrator (additiv, kein Scorer-Pfad)
