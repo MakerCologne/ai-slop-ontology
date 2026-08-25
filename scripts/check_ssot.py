@@ -125,6 +125,12 @@ SSOT_REGISTER = {
         "MIN_UNITS": ("engine-config", "fixture-calibrated"),
         "MAX_STDEV_UNITS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_ISOMETRY": ("engine-config", "fixture-calibrated"),
+        "FAKE_ANALYSIS_PATTERNS": ("closed-list", "deviation"),
+        "PSEUDO_NUANCE_MARKERS": ("closed-list", "deviation"),
+        "MIN_FAKE_ANALYSIS_HITS": ("engine-config", "fixture-calibrated"),
+        "MIN_NUANCE_MARKERS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_FAKE_ANALYSIS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_NUANCE": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
@@ -225,8 +231,13 @@ DE_LAYER = {
 
 _DE_WIKI_OK = "/wiki/Wikipedia:Anzeichen"
 
+# RI-2-FU (#76-Rest): mind. 50% der de_*-Phrasen tragen >= 2 unabhaengige
+# Belege (Wikipedia-Projektseite + own:corpus-Belegtext u.ae.). Pin als
+# Gate, damit Rueckfaelle unter die Zielmarke CI-faehig auffallen.
+DE_EVIDENCE_COVERAGE_MIN = 0.50
 
-def check_de_phrase_layer(errors: list) -> None:
+
+def check_de_phrase_layer(errors: list) -> tuple:
     import json
     with open(os.path.join(ROOT, "ontology.json"), encoding="utf-8") as fh:
         ontology = json.load(fh)
@@ -268,6 +279,26 @@ def check_de_phrase_layer(errors: list) -> None:
                             "Namespace-Präfix (muss Projektseite "
                             "'/wiki/Wikipedia:Anzeichen...' sein, RI-1): "
                             f"{source}")
+
+    # RI-2-FU: Evidence-Verdichtung — >= 2 Belege fuer >= 50% der Phrasen.
+    total = 0
+    multi = 0
+    for cat in sorted(DE_LAYER):
+        data = categories.get(cat)
+        if not data:
+            continue  # fehlende Kategorie wurde oben bereits gemeldet
+        evidence = data.get("evidence", {})
+        for phrase in data.get("items", []):
+            total += 1
+            if len(evidence.get(phrase, [])) >= 2:
+                multi += 1
+    if total and multi / total < DE_EVIDENCE_COVERAGE_MIN:
+        errors.append(
+            f"C4 FAIL: nur {multi}/{total} de_*-Phrasen mit >= 2 Evidence-"
+            f"Belegen — RI-2-FU-Pin verlangt >= "
+            f"{int(DE_EVIDENCE_COVERAGE_MIN * 100)}% (Rest bleibt "
+            "dokumentierte Abweichung, siehe docs/de-coverage.md).")
+    return multi, total
 
 
 SKIPPED_CONSTANT_KINDS = "compiled regex / private helper (see ALLOWLIST)"
@@ -370,7 +401,7 @@ def main() -> int:
     check_skill_ontology_copy(errors)
     check_generated_defs(errors)
     check_register(errors)
-    check_de_phrase_layer(errors)
+    multi, total = check_de_phrase_layer(errors)
 
     if errors:
         print("SSOT check FAILED:")
@@ -382,7 +413,9 @@ def main() -> int:
     print(f"SSOT check passed (C1 copy-identical, C2 generated view current, "
           f"C3 {registered} signal constants registered, "
           f"{len(ALLOWLIST_NOTES)} documented deviation groups; "
-          f"C4 de_*-Phrase-Layer: {len(DE_LAYER)} Kategorien gepinnt).")
+          f"C4 de_*-Phrase-Layer: {len(DE_LAYER)} Kategorien gepinnt; "
+          f"evidence >= 2 Belege fuer {multi}/{total} der de_*-Phrasen "
+          f"(RI-2-FU-Pin >= {int(DE_EVIDENCE_COVERAGE_MIN * 100)}%).")
     return 0
 
 

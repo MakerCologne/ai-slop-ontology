@@ -80,19 +80,19 @@
 | M63 | Modalpartikel-Anomalie | OFFEN (Stub) | naturalness_guard.modal_particle_anomaly = Stub; DE-Inventar folgt (s. #81) |
 | M64 | KI-Marker-Vokabular DE | → #77 | de_ai_vocab (dieser Batch, Teil 2) |
 | M65 | Kopula-Vermeidung („fungiert als") | DE-VARIANTE | copula_rate #22 → DE-Verben |
-| M66 | Fake-Analyse-Anhang (Relativsatz ohne Info) | NEU | sprachagnostisch schwer; Kandidat |
+| M66 | Fake-Analyse-Anhang (Relativsatz ohne Info) | **GEDECKT (neu, #76-Rest)** | **structure_metrics.fake_analysis_appendix (≥2 Treffer, detect-only)** |
 | M67 | Ankündigungs-Spaltsatz („Was mich überraschte …") | **GEDECKT (neu, T2)** | **de_announcement_cleft (Teil 2)** | |
 | M68 | Komparativ-Rahmung („weniger X als vielmehr Y") | NEU | Kandidat phrase DE |
 | M69 | Struktureller Register-Kollaps | DE-VARIANTE | register_drift #81 → DE-Profile |
 | M70 | Falsche Agency abstrakter Subjekte | DE-VARIANTE | micro_patterns FalseAgency → DE-Subjekte/Verben |
-| M71 | Retroaktive Scheinnuance („Genauer gesagt …") | NEU | Kandidat phrase DE |
+| M71 | Retroaktive Scheinnuance („Genauer gesagt …") | **GEDECKT (neu, #76-Rest)** | **structure_metrics.pseudo_nuance (≥2 Marker, detect-only)** |
 | M72 | Pseudo-therapeutische Validierung | NEU | Konversations-Kontext, Kandidat |
 
 ## Bilanz (Teil 2, dieser Batch)
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M7, M18, M26, M30, M32/33 (DE-Teil), M34, M35, M44, M54, M59, M65, M69, M70 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M66, M68, M71, M72)
+- Offene DE-Varianten (Rest des 30er-Postens): M7, M18, M26, M30, M32/33 (DE-Teil), M34, M35, M44, M54, M59, M65, M69, M70 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
 
 ## Bilanz (Teil 1)
 
@@ -103,3 +103,9 @@
 - **OFFEN (Stub):** M63 Modalpartikel-Anomalie — bewusst Stub bis DE-Inventar steht (#81-Entscheidung)
 
 Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind detect-only/advisory (Anti-Auto-Rewrite-Disziplin, vgl. SIGNAL-DOD.md).
+
+## Evidence-Verdichtung (RI-2-FU, #76-Rest)
+
+- **Ziel erreicht:** 63/96 de_*-Phrasen (65,6 %) tragen jetzt **≥ 2 unabhängige Belege** (Pin ≥ 50 %, C4 in scripts/check_ssot.py, Manipulationsprobe in tests/test_de_evidence_densification.py). Zweite Belege: eigene handgeschriebene Belegtexte (`eval/de_evidence_texts.jsonl`, source `own:corpus`, je Kategorie ein Text mit 3–4 wörtlich enthaltenen Phrasen) — eigene Handschrift, keine Kopien aus CC BY-SA-Drittkatalogen (Lizenzregel).
+- **Dokumentierte Abweichung (33 Phrasen, 34,4 %):** Einzelbeleg (Wikipedia-Projektseite oder own:de-observation/en-pendant). Die Rest-Belegung läuft künftig über den C4-Coverage-Pin — Unterschreiten von 50 % failt das SSOT-Gate.
+- **Strukturmetrik-Rest:** M66 (fake_analysis_appendix) und M71 (pseudo_nuance) als detect-only Signale in structure_metrics.py (Konfidenz 0.5, je 3/3/2-Fixtures in tests/test_structure_rest.py). M67 (Ankündigungs-Spaltsatz) bereits als de_announcement_cleft gedeckt — bewusst keine Duplikation (#46).
