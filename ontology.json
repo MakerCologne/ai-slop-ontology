@@ -1136,6 +1136,606 @@
                 }
               ]
             }
+          },
+          "de_transitions": {
+            "confidence": 0.6,
+            "description": "DE-Variante M4: mechanische Konjunktionen (darüber hinaus/ferner) — Konzept auf der Wikipedia-Projektseite dokumentiert; LLMs nutzen sie übermäßig und steif",
+            "items": [
+              "darüber hinaus",
+              "ferner",
+              "zusätzlich",
+              "außerdem",
+              "andererseits",
+              "des weiteren"
+            ],
+            "evidence": {
+              "darüber hinaus": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'darüber hinaus' explizit als Auffälligkeit"
+                }
+              ],
+              "ferner": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'ferner' explizit"
+                }
+              ],
+              "zusätzlich": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'zusätzlich' explizit"
+                }
+              ],
+              "außerdem": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'außerdem' explizit"
+                }
+              ],
+              "andererseits": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'andererseits' explizit"
+                }
+              ],
+              "des weiteren": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: steife Konnektor-Variante desselben Konzepts"
+                }
+              ]
+            }
+          },
+          "de_recap": {
+            "confidence": 0.6,
+            "description": "DE-Variante M5: Abschnitts-Zusammenfassungen (zusammenfassend/insgesamt) und Fazit-Formeln — Wikipedia-Projektseite dokumentiert Zusammenfassungs-/Fazit-Schablonen",
+            "items": [
+              "zusammenfassend",
+              "abschließend",
+              "insgesamt",
+              "das fazit lautet",
+              "letztlich bleibt festzuhalten",
+              "in einem satz"
+            ],
+            "evidence": {
+              "zusammenfassend": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'Worauf man achten sollte: zusammenfassend, abschließend, insgesamt'"
+                }
+              ],
+              "abschließend": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "dito, Projektseite nennt abschließend explizit"
+                }
+              ],
+              "insgesamt": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "dito, Projektseite nennt insgesamt explizit"
+                }
+              ],
+              "das fazit lautet": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'in conclusion,' aus eigener Ontology (closing_formulas)"
+                }
+              ],
+              "letztlich bleibt festzuhalten": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'to wrap things up,' aus eigener Ontology"
+                }
+              ],
+              "in einem satz": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: typische Ein-Satz-Rekap-Formel"
+                }
+              ]
+            }
+          },
+          "de_superlativ": {
+            "confidence": 0.6,
+            "description": "DE-Variante M2: Werbesprache/Superlative (atemberaubend/unbedingt besuchen) — Wikipedia-Projektseite listet werbliche Formulierungen",
+            "items": [
+              "atemberaubend",
+              "unbedingt besuchen",
+              "unbedingt sehen",
+              "reiche geschichte",
+              "bleibendes vermächtnis",
+              "unvergleichlich"
+            ],
+            "evidence": {
+              "atemberaubend": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'atemberaubend' explizit"
+                }
+              ],
+              "unbedingt besuchen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'unbedingt besuchen' explizit"
+                }
+              ],
+              "unbedingt sehen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'unbedingt sehen' explizit"
+                }
+              ],
+              "reiche geschichte": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'reiche Geschichte' explizit"
+                }
+              ],
+              "bleibendes vermächtnis": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'bleibendes Vermächtnis' explizit"
+                }
+              ],
+              "unvergleichlich": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'unique/unparalleled' aus eigener Ontology (Buzzword-Tiers)"
+                }
+              ]
+            }
+          },
+          "de_symbolik": {
+            "confidence": 0.6,
+            "description": "DE-Variante M1: übermäßige Betonung von Symbolik und Bedeutung (steht als Zeugnis / unterstreicht seine Bedeutung) — Wikipedia-Projektseite dokumentiert das Wörter-Repertoire",
+            "items": [
+              "steht als zeugnis",
+              "unterstreicht seine bedeutung",
+              "hinterlässt bleibenden eindruck",
+              "tief verwurzelt",
+              "fasziniert weiterhin",
+              "spielt eine bedeutende rolle"
+            ],
+            "evidence": {
+              "steht als zeugnis": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'ist/steht als/dient als Zeugnis'"
+                }
+              ],
+              "unterstreicht seine bedeutung": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'unterstreicht seine Bedeutung' explizit"
+                }
+              ],
+              "hinterlässt bleibenden eindruck": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'hinterlässt bleibenden Eindruck' explizit"
+                }
+              ],
+              "tief verwurzelt": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'tief verwurzelt' explizit"
+                }
+              ],
+              "fasziniert weiterhin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'fasziniert weiterhin' explizit"
+                }
+              ],
+              "spielt eine bedeutende rolle": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'spielt eine wichtige/bedeutende Rolle'"
+                }
+              ]
+            }
+          },
+          "de_vague_authority": {
+            "confidence": 0.6,
+            "description": "DE-Variante M11 (Ergänzung zu #77 de_authority_floskel, disjunkt): vage Autoritäten (Branchenberichte/Einige Kritiker) — Wikipedia-Projektseite dokumentiert Weasel Wording",
+            "items": [
+              "branchenberichte",
+              "beobachter haben zitiert",
+              "einige kritiker argumentieren",
+              "wissenschaftler sind sich einig",
+              "zahlreiche studien belegen",
+              "experten betonen"
+            ],
+            "evidence": {
+              "branchenberichte": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'Branchenberichte' explizit (Weasel Wording)"
+                }
+              ],
+              "beobachter haben zitiert": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'Beobachter haben zitiert' explizit"
+                }
+              ],
+              "einige kritiker argumentieren": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'Einige Kritiker argumentieren' explizit"
+                }
+              ],
+              "wissenschaftler sind sich einig": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'experts agree' aus eigener Ontology (weasel_attribution)"
+                }
+              ],
+              "zahlreiche studien belegen": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'many believe/some say'-Muster aus eigener Ontology"
+                }
+              ],
+              "experten betonen": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'experts agree' aus eigener Ontology (weasel_attribution)"
+                }
+              ]
+            }
+          },
+          "de_participle": {
+            "confidence": 0.6,
+            "description": "NEU M10: deutsche Partizip-I-Anhängsel (gewährleistend/hervorhebend) als Oberflächen-Marker — Wikipedia-Projektseite dokumentiert Partizipialkonstruktionen als KI-Anzeichen",
+            "items": [
+              "gewährleistend",
+              "hervorhebend",
+              "betonend",
+              "widerspiegelnd",
+              "unterstreichend",
+              "sicherstellend"
+            ],
+            "evidence": {
+              "gewährleistend": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'gewährleistend' explizit"
+                }
+              ],
+              "hervorhebend": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'hervorhebend' explizit"
+                }
+              ],
+              "betonend": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'betonend' explizit"
+                }
+              ],
+              "widerspiegelnd": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'widerspiegelnd' explizit"
+                }
+              ],
+              "unterstreichend": [
+                {
+                  "source": "own:de-observation",
+                  "note": "morphologische Geschwister-Form der projektseiten-dokumentierten Partizipien"
+                }
+              ],
+              "sicherstellend": [
+                {
+                  "source": "own:de-observation",
+                  "note": "dito, eigene DE-Beobachtung"
+                }
+              ]
+            }
+          },
+          "de_binary_contrast": {
+            "confidence": 0.6,
+            "description": "DE-Variante M8: argumentative Parallelkonstruktionen (es geht nicht nur um / nicht nur … sondern auch) — Wikipedia-Projektseite dokumentiert das Muster",
+            "items": [
+              "es geht nicht nur um",
+              "nicht zuletzt",
+              "nicht nur, sondern auch",
+              "nicht trotz, sondern wegen",
+              "es geht weniger um",
+              "im gegenteil"
+            ],
+            "evidence": {
+              "es geht nicht nur um": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'es geht nicht nur um …, sondern' explizit"
+                }
+              ],
+              "nicht zuletzt": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: typische Aufzählungs-Ausklink-Formel desselben Musters"
+                }
+              ],
+              "nicht nur, sondern auch": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'nicht nur …, sondern auch' explizit"
+                }
+              ],
+              "nicht trotz, sondern wegen": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: rhetorische Kontrast-Variante"
+                }
+              ],
+              "es geht weniger um": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: Kontrast-Variante"
+                }
+              ],
+              "im gegenteil": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: Kontrast-Verbinder"
+                }
+              ]
+            }
+          },
+          "de_false_range": {
+            "confidence": 0.6,
+            "description": "DE-Variante M12: Schein-Reichweite 'von … bis' bei Beispielaufzählungen — Konzept auf der Wikipedia-Projektseite dokumentiert, Beispiele eigene Setzung",
+            "items": [
+              "von traditionell bis",
+              "von klassisch bis",
+              "von günstig bis",
+              "von exquisit bis",
+              "von früh bis",
+              "von spät bis"
+            ],
+            "evidence": {
+              "von traditionell bis": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite dokumentiert 'von … bis'-Beispielformeln; konkretes Adjektiv-Paar eigene Wahl"
+                }
+              ],
+              "von klassisch bis": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigenes Adjektiv-Paar im dokumentierten 'von … bis'-Muster"
+                }
+              ],
+              "von günstig bis": [
+                {
+                  "source": "own:de-observation",
+                  "note": "dito"
+                }
+              ],
+              "von exquisit bis": [
+                {
+                  "source": "own:de-observation",
+                  "note": "dito"
+                }
+              ],
+              "von früh bis": [
+                {
+                  "source": "own:de-observation",
+                  "note": "dito — zeitlich-räumlicher Gebrauch ist legitim und feuert nicht (Projektstellen-Hinweis)"
+                }
+              ],
+              "von spät bis": [
+                {
+                  "source": "own:de-observation",
+                  "note": "dito"
+                }
+              ]
+            }
+          },
+          "de_opening": {
+            "confidence": 0.6,
+            "description": "DE-Variante M36/M37: Universal-Geschichts-Eröffnungen (heutzutage / seit Anfang der Zeit) — EN-Pendants aus eigener Ontology (opening_formulas)",
+            "items": [
+              "heutzutage",
+              "mehr denn je",
+              "in der heutigen zeit",
+              "in einer welt, in der",
+              "die welt wie wir sie kennen",
+              "seit anfang der zeit"
+            ],
+            "evidence": {
+              "heutzutage": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'in today's …'-Familie aus eigener Ontology (opening_formulas)"
+                }
+              ],
+              "mehr denn je": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'ever-changing/increasingly' aus eigener Ontology"
+                }
+              ],
+              "in der heutigen zeit": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'in today's world' aus eigener Ontology"
+                }
+              ],
+              "in einer welt, in der": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'imagine a world where' aus eigener Ontology"
+                }
+              ],
+              "die welt wie wir sie kennen": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'the world of [X] is undergoing' aus eigener Ontology"
+                }
+              ],
+              "seit anfang der zeit": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'since the dawn of time'-Topos aus eigener Ontology (opening_formulas-Umfeld)"
+                }
+              ]
+            }
+          },
+          "de_closing": {
+            "confidence": 0.6,
+            "description": "DE-Variante M38/M62: umrissartige Schlussfolgerungen (steht vor Herausforderungen / eines ist sicher) — Wikipedia-Projektseite dokumentiert Herausforderungs-/Zukunftsschluss-Schablonen",
+            "items": [
+              "steht vor herausforderungen",
+              "trotz dieser erfolge",
+              "trotz seiner erfolge",
+              "die zukunft sieht",
+              "grenzenlose möglichkeiten",
+              "eines ist sicher"
+            ],
+            "evidence": {
+              "steht vor herausforderungen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'steht vor mehreren Herausforderungen' als Herausforderungs-Abschnitts-Formel"
+                }
+              ],
+              "trotz dieser erfolge": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'Trotz seiner/dieser Erfolge …' explizit"
+                }
+              ],
+              "trotz seiner erfolge": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "dito, Projektseite nennt beide Varianten"
+                }
+              ],
+              "die zukunft sieht": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'the future of [X] is bright' aus eigener Ontology (closing_formulas)"
+                }
+              ],
+              "grenzenlose möglichkeiten": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'the possibilities are endless' aus eigener Ontology"
+                }
+              ],
+              "eines ist sicher": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'one thing is for certain' aus eigener Ontology"
+                }
+              ]
+            }
+          },
+          "de_hedging": {
+            "confidence": 0.6,
+            "description": "DE-Variante M41/M53: fehlkalibrierte Gewissheit und lückenfüllende Spekulation — teils Wikipedia-Projektseite (Wissensgrenzen-Hinweise), teils EN-Pendants (hedging_qualifiers/weasel)",
+            "items": [
+              "man könnte argumentieren, dass",
+              "es ist denkbar, dass",
+              "in gewisser weise",
+              "möglicherweise",
+              "basierend auf verfügbaren informationen",
+              "obwohl spezifische details begrenzt"
+            ],
+            "evidence": {
+              "man könnte argumentieren, dass": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'critics argue/some say' aus eigener Ontology (weasel_attribution)"
+                }
+              ],
+              "es ist denkbar, dass": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: speculationstreibende Abschwächung"
+                }
+              ],
+              "in gewisser weise": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'in a way' aus eigener Ontology (hedging-Umfeld)"
+                }
+              ],
+              "möglicherweise": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'possibly/perhaps' aus eigener Ontology (hedging_qualifiers)"
+                }
+              ],
+              "basierend auf verfügbaren informationen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'basierend auf verfügbaren Informationen' explizit (Wissensgrenzen-Hinweis)"
+                }
+              ],
+              "obwohl spezifische details begrenzt": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite: 'Obwohl spezifische Details begrenzt/rar sind …' explizit"
+                }
+              ]
+            }
+          },
+          "de_announcement_cleft": {
+            "confidence": 0.6,
+            "description": "NEU M67: Ankündigungs-Spaltsätze (was mich überraschte / bemerkenswert ist) — pseudo-analytische Ich-Perspektive; EN-Pendants aus eigener Ontology, teils Projektseite (es ist bemerkenswert)",
+            "items": [
+              "was mich überraschte",
+              "was viele nicht wissen",
+              "was dabei auffällt",
+              "interessant zu beobachten ist",
+              "bemerkenswert ist",
+              "was oft übersehen wird"
+            ],
+            "evidence": {
+              "was mich überraschte": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'what surprised me was'-Muster aus eigener Ontology (rhetorical_setups-Umfeld)"
+                }
+              ],
+              "was viele nicht wissen": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: Enthüllungs-Gestus ohne Quelle"
+                }
+              ],
+              "was dabei auffällt": [
+                {
+                  "source": "own:de-observation",
+                  "note": "eigene DE-Beobachtung: Pseudo-Beobachtungs-Gestus"
+                }
+              ],
+              "interessant zu beobachten ist": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'importantly/notably' aus eigener Ontology (hedging_qualifiers)"
+                }
+              ],
+              "bemerkenswert ist": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Projektseite nennt 'es ist bemerkenswert' explizit"
+                }
+              ],
+              "was oft übersehen wird": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'often overlooked'-Topos aus eigener Ontology"
+                }
+              ]
+            }
           }
         }
       },

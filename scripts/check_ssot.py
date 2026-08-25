@@ -51,6 +51,7 @@ SIGNAL_MODULES = [
     "skills/ai-slop-detection/scripts/anchor_diff.py",
     "skills/ai-slop-detection/scripts/naturalness_guard.py",
     "skills/ai-slop-detection/scripts/de_typography.py",
+    "skills/ai-slop-detection/scripts/structure_metrics.py",
 ]
 
 # "source" values:
@@ -115,6 +116,15 @@ SSOT_REGISTER = {
         "_EN_MONTH_DATE": ("closed-list", "deviation"),
         "_BRAND_ALLOWLIST": ("closed-list", "deviation"),
     },
+    "structure_metrics.py": {
+        "SYNONYM_FAMILIES": ("closed-list", "deviation"),
+        "MIN_DISTINCT_MEMBERS": ("engine-config", "fixture-calibrated"),
+        "MIN_TOTAL_MENTIONS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_ROTATION": ("engine-config", "fixture-calibrated"),
+        "MIN_UNITS": ("engine-config", "fixture-calibrated"),
+        "MAX_STDEV_UNITS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_ISOMETRY": ("engine-config", "fixture-calibrated"),
+    },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
         "COLLOQUIAL_MARKERS": ("closed-list", "deviation"),
@@ -154,6 +164,13 @@ ALLOWLIST_NOTES = [
     "the detect-only advisory signals; MIN_* thresholds are fixture-pinned "
     "(tests/test_naturalness_guard.py). No third-party pattern material "
     "copied (register-profile idea adapted as architecture, deep/11).",
+    "structure_metrics (#76 Teil 2) SYNONYM_FAMILIES is a self-derived "
+    "closed EN/DE synonym-family inventory for the detect-only M60 "
+    "SynonymRotation / M61 IsometricUnits signals (concepts from "
+    "docs/de-coverage.md NEU candidates; re-derived from the Wikipedia "
+    "project page 'Anzeichen fuer KI-generierte Inhalte' + own examples; "
+    "no third-party pattern material copied). MIN_* thresholds are "
+    "fixture-pinned (tests/test_structure_metrics.py).",
     "de_typography (#76) closed lists (DE function words, capitalized "
     "function words, EN month names, brand allowlist) are self-derived "
     "DE gate/matcher inventories after de.wikipedia Anzeichen-fuer-KI-"

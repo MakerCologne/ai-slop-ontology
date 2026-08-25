@@ -83,6 +83,17 @@ deutsche Anführungszeichen („Text”), kapitalisierte Funktionswörter in
 Genitiv-Apostroph (Marken-Allowlist). DE-Sprachgate; Coverage-Mapping
 aller 72 Katalog-Muster: `docs/de-coverage.md`.
 
+### Step 2f: Struktur-Metriken (detect-only, #76 Teil 2)
+
+`scripts/structure_metrics.py` — sprachagnostische Struktur-Signale:
+`synonym_rotation` (M60: ≥3 verschiedene Bezeichnungen aus einer
+Synonym-Familie für dieselbe Entität) und `isometry` (M61: ≥5
+Struktureinheiten mit Wortlängen-Streuung < 1.0). Beide advisory,
+Konfidenz 0.5, nie score-dominant; Schwellen fixture-kalibriert
+(`tests/test_structure_metrics.py`).
+
+### DE-Phrase-Layer (#76/#77, SSOT in ontology.json)
+
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
 evidence** (binary contrast, colon reveal, superficial analysis, negative
 listing/fragmentation, fake-strong verb, synonym cycling, hollow kicker/recap,

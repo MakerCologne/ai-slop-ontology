@@ -39,6 +39,8 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when, modal_particle_anomaly Stub für #76)
 - `tests/test_de_typography.py` — #76 DE-Typografie M46/M47/M48/M49 (detect-only, DE-Sprachgate, je 3/3/2 Fixtures; Mapping: docs/de-coverage.md)
 - `tests/test_de_vocab_layer.py` — #77 DE-KI-Marker-Vokabular (4 DE-Phrase-Kategorien in ontology.json, Belegpflicht je Phrase, Kollisionsfreiheit, EN-Corpus-Sicherheit)
+- `tests/test_de_catalog_part2.py` — #76 Teil 2: 12 weitere DE-Phrase-Kategorien (Schema, Evidence-Pflicht mit Namespace-Präfix, #46-Kollisionsfreiheit inkl. paarweiser Substring-Check, Signal-DoD 3/3/2 je Kategorie)
+- `tests/test_structure_metrics.py` — #76 Teil 2: M60 SynonymRotation + M61 IsometricUnits (detect-only, sprachagnostisch, 3/3/2-Fixtures, Schwellen fixture-kalibriert)
 - `tests/test_benchmark_runner.py` — L3-Runner selbst + Korpus-Disziplin (Zeilen, Quellen, 60 %-Regel)
 - `tests/test_binary_contrast_ext.py` — Signal #26 BinaryContrast
 - `tests/test_classifier.py` — src/classifier.py Klassifikation
