@@ -1544,7 +1544,7 @@
               "heutzutage",
               "mehr denn je",
               "in der heutigen zeit",
-              "in einer welt, in der",
+              "in einer zeit, in der",
               "die welt wie wir sie kennen",
               "seit anfang der zeit"
             ],
@@ -1567,12 +1567,6 @@
                   "note": "EN-Pendant 'in today's world' aus eigener Ontology"
                 }
               ],
-              "in einer welt, in der": [
-                {
-                  "source": "own:en-pendant",
-                  "note": "EN-Pendant 'imagine a world where' aus eigener Ontology"
-                }
-              ],
               "die welt wie wir sie kennen": [
                 {
                   "source": "own:en-pendant",
@@ -1583,6 +1577,12 @@
                 {
                   "source": "own:en-pendant",
                   "note": "EN-Pendant 'since the dawn of time'-Topos aus eigener Ontology (opening_formulas-Umfeld)"
+                }
+              ],
+              "in einer zeit, in der": [
+                {
+                  "source": "own:en-pendant",
+                  "note": "EN-Pendant 'imagine a world where' aus eigener Ontology"
                 }
               ]
             }
