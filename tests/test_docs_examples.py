@@ -44,6 +44,17 @@ class DocsExamplesTests(unittest.TestCase):
             "We shipped the billing page Tuesday. It cut checkout from 40s to 9s.",
             encoding="utf-8",
         )
+        # A document *about* slop, for the --strip-markup example (#69).
+        (Path(cls.workdir) / "handbook.md").write_text(
+            "# Handbook\n\n"
+            "This page explains which openers the detector looks for.\n\n"
+            "```\n"
+            "In today's rapidly evolving digital landscape, let us delve into "
+            "the rich tapestry of seamless synergy.\n"
+            "```\n\n"
+            "Each entry is backed by a source and a confidence value.\n",
+            encoding="utf-8",
+        )
         cls.env = dict(os.environ, PYTHONPATH=str(ROOT))
 
     def test_found_commands(self):

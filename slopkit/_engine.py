@@ -127,6 +127,13 @@ class Engine:
         return self._rhetorical_catalogue
 
 
+def strip_markup(text: str) -> str:
+    """Markdown input pre-pass (#69) — re-exported from the skill scripts."""
+    _ensure_paths()
+    from markup_prepass import strip_markup as _strip  # from skill scripts
+    return _strip(text)
+
+
 @lru_cache(maxsize=None)
 def get_engine(ontology: str = None) -> Engine:
     return Engine(Path(ontology) if ontology else None)

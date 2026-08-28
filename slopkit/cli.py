@@ -39,6 +39,24 @@ def _read_input(args) -> str:
     return text
 
 
+def _analysis_input(args, eng):
+    """(text to analyze, raw score or None).
+
+    With --strip-markup the document's quoted material is removed first and the
+    untouched text is scored too, so both numbers can be reported (#69).
+    """
+    raw = _read_input(args)
+    if not getattr(args, "strip_markup", False):
+        return raw, None
+    from ._engine import strip_markup
+    return strip_markup(raw), eng.classify_text(raw).overall_slop_score
+
+
+def _print_strip_header(raw_score: float, stripped_score: float) -> None:
+    print(f"markdown pre-pass (#69): raw {raw_score:.2f} → stripped "
+          f"{stripped_score:.2f} — the stripped score judges the prose")
+
+
 def _bar(score: float, width: int = 20) -> str:
     filled = int(round(score * width))
     return "█" * filled + "·" * (width - filled)
@@ -86,12 +104,17 @@ def _gate(args, score: float) -> int:
 
 
 def cmd_score(args, eng) -> int:
-    text = _read_input(args)
+    text, raw_score = _analysis_input(args, eng)
     r = eng.classify_text(text)
     if args.json:
-        print(json.dumps({"slop_score": r.overall_slop_score,
-                          "severity": r.severity}, indent=2))
+        payload = {"slop_score": r.overall_slop_score, "severity": r.severity}
+        if raw_score is not None:
+            payload["raw_slop_score"] = raw_score
+            payload["stripped"] = True
+        print(json.dumps(payload, indent=2))
         return _gate(args, r.overall_slop_score)
+    if raw_score is not None:
+        _print_strip_header(raw_score, r.overall_slop_score)
     icon = _SEVERITY_ICON.get(r.severity, "•")
     print(f"{icon} slop score {r.overall_slop_score:.2f}  [{_bar(r.overall_slop_score)}]  {r.severity}")
     if r.signals_detected:
@@ -101,11 +124,17 @@ def cmd_score(args, eng) -> int:
 
 
 def cmd_classify(args, eng) -> int:
-    text = _read_input(args)
+    text, raw_score = _analysis_input(args, eng)
     r = eng.classify_text(text)
     if args.json:
-        print(json.dumps(_result_to_dict(r), indent=2))
+        payload = _result_to_dict(r)
+        if raw_score is not None:
+            payload["raw_slop_score"] = raw_score
+            payload["stripped"] = True
+        print(json.dumps(payload, indent=2))
         return 0
+    if raw_score is not None:
+        _print_strip_header(raw_score, r.overall_slop_score)
     _print_classification(r)
     return 0
 
@@ -139,7 +168,7 @@ def _print_classification(r) -> None:
 
 
 def cmd_rhetoric(args, eng) -> int:
-    text = _read_input(args)
+    text, _ = _analysis_input(args, eng)
     findings = eng.rhetorical(text)
     if args.json:
         print(json.dumps({"rhetorical_patterns": findings}, indent=2))
@@ -155,14 +184,19 @@ def cmd_rhetoric(args, eng) -> int:
 
 
 def cmd_check(args, eng) -> int:
-    text = _read_input(args)
+    text, raw_score = _analysis_input(args, eng)
     r = eng.classify_text(text)
     findings = eng.rhetorical(text)
     if args.json:
         out = _result_to_dict(r)
         out["rhetorical_patterns"] = findings
+        if raw_score is not None:
+            out["raw_slop_score"] = raw_score
+            out["stripped"] = True
         print(json.dumps(out, indent=2))
         return _gate(args, r.overall_slop_score)
+    if raw_score is not None:
+        _print_strip_header(raw_score, r.overall_slop_score)
     _print_classification(r)
     print()
     if findings:
@@ -228,6 +262,11 @@ def _add_text_args(p):
                    help="text to analyze; '-' or omitted reads stdin")
     p.add_argument("--file", "-f", help="read input from a file instead")
     p.add_argument("--json", action="store_true", help="machine-readable JSON output")
+    p.add_argument("--strip-markup", action="store_true",
+                   help="score the prose of a Markdown document: code blocks, "
+                        "tables, blockquotes, quoted example lists and the "
+                        "table of contents are removed first. Raw and stripped "
+                        "score are reported side by side (#69)")
 
 
 def build_parser() -> argparse.ArgumentParser:
