@@ -80,6 +80,12 @@ Ein Review des Diffs fand vier Defekte, die die Tests nicht abgedeckt hatten:
   Change-Protokoll dazu: 2 von 331 Texten bewegen sich, beide slop
   (`slop-seo-01` 0.607 → 0.400, `slop-listicle-01` 0.557 → 0.482), kein Hard
   Negative, kein Verdikt kippt; Pipeline unverändert.
+- **Satzgrenze hinter schließendem Zeichen** (Codex-Review auf dem PR). Steht
+  zwischen Punkt und nächster Klausel ein schließendes Anführungszeichen oder
+  eine Klammer — `He wrote "Stop." Here are the alternatives.` —, sah der
+  Lookbehind das Zeichen statt der Punktuation. Zweite Recall-Regression
+  derselben Art, auf typografisch gesetzter Prosa, wo das unbeschränkte Muster
+  vorher traf.
 - **Doku als dritte Quelle.** `references/detection-signals.md` listete
   `table of contents` weiter. Diese Liste steuert den LLM-Pfad des Skills,
   hätte den False Positive also reproduziert.

@@ -25,7 +25,11 @@ _PLACEHOLDER_RE = re.compile(r"\[([xn])\]")
 # after a line break, or after an opening quote or bracket — optionally
 # followed by a list marker, because that is where openers actually live.
 _CLAUSE_START = (
-    r'(?:^|(?<=[.!?:;\u2026\n"\u201c\u201e\u00ab(\[]))'
+    # A sentence can end behind a closing delimiter: 'He wrote "Stop." Here
+    # are …'. Matching only the punctuation would miss those, so the closer
+    # is allowed to sit between the punctuation and the next clause.
+    r'(?:^|(?<=[.!?:;\u2026\n"\u201c\u201e\u00ab(\[])'
+    r'|(?<=[.!?:;\u2026]["\u201d\u2019\u00bb)\]]))'
     # Markup lead-ins: a listicle opener under a heading, in bold, or inside a
     # blockquote is still an opener. Without these the marker would trade the
     # false positive for a recall gap that no gate covers — markup stripping

@@ -118,6 +118,22 @@ class ClauseInitialSemanticsTest(unittest.TestCase):
             with self.subTest(lead_in=label):
                 self.assertRegex(text, rx)
 
+    def test_closing_delimiters_do_not_hide_the_sentence_boundary(self):
+        """Review finding (Codex): with a closing quote or bracket between the
+        full stop and the next clause, the lookbehind saw the delimiter instead
+        of the punctuation — a recall regression on typographic prose, where
+        the unconstrained pattern used to match."""
+        rx = src_scorer._term_pattern("^here are")
+        for label, text in [
+            ("curly quote", "he wrote \u201cstop.\u201d here are the alternatives."),
+            ("straight quote", 'he wrote "stop." here are the alternatives.'),
+            ("single quote", "he wrote \u2018stop.\u2019 here are the alternatives."),
+            ("paren", "(see the notes.) here are the alternatives."),
+            ("bracket", "[note.] here are the alternatives."),
+        ]:
+            with self.subTest(delimiter=label):
+                self.assertRegex(text, rx)
+
     def test_markup_lead_ins_do_not_open_a_clause_mid_sentence(self):
         """The lead-ins are openers, not a licence to match anywhere."""
         rx = src_scorer._term_pattern("^here are")
