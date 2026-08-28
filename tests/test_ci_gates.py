@@ -78,6 +78,7 @@ class GateCoverageTest(unittest.TestCase):
         "scripts/check_signal_dod.py",
         "scripts/fp_baseline.py",
         "eval/run_control_set.py",
+        "scripts/self_check_docs.py",
         "eval/run_benchmark.py",
     ]
 

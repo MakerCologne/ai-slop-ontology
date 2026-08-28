@@ -40,6 +40,8 @@ jobs:
         run: python scripts/fp_baseline.py --check
       - name: Gate — golden control set
         run: python eval/run_control_set.py
+      - name: Gate — meta self-check (scorer against our own docs, #48)
+        run: python scripts/self_check_docs.py
 
       - name: Smoke-test the installed wheel outside the checkout (#82)
         run: |

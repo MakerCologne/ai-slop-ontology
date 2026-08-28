@@ -96,8 +96,10 @@ class RegisterTest(unittest.TestCase):
                         "registered ceiling exceeded",
                     )
                     self.assertLessEqual(
-                        entry["score"] + 0.05, entry["budget"] + 0.05,
-                        "ceiling must track the measured value, not sit far above it",
+                        entry["budget"] - entry["score"], 0.10,
+                        f"{entry['path']}: the ceiling {entry['budget']} sits far "
+                        f"above the measured {entry['score']} — that is a blanket "
+                        f"permission, not a ratchet",
                     )
 
     def test_no_unused_exceptions(self):
