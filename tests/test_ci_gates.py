@@ -136,6 +136,39 @@ class BenchmarkThresholdTest(unittest.TestCase):
         self.assertIn("benchmark gate failed", combined)
         self.assertIn("precision", combined)
 
+    def test_the_floor_uses_unrounded_metrics(self):
+        """Gating must compare the real metric, not the rounded report.
+
+        Reported figures are rounded to three decimals; gating on those let a
+        recall of 0.98999 pass --min-recall 0.99, the opposite of what the
+        flag promises. A floor placed strictly between the rounded and the
+        exact value tells the two apart: exact gating passes it, rounded
+        gating fails it.
+        """
+        import json
+        report = json.loads(self._run("--json").stdout)
+        pipeline = next(r for r in report
+                        if r["engine"].startswith("skill-pipeline"))
+        rounded, exact = pipeline["recall"], pipeline["recall_exact"]
+        self.assertGreater(
+            exact, rounded,
+            "fixture assumption: the corpus must round recall down here",
+        )
+
+        between = (rounded + exact) / 2
+        passes = self._run("--min-recall", repr(between))
+        self.assertEqual(
+            passes.returncode, 0,
+            f"floor {between} is below the true recall {exact} and must pass:\n"
+            f"{passes.stdout}{passes.stderr}",
+        )
+
+        above = self._run("--min-recall", repr(exact + 1e-9))
+        self.assertEqual(
+            above.returncode, 1,
+            "a floor above the true recall must fail the build",
+        )
+
     def test_without_a_floor_it_stays_a_report(self):
         proc = self._run()
         self.assertEqual(proc.returncode, 0)

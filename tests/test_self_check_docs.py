@@ -71,6 +71,21 @@ class RegisterTest(unittest.TestCase):
         with open(REGISTER, encoding="utf-8") as fh:
             self.register = json.load(fh)
 
+    def test_no_ceiling_sits_at_the_score_maximum(self):
+        """A ceiling of 1.0 can never be breached.
+
+        Classifier scores are capped at 1.0 and the gate is `score <= budget`,
+        so max_score 1.0 is a blanket permission wearing a ratchet's clothes:
+        the document could acquire arbitrarily more slop and still pass.
+        """
+        for path, entry in self.register["exceptions"].items():
+            with self.subTest(document=path):
+                self.assertLess(
+                    entry["max_score"], 1.0,
+                    f"{path}: a ceiling at the score maximum cannot be "
+                    f"exceeded, so it gates nothing",
+                )
+
     def test_every_exception_carries_a_reason(self):
         for path, entry in self.register["exceptions"].items():
             with self.subTest(document=path):

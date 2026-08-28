@@ -97,6 +97,28 @@ class StripUnitTest(unittest.TestCase):
         self.assertNotIn("delve into", out)
         self.assertIn("confidence", out)
 
+    def test_substantive_short_bullets_survive(self):
+        """Review finding (Codex, PR #99): a listicle of short slop bullets is
+        exactly what the detector must catch — removing it because each item
+        is brief would let `--strip-markup --fail-over` pass the worst case."""
+        doc = (
+            "# Strategy\n\n"
+            "Our priorities this quarter:\n\n"
+            "- Leverage synergies\n"
+            "- Unlock full potential\n"
+            "- Drive transformative innovation\n"
+            "- Deliver seamless integration\n"
+            "- Foster a robust ecosystem\n"
+        )
+        clf = SlopClassifier(os.path.join(ROOT, "ontology.json"))
+        raw = clf.classify_text(doc).overall_slop_score
+        stripped = clf.classify_text(markup_prepass.strip_markup(doc)).overall_slop_score
+        self.assertGreater(raw, THRESHOLD, "fixture assumption: this is slop")
+        self.assertGreater(
+            stripped, THRESHOLD,
+            f"the pre-pass laundered a slop listicle: {raw:.4f} -> {stripped:.4f}",
+        )
+
     def test_ordinary_prose_list_survives(self):
         """A list of arguments is prose, not a catalogue of examples."""
         text = (
