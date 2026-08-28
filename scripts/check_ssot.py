@@ -78,6 +78,7 @@ SSOT_REGISTER = {
         "ADVERB_MIN_WORDS": ("engine-config", "deviation"),
         "INTENSIFIERS": ("corpus-calibrated", "deviation"),
         "DECISION_THRESHOLD": ("engine-config", "synced"),
+        "DEFAULT_WEIGHTS": ("engine-config", "calibration-output"),
     },
     "quantifiers.py": {
         "UNIVERSAL_QUANTIFIERS": ("corpus-calibrated", "deviation"),
@@ -172,6 +173,13 @@ ALLOWLIST_NOTES = [
     "engine-config thresholds (DECISION_THRESHOLD, ADVERB_*, STOPWORDS) are "
     "calibration outputs (eval/calibrate.py, #23/#24), pinned by "
     "tests/test_engine_sync.py; they are engine state, not ontology data.",
+    "DEFAULT_WEIGHTS (#85) is the calibration output of eval/calibrate.py "
+    "itself — 14 dimension weights, not a signal inventory, so it has no "
+    "place in ontology.json. Named rather than inlined so that calibrate.py "
+    "and the cross-validation runner read it instead of keeping copies; the "
+    "hardcoded copy this replaced had fallen a dimension behind and made "
+    "calibrate.py unrunnable (KeyError: 'portability'). Parity of the key "
+    "set is pinned by tests/test_cross_validation.py.",
     "MULTILINGUAL_BUZZWORDS is the one ontology-adjacent list: language sets "
     "are cross-checked by scripts/check_consistency.py (status "
     "synced-via-check_consistency).",

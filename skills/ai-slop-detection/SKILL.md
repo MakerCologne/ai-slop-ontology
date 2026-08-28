@@ -230,14 +230,26 @@ For URLs and search results, check these additional signals:
 
 ### Benchmark (Spiegel des README, FU-10)
 
-Gemessen 2026-08-25 (Batch F) mit `eval/run_benchmark.py --threshold 0.40`
-gegen `eval/corpus.jsonl` (n=314 = 221 slop + 93 clean):
+Gemessen 2026-08-28 mit `eval/run_benchmark.py --threshold 0.40`
+gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
+`skill-scorer`:
 
 - **P 1.0 / R 0.982 / F1 0.991** (TP 217, FN 4, FP 0)
-- Ehrlichkeitsgrenze (Review F): R 0.982 ist **In-sample-Recall** — die
-  Batch-F-Phrasen wurden aus denselben FN-Texten gewonnen; konstruierte
-  menschliche Arbeitsprosa kann 0.400–0.556 erreichen. FP=0 gilt
-  korpusintern (bekannte Grenze, FU-11/FU-13).
+- Ehrlichkeitsgrenze (Review F, #85): das ist durchgehend ein
+  **In-sample**-Wert — `eval/calibrate.py` fittet die Dimensionsgewichte auf
+  demselben Korpus, und die Batch-F-Phrasen wurden aus denselben FN-Texten
+  gewonnen; konstruierte menschliche Arbeitsprosa kann 0.400–0.556 erreichen.
+- **Held-out (5-fold, seed 17, 2 Coordinate-Ascent-Runden je Fold, gemessen
+  2026-08-28):** Scorer **P 0.986 / R 0.982 / F1 0.984**, Pipeline
+  **P 0.987 / R 0.995 / F1 0.991**. Der Abstand liegt in der **Precision**,
+  nicht im Recall: gepoolt über alle fünf Folds fallen **3 der 110
+  Clean-Texte** fälschlich über die Schwelle. Die viel zitierte `FP=0`
+  überlebt die Kreuzvalidierung also nicht — sie ist eine Eigenschaft der
+  Trainingsmenge. Reproduzieren:
+  `eval/run_benchmark.py --cross-validate 5 --cv-rounds 2` (L3, rund 30 min).
+- Diese Zahlen sind gegen einen frischen Benchmark-Lauf gepinnt
+  (`tests/test_cross_validation.py`) — der Korpusstand hier war zuvor
+  17 Clean-Texte alt, ohne dass ein Gate das bemerkt hätte.
 - Control Set: `eval/run_control_set.py` — Gate grün inkl. dokumentierter
   known-FNs.
 

@@ -694,6 +694,36 @@ def mirrored_intro_conclusion(text: str) -> bool:
     return overlap > 0.6
 
 
+# Calibrated 2026-07 via eval/calibrate.py (coordinate ascent on
+# eval/corpus.jsonl, precision floor 0.95): F1 0.47 -> 0.89 at threshold
+# 0.40 with zero false positives. Weights intentionally sum to > 1 — the
+# total is capped at 1.0, so strong evidence on a few dimensions is enough
+# to cross the threshold. Recalibrate for your domain with
+# eval/calibrate.py --corpus your_data.jsonl.
+#
+# Named rather than inlined so callers that build on these values read
+# them from here instead of keeping a copy (#85: the cross-validation
+# runner merges a fold's partial weights over the defaults).
+DEFAULT_WEIGHTS = {
+    "density": 0.15,
+    "repetition": 0.18,
+    "burstiness": 0.30,
+    "buzzwords": 0.26,
+    "phrases": 0.30,
+    "punctuation": 0.30,
+    "trailing_moral": 0.06,
+    "list_heavy": 0.04,
+    "fake_authority": 0.18,
+    "verbosity": 0.04,
+    "multilingual": 0.04,
+    "mirrored": 0.05,
+    "structural": 0.08,
+    # Issue #14: portability as 14th dimension — low-weighted weak
+    # signal (rate > 0.5), never an escalation family.
+    "portability": 0.02,
+}
+
+
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
               not_slop_store=None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
@@ -708,30 +738,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     if genre is not None:
         genre_profile = genre_profiles.get_profile(genre)
     if weights is None:
-        # Calibrated 2026-07 via eval/calibrate.py (coordinate ascent on
-        # eval/corpus.jsonl, precision floor 0.95): F1 0.47 -> 0.89 at
-        # threshold 0.40 with zero false positives. Weights intentionally sum
-        # to > 1 — the total is capped at 1.0, so strong evidence on a few
-        # dimensions is enough to cross the threshold. Recalibrate for your
-        # domain with eval/calibrate.py --corpus your_data.jsonl.
-        weights = {
-            "density": 0.15,
-            "repetition": 0.18,
-            "burstiness": 0.30,
-            "buzzwords": 0.26,
-            "phrases": 0.30,
-            "punctuation": 0.30,
-            "trailing_moral": 0.06,
-            "list_heavy": 0.04,
-            "fake_authority": 0.18,
-            "verbosity": 0.04,
-            "multilingual": 0.04,
-            "mirrored": 0.05,
-            "structural": 0.08,
-            # Issue #14: portability as 14th dimension — low-weighted weak
-            # signal (rate > 0.5), never an escalation family.
-            "portability": 0.02,
-        }
+        weights = dict(DEFAULT_WEIGHTS)
 
     density = information_density(text)
     rep = repetition_ratio(text)

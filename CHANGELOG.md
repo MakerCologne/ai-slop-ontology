@@ -1,5 +1,86 @@
 # Changelog
 
+## [2.8.0] — 2026-08-28 (#85 — Held-out-Schätzer für den Benchmark)
+
+`eval/calibrate.py` fittet die 14 Dimensionsgewichte des Scorers per Coordinate
+Ascent auf `eval/corpus.jsonl`. `eval/run_benchmark.py` misst anschließend auf
+demselben Korpus. Die Zahl, die dieses Projekt überall kommuniziert, war damit
+ein Trainingsmengen-Wert — und nichts sagte das.
+
+`docs/SCORE-GOVERNANCE.md` führt genau diesen Fall als eigenen Lehrfall
+(ADR-0005/#41: „eine Metrik, die nur gegen sich selbst misst, wird zur
+Goodhart-Falle"). Der Korpus hat seitdem Hard Negatives bekommen; die
+Trainings-/Test-Identität war geblieben.
+
+### Was die Messung ergibt
+
+`eval/run_benchmark.py --cross-validate 5 --cv-rounds 2` (seed 17, Gewichte je
+Fold nur auf dem Trainingsteil gefittet), Benchmark auf `eval/corpus.jsonl`
+(n=331 = 221 slop + 110 clean):
+
+| Engine | Art | In-sample | Held-out |
+|---|---|---|---|
+| `skill-scorer` | gefittet | P 1.000 / R 0.982 / F1 0.991 | **P 0.986 / R 0.982 / F1 0.984** |
+| `src-classifier` | nicht gefittet | P 1.000 / R 0.507 / F1 0.673 | P 1.000 / R 0.507 / F1 0.673 |
+| `skill-pipeline` | gemischt | P 1.000 / R 0.995 / F1 0.998 | **P 0.987 / R 0.995 / F1 0.991** |
+
+Alle sechs Werte aus Läufen gegen `eval/corpus.jsonl` bei Schwelle 0.40.
+
+**Der Abstand sitzt in der Precision, nicht im Recall.** Der Recall bleibt
+identisch; gepoolt über alle fünf Folds fallen **3 der 110 Clean-Texte** über
+die Schwelle (alle drei in Fold 0). Die durchgängig zitierte `FP=0` ist damit
+eine Eigenschaft der Trainingsmenge, nicht der Engine — und sie betrifft genau
+die Größe, die `docs/SCORE-GOVERNANCE.md` am härtesten schützt.
+
+Die Größenordnung ist klein (ΔF1 -0.007), aber die Richtung ist die
+unangenehme. Der ungefittete Typ-Klassifikator misst sich per Konstruktion
+gleich, und die Pipeline nimmt den stärkeren der beiden Werte — deshalb
+**untertreibt** ihre Held-out-Zahl den Overfit des gefitteten Teils. Genau
+diese Verdeckung ist der Grund, warum die In-sample-Zahl so gesund aussah;
+die Ausgabe kennzeichnet jede Engine jetzt als gefittet, ungefittet oder
+gemischt und verweigert die Auskunft für eine unklassifizierte Engine, statt
+zu raten.
+
+### Score-Protokoll
+
+Kein Score ändert sich. `eval/run_benchmark.py` liefert unverändert
+P 1.0 / R 0.995 / F1 0.998 auf `eval/corpus.jsonl`, alle acht Gates bleiben
+grün, die 14 Gewichtswerte sind wertgleich zu `master`. Die Kreuzvalidierung
+ist opt-in (L3, rund 30 min) und läuft nicht in CI.
+
+### `eval/calibrate.py` war nicht lauffähig
+
+Nebenbefund beim Bau, gleiche Fehlerklasse wie #88: das Skript hielt eine
+hartcodierte Kopie der Gewichtsnamen mit **13** Einträgen, während der Scorer
+längst einen 14. hatte (`portability`, #14). Jeder Aufruf starb mit
+`KeyError: 'portability'` — das Skript, das die ausgelieferten Gewichte als
+ihre Herkunft angeben, ließ sich nicht ausführen. Die Gewichte liegen jetzt als
+`slop_scorer.DEFAULT_WEIGHTS` an einer Stelle; `calibrate.py` und der
+Kreuzvalidierungs-Läufer lesen sie dort, statt zu kopieren. Ein Test pinnt die
+Namensgleichheit.
+
+Das ist der sechste Fundort dieser Klasse in dieser Serie. Kein Gate hatte ihn
+gefunden; er fiel auf, weil das Skript einmal tatsächlich aufgerufen wurde.
+
+### Die veröffentlichte Zahl war 17 Clean-Texte alt
+
+`skills/ai-slop-detection/SKILL.md` gab den Korpus als `n=314 = 221 slop +
+93 clean` an; er hat 331 (110 clean). P/R/F1 hatten das Wachstum überlebt —
+Recall hängt nicht von Clean-Texten ab, Precision stand auf 1.0 — also war
+die Drift für kein Gate und keinen Leser sichtbar. Die Angabe ist jetzt gegen
+einen frischen Benchmark-Lauf gepinnt, inklusive Korpusgröße, Aufteilung und
+vollständiger Konfusionsmatrix (`tests/test_cross_validation.py`).
+
+### Sonst
+
+- `--cross-validate K`, `--cv-seed S`, `--cv-rounds R` in `run_benchmark.py`.
+  Folds sind stratifiziert (ein Fold ohne beide Labels ist nicht bewertbar),
+  disjunkt und für einen Seed deterministisch (M8).
+- Kalibrator-Fortschritt geht auf stderr; stdout trägt nur den Report, sonst
+  bricht `--json`.
+- `docs/EVALS.md` benennt, welche veröffentlichte Zahl welcher Art ist und wo
+  sie steht — an einer Stelle, nicht in Zweitkopien.
+
 ## [2.7.0] — 2026-08-28 (#88 — Positionssemantik für TypePattern-Muster)
 
 Zwei schwache Muster in `SEOContentFarmSlop` machten gewöhnliche Fachdoku zu

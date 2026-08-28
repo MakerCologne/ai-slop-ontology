@@ -28,6 +28,24 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `eval/run_benchmark.py` — Precision/Recall/F1 @ 0.40 + FP-/FN-Rate je Genre
 - `eval/calibrate.py` — Gewichts-Kalibrierung aus Korpus-Statistik (nur im Re-Baseline-Zyklus, s. SCORE-GOVERNANCE.md)
 
+#### Welche Zahl ist welcher Art (#85)
+
+`calibrate.py` fittet die Dimensionsgewichte des Scorers **auf** `eval/corpus.jsonl`; `run_benchmark.py` misst anschließend **auf demselben Korpus**. Die Standardausgabe ist damit ein **In-Sample**-Wert und kein Schätzer für ungesehene Texte. Das gilt für jede Zahl, die ohne weiteren Zusatz kommuniziert wird — CHANGELOG, Commit-Messages, README.
+
+Für eine **Held-out**-Schätzung: `python eval/run_benchmark.py --cross-validate K`. Die Gewichte werden je Fold nur auf dem Trainingsteil gefittet, gemessen wird auf dem Teil, den sie nie gesehen haben. Der Lauf gibt beide Zahlen nebeneinander aus.
+
+Welcher Teil gefittet wird, entscheidet, wie aussagekräftig die Held-out-Zahl ist:
+
+| Engine | Art | Bedeutung der Held-out-Zahl |
+|---|---|---|
+| `skill-scorer` | **gefittet** (14 Dimensionsgewichte aus `calibrate.py`) | die einzige echte Generalisierungsschätzung |
+| `src-classifier` | **nicht gefittet** (Typ-Muster-Matching) | per Konstruktion gleich der In-Sample-Zahl |
+| `skill-pipeline` | gemischt (nimmt den stärkeren Wert) | **untertreibt** den Overfit, weil der ungefittete Teil ihn verdeckt |
+
+Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde kostet rund 200 s je Fold. Sie gehört in den Re-Baseline-Zyklus, nicht in CI.
+
+**Wo die Zahl steht.** Veröffentlicht wird sie an genau einer Stelle: `skills/ai-slop-detection/SKILL.md`, Abschnitt „Benchmark". Diese Angabe ist gegen einen frischen `run_benchmark.run()`-Lauf gepinnt — Korpusgröße, Slop-/Clean-Aufteilung, P/R/F1 und die vollständige Konfusionsmatrix (`tests/test_cross_validation.py::DocumentationTest`). Der Pin ist nicht theoretisch: die Angabe war beim Einbau 17 Clean-Texte alt (`n=314` statt `n=331`), und weil Recall nicht von Clean-Texten abhängt und Precision auf 1.0 stand, hatte kein Gate und kein Leser das bemerkt. Zweitkopien der Zahl in weiteren Dokumenten sind deshalb unerwünscht; wer sie zitiert, verlinkt SKILL.md.
+
 ### L1 — Unit-Assertions (tests/)
 
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
@@ -36,6 +54,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `tests/test_anchor_diff_cli.py` — #78 Anchor-Diff-CLI (--anchor-diff im Diff-Modus)
 - `tests/test_null_edit_contract.py` — #79 Null-Edit-Contract-Gate (93 Hard Negatives clean auf beiden Engines, Null-Edit-Stabilität, Grenzband-Register eval/hardneg_borderline.json)
 - `tests/test_fp_baseline.py` — #80 FP-Baseline-Register (eval/fp_baseline.json, CI-Snapshot `scripts/fp_baseline.py --check`)
+- `tests/test_cross_validation.py` — #85 Held-out-Schätzer: Folds disjunkt/vollständig/stratifiziert/deterministisch (M8), Leckage-Probe über einen injizierten Kalibrator (kein Text aus dem eigenen Held-out-Fold), Null-Runden-Kontrolle (ohne Kalibrierung muss Held-out = In-Sample sein, sonst steckt der Fehler in der Fold-Mechanik), In-Sample und Held-out nebeneinander, gefitteter Scorer getrennt vom ungefitteten Typ-Klassifikator und die Pipeline als gemischt markiert, Klassifikationspflicht je Engine (unklassifizierte Engine = Fehler, keine Vermutung), CLI `--cross-validate` opt-in und stdout nur Report (Kalibrator-Fortschritt auf stderr, sonst bricht `--json`), Lauffähigkeit von `eval/calibrate.py` (Gewichtsnamen gegen den Scorer) sowie der Doku-Pin: die in SKILL.md veröffentlichten Zahlen inkl. Korpusgröße und Konfusionsmatrix gegen einen frischen Benchmark-Lauf
 - `tests/test_type_pattern_position.py` — #88 Positionssemantik für TypePattern-Muster: `^`-Präfix im SSOT als klauselinitialer Marker (Textanfang, Satzende, Zeilenanfang, Listeneintrag) mit Gegenproben, Opt-in-Nachweis für unmarkierte Muster, Pattern-Parity über die drei Term-Regex-Module, Parity der hartcodierten Musterkopie in `slop_classifier.py` gegen ontology.json, drei Fachdoku-Hard-Negatives unter Schwelle, Recall-Wächter über echte Content-Farm-Texte, zwei Grenzfälle (Einzeltreffer bleibt Hypothese, Listicle-Opener in Liste zählt)
 - `tests/test_self_check_docs.py` — #48 Meta-Self-Check: jedes Repo-Markdown unter Schwelle nach dem #69-Präpass, Kern-Dokumente ohne Ausnahme, Ausnahmen-Register `eval/self_check_docs.json` mit Begründungspflicht und am Messwert klebender Obergrenze (Ratsche), Test gegen tote Ausnahmen, Fehlschlagprobe mit untergeschobenem Slop-Dokument
 - `tests/test_ci_gates.py` — #84 CI-Gate-Abdeckung: der Workflow muss die vollständige Suite fahren (kein `unittest discover`, das pytest-Dateien stumm überspringt), jedes dokumentierte Gate als eigener Schritt, Benchmark mit Untergrenzen statt „informational"; dazu Soll-Ist-Abgleich Testdateien gegen Collection und die Schwellenlogik von `eval/run_benchmark.py --min-precision/--min-recall`
