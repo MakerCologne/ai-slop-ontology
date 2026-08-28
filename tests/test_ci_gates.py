@@ -28,8 +28,11 @@ TESTS_DIR = os.path.join(ROOT, "tests")
 
 
 def _workflow_text() -> str:
+    """The workflow without its comments — assertions are about what runs."""
     with open(WORKFLOW, encoding="utf-8") as fh:
-        return fh.read()
+        lines = [ln for ln in fh.read().splitlines()
+                 if not ln.lstrip().startswith("#")]
+    return "\n".join(lines)
 
 
 class SuiteCoverageTest(unittest.TestCase):

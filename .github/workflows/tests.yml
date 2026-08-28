@@ -13,21 +13,34 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install optional deps
-        run: pip install pyyaml hatchling
-      - name: Run unit tests
-        run: python -m unittest discover tests -v
+      - name: Install deps
+        run: pip install pyyaml hatchling pytest
+
+      # The whole suite. NOT `unittest discover` — it collects only
+      # TestCase classes and silently skipped twelve pytest-style files (#84).
+      - name: Run the full test suite
+        run: python -m pytest -q
+
       - name: Validate data files
         run: |
           python -c "import json; json.load(open('ontology.json'))"
           python -c "import yaml; yaml.safe_load(open('ai_slop_ontology.yaml'))"
-      - name: Check JSON/YAML/TTL consistency
+
+      # Gates named in docs/SCORE-GOVERNANCE.md and docs/METHODOLOGY.md.
+      # Each one fails the build; none of them is advisory.
+      - name: Gate — JSON/YAML/TTL consistency
         run: python scripts/check_consistency.py
-      - name: Smoke-test the slop CLI
-        run: |
-          python -m slopkit info
-          python -m slopkit selfcheck
-          echo "It's not a tool. It's a movement." | python -m slopkit rhetoric -
+      - name: Gate — SSOT (C1-C4)
+        run: python scripts/check_ssot.py
+      - name: Gate — methodology/ADR/governance/evals consistency
+        run: python scripts/check_methodology.py
+      - name: Gate — signal DoD
+        run: python scripts/check_signal_dod.py
+      - name: Gate — false-positive baseline
+        run: python scripts/fp_baseline.py --check
+      - name: Gate — golden control set
+        run: python eval/run_control_set.py
+
       - name: Smoke-test the installed wheel outside the checkout (#82)
         run: |
           python -m venv /tmp/slopkit-venv
@@ -38,5 +51,7 @@ jobs:
           /tmp/slopkit-venv/bin/slop score sample.txt
           /tmp/slopkit-venv/bin/slop classify sample.txt
 
-      - name: Run benchmark (informational)
-        run: python eval/run_benchmark.py
+      # Floors from the current baseline (docs/EVALS.md). Raising them is a
+      # re-baseline decision with a change protocol, never a quiet edit.
+      - name: Gate — benchmark floors
+        run: python eval/run_benchmark.py --min-precision 1.0 --min-recall 0.99
