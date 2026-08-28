@@ -124,12 +124,17 @@ class BenchmarkThresholdTest(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stdout[-2000:] + proc.stderr[-2000:])
 
     def test_fails_below_an_impossible_floor(self):
-        proc = self._run("--min-precision", "1.0", "--min-recall", "1.0")
+        # A floor above 1.0 is unreachable by definition. Using the current
+        # recall gap instead would make this test fail the day the pipeline
+        # reaches perfect recall — a test that punishes an improvement.
+        proc = self._run("--min-precision", "1.01", "--min-recall", "1.01")
         self.assertEqual(
             proc.returncode, 1,
-            "a floor the pipeline does not meet must fail the build",
+            "a floor the pipeline cannot meet must fail the build",
         )
-        self.assertIn("recall", (proc.stdout + proc.stderr).lower())
+        combined = (proc.stdout + proc.stderr).lower()
+        self.assertIn("benchmark gate failed", combined)
+        self.assertIn("precision", combined)
 
     def test_without_a_floor_it_stays_a_report(self):
         proc = self._run()

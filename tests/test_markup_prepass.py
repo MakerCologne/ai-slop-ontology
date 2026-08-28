@@ -126,6 +126,79 @@ class StripUnitTest(unittest.TestCase):
         self.assertNotIn("rich tapestry", out)
         self.assertIn("intro", out)
 
+    def test_unclosed_fence_without_a_trailing_newline(self):
+        """Review finding: the lazy body could not reach an end-of-text close,
+        so a document whose last line lacked \\n leaked the whole fence."""
+        out = markup_prepass.strip_markup("intro\n\n```\nrich tapestry forever")
+        self.assertNotIn("rich tapestry", out)
+        self.assertIn("intro", out)
+
+    def test_a_stray_backtick_does_not_swallow_prose(self):
+        """Review finding: DOTALL inline code ate everything up to the next
+        backtick — in a document about slop, that deletes what must be scored."""
+        text = (
+            "The signal fires on `delve.\n\n"
+            "In today's rapidly evolving digital landscape, leveraging synergies "
+            "is not just a strategy, it's a necessity. This rich tapestry of "
+            "innovation underscores a profound transformation.\n\n"
+            "Closing note with a stray ` tick.\n"
+        )
+        out = markup_prepass.strip_markup(text)
+        self.assertIn("rich tapestry", out)
+        self.assertIn("digital landscape", out)
+
+    def test_list_continuation_prose_survives(self):
+        """Review finding: four-space continuation lines are the author's
+        prose, not an indented code block."""
+        text = (
+            "Reasons:\n\n"
+            "- The queue consumer moved to its own process.\n"
+            "    That made the restart path simpler and halved the p99.\n"
+            "- The alias flip is reversible.\n"
+        )
+        out = markup_prepass.strip_markup(text)
+        self.assertIn("halved the p99", out)
+
+    def test_indented_code_block_after_a_blank_line_is_removed(self):
+        text = "before\n\n    let us delve into the rich tapestry\n\nafter\n"
+        out = markup_prepass.strip_markup(text)
+        self.assertNotIn("rich tapestry", out)
+        self.assertIn("before", out)
+        self.assertIn("after", out)
+
+    def test_a_section_called_contents_keeps_its_prose(self):
+        """Review finding: 'Contents'/'Inhalt'/'Übersicht' are ordinary
+        headings; only an explicit table of contents is navigation."""
+        text = (
+            "## Contents\n\n"
+            "This section explains what the package contains and why it is "
+            "organised the way it is.\n"
+        )
+        out = markup_prepass.strip_markup(text)
+        self.assertIn("organised the way it is", out)
+
+    def test_table_of_contents_navigation_is_removed_but_prose_is_not(self):
+        text = (
+            "## Table of contents\n\n"
+            "- [First](#first)\n"
+            "- [Second](#second)\n\n"
+            "## First\n\n"
+            "Real prose that must survive the pre-pass.\n"
+        )
+        out = markup_prepass.strip_markup(text)
+        self.assertNotIn("#first", out)
+        self.assertIn("Real prose that must survive", out)
+
+    def test_is_idempotent_on_the_repository_documents(self):
+        """Fuzzing found non-idempotence; pin it on real input too."""
+        import glob
+        for rel in sorted(glob.glob(os.path.join(ROOT, "docs", "*.md")))[:6]:
+            with open(rel, encoding="utf-8") as fh:
+                raw = fh.read()
+            once = markup_prepass.strip_markup(raw)
+            with self.subTest(document=os.path.basename(rel)):
+                self.assertEqual(markup_prepass.strip_markup(once), once)
+
 
 class SelfApplicationTest(unittest.TestCase):
     """The repo's own documentation must read as clean prose once stripped."""

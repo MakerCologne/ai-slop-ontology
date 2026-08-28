@@ -50,8 +50,12 @@ jobs:
           cd /tmp
           printf '%s\n' "In today's rapidly evolving digital landscape, leveraging synergies is not just a strategy, it's a necessity. This rich tapestry of innovation underscores a profound transformation. Let's delve into the multifaceted realm of seamless integration." > sample.txt
           /tmp/slopkit-venv/bin/slop info
-          /tmp/slopkit-venv/bin/slop score sample.txt
-          /tmp/slopkit-venv/bin/slop classify sample.txt
+          # --file, not a positional: a bare path is scored as a literal
+          # string, so the step could not fail. --fail-over turns the smoke
+          # test into an assertion that detection actually works.
+          /tmp/slopkit-venv/bin/slop score --file sample.txt
+          /tmp/slopkit-venv/bin/slop classify --file sample.txt
+          /tmp/slopkit-venv/bin/slop score --file sample.txt --fail-over 0.4 && exit 1 || true
 
       # Floors from the current baseline (docs/EVALS.md). Raising them is a
       # re-baseline decision with a change protocol, never a quiet edit.

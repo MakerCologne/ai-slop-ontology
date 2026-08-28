@@ -168,7 +168,12 @@ def _print_classification(r) -> None:
 
 
 def cmd_rhetoric(args, eng) -> int:
-    text, _ = _analysis_input(args, eng)
+    # rhetoric reports no score, so the raw classification _analysis_input
+    # would compute is pure waste — strip without scoring.
+    text = _read_input(args)
+    if getattr(args, "strip_markup", False):
+        from ._engine import strip_markup
+        text = strip_markup(text)
     findings = eng.rhetorical(text)
     if args.json:
         print(json.dumps({"rhetorical_patterns": findings}, indent=2))
@@ -257,11 +262,13 @@ def cmd_selfcheck(args, eng) -> int:
 # argument parser
 # --------------------------------------------------------------------------- #
 
-def _add_text_args(p):
+def _add_text_args(p, strip_markup=True):
     p.add_argument("text", nargs="?", default=None,
                    help="text to analyze; '-' or omitted reads stdin")
     p.add_argument("--file", "-f", help="read input from a file instead")
     p.add_argument("--json", action="store_true", help="machine-readable JSON output")
+    if not strip_markup:
+        return
     p.add_argument("--strip-markup", action="store_true",
                    help="score the prose of a Markdown document: code blocks, "
                         "tables, blockquotes, quoted example lists and the "
@@ -293,8 +300,10 @@ def build_parser() -> argparse.ArgumentParser:
                             help="exit non-zero when the slop score is >= THRESHOLD (CI gating)")
         sp.set_defaults(func=func)
 
+    # Source code is not Markdown, so the pre-pass has nothing to do there.
+    # Accepting the flag and ignoring it would be worse than not offering it.
     sp_code = sub.add_parser("code", help="classify source code for slop")
-    _add_text_args(sp_code)
+    _add_text_args(sp_code, strip_markup=False)
     sp_code.add_argument("--lang", help="language hint (e.g. python, js)")
     sp_code.set_defaults(func=cmd_code)
 

@@ -157,8 +157,13 @@ class InstalledDistributionTest(unittest.TestCase):
             target = os.path.join(outside, "sample.txt")
             with open(target, "w", encoding="utf-8") as fh:
                 fh.write(SLOP_TEXT)
-            for argv in (["score", "sample.txt"], ["classify", "sample.txt"],
-                         ["rhetoric", "sample.txt"], ["info"]):
+            # --file, not a positional: a bare path is scored as a literal
+            # string, so the subcommand would "pass" without ever reading the
+            # file — a smoke test that cannot fail.
+            for argv in (["score", "--file", "sample.txt"],
+                         ["classify", "--file", "sample.txt"],
+                         ["rhetoric", "--file", "sample.txt"],
+                         ["info"]):
                 with self.subTest(command=argv[0]):
                     proc = self._run(
                         "import sys; sys.argv = ['slop'] + %r\n"
@@ -169,6 +174,24 @@ class InstalledDistributionTest(unittest.TestCase):
                         proc.returncode, 0,
                         f"slop {argv[0]} failed:\n{proc.stderr[-2000:]}",
                     )
+
+    def test_the_installed_cli_actually_reads_the_file(self):
+        """Guard the smoke test itself: the fixture must score as slop."""
+        with tempfile.TemporaryDirectory() as outside:
+            target = os.path.join(outside, "sample.txt")
+            with open(target, "w", encoding="utf-8") as fh:
+                fh.write(SLOP_TEXT)
+            proc = self._run(
+                "import sys; sys.argv = ['slop', 'score', '--file', "
+                "'sample.txt', '--fail-over', '0.4']\n"
+                "from slopkit.cli import main; sys.exit(main())",
+                cwd=outside,
+            )
+            self.assertEqual(
+                proc.returncode, 1,
+                "--fail-over did not trip on a textbook slop paragraph, so the "
+                f"file was not really read:\n{proc.stdout}{proc.stderr[-1000:]}",
+            )
 
     def test_repo_only_subcommands_fail_with_a_message_not_a_traceback(self):
         """benchmark/selfcheck need the checkout; outside it they must say so."""

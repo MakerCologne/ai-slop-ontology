@@ -10,14 +10,6 @@
     "report.md": {
       "max_score": 1.0,
       "reason": "Gap-analysis report; enumerates the Tier-1 buzzwords it found in the surveyed tools (realm, delve, tapestry, synergy) as its subject matter."
-    },
-    "REVIEW-2026-07.md": {
-      "max_score": 1.0,
-      "reason": "Review record; quotes the German and English markers it reports on ('rich tapestry', 'im digitalen Zeitalter', 'der Gamechanger') as findings."
-    },
-    "docs/EVALS.md": {
-      "max_score": 0.45,
-      "reason": "Not quoted material: the score comes from EmDashExcess (48 em-dashes across 33 sentences) plus ListHeavy. The document is a definition list of the form '- `file` — purpose', where the em-dash is a structural separator rather than the prose tic the signal targets. Registered at a tight ceiling rather than papered over; the underlying measurement artefact is tracked separately."
     }
   }
 }

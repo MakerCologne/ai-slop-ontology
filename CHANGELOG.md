@@ -84,6 +84,50 @@ nachgeprüft und neu erarbeitet statt portiert.
   Fließtext — und ein ausdrückliches Verbot, so lange umzuformulieren, bis
   der Detektor schweigt.
 
+### Review-Nacharbeit (vor dem Merge)
+
+Ein Review des PR-Diffs fand neun Defekte, die die Tests nicht abgedeckt
+hatten. Alle behoben, jeder mit Regressionstest:
+
+- **Praepass, drei Ueber-Entfernungen.** Ein Inline-Code-Regex mit `DOTALL`
+  loeschte bei ungerader Backtick-Zahl alles bis zum naechsten Backtick — in
+  einem Dokument ueber Slop genau die Passage, die bewertet werden soll. Eine
+  unterminierte Fence ohne abschliessendes Newline wurde gar nicht entfernt.
+  Eingerueckte Fortsetzungszeilen von Prosa-Listen wurden als Codeblock
+  entfernt (5 echte Zeilen in CHANGELOG.md).
+- **Praepass, zu breites Inhaltsverzeichnis.** `Contents`, `Inhalt` und
+  `Übersicht` sind gewoehnliche Ueberschriften; der Block loeschte den ganzen
+  Abschnitt darunter. Jetzt nur noch die eindeutigen Labels, und darunter nur
+  Navigationszeilen.
+- **Praepass, Laengen-Heuristik entfernt.** Kurze unpunktierte Listeneintraege
+  galten als Katalog. Das war zweimal falsch: es entfernte echte Prosa, und es
+  war instabil, weil das Entfernen von Inline-Code einen Eintrag ueber die
+  Laengenschwelle schiebt. Ein Katalogeintrag muss sich jetzt selbst als Zitat
+  markieren (Anfuehrung, Betonung, Code-Span).
+- **Praepass als ein Scan statt einer Regex-Kette.** Verkettete Durchlaeufe
+  machen kontextabhaengige Entscheidungen instabil — eine geleerte Tabellenzeile
+  laesst die Folgezeile „nach Leerzeile" aussehen. Idempotenz jetzt bei
+  0 von 18.000 Fuzz-Faellen und allen 27 Repo-Dokumenten verletzt.
+- **Zwei Rauchtests, die nicht fehlschlagen konnten.** CI und
+  `tests/test_packaging.py` riefen `slop score sample.txt` — ohne `--file`
+  wird der Dateiname als Literal bewertet (0.00 statt 0.96). Jetzt `--file`
+  plus eine `--fail-over`-Gegenprobe, die beweist, dass die Datei gelesen wird.
+- **Benchmark-Schwellentest.** Die Untergrenze war so gesetzt, dass der Test
+  bricht, sobald die Pipeline perfekten Recall erreicht — ein Test, der eine
+  Verbesserung bestraft. Jetzt eine per Definition unerreichbare Grenze.
+- **`slop code --strip-markup`** wurde angenommen und ignoriert; Quellcode ist
+  kein Markdown, das Flag gibt es dort nicht mehr. `cmd_rhetoric` berechnete
+  eine vollstaendige Klassifikation und warf sie weg.
+- **`self_check_docs.py --path`** nutzte den Pfad unnormalisiert als
+  Registerschluessel, `--path ./CHANGELOG.md` fiel deshalb durch.
+
+Nebenwirkung der Praepass-Korrektur: `REVIEW-2026-07.md` (0.987 → 0.000) und
+`docs/EVALS.md` (0.406 → 0.000) sind jetzt aus eigener Kraft sauber und haben
+ihren Registereintrag verloren — die Ratsche aus #48 hat das selbst gemeldet.
+Es bleiben zwei Ausnahmen: CHANGELOG.md und report.md.
+
+Tests 585 → 593.
+
 ### Prozess
 
 - Prioritätsschema P0/P1 als Label eingeführt, Triage in #54; die im

@@ -82,8 +82,15 @@ def run(paths=None) -> dict:
     clf = SlopClassifier(os.path.join(ROOT, "ontology.json"))
 
     documents = []
-    for rel in (paths if paths is not None else collect_documents()):
-        absolute = rel if os.path.isabs(rel) else os.path.join(ROOT, rel)
+    for given in (paths if paths is not None else collect_documents()):
+        absolute = os.path.abspath(os.path.join(ROOT, given))
+        # Normalise to the repo-relative form the register is keyed by, so
+        # `--path ./CHANGELOG.md` and `--path /abs/CHANGELOG.md` find the same
+        # entry as the full run does. A path outside the repo keeps its own
+        # name and simply has no entry.
+        rel = os.path.relpath(absolute, ROOT)
+        if rel.startswith(os.pardir):
+            rel = given
         entry = exceptions.get(rel)
         budget = entry["max_score"] if entry else THRESHOLD
         score = round(score_document(clf, absolute), 4)
