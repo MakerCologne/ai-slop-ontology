@@ -402,12 +402,40 @@ STOPWORDS = {
 }
 
 
+# Placeholder expansion (issue #83). Phrases in ontology.json use [X] for a
+# noun phrase and [N] for a count; re.escape() alone made them literal, so
+# they could never match real text.
+_PLACEHOLDER_RE = re.compile(r"\[([xn])\]")
+
+# [X]: one to four words, lazily — a trailing [X] then consumes a single word
+# instead of swallowing the rest of the clause, while a medial one grows only
+# as far as the rest of the phrase requires. No sentence or clause boundary
+# may be crossed.
+_ANY_NOUN_PHRASE = r"\w[\w'-]*(?:\s+\w[\w'-]*){0,3}?"
+
+# [N]: digits or a written-out count.
+_ANY_COUNT = (r"\d{1,4}|one|two|three|four|five|six|seven|eight|nine|ten|"
+              r"eleven|twelve|fifteen|twenty|thirty|fifty|hundred")
+
+
 def _term_pattern(term: str) -> str:
-    """Regex for a term with word boundaries where the term edge is a word char."""
+    """Regex for a term with word boundaries where the term edge is a word char.
+
+    [X] and [N] are expanded rather than escaped, so template phrases match
+    the texts they describe (#83).
+    """
     t = term.lower()
-    left = r'\b' if t[0].isalnum() else ''
-    right = r'\b' if t[-1].isalnum() else ''
-    return left + re.escape(t) + right
+    parts, pos = [], 0
+    for m in _PLACEHOLDER_RE.finditer(t):
+        parts.append(re.escape(t[pos:m.start()]))
+        body = _ANY_NOUN_PHRASE if m.group(1) == "x" else _ANY_COUNT
+        parts.append("(?:" + body + ")")
+        pos = m.end()
+    parts.append(re.escape(t[pos:]))
+    # A placeholder at either edge still begins/ends on a word character.
+    left = r"\b" if (t[0].isalnum() or t.startswith(("[x]", "[n]"))) else ""
+    right = r"\b" if (t[-1].isalnum() or t.endswith(("[x]", "[n]"))) else ""
+    return left + "".join(parts) + right
 
 
 def find_term_matches(text_lower: str, terms: list) -> dict:

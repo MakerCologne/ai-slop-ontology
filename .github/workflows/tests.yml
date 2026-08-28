@@ -4,6 +4,9 @@ on:
   push:
     branches: ["**"]
   pull_request:
+  # Pushes made with an app token do not trigger workflows, so a run has to be
+  # startable by hand — otherwise a branch can reach merge without CI evidence.
+  workflow_dispatch:
 
 jobs:
   test:
@@ -13,20 +16,51 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install optional deps
-        run: pip install pyyaml
-      - name: Run unit tests
-        run: python -m unittest discover tests -v
+      - name: Install deps
+        run: pip install pyyaml hatchling pytest
+
+      # The whole suite. NOT `unittest discover` — it collects only
+      # TestCase classes and silently skipped twelve pytest-style files (#84).
+      - name: Run the full test suite
+        run: python -m pytest -q
+
       - name: Validate data files
         run: |
           python -c "import json; json.load(open('ontology.json'))"
           python -c "import yaml; yaml.safe_load(open('ai_slop_ontology.yaml'))"
-      - name: Check JSON/YAML/TTL consistency
+
+      # Gates named in docs/SCORE-GOVERNANCE.md and docs/METHODOLOGY.md.
+      # Each one fails the build; none of them is advisory.
+      - name: Gate — JSON/YAML/TTL consistency
         run: python scripts/check_consistency.py
-      - name: Smoke-test the slop CLI
+      - name: Gate — SSOT (C1-C4)
+        run: python scripts/check_ssot.py
+      - name: Gate — methodology/ADR/governance/evals consistency
+        run: python scripts/check_methodology.py
+      - name: Gate — signal DoD
+        run: python scripts/check_signal_dod.py
+      - name: Gate — false-positive baseline
+        run: python scripts/fp_baseline.py --check
+      - name: Gate — golden control set
+        run: python eval/run_control_set.py
+      - name: Gate — meta self-check (scorer against our own docs, #48)
+        run: python scripts/self_check_docs.py
+
+      - name: Smoke-test the installed wheel outside the checkout (#82)
         run: |
-          python -m slopkit info
-          python -m slopkit selfcheck
-          echo "It's not a tool. It's a movement." | python -m slopkit rhetoric -
-      - name: Run benchmark (informational)
-        run: python eval/run_benchmark.py
+          python -m venv /tmp/slopkit-venv
+          /tmp/slopkit-venv/bin/pip install .
+          cd /tmp
+          printf '%s\n' "In today's rapidly evolving digital landscape, leveraging synergies is not just a strategy, it's a necessity. This rich tapestry of innovation underscores a profound transformation. Let's delve into the multifaceted realm of seamless integration." > sample.txt
+          /tmp/slopkit-venv/bin/slop info
+          # --file, not a positional: a bare path is scored as a literal
+          # string, so the step could not fail. --fail-over turns the smoke
+          # test into an assertion that detection actually works.
+          /tmp/slopkit-venv/bin/slop score --file sample.txt
+          /tmp/slopkit-venv/bin/slop classify --file sample.txt
+          /tmp/slopkit-venv/bin/slop score --file sample.txt --fail-over 0.4 && exit 1 || true
+
+      # Floors from the current baseline (docs/EVALS.md). Raising them is a
+      # re-baseline decision with a change protocol, never a quiet edit.
+      - name: Gate — benchmark floors
+        run: python eval/run_benchmark.py --min-precision 1.0 --min-recall 0.99

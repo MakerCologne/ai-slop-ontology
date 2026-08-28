@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from ._engine import get_engine, repo_root
+from ._engine import get_engine, is_installed_layout, repo_root
 
 
 # --------------------------------------------------------------------------- #
@@ -37,6 +37,24 @@ def _read_input(args) -> str:
     if text is None or text == "-":
         return sys.stdin.read()
     return text
+
+
+def _analysis_input(args, eng):
+    """(text to analyze, raw score or None).
+
+    With --strip-markup the document's quoted material is removed first and the
+    untouched text is scored too, so both numbers can be reported (#69).
+    """
+    raw = _read_input(args)
+    if not getattr(args, "strip_markup", False):
+        return raw, None
+    from ._engine import strip_markup
+    return strip_markup(raw), eng.classify_text(raw).overall_slop_score
+
+
+def _print_strip_header(raw_score: float, stripped_score: float) -> None:
+    print(f"markdown pre-pass (#69): raw {raw_score:.2f} → stripped "
+          f"{stripped_score:.2f} — the stripped score judges the prose")
 
 
 def _bar(score: float, width: int = 20) -> str:
@@ -86,12 +104,17 @@ def _gate(args, score: float) -> int:
 
 
 def cmd_score(args, eng) -> int:
-    text = _read_input(args)
+    text, raw_score = _analysis_input(args, eng)
     r = eng.classify_text(text)
     if args.json:
-        print(json.dumps({"slop_score": r.overall_slop_score,
-                          "severity": r.severity}, indent=2))
+        payload = {"slop_score": r.overall_slop_score, "severity": r.severity}
+        if raw_score is not None:
+            payload["raw_slop_score"] = raw_score
+            payload["stripped"] = True
+        print(json.dumps(payload, indent=2))
         return _gate(args, r.overall_slop_score)
+    if raw_score is not None:
+        _print_strip_header(raw_score, r.overall_slop_score)
     icon = _SEVERITY_ICON.get(r.severity, "•")
     print(f"{icon} slop score {r.overall_slop_score:.2f}  [{_bar(r.overall_slop_score)}]  {r.severity}")
     if r.signals_detected:
@@ -101,11 +124,17 @@ def cmd_score(args, eng) -> int:
 
 
 def cmd_classify(args, eng) -> int:
-    text = _read_input(args)
+    text, raw_score = _analysis_input(args, eng)
     r = eng.classify_text(text)
     if args.json:
-        print(json.dumps(_result_to_dict(r), indent=2))
+        payload = _result_to_dict(r)
+        if raw_score is not None:
+            payload["raw_slop_score"] = raw_score
+            payload["stripped"] = True
+        print(json.dumps(payload, indent=2))
         return 0
+    if raw_score is not None:
+        _print_strip_header(raw_score, r.overall_slop_score)
     _print_classification(r)
     return 0
 
@@ -139,7 +168,12 @@ def _print_classification(r) -> None:
 
 
 def cmd_rhetoric(args, eng) -> int:
+    # rhetoric reports no score, so the raw classification _analysis_input
+    # would compute is pure waste — strip without scoring.
     text = _read_input(args)
+    if getattr(args, "strip_markup", False):
+        from ._engine import strip_markup
+        text = strip_markup(text)
     findings = eng.rhetorical(text)
     if args.json:
         print(json.dumps({"rhetorical_patterns": findings}, indent=2))
@@ -155,14 +189,19 @@ def cmd_rhetoric(args, eng) -> int:
 
 
 def cmd_check(args, eng) -> int:
-    text = _read_input(args)
+    text, raw_score = _analysis_input(args, eng)
     r = eng.classify_text(text)
     findings = eng.rhetorical(text)
     if args.json:
         out = _result_to_dict(r)
         out["rhetorical_patterns"] = findings
+        if raw_score is not None:
+            out["raw_slop_score"] = raw_score
+            out["stripped"] = True
         print(json.dumps(out, indent=2))
         return _gate(args, r.overall_slop_score)
+    if raw_score is not None:
+        _print_strip_header(raw_score, r.overall_slop_score)
     _print_classification(r)
     print()
     if findings:
@@ -197,7 +236,15 @@ def cmd_info(args, eng) -> int:
 def _run_script(rel_path: str, extra=None) -> int:
     script = repo_root() / rel_path
     if not script.exists():
-        print(f"error: {rel_path} not found in repo", file=sys.stderr)
+        if is_installed_layout():
+            print(
+                f"error: this command runs {rel_path} from the repository and "
+                f"is not available in an installed slopkit — clone the repo, or "
+                f"point SLOP_REPO_ROOT at a checkout.",
+                file=sys.stderr,
+            )
+        else:
+            print(f"error: {rel_path} not found in repo", file=sys.stderr)
         return 2
     cmd = [sys.executable, str(script)] + (extra or [])
     return subprocess.run(cmd, cwd=str(repo_root())).returncode
@@ -215,11 +262,18 @@ def cmd_selfcheck(args, eng) -> int:
 # argument parser
 # --------------------------------------------------------------------------- #
 
-def _add_text_args(p):
+def _add_text_args(p, strip_markup=True):
     p.add_argument("text", nargs="?", default=None,
                    help="text to analyze; '-' or omitted reads stdin")
     p.add_argument("--file", "-f", help="read input from a file instead")
     p.add_argument("--json", action="store_true", help="machine-readable JSON output")
+    if not strip_markup:
+        return
+    p.add_argument("--strip-markup", action="store_true",
+                   help="score the prose of a Markdown document: code blocks, "
+                        "tables, blockquotes, quoted example lists and the "
+                        "table of contents are removed first. Raw and stripped "
+                        "score are reported side by side (#69)")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -246,8 +300,10 @@ def build_parser() -> argparse.ArgumentParser:
                             help="exit non-zero when the slop score is >= THRESHOLD (CI gating)")
         sp.set_defaults(func=func)
 
+    # Source code is not Markdown, so the pre-pass has nothing to do there.
+    # Accepting the flag and ignoring it would be worse than not offering it.
     sp_code = sub.add_parser("code", help="classify source code for slop")
-    _add_text_args(sp_code)
+    _add_text_args(sp_code, strip_markup=False)
     sp_code.add_argument("--lang", help="language hint (e.g. python, js)")
     sp_code.set_defaults(func=cmd_code)
 

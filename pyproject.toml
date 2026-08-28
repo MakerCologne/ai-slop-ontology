@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
 
 [project]
 name = "slopkit"
@@ -25,5 +25,23 @@ slop = "slopkit.cli:main"
 Homepage = "https://github.com/hikaman/ai-slop-ontology"
 Source = "https://github.com/hikaman/ai-slop-ontology"
 
-[tool.setuptools]
+[tool.hatch.build.targets.wheel]
 packages = ["slopkit"]
+
+# The engine loads these by path at runtime (slopkit/_engine.py). They live at
+# the repository root — where the checkout, the tests and the maintenance
+# scripts expect them — and are placed into the wheel at build time. No second
+# copy under version control (adr/0002: ontology.json is the single source).
+[tool.hatch.build.targets.wheel.force-include]
+"src" = "slopkit/_bundled/src"
+"skills/ai-slop-detection/scripts" = "slopkit/_bundled/skills"
+"ontology.json" = "slopkit/_bundled/ontology.json"
+"AI-SLOP-ONTOLOGY.md" = "slopkit/_bundled/AI-SLOP-ONTOLOGY.md"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/slopkit", "/src", "/skills", "/scripts", "/eval", "/tests", "/adr",
+    "/docs", "/examples", "/lexikon",
+    "/ontology.json", "/ontology.ttl", "/ai_slop_ontology.yaml",
+    "/AI-SLOP-ONTOLOGY.md", "/README.md", "/LICENSE", "/CHANGELOG.md",
+]

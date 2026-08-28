@@ -121,6 +121,23 @@ $ slop score --file draft.md
 | `slop benchmark` | run the labelled-corpus benchmark (F1 report) |
 | `slop selfcheck` | JSON/TTL/YAML/skill consistency check |
 
+### Scoring a Markdown document
+
+The scorer matches occurrences, not speech-act roles: a document *about* slop
+quotes slop, and its code fences, quoted example lists and navigation
+scaffolding fire the very signals they document. `--strip-markup` removes that
+quoted material first — fenced and indented code, inline code spans,
+blockquotes, tables, quoted example lists and the contents listing — and
+reports both numbers, so you can see what the markup was contributing:
+
+```console
+$ slop score --strip-markup --file handbook.md
+```
+
+The stripped score judges the prose and is the one `--fail-over` gates on.
+Without the flag nothing changes: raw text stays the default, and the
+benchmark corpus is measured on raw text as before.
+
 Global help:
 
 ```console

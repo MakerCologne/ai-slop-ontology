@@ -163,6 +163,16 @@ if __name__ == "__main__":
     parser.add_argument("--corpus", default=DEFAULT_CORPUS)
     parser.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD)
     parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--min-precision", type=float, default=None, metavar="P",
+        help="fail (exit 1) when the pipeline's precision falls below P. "
+             "Without it the run stays a report (#84).")
+    parser.add_argument(
+        "--min-recall", type=float, default=None, metavar="R",
+        help="fail (exit 1) when the pipeline's recall falls below R.")
+    parser.add_argument(
+        "--engine", default="skill-pipeline (scorer+classifier)",
+        help="engine the floors apply to (default: the documented pipeline)")
     args = parser.parse_args()
 
     results = run(args.corpus, args.threshold)
@@ -170,3 +180,27 @@ if __name__ == "__main__":
         print(json.dumps(results, indent=2))
     else:
         print(format_report(results))
+
+    # Floors are opt-in: the bare report is still just a report, so local runs
+    # and exploratory corpora are unaffected. CI passes them (#84).
+    if args.min_precision is None and args.min_recall is None:
+        sys.exit(0)
+
+    gated = next((r for r in results if r["engine"] == args.engine), None)
+    if gated is None:
+        print(f"error: no engine named {args.engine!r} in the results",
+              file=sys.stderr)
+        sys.exit(2)
+
+    breaches = []
+    if args.min_precision is not None and gated["precision"] < args.min_precision:
+        breaches.append(
+            f"precision {gated['precision']} < floor {args.min_precision}")
+    if args.min_recall is not None and gated["recall"] < args.min_recall:
+        breaches.append(f"recall {gated['recall']} < floor {args.min_recall}")
+    if breaches:
+        print(f"BENCHMARK GATE FAILED ({args.engine}): " + "; ".join(breaches),
+              file=sys.stderr)
+        sys.exit(1)
+    print(f"BENCHMARK GATE PASSED ({args.engine}): "
+          f"precision {gated['precision']}, recall {gated['recall']}")
