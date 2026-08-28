@@ -62,8 +62,13 @@ SLOP_TYPE_PATTERNS = {
         "description": "Generic AI text with buzzwords, low density, uniform structure",
     },
     "SEOContentFarmSlop": {
-        "patterns": ["in this article", "we will explore", "table of contents", "let's dive in",
-                      "let's break it down", "here are", "top reasons"],
+        # Mirrors ontology.json typePatterns (SSOT). "^here are" is
+        # clause-initial (#88): the listicle opener, not the middle of a
+        # sentence. "table of contents" was removed — it appears in handbooks
+        # as often as in content farms. tests/test_type_pattern_position.py
+        # pins this list against the ontology.
+        "patterns": ["in this article", "we will explore", "let's dive in",
+                      "let's break it down", "^here are", "top reasons"],
         "description": "SEO-optimized content farm article with no original reporting",
     },
     "AcademicSlop": {

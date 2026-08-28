@@ -1,5 +1,95 @@
 # Changelog
 
+## [2.7.0] — 2026-08-28 (#88 — Positionssemantik für TypePattern-Muster)
+
+Zwei schwache Muster in `SEOContentFarmSlop` machten gewöhnliche Fachdoku zu
+einer Content-Farm. Zwei Treffer eines Typs sind für sich entscheidend
+(Konfidenz 0.8), und beide trafen dort, wo sie nichts bedeuten:
+
+```
+"This page lists the commands. The commands shown here are known to run.
+ We keep a table of contents at the top so the sections stay findable."
+-> 0.56
+```
+
+### Positionsmarker im SSOT
+
+Ein führendes `^` in einem Muster heißt jetzt: die Phrase muss eine Klausel
+**eröffnen**. `^here are` ist der Listicle-Opener „Here are 5 ways…", nicht die
+Mitte von „the commands shown here are known to run". Klauselinitial umfasst
+Textanfang, Satz- und Klauselzeichen, Zeilenanfang, öffnendes Anführungszeichen
+und Listeneintrag — dort stehen Opener tatsächlich.
+
+Der Marker ist opt-in: ein Muster ohne `^` verhält sich exakt wie bisher. Die
+Expansion liegt in allen drei Modulen, die ein Term-Regex bauen, in derselben
+Form wie die `[X]`/`[N]`-Expansion aus #83.
+
+### `table of contents` gestrichen
+
+Empirie statt Meinung: das Muster traf **0 von 330** Korpus-Texten, während es
+in legitimer Fachdoku vorkommt — auch in `docs/USER-GUIDE.md` dieses Repos. Ein
+Muster, das in beiden Klassen gleich häufig ist, trägt keine Information.
+
+### Vierter Fundort, den die SSOT-Änderung nicht erreicht hatte
+
+`skills/…/slop_classifier.py` hält eine **hartcodierte Zweitkopie** der
+Mustertabelle. Sie ging nicht über den geänderten Pfad, und weil die
+Benchmark-Pipeline den stärkeren Wert aus Scorer und Skill-Klassifikator nimmt,
+blieb der False Positive bestehen, nachdem der Fix vollständig aussah — die
+Precision fiel messbar auf 0.995. Kopie angeglichen und per Test gegen
+`ontology.json` gepinnt; nichts hatte die beiden Listen bisher verbunden.
+
+### Korpus-Lücke geschlossen
+
+Der Fix ändert **keinen einzigen** der 330 bestehenden Korpus-Texte — genau
+deshalb war der Fehler unsichtbar. Neues Hard Negative `clean-tech-14`
+(own:handwritten): Fachdoku, die beide Muster legitim enthält.
+
+```
+clean-tech-14   vor dem Fix 0.560   nach dem Fix 0.000
+```
+
+Benchmark auf `eval/corpus.jsonl`: P 1.0 / R 0.995475 / F1 0.998, n 330 → 331,
+TN 109 → **110**, FP weiterhin 0. Kein bestehender Text bewegt sich, kein
+Recall-Verlust.
+
+Tests 596 → 617. Die veröffentlichte Signalzahl (378) ist unverändert — sie
+zählt Buzzwords und Phrasen, keine Typ-Muster.
+
+### Review-Nacharbeit (vor dem Merge)
+
+Ein Review des Diffs fand vier Defekte, die die Tests nicht abgedeckt hatten:
+
+- **Recall-Lücke statt False Positive.** Der Marker erkannte nur Satzzeichen,
+  Zeilenumbruch, Anführungszeichen und Klammern als Klauselöffner. Ein
+  Listicle-Opener unter einer Überschrift (`## Here are 7 ways…`), fett, in
+  einem Blockquote oder nach einer Ellipse matchte nicht mehr — der Fix hätte
+  einen False Positive gegen eine Erkennungslücke getauscht, die kein Gate
+  sieht: Markup-Strippen ist opt-in (#69) und der Benchmark-Korpus ist reine
+  Prosa. Markup-Lead-ins zählen jetzt, mit Gegenprobe, dass sie kein Freibrief
+  für Treffer mitten im Satz sind.
+- **Interne Syntax in der Ausgabe.** Die Evidence las sich als
+  „3 distinctive patterns: ^here are, …" — der Marker gehört nicht vor die
+  Augen des Lesers.
+- **Fünfter Fundort.** `PHRASE_CATEGORIES["listicle_tells"]` im Skill-Scorer
+  führte ein blankes `here are`, wo der SSOT die engeren Template-Formen hat
+  (`here are [N] ways`). Der Scorer feuerte deshalb weiter mitten im Satz auf
+  genau dem Hard Negative, das dieses Issue hinzugefügt hat — und
+  `eval/fp_baseline.json` segnete den Treffer ab, statt dass der Fix ihn
+  entfernt. Angeglichen und per Test gepinnt.
+  Change-Protokoll dazu: 2 von 331 Texten bewegen sich, beide slop
+  (`slop-seo-01` 0.607 → 0.400, `slop-listicle-01` 0.557 → 0.482), kein Hard
+  Negative, kein Verdikt kippt; Pipeline unverändert.
+- **Satzgrenze hinter schließendem Zeichen** (Codex-Review auf dem PR). Steht
+  zwischen Punkt und nächster Klausel ein schließendes Anführungszeichen oder
+  eine Klammer — `He wrote "Stop." Here are the alternatives.` —, sah der
+  Lookbehind das Zeichen statt der Punktuation. Zweite Recall-Regression
+  derselben Art, auf typografisch gesetzter Prosa, wo das unbeschränkte Muster
+  vorher traf.
+- **Doku als dritte Quelle.** `references/detection-signals.md` listete
+  `table of contents` weiter. Diese Liste steuert den LLM-Pfad des Skills,
+  hätte den False Positive also reproduziert.
+
 ## [2.6.1] — 2026-08-28 (Codex-Review zu PR #99)
 
 Ein automatisiertes Review (Codex) auf PR #99 kam auf dem Commit *vor* der
