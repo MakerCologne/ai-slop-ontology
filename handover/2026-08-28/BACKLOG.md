@@ -1,4 +1,6 @@
-# BACKLOG.md — 46 offene Issues, priorisiert
+# BACKLOG.md — offene Issues, priorisiert
+
+**Stand: nach v2.8.0.** Gegenüber der ersten Fassung sind #88 und #85 erledigt; #104, #106 und #107 sind neu dazugekommen. Zähl nicht auf die Zahl im alten Titel — hol dir die Liste mit `list_issues`.
 
 Label ist die Wahrheit, nicht der Fließtext. **Kein Prioritätslabel = P2.** Die Konvention und ihre Herleitung stehen in #54 (Triage-Kommentar vom 2026-08-28 plus Korrektur).
 
@@ -16,27 +18,34 @@ Einstieg: prüfen, ob der Workflow inzwischen aktiv ist (`gh workflow list` oder
 
 ---
 
-## P1 — acht Defekte
+## Erledigt seit der ersten Fassung
 
-Reihenfolge begründet: #88 produziert eine falsche Zahl, alles andere ist fehlende Absicherung.
+- **#88** · TypePattern ohne Positionssemantik → v2.7.0 (PR #103). `^`-Präfix im SSOT als klauselinitialer Marker, vierter Fundort der hartcodierten Musterkopie (`slop_classifier.py`) angeglichen, Hard Negative `clean-tech-14` ergänzt.
+- **#85** · Benchmark-Zahl war In-Sample → v2.8.0 (PR #105). `--cross-validate K`. **Lies dazu Fallen 7 und 8 in `PITFALLS.md`** — die erste Messung war falsch, die zweite Schlussfolgerung auch, beide von Reviews zurückgeholt.
 
-### #88 · TypePattern ohne Positionssemantik
+## P1 — sieben Defekte plus zwei neue
 
-`SEOContentFarmSlop` enthält `here are` und `table of contents`; zwei Treffer eines Typs gelten als entscheidend (`src/classifier.py:355`, Konfidenz 0.8). Beide treffen in gewöhnlicher Fachdoku — `here are` traf in „the commands shown **here are** known to run".
+Reihenfolge begründet: was eine falsche Zahl produziert, kommt vor dem, was nur eine Absicherung vermissen lässt.
 
-Einstieg: Reproduktion steht im Issue. Lösungsrichtung: Positionssemantik im SSOT ausdrückbar machen (Präfix-Marker, analog zur Platzhalter-Expansion aus #83), Trennschärfe von `table of contents` prüfen, **und** ein Hard Negative mit Inhaltsverzeichnis-Vokabular in den Korpus — die Lücke ist im Korpus, nicht nur im Muster.
+### #106 · Beitrag der Kalibrierung ist unbeziffert (neu)
 
-### #85 · Veröffentlichte Benchmark-Zahl ist In-Sample
+Uniforme Gewichte messen F1 0.989, die kalibrierten 0.991 — auf dem ganzen Korpus ein Text von 331. Ob die Kalibrierung wirklich so wenig trägt, ist damit **nicht** entschieden: die Coordinate Ascent bleibt von einem uninformierten Start aus auf einem Plateau stehen, obwohl bessere Vektoren existieren (Falle 8).
 
-`eval/calibrate.py` tuned auf `eval/corpus.jsonl`, `run_benchmark.py` misst darauf. Die überall kommunizierte Zahl P 1.0 / R 0.995 ist ein Trainingsmengenwert, nirgends gekennzeichnet.
+Einstieg: `--cv-starts` aus #85 benutzen, Ablation uniform vs. kalibriert vs. Multi-Start-Refit auf Korpus, Control Set **und** Hard Negatives. Nebenher: der Herkunfts-Kommentar in `slop_scorer.py` führt „F1 0.47 → 0.89" als Leistung der Kalibrierung — das ist ein älterer, kleinerer Korpus und beschreibt den heutigen Beitrag nicht.
 
-Einstieg: `--cross-validate K` in `run_benchmark.py`, Gewichte je Fold nur auf Trainings-Folds. Wichtig: den ungefitteten Typ-Klassifikator vom gefitteten Scorer getrennt ausweisen, sonst verdeckt der eine den Overfit des anderen. `docs/SCORE-GOVERNANCE.md` führt genau diesen Fall als Lehrfall — der Teil ist unbehoben.
+### #107 · Held-out gilt nur für die Gewichte (neu)
+
+Die Signalinventare (`BUZZWORD_TIERS`, `PHRASE_CATEGORIES`, …) sind aus demselben Korpus gewonnen — `check_ssot.py` führt sie selbst als `corpus-calibrated`, und die Batch-F-Phrasen stammen aus dessen FN-Texten. Ein Fold kann von Signalen belohnt werden, die nach Ansicht seiner eigenen Texte entworfen wurden.
+
+Einstieg: die zwei Wege stehen im Issue. Der interessantere ist, die Evidenzregel („≥3 Slop-Texte, 0 Clean-Texte") als **ausführbaren Code** zu schreiben — dann lässt sich die Merkmalsauswahl je Trainingsfold nachfahren, und die Regel wird nebenbei vom Brauch zum Gate.
 
 ### #70 · Claim-Register + Zählregel
 
 `scripts/count_signals.py` existiert nicht. Jede Umfangszahl in README/CHANGELOG braucht eine maschinell ausführbare Messvorschrift oder die Kennzeichnung als Schätzung.
 
 Einstieg: hängt inhaltlich an #83 (die zehn toten Phrasen wurden mitgezählt) und #85. Die Regel, die #83 etabliert hat: **gezählt wird nur, was matchen kann.** Nimm die `slop info`-Datumsinkonsistenz aus `STATE.md` mit.
+
+Das Muster für die Umsetzung liegt seit #85 vor: `tests/test_cross_validation.py::DocumentationTest` bindet die in SKILL.md veröffentlichten Zahlen — Korpusgröße, Aufteilung, P/R/F1, Konfusionsmatrix — an einen frischen Benchmark-Lauf. Genau das braucht #70 für jede Umfangszahl. Zwei echte Drifts hat dieser Pin schon gefunden (SKILL.md 17 Clean-Texte alt, `docs/EVALS.md` mit `314 Texte`).
 
 ### #52 · Kurztext-/Längen-Guards
 
@@ -89,6 +98,8 @@ Wenn du #92 anfängst: das sind ~100 kurze Beispieltexte in eigenen Worten (10 P
 ## P2 — der Rest
 
 Portierung aus PR #6: **#86** (human/work/SEO-Extension, braucht erst eine ADR-Entscheidung), **#87** (Playground-Adapter, hängt an #86).
+
+Abgleich mit Fremdkatalog: **#104** (Lücken gegenüber `petergyang/no-ai-slop`, MIT — Re-Derivation mit Attribution, keine Übernahme).
 
 Fallstudien: **#95**, **#96**, **#97**.
 

@@ -1,5 +1,122 @@
 # Changelog
 
+## [2.8.0] — 2026-08-28 (#85 — Held-out-Schätzer für den Benchmark)
+
+`eval/calibrate.py` fittet die 14 Dimensionsgewichte des Scorers per Coordinate
+Ascent auf `eval/corpus.jsonl`. `eval/run_benchmark.py` misst anschließend auf
+demselben Korpus. Die Zahl, die dieses Projekt überall kommuniziert, war damit
+ein Trainingsmengen-Wert — und nichts sagte das.
+
+`docs/SCORE-GOVERNANCE.md` führt genau diesen Fall als eigenen Lehrfall
+(ADR-0005/#41: „eine Metrik, die nur gegen sich selbst misst, wird zur
+Goodhart-Falle"). Der Korpus hat seitdem Hard Negatives bekommen; die
+Trainings-/Test-Identität war geblieben.
+
+### Was die Messung ergibt
+
+`eval/run_benchmark.py --cross-validate 5 --cv-rounds 3` (seed 17, Gewichte je
+Fold **nur** auf dem Trainingsteil und ab einem korpusunabhängigen Startpunkt
+gefittet), Benchmark auf `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean)
+bei Schwelle 0.40. Alle Werte aus Läufen gegen `eval/corpus.jsonl`:
+
+| Engine | Art | In-sample P / R / F1 | Held-out P / R / F1 | ΔF1 |
+|---|---|---|---|---|
+| `skill-scorer` | gefittet | 1.000 / 0.982 / 0.991 | 1.000 / 0.977 / 0.989 | −0.002 |
+| `src-classifier` | nicht gefittet | 1.000 / 0.507 / 0.673 | 1.000 / 0.507 / 0.673 | ±0.000 |
+| `skill-pipeline` | gemischt | 1.000 / 0.995 / 0.998 | 1.000 / 0.995 / 0.998 | ±0.000 |
+
+Held-out gepoolt über fünf Folds: Scorer TP 216 / FP 0 / TN 110 / FN 5, Pipeline TP 220 / FP 0 / TN 110 /
+FN 1. Die veröffentlichte Zahl **hält der Kreuzvalidierung stand**. Die
+ursprüngliche Sorge des Tickets — die Zahl sei durch Overfit aufgeblasen —
+bestätigt sich nicht.
+
+### Der Grund dafür ist der unangenehmere Befund
+
+Sie hält stand, weil kaum etwas gefittet wird. Von einem neutralen Startpunkt
+aus (uniforme Gewichte, Masse 1/N) findet die Coordinate Ascent in **keinem
+einzigen der fünf Folds** einen verbessernden Zug. Die Gewichte bleiben, wo sie
+gestartet sind — und uniforme Gewichte messen auf dem ganzen Korpus
+P 1.000 / R 0.977 / **F1 0.989** gegen die ausgelieferten
+P 1.000 / R 0.982 / **F1 0.991**.
+
+**Die gesamte 14-dimensionale Kalibrierung ist auf diesem Korpus genau einen
+Text wert** (FN 4 statt FN 5, von 331). Das Gewichtsvektor-Tuning, das die
+Doku als Herkunft der ausgelieferten Zahlen führt, trägt zur heutigen Leistung
+fast nichts bei; die Arbeit machen die Phrasen- und Musterinventare. Der in
+`slop_scorer.py` zitierte Sprung „F1 0.47 → 0.89" stammt von einem älteren,
+kleineren Korpus und beschreibt den heutigen Beitrag nicht mehr.
+
+Das ist kein Grund, die Kalibrierung zu entfernen — wohl aber einer, sie nicht
+länger als tragende Säule zu beschreiben. Ein Folge-Ticket kann prüfen, ob der
+Korpus zu leicht geworden ist, um zwischen Gewichtsvektoren zu unterscheiden.
+
+### Der erste Messwert war kontaminiert
+
+Der zuerst veröffentlichte Held-out-Wert (Scorer F1 0.984, Pipeline F1 0.991,
+3 FP) war falsch, gefunden von zwei unabhängigen Reviews. `calibrate.calibrate`
+startete die Ascent bei `DEFAULT_WEIGHTS` — auf dem **gesamten** Korpus
+gefittet, also auch auf den Texten jedes Held-out-Folds. Ascent bewegt ein
+Gewicht nur bei echter Verbesserung, also blieb eine gut gesetzte Dimension
+einfach stehen: **vier der fünf Folds behielten die vollen Korpusgewichte
+unverändert** und bewerteten ihre Held-out-Texte mit Gewichten, die auf genau
+diesen Texten gefittet waren. Fold 0 bewegte zwei Koordinaten und erzeugte
+dabei die drei False Positives, die der erste Bericht als Befund auswies.
+
+Das Symptom stand in der Messung: der Held-out-Recall war auf drei Stellen
+identisch zum In-sample-Recall, auf beiden Engines.
+
+`calibrate()` nimmt jetzt `initial_weights`; die Kreuzvalidierung übergibt den
+uniformen Start. Der Re-Baseline-Pfad startet unverändert bei den
+ausgelieferten Gewichten. Der bestehende Leckage-Test konnte den Fall nicht
+finden — er prüft, **welche Items** der Kalibrator sieht, und diese Antwort war
+korrekt. `InitializationLeakageTest` deckt jetzt den anderen Kanal ab.
+
+### Score-Protokoll
+
+Kein Score ändert sich. `eval/run_benchmark.py` liefert unverändert
+P 1.0 / R 0.995 / F1 0.998 auf `eval/corpus.jsonl`, alle acht Gates bleiben
+grün, die 14 Gewichtswerte sind wertgleich zu `master`. Die Kreuzvalidierung
+ist opt-in (L3, rund 30 min) und läuft nicht in CI.
+
+### `eval/calibrate.py` war nicht lauffähig
+
+Nebenbefund beim Bau, gleiche Fehlerklasse wie #88: das Skript hielt eine
+hartcodierte Kopie der Gewichtsnamen mit **13** Einträgen, während der Scorer
+längst einen 14. hatte (`portability`, #14). Jeder Aufruf starb mit
+`KeyError: 'portability'` — das Skript, das die ausgelieferten Gewichte als
+ihre Herkunft angeben, ließ sich nicht ausführen. Die Gewichte liegen jetzt als
+`slop_scorer.DEFAULT_WEIGHTS` an einer Stelle; `calibrate.py` und der
+Kreuzvalidierungs-Läufer lesen sie dort, statt zu kopieren. Ein Test pinnt die
+Namensgleichheit.
+
+Das ist der sechste Fundort dieser Klasse in dieser Serie. Kein Gate hatte ihn
+gefunden; er fiel auf, weil das Skript einmal tatsächlich aufgerufen wurde.
+
+### Die veröffentlichte Zahl war 17 Clean-Texte alt
+
+`skills/ai-slop-detection/SKILL.md` gab den Korpus als `n=314 = 221 slop +
+93 clean` an; er hat 331 (110 clean). P/R/F1 hatten das Wachstum überlebt —
+Recall hängt nicht von Clean-Texten ab, Precision stand auf 1.0 — also war
+die Drift für kein Gate und keinen Leser sichtbar. Die Angabe ist jetzt gegen
+einen frischen Benchmark-Lauf gepinnt, inklusive Korpusgröße, Aufteilung und
+vollständiger Konfusionsmatrix (`tests/test_cross_validation.py`).
+
+### Sonst
+
+- `--cross-validate K`, `--cv-seed S`, `--cv-rounds R` in `run_benchmark.py`.
+  Folds sind stratifiziert, disjunkt und für einen Seed deterministisch (M8);
+  `K` wird gegen die **kleinste Klasse** geprüft, weil ein labelfreier Fold
+  nicht fehlschlägt, sondern ein vakuoses P/R/F1 in die gepoolte Zahl trägt.
+- `--min-precision`/`--min-recall` werden mit `--cross-validate` **abgelehnt**
+  statt ignoriert — sonst wird das CI-Gate durchlässig, sobald jemand die
+  Flagge dort ergänzt.
+- `--threshold` erreicht jetzt den Kalibrator; vorher wurde bei 0.40 gefittet
+  und bei der gewünschten Schwelle berichtet.
+- Kalibrator-Fortschritt geht auf stderr; stdout trägt nur den Report, sonst
+  bricht `--json`.
+- `docs/EVALS.md` benennt, welche veröffentlichte Zahl welcher Art ist und wo
+  sie steht — an einer Stelle, nicht in Zweitkopien.
+
 ## [2.7.0] — 2026-08-28 (#88 — Positionssemantik für TypePattern-Muster)
 
 Zwei schwache Muster in `SEOContentFarmSlop` machten gewöhnliche Fachdoku zu

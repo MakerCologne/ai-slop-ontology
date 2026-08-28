@@ -1,6 +1,8 @@
-# PITFALLS.md — sechs Fallen aus der Vorgängersession
+# PITFALLS.md — neun Fallen aus den Vorgängersessions
 
-Jede hier ist mir tatsächlich passiert, nicht ausgedacht. Vier davon hat erst ein Review gefunden, nachdem ich „alle Gates grün" gemeldet hatte.
+Jede hier ist tatsächlich passiert, nicht ausgedacht. Sieben davon hat erst ein Review gefunden, nachdem „alle Gates grün" gemeldet war.
+
+**1–6** stammen aus der Session vom Vormittag (#99, #101), **7–9** aus der Session am Nachmittag (#88, #85). Die drei neuen sind die teuersten: alle drei betreffen eine **Messung, die falsch war, obwohl sie plausibel aussah** — und in zwei Fällen hatte ich die Zahl bereits veröffentlicht.
 
 ---
 
@@ -64,8 +66,56 @@ Das ist die Goodhart-Bewegung, vor der `docs/SCORE-GOVERNANCE.md` warnt: die Met
 
 ---
 
+## 7 · Leckage über die Initialisierung, nicht über die Daten
+
+**Was passierte.** Für #85 baute ich eine Kreuzvalidierung: Gewichte je Fold nur auf dem Trainingsteil fitten, auf dem Rest messen. Ein Test prüfte, dass der Kalibrator **keinen** Held-out-Text zu sehen bekommt — und der Test war grün und korrekt.
+
+Der Kalibrator startete die Coordinate Ascent trotzdem bei `DEFAULT_WEIGHTS`. Die sind auf dem **gesamten** Korpus gefittet, also auch auf jedem Held-out-Fold. Und weil Ascent ein Gewicht nur bei echter Verbesserung bewegt, blieb eine gut gesetzte Dimension einfach stehen: **vier von fünf Folds behielten die vollen Korpusgewichte unverändert** und bewerteten ihre Held-out-Texte mit Gewichten, die auf genau diesen Texten gefittet waren.
+
+Das Symptom stand in meiner eigenen Ergebnistabelle: der Held-out-Recall war auf drei Stellen identisch zum In-sample-Recall, auf beiden Engines. Ich habe die Tabelle veröffentlicht, ohne mich das zu fragen.
+
+**Regel.** Ein Leckage-Test, der prüft *welche Daten* ein Verfahren sieht, deckt nur einen Kanal ab. Frag zusätzlich: **womit fängt das Verfahren an, und was weiß dieser Startwert?** Initialisierung, Hyperparameter, Schwellen, Feature-Listen — alles, was aus den Daten stammt, ist ein Kanal. In diesem Repo gibt es davon mindestens drei (#85 Gewichte, #107 Signalinventare, und die Schwelle 0.40 selbst).
+
+Und: wenn zwei Zahlen, die sich unterscheiden **sollten**, auf drei Stellen gleich sind, ist das ein Befund, kein Zufall.
+
+---
+
+## 8 · „Die Suche findet nichts" ist nicht „es gibt nichts zu finden"
+
+**Was passierte.** Nach dem Fix aus Falle 7 startete jeder Fold bei uniformen Gewichten. Die Ascent fand daraufhin **in keinem einzigen Fold** einen verbessernden Zug. Ich schloss daraus: der Korpus kann zwischen Gewichtsvektoren nicht unterscheiden, die Kalibrierung ist fast nichts wert — und machte ein Ticket dafür auf (#106).
+
+Das Review zeigte die Gegenprobe: `DEFAULT_WEIGHTS` schlägt den uniformen Vektor auf **vier von fünf Trainingsfolds**. Es gibt also bessere Punkte, die Ascent kommt nur nicht hin — das Ziel ist stückweise konstant, die Suche akzeptiert nur eine Verbesserung durch **eine** Koordinate, und der uniforme Vektor liegt auf einem Plateau, das mehrere gleichzeitig braucht.
+
+Der Fehlschluss war also: aus dem Verhalten eines Optimierers auf die Struktur des Problems geschlossen. Das ist Goodhart in der Rückrichtung — statt die Metrik zum Ziel zu machen, habe ich das Versagen der Suche zur Eigenschaft der Welt erklärt.
+
+**Regel.** Bevor du aus einem Nullergebnis etwas folgerst: **konstruiere einen Gegenbeleg und lass ihn scheitern.** Hier waren das drei Zeilen — zwei bekannte Vektoren auf denselben Trainingsfolds vergleichen. Wenn der Gegenbeleg gelingt, war dein Nullergebnis ein Werkzeugproblem.
+
+---
+
+## 9 · Ein Skript, das nie jemand ausgeführt hat
+
+**Was passierte.** `eval/calibrate.py` hielt eine hartcodierte Kopie der Gewichtsnamen mit 13 Einträgen. Der Scorer hatte längst 14 (`portability`, #14). Jeder Aufruf starb mit `KeyError: 'portability'`.
+
+Das Skript ist die **Herkunftsangabe der ausgelieferten Gewichte** — der Kommentar im Scorer verweist darauf. Es stand in der Doku, es stand in `docs/EVALS.md` als L3-Werkzeug, und es war nicht lauffähig. Kein Gate hat es gemerkt, weil kein Test es je aufgerufen hat.
+
+Das war der **sechste** Fundort derselben Fehlerklasse in zwei Sessions: eine zweite Kopie von Daten, die hinter ihrer Quelle zurückgefallen ist. Die anderen fünf: `src/scorer.py`, `slop_scorer.py` (zweimal), `genre_profiles.py`, `slop_classifier.py`.
+
+**Regel.** Jedes Skript, das die Doku als Beleg für eine Zahl anführt, braucht einen Test, der es **ausführt** — und sei es mit `rounds=0` auf zwölf Zeilen. Ein Werkzeug, das niemand aufruft, ist keine Herkunftsangabe, sondern eine Behauptung.
+
+Und beim nächsten Konstantenpaar zuerst: **kann eine dieser beiden Listen die andere lesen, statt sie zu kopieren?** Sechs von sechs Fällen wären damit nicht entstanden.
+
+---
+
 ## Querschnitt
 
-Fünf der sechs sind derselbe Fehler in verschiedenen Kostümen: **etwas sah geprüft aus, ohne geprüft zu sein.** Ein Test, der nicht fehlschlagen kann; eine Schwelle, die nicht verletzt werden kann; ein Vergleich gegen die falsche Zahl; eine Fixture, die den Fehlerfall verfehlt; ein Satz, der umgangen statt korrigiert wurde.
+Fünf der ersten sechs sind derselbe Fehler in verschiedenen Kostümen: **etwas sah geprüft aus, ohne geprüft zu sein.** Ein Test, der nicht fehlschlagen kann; eine Schwelle, die nicht verletzt werden kann; ein Vergleich gegen die falsche Zahl; eine Fixture, die den Fehlerfall verfehlt; ein Satz, der umgangen statt korrigiert wurde.
 
 Die Gegenfrage, die in dieser Codebasis am meisten wert ist: **„Was müsste wahr sein, damit das hier rot wird — und kann ich das herstellen?"**
+
+Die drei neuen sind eine Stufe härter, weil dort **kein Gate versagt hat**: die Tests waren grün und hatten recht, sie prüften nur die falsche Frage. Für Messungen lautet die Gegenfrage deshalb anders:
+
+**„Welche Zahl müsste sich unterscheiden, wenn meine Erklärung stimmt — und tut sie das?"**
+
+Bei Falle 7 hätte sie sofort gegriffen (Held-out- und In-sample-Recall waren identisch, obwohl sie es nicht sein durften). Bei Falle 8 auch (zwei bekannte Vektoren vergleichen, drei Zeilen). Beide Male habe ich die Zahl stattdessen veröffentlicht und ein Review hat sie zurückgeholt.
+
+Daraus die einzige Prozessregel, die ich diesem Paket hinzufügen würde: **eine neu gemessene Zahl geht nicht in einen PR-Body, bevor du einen Weg gesucht hast, sie zu widerlegen.** Das kostet Minuten. Die Korrektur kostet einen Review-Zyklus und die Glaubwürdigkeit jeder Zahl daneben.

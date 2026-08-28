@@ -32,6 +32,16 @@ Deutsch, ausführlich, mit Zahlen. Muster aus der Historie:
 3. **Kein Dokument über 0.40** im Self-Check, außer registriert mit Begründung. `scripts/self_check_docs.py`.
 4. **FP-Baseline und Control-Set** dürfen nicht driften.
 
+## Messdisziplin (aus #85, teuer gelernt)
+
+Die vier Regeln oben werden von Skripten erzwungen. Diese hier nicht — sie sind der Grund, warum in #85 zwei veröffentlichte Zahlen zurückgeholt werden mussten.
+
+- **Benenne, wogegen eine Zahl gemessen ist.** „P 1.0 / R 0.995" ohne den Zusatz „in-sample" war jahrelang die kommunizierte Zahl dieses Projekts. Der Zusatz gehört an die Zahl, nicht in ein Dokument daneben — sonst reist er nicht mit.
+- **Zwei Zahlen, die gleich sind, obwohl sie sich unterscheiden sollten, sind ein Befund.** Held-out- und In-sample-Recall waren auf drei Stellen identisch; das war das Symptom der Leckage und stand in der eigenen Ergebnistabelle.
+- **Ein Nullergebnis ist kein Beweis.** „Die Suche findet keinen besseren Vektor" heißt nicht „es gibt keinen". Konstruiere den Gegenbeleg, bevor du folgerst — hier waren es drei Zeilen, und sie kippten die Schlussfolgerung.
+- **Leckage hat mehr als einen Kanal.** Daten, Initialisierung, Hyperparameter, Merkmalsauswahl. Ein Test, der einen prüft, sagt nichts über die anderen (#85 Gewichte, #107 Signalinventare).
+- **Ein Skript, das die Doku als Beleg anführt, braucht einen Test, der es ausführt.** `eval/calibrate.py` war die zitierte Herkunft der ausgelieferten Gewichte und ließ sich nicht starten.
+
 ## Score-Governance (`docs/SCORE-GOVERNANCE.md`, konstitutiv)
 
 - `slop_score` ist Messgröße, **nie Zielfunktion**.

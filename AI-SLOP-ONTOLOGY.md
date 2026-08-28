@@ -1,6 +1,6 @@
 ---
 title: "AI Slop Ontology"
-version: "2.7.0"
+version: "2.8.0"
 date: "2026-08-28"
 language: "de/en (bilingual; technical terms in English)"
 intended_consumers: ["LLM agents", "quality-assurance pipelines", "content moderation", "researchers"]
