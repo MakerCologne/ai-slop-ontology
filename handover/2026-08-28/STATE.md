@@ -8,7 +8,7 @@ Alle Zahlen hier sind gemessen, nicht geschätzt. Jede Zeile hat ein Kommando, m
 |---|---|
 | `master` | nach Merge von PR #105 — Hash mit `git log --oneline -1` prüfen |
 | Version | 2.8.0 (`AI-SLOP-ONTOLOGY.md`, `ai_slop_ontology.yaml`) |
-| Tests | `python -m pytest -q` nachzählen; zuletzt 655 passed, 66 Testdateien |
+| Tests | `python -m pytest -q` nachzählen; zuletzt 656 passed, 66 Testdateien |
 | Korpus | `eval/corpus.jsonl` — 331 Texte = 221 slop + 110 clean |
 | Benchmark skill-pipeline (in-sample) | P 1.0 / R 0.995475 / F1 0.998 (TP 220 / FP 0 / TN 110 / FN 1) |
 | Benchmark skill-pipeline (held-out, Gewichte) | s. `docs/EVALS.md` — **kein** Generalisierungsschätzer, #107 |
@@ -62,7 +62,7 @@ In der Reihenfolge, in der der Workflow sie fährt:
 
 | Gate | Kommando | erwartete Ausgabe |
 |---|---|---|
-| Suite | `python -m pytest -q` | `655 passed` |
+| Suite | `python -m pytest -q` | `656 passed` |
 | Konsistenz | `python scripts/check_consistency.py` | `Consistency check passed` |
 | SSOT C1–C4 | `python scripts/check_ssot.py` | `SSOT check passed` |
 | Methodik | `python scripts/check_methodology.py` | `OK — METHODOLOGY.md, ADRs …` |
