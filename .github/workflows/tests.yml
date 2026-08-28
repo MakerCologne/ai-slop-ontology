@@ -4,6 +4,9 @@ on:
   push:
     branches: ["**"]
   pull_request:
+  # Pushes made with an app token do not trigger workflows, so a run has to be
+  # startable by hand — otherwise a branch can reach merge without CI evidence.
+  workflow_dispatch:
 
 jobs:
   test:
