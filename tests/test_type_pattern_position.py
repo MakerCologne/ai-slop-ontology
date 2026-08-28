@@ -102,6 +102,30 @@ class ClauseInitialSemanticsTest(unittest.TestCase):
         self.assertRegex("intro:\n- here are the steps", rx)
         self.assertRegex("intro:\n1. here are the steps", rx)
 
+    def test_markup_lead_ins_count_as_clause_initial(self):
+        """Review finding: a listicle opener under a heading is still an
+        opener. Markup stripping is opt-in and the corpus is prose-only, so
+        nothing else would have caught this recall gap."""
+        rx = src_scorer._term_pattern("^here are")
+        for label, text in [
+            ("heading", "## here are 7 ways to save time"),
+            ("bold", "**here are the top reasons.**"),
+            ("italic", "*here are the top reasons.*"),
+            ("blockquote", "> here are the top reasons."),
+            ("ellipsis", "and so on… here are the reasons."),
+            ("dash", "— here are the reasons."),
+        ]:
+            with self.subTest(lead_in=label):
+                self.assertRegex(text, rx)
+
+    def test_markup_lead_ins_do_not_open_a_clause_mid_sentence(self):
+        """The lead-ins are openers, not a licence to match anywhere."""
+        rx = src_scorer._term_pattern("^here are")
+        self.assertIsNone(
+            re.search(rx, "the commands shown here are known to run"))
+        self.assertIsNone(
+            re.search(rx, "everything you see here are examples"))
+
     def test_without_the_marker_position_is_not_constrained(self):
         """The marker is opt-in; unmarked patterns behave exactly as before."""
         rx = src_scorer._term_pattern("here are")
@@ -144,6 +168,54 @@ class SsotTest(unittest.TestCase):
                     body = pattern[1:] if pattern.startswith("^") else pattern
                     self.assertNotIn("^", body)
                     self.assertTrue(body.strip(), "empty pattern")
+
+
+class EvidenceTextTest(unittest.TestCase):
+    """The position marker is internal syntax and must not reach the reader."""
+
+    def test_marker_is_not_shown_in_evidence(self):
+        text = ("Here are the reasons. In this article we will explore them. "
+                "Top reasons follow.")
+        r = SlopClassifier(ONTOLOGY).classify_text(text)
+        for signal in r.signals_detected:
+            with self.subTest(signal=signal.signal_id):
+                self.assertNotIn(
+                    "^", signal.evidence,
+                    "the clause-initial marker leaked into user-facing output",
+                )
+
+
+class PhraseCategoryParityTest(unittest.TestCase):
+    """The skill scorer's phrase table must not be broader than the SSOT.
+
+    Review finding: `PHRASE_CATEGORIES["listicle_tells"]` carried a bare
+    "here are" while the ontology has the narrower "here are [N] ways", so the
+    scorer kept firing mid-sentence on the very hard negative this issue added
+    — and eval/fp_baseline.json blessed the hit instead of the fix removing it.
+    """
+
+    def test_listicle_tells_matches_the_ontology(self):
+        import slop_scorer
+        with open(ONTOLOGY, encoding="utf-8") as fh:
+            ssot = json.load(fh)["signals"]["text"]["phrases"]["categories"]
+        for category in ("listicle_tells",):
+            with self.subTest(category=category):
+                self.assertEqual(
+                    sorted(ssot[category]["items"]),
+                    sorted(slop_scorer.PHRASE_CATEGORIES[category]["phrases"]),
+                    f"{category}: skill copy has drifted from ontology.json",
+                )
+
+    def test_the_new_hard_negative_produces_no_phrase_hit(self):
+        import slop_scorer
+        row = [r for r in _corpus() if r["id"] == "clean-tech-14"]
+        self.assertEqual(len(row), 1)
+        result = slop_scorer.slop_score(row[0]["text"])
+        self.assertLess(result["slop_score"], THRESHOLD)
+        self.assertEqual(
+            result.get("phrase_hits") or result.get("phrases") or [], [],
+            "technical documentation still trips a phrase category",
+        )
 
 
 class SkillClassifierParityTest(unittest.TestCase):

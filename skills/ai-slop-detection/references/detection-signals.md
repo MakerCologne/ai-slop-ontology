@@ -27,7 +27,9 @@ Detailed detection techniques from the AI Slop Ontology. Use when deeper analysi
 ≥3 hits across tiers → strong signal (confidence ≥ 0.80)
 
 ### Template Phrases
-"it's important to note", "in conclusion", "to sum up", "furthermore", "moreover", "as previously mentioned", "it is worth noting", "needless to say", "in today's [X]", "let's dive in", "we will explore", "table of contents"
+"it's important to note", "in conclusion", "to sum up", "furthermore", "moreover", "as previously mentioned", "it is worth noting", "needless to say", "in today's [X]", "let's dive in", "we will explore"
+
+`table of contents` wurde 2026-08-28 gestrichen (#88): es traf 0 von 330 Korpus-Texten und kommt in legitimer Fachdokumentation genauso vor wie in Content-Farmen. Ein Muster, das in beiden Klassen gleich häufig ist, trägt keine Information — und diese Liste steuert den LLM-Pfad des Skills, hätte den False Positive also weiter reproduziert.
 
 ≥2 template phrases → signal (confidence ≥ 0.75)
 

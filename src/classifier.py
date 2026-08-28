@@ -358,7 +358,10 @@ class SlopClassifier:
                 result.signals_detected.append(SignalMatch(
                     f"TypePattern_{type_name}",
                     min(0.7 + 0.05 * len(hits), 0.9),
-                    f"{len(hits)} distinctive patterns: {', '.join(hits[:6])}"
+                    # The "^" is the internal clause-initial marker (#88);
+                    # readers should see the phrase, not the syntax.
+                    f"{len(hits)} distinctive patterns: "
+                    f"{', '.join(h.lstrip('^') for h in hits[:6])}"
                 ))
 
         # ============================================================

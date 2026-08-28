@@ -89,8 +89,13 @@ _PLACEHOLDER_RE = re.compile(r"\[([xn])\]")
 # after a line break, or after an opening quote or bracket — optionally
 # followed by a list marker, because that is where openers actually live.
 _CLAUSE_START = (
-    r'(?:^|(?<=[.!?:;\n"\u201c\u201e\u00ab(\[]))'
-    r"\s*(?:(?:[-*+]|\d+[.)])\s+)?"
+    r'(?:^|(?<=[.!?:;\u2026\n"\u201c\u201e\u00ab(\[]))'
+    # Markup lead-ins: a listicle opener under a heading, in bold, or inside a
+    # blockquote is still an opener. Without these the marker would trade the
+    # false positive for a recall gap that no gate covers — markup stripping
+    # is opt-in (#69) and the benchmark corpus is prose only.
+    r"[ \t]*(?:[#>*_\u2014\u2013-]+[ \t]*)*"
+    r"(?:(?:[-*+]|\d+[.)])[ \t]+)?"
 )
 
 # [X]: one to four words, lazily — a trailing [X] then consumes a single word

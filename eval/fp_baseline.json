@@ -91,9 +91,7 @@
     },
     "clean-tech-14": {
       "slop_score": 0.08,
-      "signals": [
-        "listicle_tells:here are"
-      ]
+      "signals": []
     },
     "clean-ur-01": {
       "slop_score": 0.08,
