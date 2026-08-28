@@ -239,17 +239,17 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
   **In-sample**-Wert — `eval/calibrate.py` fittet die Dimensionsgewichte auf
   demselben Korpus, und die Batch-F-Phrasen wurden aus denselben FN-Texten
   gewonnen; konstruierte menschliche Arbeitsprosa kann 0.400–0.556 erreichen.
-- **Held-out (5-fold, seed 17, neutraler Startpunkt, gemessen 2026-08-28):**
-  Scorer **P 1.000 / R 0.977 / F1 0.989**, Pipeline **P 1.000 / R 0.995 /
-  F1 0.998** (gepoolt: Scorer FN 5, Pipeline FN 1, FP 0 auf beiden). Die Zahl
-  hält der Kreuzvalidierung also stand.
-- Der Grund ist unbequemer als der Befund: von einem neutralen Startpunkt aus
-  findet die Coordinate Ascent in **keinem** der fünf Folds einen verbessernden
-  Zug. Uniforme Gewichte messen F1 0.989, die kalibrierten 0.991 — **die
-  gesamte 14-dimensionale Kalibrierung ist auf diesem Korpus einen Text wert**
-  (von 331). Die Leistung tragen die Phrasen- und Musterinventare, nicht der
-  Gewichtsvektor. Reproduzieren:
-  `eval/run_benchmark.py --cross-validate 5 --cv-rounds 3` (L3, rund 30 min).
+- **Held-out (5-fold, seed 17, 4 Startpunkte je Fold, gemessen 2026-08-28):**
+  Scorer **P 0.995 / R 0.982 / F1 0.989**, Pipeline **P 0.995 / R 0.995 /
+  F1 0.995** (gepoolt: je 1 FP von 110 Clean-Texten). Der Abstand liegt in der
+  **Precision**, nicht im Recall — die viel zitierte `FP=0` ist eine
+  Eigenschaft der Trainingsmenge. Reproduzieren:
+  `eval/run_benchmark.py --cross-validate 5 --cv-rounds 2 --cv-starts 4`
+  (L3, rund 100 min).
+- **„Held out" heißt hier: bezüglich der Gewichte.** Die Signalinventare sind
+  aus demselben Korpus gewonnen (#107), ein Fold kann also von Signalen
+  belohnt werden, die nach Ansicht seiner eigenen Texte entworfen wurden. Der
+  Vorbehalt steht in der Ausgabe des Laufs selbst.
 - Gepinnt ist die **In-sample**-Zeile: Korpusgröße, Aufteilung, P/R/F1 und
   Konfusionsmatrix laufen gegen einen frischen Benchmark-Lauf
   (`tests/test_cross_validation.py`) — der Korpusstand hier war zuvor

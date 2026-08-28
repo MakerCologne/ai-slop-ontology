@@ -3,7 +3,7 @@
 Für einen Agenten mit Schreibrecht auf Repo und GitHub.
 
 **Zielrepo:** https://github.com/MakerCologne/ai-slop-ontology
-**Übergebener Stand:** v2.8.0 (`master` nach PR #105), 655 Tests grün
+**Übergebener Stand:** v2.8.0 (`master` nach PR #105), 656 Tests grün
 **Lizenz des Repos:** CC BY 4.0
 
 ## Inhalt

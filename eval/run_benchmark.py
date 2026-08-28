@@ -22,7 +22,9 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 sys.path.insert(0, os.path.join(ROOT, "skills", "ai-slop-detection", "scripts"))
+sys.path.insert(0, os.path.join(ROOT, "eval"))
 
+import calibrate  # weight calibration (L3) — also the source of the search grid
 import slop_scorer  # skill engine
 import slop_classifier as skill_classifier  # skill type classifier
 from classifier import SlopClassifier  # src engine
@@ -252,11 +254,7 @@ def random_start(fold: int, index: int) -> dict:
     """
     keys = sorted(slop_scorer.DEFAULT_WEIGHTS)
     rng = random.Random(f"cv-start:{fold}:{index}")
-    return {key: rng.choice(CANDIDATE_VALUES) for key in keys}
-
-
-CANDIDATE_VALUES = [0.0, 0.02, 0.04, 0.06, 0.08, 0.10,
-                    0.12, 0.15, 0.18, 0.22, 0.26, 0.30]
+    return {key: rng.choice(calibrate.CANDIDATE_VALUES) for key in keys}
 
 
 def _multi_start(calibrate_fn, calibrate_mod, train, rounds, verbose,
@@ -299,9 +297,7 @@ def cross_validate(items: list, k: int = 5, threshold: float = DEFAULT_THRESHOLD
     an L3 operation, not a CI gate).
     """
     if calibrator is None:
-        sys.path.insert(0, os.path.join(ROOT, "eval"))
-        import calibrate as calibrate_mod
-        from calibrate import calibrate as calibrator_impl
+        calibrate_mod = calibrate
 
         def calibrator(train, **kw):
             # calibrate.py reports progress on stdout. A fold takes minutes,
@@ -310,7 +306,7 @@ def cross_validate(items: list, k: int = 5, threshold: float = DEFAULT_THRESHOLD
             # any parse of the text output. Progress to stderr, report to
             # stdout.
             with contextlib.redirect_stdout(sys.stderr):
-                return _multi_start(calibrator_impl, calibrate_mod, train,
+                return _multi_start(calibrate.calibrate, calibrate_mod, train,
                                     rounds=rounds, verbose=verbose,
                                     threshold=threshold, starts=starts,
                                     fold=kw.get("fold", 0))

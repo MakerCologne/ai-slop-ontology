@@ -305,15 +305,30 @@ class PlateauTest(unittest.TestCase):
             "absent ascent move would be evidence rather than an artefact — "
             "and the plateau machinery below would be unnecessary")
 
+    def test_the_search_grid_is_read_not_copied(self):
+        """Building the restarts, I wrote a second CANDIDATE_VALUES into
+        run_benchmark — the seventh instance of the copy-drift class this
+        very change set out to close, added by the change itself. It now
+        reads calibrate's list, and this pins that it stays that way."""
+        import calibrate
+        self.assertIs(
+            getattr(run_benchmark, "CANDIDATE_VALUES", calibrate.CANDIDATE_VALUES),
+            calibrate.CANDIDATE_VALUES,
+            "run_benchmark must not hold its own copy of the search grid")
+        source = open(os.path.join(ROOT, "eval", "run_benchmark.py"),
+                      encoding="utf-8").read()
+        self.assertNotIn("CANDIDATE_VALUES = [", source)
+
     def test_restarts_are_seeded_from_the_fold_not_the_corpus(self):
         a = run_benchmark.random_start(0, 1)
         self.assertEqual(a, run_benchmark.random_start(0, 1), "not reproducible")
         self.assertNotEqual(a, run_benchmark.random_start(0, 2))
         self.assertNotEqual(a, run_benchmark.random_start(1, 1))
         self.assertEqual(sorted(a), slop_scorer_keys())
+        import calibrate
         for value in a.values():
             with self.subTest(value=value):
-                self.assertIn(value, run_benchmark.CANDIDATE_VALUES)
+                self.assertIn(value, calibrate.CANDIDATE_VALUES)
 
     def test_the_first_start_is_the_neutral_one(self):
         """Restart 0 is uniform, so multi-start can only ever improve on the
