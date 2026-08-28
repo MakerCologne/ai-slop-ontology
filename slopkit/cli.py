@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from ._engine import get_engine, repo_root
+from ._engine import get_engine, is_installed_layout, repo_root
 
 
 # --------------------------------------------------------------------------- #
@@ -197,7 +197,15 @@ def cmd_info(args, eng) -> int:
 def _run_script(rel_path: str, extra=None) -> int:
     script = repo_root() / rel_path
     if not script.exists():
-        print(f"error: {rel_path} not found in repo", file=sys.stderr)
+        if is_installed_layout():
+            print(
+                f"error: this command runs {rel_path} from the repository and "
+                f"is not available in an installed slopkit — clone the repo, or "
+                f"point SLOP_REPO_ROOT at a checkout.",
+                file=sys.stderr,
+            )
+        else:
+            print(f"error: {rel_path} not found in repo", file=sys.stderr)
         return 2
     cmd = [sys.executable, str(script)] + (extra or [])
     return subprocess.run(cmd, cwd=str(repo_root())).returncode

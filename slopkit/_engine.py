@@ -13,11 +13,35 @@ from pathlib import Path
 
 
 def repo_root() -> Path:
-    """Repository root. Overridable with SLOP_REPO_ROOT for unusual layouts."""
+    """Repository checkout root, or the package's parent when installed.
+
+    Only the repo-maintenance subcommands (benchmark, selfcheck) need a real
+    checkout; they check for the script and report its absence. Runtime data
+    goes through `_data_root()` instead, which also works from a wheel.
+    Overridable with SLOP_REPO_ROOT for unusual layouts.
+    """
     env = os.environ.get("SLOP_REPO_ROOT")
     if env:
         return Path(env).resolve()
     return Path(__file__).resolve().parent.parent
+
+
+def is_installed_layout() -> bool:
+    """True when running from a built wheel rather than from the checkout.
+
+    The build copies the runtime data into `slopkit/_bundled/`
+    (pyproject.toml, force-include); the directory never exists in the
+    checkout, so its presence is the discriminator.
+    """
+    return (Path(__file__).resolve().parent / "_bundled").is_dir()
+
+
+def _data_root() -> Path:
+    """Directory holding src/, the skill scripts and ontology.json."""
+    if os.environ.get("SLOP_REPO_ROOT"):
+        return repo_root()
+    bundled = Path(__file__).resolve().parent / "_bundled"
+    return bundled if bundled.is_dir() else repo_root()
 
 
 def ontology_path() -> Path:
@@ -25,17 +49,23 @@ def ontology_path() -> Path:
     env = os.environ.get("SLOP_ONTOLOGY")
     if env:
         return Path(env).resolve()
-    return repo_root() / "ontology.json"
+    return _data_root() / "ontology.json"
 
 
 def _skill_scripts_dir() -> Path:
-    return repo_root() / "skills" / "ai-slop-detection" / "scripts"
+    root = _data_root()
+    bundled = root / "skills"
+    # In the wheel the scripts sit directly under _bundled/skills; in the
+    # checkout they keep their full path.
+    if root.name == "_bundled":
+        return bundled
+    return bundled / "ai-slop-detection" / "scripts"
 
 
 def _read_canonical_version():
     """Read `version: "x.y.z"` from the canonical Markdown front matter."""
     import re
-    md = repo_root() / "AI-SLOP-ONTOLOGY.md"
+    md = _data_root() / "AI-SLOP-ONTOLOGY.md"
     if not md.exists():
         return None
     m = re.search(r'^version:\s*"([^"]+)"', md.read_text(encoding="utf-8"), re.MULTILINE)
@@ -43,7 +73,7 @@ def _read_canonical_version():
 
 
 def _ensure_paths():
-    for p in (repo_root() / "src", _skill_scripts_dir()):
+    for p in (_data_root() / "src", _skill_scripts_dir()):
         sp = str(p)
         if sp not in sys.path:
             sys.path.insert(0, sp)

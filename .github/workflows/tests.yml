@@ -14,7 +14,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install optional deps
-        run: pip install pyyaml
+        run: pip install pyyaml hatchling
       - name: Run unit tests
         run: python -m unittest discover tests -v
       - name: Validate data files
@@ -28,5 +28,15 @@ jobs:
           python -m slopkit info
           python -m slopkit selfcheck
           echo "It's not a tool. It's a movement." | python -m slopkit rhetoric -
+      - name: Smoke-test the installed wheel outside the checkout (#82)
+        run: |
+          python -m venv /tmp/slopkit-venv
+          /tmp/slopkit-venv/bin/pip install .
+          cd /tmp
+          printf '%s\n' "In today's rapidly evolving digital landscape, leveraging synergies is not just a strategy, it's a necessity. This rich tapestry of innovation underscores a profound transformation. Let's delve into the multifaceted realm of seamless integration." > sample.txt
+          /tmp/slopkit-venv/bin/slop info
+          /tmp/slopkit-venv/bin/slop score sample.txt
+          /tmp/slopkit-venv/bin/slop classify sample.txt
+
       - name: Run benchmark (informational)
         run: python eval/run_benchmark.py

@@ -7,3 +7,4 @@ dist/
 !lexikon/dist/
 .eggs/
 runs/
+slopkit/_bundled/
