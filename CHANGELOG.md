@@ -1,5 +1,61 @@
 # Changelog
 
+## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
+
+Der Detection-Referenz des Skills
+(`skills/ai-slop-detection/references/detection-signals.md`) war gegenüber
+dem SSOT (`ontology.json`) gedriftet: Sie listete Phrasen, die die Engine
+nie matchen konnte, weil sie im SSOT fehlten. Slice A schließt genau das
+(DoD 1, 2, 4, 5; DoD 3 folgt separat):
+
+### Gate (DoD 1)
+
+`scripts/check_doc_signals.py` (neu, Gate 3 in `scripts/verify.sh`):
+Jeder in "Buzzword Detection" und "Template Phrases" genannte Doku-Term
+wird gegen den SSOT gegegenprueft (D1: Buzzword-Tiers, Phrase-Kategorien,
+TypePatterns) — und rueckwirkend jede gepinnte SSOT-Kategorie
+(hedging_qualifiers, generic_transitions, opening_formulas + 4 Buzzword-
+Tiers) darauf, dass die Doku sie mindestens mit einem Item vertritt (D2).
+Ein Self-Check verhindert den stillen No-Op, falls sich die Doku-Struktur
+aendert. Der Erstlauf des Gates flog auf: neben den beiden dokumentierten
+Lücken auch zwei Doku-Beispiele ohne SSOT-Deckung ("landscape" als
+Tier-1-Beispiel, "game-changing"; SSOT kennt "navigating the landscape"
+bzw. "game-changer"/"game changing") und eine Tier-4-Beispielzeile, deren
+Beispiele tatsaechlich Tier 2 sind — die Beispiele wurden auf echte
+SSOT-Mitglieder korrigiert (eigener Wortlaut, keine Fremdquelle).
+
+### Lücke 1 (DoD 2, score-wirksam)
+
+`it is worth noting` (unkontrahiert) in `hedging_qualifiers` (conf 0.75)
+aufgenommen, neben der bislang allein vorhandenen Kontraktion "it's worth
+noting". Beleg: Issue-Text #104 ("It is worth noting that the migration
+took eleven minutes."), als own:issue-104-Evidence im SSOT hinterlegt.
+
+### Lücke 2 (DoD 2, score-wirksam)
+
+Template `in today's [X]` in `opening_formulas` (conf 0.8) aufgenommen —
+ueber die Platzhalter-Mechanik aus #83 ([X] = 1–4 woerter, lazily) matcht
+die Form jetzt die ganze Varianten-Familie ("in today's fast-paced
+digital landscape, results matter.") statt weitere konkrete Varianten zu
+stapeln. Die vorhandenen konkreten Formen bleiben matchbar; die
+Overlap-Suppression zaehlt die laengste Form nur einmal.
+
+### Test-Integritaet (DoD 4)
+
+RED vor GREEN: `tests/test_issue104_doc_drift.py` (8 Tests) mit den
+beiden Issue-Beispielen als Fixtures wurde vor der Implementierung
+eingefroren und als eigener RED-Commit (5 failed) committet; erst dann
+die Implementierung. Zusätzlich ist der neue Test in `docs/EVALS.md` (L1)
+gemappt, damit check_methodology gruen bleibt.
+
+### Wirkung
+
+Score-wirksam: beide neuen Formen erhoehen die Phrase-Treffer im
+src-Klassifikator (hedging_qualifiers befeuert ExcessiveHedging ab 3
+Treffern, opening_formulas zaehlt in PhrasePattern/Severe). Benchmark
+(skill-scorer-Pfad, korpus-kalibrierte Listen) unberuehrt.
+
+
 ## [2.8.0] — 2026-08-28 (#85 — Held-out-Schätzer für den Benchmark)
 
 `eval/calibrate.py` fittet die 14 Dimensionsgewichte des Scorers per Coordinate
