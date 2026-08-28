@@ -19,10 +19,10 @@ Detailed detection techniques from the AI Slop Ontology. Use when deeper analysi
 - > 0.30 → CRITICAL
 
 ### Buzzword Detection (14 terms)
-**Tier 1** (generic filler): delve, realm, tapestry, landscape, dynamic
+**Tier 1** (generic filler): delve, realm, tapestry, navigating the landscape, dynamic
 **Tier 2** (action inflation): unleash, unlock, harness, leverage
 **Tier 3** (corporate jargon): paradigm, synergy, robust
-**Tier 4** (hype): cutting-edge, state-of-the-art, game-changing
+**Tier 4** (context-dependent): deep dive, future-proof, quietly
 
 ≥3 hits across tiers → strong signal (confidence ≥ 0.80)
 

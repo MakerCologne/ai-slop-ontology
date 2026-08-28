@@ -722,6 +722,7 @@
             "confidence": 0.75,
             "items": [
               "it's worth noting",
+              "it is worth noting",
               "it's important to note",
               "it's important to remember",
               "it's crucial to understand",
@@ -739,7 +740,15 @@
               "notably",
               "importantly",
               "crucially"
-            ]
+            ],
+            "evidence": {
+              "it is worth noting": [
+                {
+                  "source": "own:issue-104",
+                  "note": "Unkontrahierte Form fehlte neben 'it's worth noting' (#104, Doku<->SSOT-Drift aus detection-signals.md). Belegtext (Issue #104): 'It is worth noting that the migration took eleven minutes.'"
+                }
+              ]
+            }
           },
           "generic_transitions": {
             "confidence": 0.7,
@@ -770,6 +779,7 @@
           "opening_formulas": {
             "confidence": 0.8,
             "items": [
+              "in today's [X]",
               "in today's rapidly evolving landscape",
               "in today's ever-changing world",
               "in today's digital age",

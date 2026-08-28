@@ -56,6 +56,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 
 ### L1 — Unit-Assertions (tests/)
 
+- `tests/test_issue104_doc_drift.py` — #104 Slice A: Doku<->SSOT-Drift (L1) — Gate-Test für scripts/check_doc_signals.py (D1/D2, beide Richtungen) plus die beiden Issue-Beispiele als Matcher-/Classifier-Fixtures ('it is worth noting' in hedging_qualifiers, Template 'in today's [X]' in opening_formulas; konkrete SSOT-Varianten bleiben matchbar)
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
 - `tests/test_adverb_rate.py` — Signal #24 Adverb-Rate (Fixtures)
 - `tests/test_anchor_drift.py` — #78 Anchor-Drift (detect-only, Anker-Diff, Dezimal-Grenzfall)
