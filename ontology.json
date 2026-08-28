@@ -2103,10 +2103,9 @@
             "patterns": [
               "in this article",
               "we will explore",
-              "table of contents",
               "let's dive in",
               "let's break it down",
-              "here are",
+              "^here are",
               "top reasons"
             ]
           },

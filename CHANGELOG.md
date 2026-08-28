@@ -1,5 +1,61 @@
 # Changelog
 
+## [2.7.0] — 2026-08-28 (#88 — Positionssemantik für TypePattern-Muster)
+
+Zwei schwache Muster in `SEOContentFarmSlop` machten gewöhnliche Fachdoku zu
+einer Content-Farm. Zwei Treffer eines Typs sind für sich entscheidend
+(Konfidenz 0.8), und beide trafen dort, wo sie nichts bedeuten:
+
+```
+"This page lists the commands. The commands shown here are known to run.
+ We keep a table of contents at the top so the sections stay findable."
+-> 0.56
+```
+
+### Positionsmarker im SSOT
+
+Ein führendes `^` in einem Muster heißt jetzt: die Phrase muss eine Klausel
+**eröffnen**. `^here are` ist der Listicle-Opener „Here are 5 ways…", nicht die
+Mitte von „the commands shown here are known to run". Klauselinitial umfasst
+Textanfang, Satz- und Klauselzeichen, Zeilenanfang, öffnendes Anführungszeichen
+und Listeneintrag — dort stehen Opener tatsächlich.
+
+Der Marker ist opt-in: ein Muster ohne `^` verhält sich exakt wie bisher. Die
+Expansion liegt in allen drei Modulen, die ein Term-Regex bauen, in derselben
+Form wie die `[X]`/`[N]`-Expansion aus #83.
+
+### `table of contents` gestrichen
+
+Empirie statt Meinung: das Muster traf **0 von 330** Korpus-Texten, während es
+in legitimer Fachdoku vorkommt — auch in `docs/USER-GUIDE.md` dieses Repos. Ein
+Muster, das in beiden Klassen gleich häufig ist, trägt keine Information.
+
+### Vierter Fundort, den die SSOT-Änderung nicht erreicht hatte
+
+`skills/…/slop_classifier.py` hält eine **hartcodierte Zweitkopie** der
+Mustertabelle. Sie ging nicht über den geänderten Pfad, und weil die
+Benchmark-Pipeline den stärkeren Wert aus Scorer und Skill-Klassifikator nimmt,
+blieb der False Positive bestehen, nachdem der Fix vollständig aussah — die
+Precision fiel messbar auf 0.995. Kopie angeglichen und per Test gegen
+`ontology.json` gepinnt; nichts hatte die beiden Listen bisher verbunden.
+
+### Korpus-Lücke geschlossen
+
+Der Fix ändert **keinen einzigen** der 330 bestehenden Korpus-Texte — genau
+deshalb war der Fehler unsichtbar. Neues Hard Negative `clean-tech-14`
+(own:handwritten): Fachdoku, die beide Muster legitim enthält.
+
+```
+clean-tech-14   vor dem Fix 0.560   nach dem Fix 0.000
+```
+
+Benchmark auf `eval/corpus.jsonl`: P 1.0 / R 0.995475 / F1 0.998, n 330 → 331,
+TN 109 → **110**, FP weiterhin 0. Kein bestehender Text bewegt sich, kein
+Recall-Verlust.
+
+Tests 596 → 612. Die veröffentlichte Signalzahl (378) ist unverändert — sie
+zählt Buzzwords und Phrasen, keine Typ-Muster.
+
 ## [2.6.1] — 2026-08-28 (Codex-Review zu PR #99)
 
 Ein automatisiertes Review (Codex) auf PR #99 kam auf dem Commit *vor* der

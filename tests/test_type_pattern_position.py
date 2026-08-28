@@ -146,6 +146,36 @@ class SsotTest(unittest.TestCase):
                     self.assertTrue(body.strip(), "empty pattern")
 
 
+class SkillClassifierParityTest(unittest.TestCase):
+    """The skill classifier must not carry a stale copy of the pattern table.
+
+    `slop_classifier.SLOP_TYPE_PATTERNS` is a hardcoded second copy of the
+    ontology's typePatterns. The #88 change to the SSOT reached three modules
+    and not this one, so the benchmark pipeline — which takes the stronger of
+    scorer and skill classifier — still produced the false positive after the
+    fix looked complete. Nothing pinned the two lists together; this does.
+    """
+
+    def test_patterns_match_the_ontology(self):
+        import slop_classifier
+        ontology = _type_patterns()
+        copy = slop_classifier.SLOP_TYPE_PATTERNS
+        for name, spec in ontology.items():
+            with self.subTest(type=name):
+                self.assertIn(name, copy, "type missing from the skill copy")
+                self.assertEqual(
+                    list(spec["patterns"]), list(copy[name]["patterns"]),
+                    f"{name}: skill copy has drifted from ontology.json",
+                )
+
+    def test_no_extra_types_in_the_copy(self):
+        import slop_classifier
+        ontology = _type_patterns()
+        extra = [n for n, spec in slop_classifier.SLOP_TYPE_PATTERNS.items()
+                 if spec["patterns"] and n not in ontology]
+        self.assertEqual(extra, [], "skill copy carries types the SSOT does not")
+
+
 class NoFalsePositiveOnTechnicalDocsTest(unittest.TestCase):
     """The reported case, and the shape of it."""
 

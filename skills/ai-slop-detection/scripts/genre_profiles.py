@@ -79,6 +79,20 @@ def get_profile(name: str) -> dict:
 # they could never match real text.
 _PLACEHOLDER_RE = re.compile(r"\[([xn])\]")
 
+# Position marker (issue #88). A leading "^" in an ontology pattern means the
+# phrase must OPEN a clause: "^here are" is the listicle opener "Here are 5
+# ways…", not the middle of "the commands shown here are known to run". Without
+# a way to say this, patterns that name an opener also fired inside sentences
+# and turned ordinary technical prose into a content farm.
+#
+# Clause-initial is: start of the text, after sentence or clause punctuation,
+# after a line break, or after an opening quote or bracket — optionally
+# followed by a list marker, because that is where openers actually live.
+_CLAUSE_START = (
+    r'(?:^|(?<=[.!?:;\n"\u201c\u201e\u00ab(\[]))'
+    r"\s*(?:(?:[-*+]|\d+[.)])\s+)?"
+)
+
 # [X]: one to four words, lazily — a trailing [X] then consumes a single word
 # instead of swallowing the rest of the clause, while a medial one grows only
 # as far as the rest of the phrase requires. No sentence or clause boundary
@@ -94,9 +108,13 @@ def _term_pattern(term: str) -> str:
     """Regex for a term with word boundaries where the term edge is a word char.
 
     [X] and [N] are expanded rather than escaped, so template phrases match
-    the texts they describe (#83).
+    the texts they describe (#83). A leading "^" constrains the phrase to a
+    clause opening (#88); without it, position is unconstrained as before.
     """
     t = term.lower()
+    clause_initial = t.startswith("^")
+    if clause_initial:
+        t = t[1:]
     parts, pos = [], 0
     for m in _PLACEHOLDER_RE.finditer(t):
         parts.append(re.escape(t[pos:m.start()]))
@@ -107,7 +125,8 @@ def _term_pattern(term: str) -> str:
     # A placeholder at either edge still begins/ends on a word character.
     left = r"\b" if (t[0].isalnum() or t.startswith(("[x]", "[n]"))) else ""
     right = r"\b" if (t[-1].isalnum() or t.endswith(("[x]", "[n]"))) else ""
-    return left + "".join(parts) + right
+    core = left + "".join(parts) + right
+    return _CLAUSE_START + core if clause_initial else core
 
 
 def strip_exempt_terms(text: str, terms: list) -> str:
