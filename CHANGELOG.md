@@ -1,5 +1,105 @@
 # Changelog
 
+## [2.6.0] — 2026-08-28 (Batch K — P0-Defekte aus dem PR-#6-Abgleich + CI-Gates)
+
+Batch aus der Triage vom 2026-08-28 (#54): drei P0-Defekte, zwei P1-Gates.
+Alle drei P0 waren Befunde aus PR #6, der mangels gemeinsamer Historie mit
+`master` nicht mergebar war; jeder Befund wurde gegen den heutigen Stand
+nachgeprüft und neu erarbeitet statt portiert.
+
+### #82 Wheel-Packaging (P0)
+
+- `pip install .` lieferte eine CLI, die bei jedem Subcommand mit
+  `ModuleNotFoundError: No module named 'classifier'` abbrach: paketiert
+  wurde nur `slopkit/`, während `slopkit/_engine.py` `src/`, die
+  Skill-Skripte und `ontology.json` über Pfade relativ zum Paketverzeichnis
+  auflöst. `pip install -e .` maskierte das.
+- Build-Backend setuptools → hatchling; `force-include` legt die
+  Laufzeitdaten beim Bauen nach `slopkit/_bundled/` — keine Zweitkopie unter
+  Versionskontrolle (adr/0002). `_data_root()` wählt gebundelt oder Checkout.
+- `benchmark`/`selfcheck` brauchen den Checkout und melden das außerhalb
+  klar (Exit 2) statt einen Traceback zu werfen.
+- CI installiert das Wheel in ein venv und ruft `slop` außerhalb des
+  Checkouts. `tests/test_packaging.py` prüft Deklaration (ohne Build/Netz)
+  und gebaute Distribution.
+
+### #83 Phrase-Matchbarkeit (P0)
+
+- Zehn Phrasen im SSOT konnten strukturell nie matchen: `_term_pattern()`
+  escapte `[X]`/`[N]` literal, `"in the age of [X]"` suchte den Literaltext.
+- `[X]` → ein bis vier Wörter (lazy), `[N]` → Ziffern oder Zahlwort;
+  identisch in `src/scorer.py`, `skill/slop_scorer.py` und
+  `skill/genre_profiles.py` (sonst strippen Genre-Exemptions andere Spans,
+  als der Scorer matcht).
+- Change-Protokoll (#67): genau 1 von 330 Korpus-Texten ändert seinen Score,
+  `slop-0202-016` (label slop) 0.280 → 0.496. **Kein Hard Negative
+  verändert.** Konfusionsmatrix unverändert P 1.0 / R 0.995 / F1 0.998 —
+  der Gewinn ist Score-Abstand, keine neue Erkennung.
+- `tests/test_phrase_matchability.py` prüft jede der 249 Phrasen gegen ihre
+  eigene Instanziierung.
+
+### #69 Markdown-Präpass (P0)
+
+- Der Detektor bewertete die eigene Doku als Slop: README 0.900,
+  ONTOLOGY 0.933, AI-SLOP-ONTOLOGY 0.986, docs/USER-GUIDE 0.995 — Ursache
+  waren die zitierten Beispiele, die als Fließtext gewertet wurden.
+- `skills/ai-slop-detection/scripts/markup_prepass.py`: `strip_markup()`
+  entfernt Code-Fences, eingerückte Codeblöcke, Inline-Code, Blockquotes,
+  Tabellen, Zitat-Listen und den Inhaltsverzeichnis-Block. Prosa-Listen,
+  Überschriften und Linktext bleiben. Idempotent, detect-only, ohne Score.
+- Alle vier Dokumente danach 0.000.
+- CLI `--strip-markup` für score/classify/rhetoric/check gibt Roh- **und**
+  Strip-Score aus (`raw_slop_score` im JSON); `--fail-over` bewertet die
+  Strip-Fassung. Ohne Flag ändert sich nichts — Rohtext bleibt Default, der
+  Korpus wird weiter auf Rohtext gemessen (ein Default-Wechsel wäre eine
+  Re-Baseline-Entscheidung, #67).
+- Guardrails: kein Korpus-Text wechselt durch den Präpass sein Verdikt;
+  Missbrauchsprobe verankert (Prosa-Slop bleibt erkannt).
+
+### #84 CI-Gate-Abdeckung (P1)
+
+- CI lief `unittest discover` und führte damit **420 von 539 Tests** aus;
+  zwölf pytest-Dateien wurden ohne Warnung übersprungen, darunter die
+  Wächter für Signal-DoD, SCORE-GOVERNANCE, METHODOLOGY, EVALS und ADRs.
+- Workflow auf pytest umgestellt; jedes dokumentierte Gate ist ein eigener,
+  scharfer Schritt (check_consistency, check_ssot, check_methodology,
+  check_signal_dod, fp_baseline --check, run_control_set, self_check_docs).
+- `eval/run_benchmark.py --min-precision/--min-recall/--engine`: mit
+  Untergrenze Exit 1 und benannte Verletzung, ohne Untergrenze weiterhin
+  ein Bericht. CI fährt P ≥ 1.0 / R ≥ 0.99.
+- `tests/test_ci_gates.py` liest die Workflow-Datei und gleicht Testdateien
+  gegen die Collection ab — genau die Lücke, die zwölf Dateien verborgen hat.
+
+### #48 Meta-Self-Check (P1)
+
+- `scripts/self_check_docs.py` bewertet jedes Repo-Markdown nach dem
+  #69-Präpass und schlägt fehl, sobald eins die Schwelle 0.40 erreicht.
+  27 Dokumente, 23 bei 0.000–0.100.
+- `eval/self_check_docs.json` führt vier Ausnahmen mit Begründung und einem
+  Deckel, der am Messwert klebt (höchstens 0.10 darüber): CHANGELOG.md,
+  report.md und REVIEW-2026-07.md benennen Katalogmaterial im Fließtext;
+  docs/EVALS.md trägt ein Messartefakt (Halbgeviertstrich als
+  Strukturtrenner in einer Definitionsliste).
+- `docs/DOC-STYLE.md`: zitiertes Material in Markup, eigene Aussagen im
+  Fließtext — und ein ausdrückliches Verbot, so lange umzuformulieren, bis
+  der Detektor schweigt.
+
+### Prozess
+
+- Prioritätsschema P0/P1 als Label eingeführt, Triage in #54; die im
+  Fließtext geerbten Prioritäten sind dort abgeglichen.
+- PR #4 und #6 geschlossen (keine gemeinsame Historie mit `master`), jeder
+  Befund nachgeprüft und ticketiert: #82, #83, #69, #85, #86, #87.
+- Neue Befunde beim Arbeiten: #88 (TypePattern ohne Positionssemantik).
+
+### Zahlen
+
+- Tests 539 → 585 (+ 848 Subtests), 5 neue Testdateien.
+- Benchmark skill-pipeline unverändert: P 1.0 / R 0.995 / F1 0.998
+  (n=330, TP 220 / FP 0 / TN 109 / FN 1 = known-FN).
+- Control-Set, SSOT C1–C4, Consistency, Methodology, Signal-DoD und
+  fp-baseline grün.
+
 ## [2.5.0] — 2026-08-25 (Batch J — DE-Katalog Teil 2 + FU-17 + #80-Rest)
 
 ### #76 DE-Pattern-Katalog Teil 2 (Master-Akzeptanz ≥20 DE-Signale erfüllt)
