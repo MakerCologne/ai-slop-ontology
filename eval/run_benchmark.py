@@ -92,6 +92,13 @@ def evaluate(name: str, score_fn, items: list, threshold: float) -> dict:
         "recall": round(recall, 3),
         "f1": round(f1, 3),
         "accuracy": round(accuracy, 3),
+        # Unrounded companions. The reported figures are rounded for reading,
+        # but a floor must be compared against the real value: a recall of
+        # 989/999 = 0.98999 rounds to 0.990 and would slip past --min-recall
+        # 0.99, which is exactly what the flag promises not to allow.
+        "precision_exact": precision,
+        "recall_exact": recall,
+        "f1_exact": f1,
         "per_language_accuracy": {
             lang: round(s["correct"] / s["total"], 3) for lang, s in sorted(by_lang.items())
         },
@@ -193,14 +200,18 @@ if __name__ == "__main__":
         sys.exit(2)
 
     breaches = []
-    if args.min_precision is not None and gated["precision"] < args.min_precision:
+    # Gate on the unrounded values; report the rounded ones.
+    if args.min_precision is not None and \
+            gated["precision_exact"] < args.min_precision:
         breaches.append(
-            f"precision {gated['precision']} < floor {args.min_precision}")
-    if args.min_recall is not None and gated["recall"] < args.min_recall:
-        breaches.append(f"recall {gated['recall']} < floor {args.min_recall}")
+            f"precision {gated['precision_exact']:.6g} < floor {args.min_precision}")
+    if args.min_recall is not None and gated["recall_exact"] < args.min_recall:
+        breaches.append(
+            f"recall {gated['recall_exact']:.6g} < floor {args.min_recall}")
     if breaches:
         print(f"BENCHMARK GATE FAILED ({args.engine}): " + "; ".join(breaches),
               file=sys.stderr)
         sys.exit(1)
     print(f"BENCHMARK GATE PASSED ({args.engine}): "
-          f"precision {gated['precision']}, recall {gated['recall']}")
+          f"precision {gated['precision_exact']:.6g}, "
+          f"recall {gated['recall_exact']:.6g}")

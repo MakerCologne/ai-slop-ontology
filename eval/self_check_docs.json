@@ -1,14 +1,14 @@
 {
-  "_doc": "Registered exceptions for the meta self-check (#48, scripts/self_check_docs.py). A document lands here only when it must quote catalogue material in RUNNING PROSE — where the #69 markup pre-pass cannot separate evidence from voice without falsifying the document. Every entry carries a reason and a ceiling pinned to the measured value; the ceiling is a ratchet, so a registered document that gets worse still fails, and one that becomes clean loses its entry (tests/test_self_check_docs.py enforces both). Same shape and same discipline as eval/fp_baseline.json.",
+  "_doc": "Registered exceptions for the meta self-check (#48, scripts/self_check_docs.py). A document lands here only when it must quote catalogue material in RUNNING PROSE — where the #69 markup pre-pass cannot separate evidence from voice without falsifying the document. Every entry carries a reason and a ceiling pinned to the measured value plus a 0.01 tolerance, and always strictly below 1.0 — a ceiling at the score maximum could never be breached, because classifier scores are capped there; the ceiling is a ratchet, so a registered document that gets worse still fails, and one that becomes clean loses its entry (tests/test_self_check_docs.py enforces both). Same shape and same discipline as eval/fp_baseline.json.",
   "threshold": 0.4,
   "measured": "2026-08-28",
   "exceptions": {
     "CHANGELOG.md": {
-      "max_score": 1.0,
+      "max_score": 0.9829,
       "reason": "Names the phrases and buzzwords each release added, in running prose ('serves as a testament', 'cutting-edge', 'widely regarded as'). Quoting the catalogue is what a changelog for a phrase database does; removing the terms would make the entries unreadable. Evidence, not slop (#23)."
     },
     "report.md": {
-      "max_score": 1.0,
+      "max_score": 0.9744,
       "reason": "Gap-analysis report; enumerates the Tier-1 buzzwords it found in the surveyed tools (realm, delve, tapestry, synergy) as its subject matter."
     }
   }

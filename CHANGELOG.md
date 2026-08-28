@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.6.1] — 2026-08-28 (Codex-Review zu PR #99)
+
+Ein automatisiertes Review (Codex) auf PR #99 kam auf dem Commit *vor* der
+Review-Nacharbeit an und meldete drei Befunde. Alle nachgeprüft:
+
+- **Kurze Listeneinträge (P1)** — bereits behoben. Die Längen-Heuristik, die
+  eine Slop-Listicle hätte wegstrippen können, war in `fd6b134` schon
+  entfernt. Der Fall ist jetzt als Regressionstest verankert: ein Dokument aus
+  fünf kurzen Slop-Bullets bleibt vor und nach dem Präpass bei 0.686, das
+  `--fail-over`-Gate greift also weiterhin.
+- **Ausnahme-Obergrenze bei 1.0 (P2)** — **war real.** Scores sind bei 1.0
+  gedeckelt und das Gate prüft `score <= budget`; eine Obergrenze von 1.0
+  konnte deshalb nie verletzt werden. Die Ratsche aus #48 ratschte nicht.
+  Obergrenzen jetzt am Messwert plus 0.01 gepinnt (CHANGELOG.md 0.983,
+  report.md 0.974), und ein Test verbietet jede Obergrenze bei 1.0.
+- **Gerundete Metriken im Gate (P2)** — **war real.** `evaluate()` rundet auf
+  drei Stellen, und die Untergrenze verglich gegen den gerundeten Wert: ein
+  Recall von 0.98999 wäre als 0.990 durch `--min-recall 0.99` gerutscht.
+  `run_benchmark.py` führt jetzt `precision_exact`/`recall_exact`/`f1_exact`
+  mit und vergleicht gegen die; gerundet wird nur noch für die Ausgabe.
+
+Tests 593 → 596.
+
 ## [2.6.0] — 2026-08-28 (Batch K — P0-Defekte aus dem PR-#6-Abgleich + CI-Gates)
 
 Batch aus der Triage vom 2026-08-28 (#54): drei P0-Defekte, zwei P1-Gates.
