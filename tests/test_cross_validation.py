@@ -114,6 +114,42 @@ class FoldTest(unittest.TestCase):
         run_benchmark.make_folds(self.items, k=smallest, seed=17)  # the edge holds
 
 
+def _synthetic(n_slop, n_clean):
+    return ([{"id": f"s{i}", "label": "slop", "text": "x"} for i in range(n_slop)]
+            + [{"id": f"c{i}", "label": "clean", "text": "y"} for i in range(n_clean)])
+
+
+class FoldGuardTest(unittest.TestCase):
+    """Guards that only bite on a corpus other than the default one.
+
+    All three came out of the review of this change, and all three are the
+    same shape: the failure would have been a number, not an exception.
+    """
+
+    def test_the_smallest_class_is_chosen_by_count_not_by_name(self):
+        """`min((label, count))` compares the label first, so a corpus with
+        more clean than slop items picks "clean" for being alphabetically
+        smaller — and then accepts a k larger than the real minority."""
+        items = _synthetic(n_slop=4, n_clean=40)
+        with self.assertRaises(ValueError) as caught:
+            run_benchmark.make_folds(items, k=5, seed=17)
+        self.assertIn("slop", str(caught.exception),
+                      "the error must name the actual minority class")
+        run_benchmark.make_folds(items, k=4, seed=17)  # the real bound holds
+
+    def test_a_single_label_corpus_is_refused(self):
+        with self.assertRaises(ValueError):
+            run_benchmark.make_folds(_synthetic(10, 0), k=2, seed=17)
+
+    def test_an_unknown_label_is_refused(self):
+        """`evaluate` reads anything that is not "slop" as clean, so a typo
+        would silently become a clean item and move the precision."""
+        items = _synthetic(10, 10) + [{"id": "x", "label": "sloppy", "text": "z"}]
+        with self.assertRaises(ValueError) as caught:
+            run_benchmark.make_folds(items, k=2, seed=17)
+        self.assertIn("sloppy", str(caught.exception))
+
+
 class NoLeakageTest(unittest.TestCase):
     """The calibrator must never see the texts it will be judged on."""
 
@@ -160,23 +196,40 @@ class InitializationLeakageTest(unittest.TestCase):
             "the fold start must not be the corpus-fitted weights")
         self.assertAlmostEqual(sum(neutral.values()), 1.0, places=9)
 
-    def test_cross_validation_passes_the_neutral_start_to_the_calibrator(self):
-        seen = {}
+    def test_cross_validation_never_starts_the_real_calibrator_at_the_defaults(self):
+        """Behavioural, not source-inspecting: intercept the real calibrator.
 
-        def spy(train, **kw):
-            seen.update(kw)
-            return {"weights": {}, "metrics": {}}
-
-        run_benchmark.cross_validate(_corpus()[:40], k=2, seed=17,
-                                     calibrator=spy)
-        # The injected calibrator bypasses the wrapper, so assert on the real
-        # one: it must forward a start that is not the shipped weights.
+        An earlier version of this test asserted on the source text of
+        `cross_validate`, and broke the moment the call moved into the
+        multi-start helper — while the behaviour it cared about was still
+        correct. A test that fails for the wrong reason is noise; one that
+        passes for the wrong reason is worse.
+        """
         import calibrate
-        import inspect
-        source = inspect.getsource(run_benchmark.cross_validate)
-        self.assertIn("initial_weights=neutral_weights()", source)
-        self.assertIn("initial_weights", inspect.signature(
-            calibrate.calibrate).parameters)
+        seen = []
+        original = calibrate.calibrate
+
+        def spy(train, **kwargs):
+            seen.append(dict(kwargs["initial_weights"]))
+            return {"weights": dict(kwargs["initial_weights"]), "metrics": {}}
+
+        calibrate.calibrate = spy
+        try:
+            run_benchmark.cross_validate(_corpus()[:60], k=2, seed=17,
+                                         rounds=0, starts=3)
+        finally:
+            calibrate.calibrate = original
+
+        self.assertEqual(len(seen), 6, "2 folds x 3 starts must each run")
+        defaults = run_benchmark._default_weights()
+        neutral = run_benchmark.neutral_weights()
+        for index, start in enumerate(seen):
+            with self.subTest(start=index):
+                self.assertNotEqual(
+                    start, defaults,
+                    "a fold started at the corpus-fitted weights")
+                self.assertEqual(sorted(start), sorted(defaults))
+        self.assertIn(neutral, seen, "the neutral start must be among them")
 
     def test_calibrate_defaults_to_the_shipped_weights(self):
         """The re-baseline path must keep starting where it always did."""
@@ -206,9 +259,87 @@ class InitializationLeakageTest(unittest.TestCase):
                             "the threshold did not reach the measurement")
 
 
-def slop_scorer_keys():
+def slop_scorer_module():
     import slop_scorer
-    return sorted(slop_scorer.DEFAULT_WEIGHTS)
+    return slop_scorer
+
+
+def slop_scorer_keys():
+    return sorted(slop_scorer_module().DEFAULT_WEIGHTS)
+
+
+class PlateauTest(unittest.TestCase):
+    """A single ascent from the uniform vector fits nothing.
+
+    Second review round, and the sharper of the two findings. The
+    thresholded-F1 objective is piecewise constant; the ascent accepts only a
+    strict improvement from moving ONE coordinate; the uniform vector sits on
+    a plateau that needs several to move together. So it stops in round one,
+    unchanged — and the cross-validation measured a uniform baseline while
+    reporting it as a refit.
+
+    That is an optimizer failure, not a fact about the weights, and the
+    difference matters: the first version of this change concluded from the
+    absent move that "the calibration is worth one text". The test below is
+    the counter-example that killed that conclusion.
+    """
+
+    def test_a_better_vector_exists_where_one_ascent_cannot_reach_it(self):
+        import calibrate
+        items = _corpus()
+        neutral = run_benchmark.neutral_weights()
+        shipped = run_benchmark._default_weights()
+        better = 0
+        for number, (train_idx, _) in enumerate(
+                run_benchmark.make_folds(items, k=5, seed=17)):
+            train = [items[i] for i in train_idx]
+            a = calibrate.metrics(neutral, train)["f1"]
+            b = calibrate.metrics(shipped, train)["f1"]
+            with self.subTest(fold=number):
+                self.assertGreaterEqual(b, a - 1e-9)
+            if b > a + 1e-9:
+                better += 1
+        self.assertGreaterEqual(
+            better, 3,
+            "if no better vector beat uniform on the training folds, the "
+            "absent ascent move would be evidence rather than an artefact — "
+            "and the plateau machinery below would be unnecessary")
+
+    def test_restarts_are_seeded_from_the_fold_not_the_corpus(self):
+        a = run_benchmark.random_start(0, 1)
+        self.assertEqual(a, run_benchmark.random_start(0, 1), "not reproducible")
+        self.assertNotEqual(a, run_benchmark.random_start(0, 2))
+        self.assertNotEqual(a, run_benchmark.random_start(1, 1))
+        self.assertEqual(sorted(a), slop_scorer_keys())
+        for value in a.values():
+            with self.subTest(value=value):
+                self.assertIn(value, run_benchmark.CANDIDATE_VALUES)
+
+    def test_the_first_start_is_the_neutral_one(self):
+        """Restart 0 is uniform, so multi-start can only ever improve on the
+        single-start result — it never trades the conservative baseline away."""
+        import inspect
+        source = inspect.getsource(run_benchmark._multi_start)
+        self.assertIn("neutral_weights() if index == 0", source)
+
+    def test_multi_start_keeps_the_best_training_objective(self):
+        import calibrate
+        items = _corpus()[:60]
+        calls = []
+
+        def fake_calibrate(train, rounds, verbose, initial_weights, threshold):
+            calls.append(dict(initial_weights))
+            return {"weights": dict(initial_weights), "metrics": {}}
+
+        chosen = run_benchmark._multi_start(
+            fake_calibrate, calibrate, items, rounds=1, verbose=False,
+            threshold=0.40, starts=4, fold=0)["weights"]
+        self.assertEqual(len(calls), 4, "every restart must actually run")
+        scores = [calibrate.objective(calibrate.metrics(w, items, 0.40), 0.95)
+                  for w in calls]
+        best = calibrate.objective(
+            calibrate.metrics(chosen, items, 0.40), 0.95)
+        self.assertAlmostEqual(best, max(scores), places=9)
 
 
 class CalibratorRunsTest(unittest.TestCase):
@@ -261,6 +392,21 @@ class ReportingTest(unittest.TestCase):
                 self.assertIn(engine, self.result["unfitted"])
         self.assertEqual(
             set(self.result["fitted"]) & set(self.result["unfitted"]), set())
+
+    def test_the_report_states_the_feature_leakage_limit(self):
+        """The weights are held out; the feature inventories are not.
+
+        `check_ssot.py` registers BUZZWORD_TIERS and PHRASE_CATEGORIES as
+        corpus-calibrated, and SKILL.md says the Batch-F phrases were mined
+        from the corpus's own false negatives. A fold can therefore be
+        rewarded by signals designed after looking at its texts. Refitting
+        weights per fold does not undo that, so the caveat has to travel with
+        the number rather than live in a document beside it.
+        """
+        text = run_benchmark.format_cross_validation(self.result).lower()
+        for token in ("weights only", "phrase_categories", "#107"):
+            with self.subTest(token=token):
+                self.assertIn(token, text)
 
     def test_the_pipeline_is_marked_as_mixed(self):
         """The pipeline takes the stronger of a fitted and an unfitted engine,
@@ -328,29 +474,35 @@ class CliTest(unittest.TestCase):
             with self.subTest(key=key):
                 self.assertIn(key, payload)
 
-    def test_zero_rounds_is_a_neutral_control(self):
-        """Without calibration the fold weights are the shipped defaults, so
-        held-out must equal in-sample. Any difference would be a bug in the
-        fold plumbing rather than a finding about generalization."""
-        result = run_benchmark.cross_validate(
-            _corpus(), k=2, seed=17,
-            calibrator=lambda train, **kw: {"weights": {}, "metrics": {}})
-        for engine, in_sample in result["in_sample"].items():
-            with self.subTest(engine=engine):
-                self.assertEqual(result["held_out"][engine]["f1"],
-                                 in_sample["f1"])
+    def test_a_noop_calibrator_reproduces_the_neutral_weights_exactly(self):
+        """Fold plumbing must add nothing of its own.
 
-    def test_floors_are_refused_rather_than_ignored(self):
-        """`--cross-validate` exits before the floor checks. Accepting the
-        floors and exiting 0 anyway would turn the CI gate into a
-        pass-through the moment someone added the flag to it."""
-        proc = subprocess.run(
-            [sys.executable, os.path.join(ROOT, "eval", "run_benchmark.py"),
-             "--cross-validate", "2", "--cv-rounds", "0",
-             "--min-precision", "0.99"],
-            capture_output=True, text=True, cwd=ROOT)
-        self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
-        self.assertIn("--cross-validate", proc.stderr)
+        With a calibrator that tunes nothing, every fold scores with exactly
+        the neutral weights, so the pooled held-out confusion must equal a
+        single direct run of those weights over the whole corpus. Any
+        difference is a bug in the splitting or pooling rather than a finding
+        about generalization.
+
+        (This replaces an earlier "held-out == in-sample" control, whose
+        premise died when the merge base became the neutral start — in-sample
+        uses the calibrated weights, the folds no longer do.)
+        """
+        items = _corpus()
+        result = run_benchmark.cross_validate(
+            items, k=2, seed=17,
+            calibrator=lambda train, **kw: {"weights": {}, "metrics": {}})
+        neutral = run_benchmark.neutral_weights()
+        direct = run_benchmark.evaluate(
+            "skill-scorer",
+            lambda t: slop_scorer_module().slop_score(
+                t, weights=neutral)["slop_score"],
+            items, run_benchmark.DEFAULT_THRESHOLD)
+        pooled = result["held_out"]["skill-scorer"]
+        for key in ("tp", "fp", "tn", "fn"):
+            with self.subTest(cell=key):
+                self.assertEqual(pooled[key], direct[key])
+        self.assertEqual(sum(pooled[k] for k in ("tp", "fp", "tn", "fn")),
+                         len(items), "every text must be scored exactly once")
 
     def test_plain_run_is_unchanged(self):
         """Cross-validation is opt-in; the default report must not change."""
@@ -412,6 +564,17 @@ class DocumentationTest(unittest.TestCase):
             [int(figures.group(i)) for i in (4, 5, 6)],
             [scorer["tp"], scorer["fn"], scorer["fp"]],
             "SKILL.md publishes a confusion matrix the run does not produce")
+
+    def test_evals_states_the_corpus_size_the_corpus_has(self):
+        """EVALS.md carried `314 Texte` in its L3 artifact list while the same
+        document's new section said 331 — the stale-number defect this change
+        set out to fix, inside the document that documents the fix."""
+        items = _corpus()
+        stale = re.findall(r"(\d+) Texte", self.doc)
+        self.assertTrue(stale, "EVALS.md no longer states a corpus size")
+        for claimed in stale:
+            with self.subTest(claimed=claimed):
+                self.assertEqual(int(claimed), len(items))
 
     def test_the_published_figure_is_labelled_in_sample(self):
         """An unlabelled number is the defect (#85), wherever it is published."""

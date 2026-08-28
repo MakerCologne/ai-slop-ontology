@@ -205,14 +205,26 @@ def make_folds(items: list, k: int, seed: int = 17) -> list:
     for index, item in enumerate(items):
         by_label.setdefault(item.get("label"), []).append(index)
 
+    # `evaluate` reads every label that is not "slop" as clean, so an unknown
+    # or misspelled label does not fail — it silently becomes a clean item and
+    # moves the precision. Insist on the two the benchmark actually defines.
+    if set(by_label) != {"slop", "clean"}:
+        raise ValueError(
+            f"corpus labels are {sorted(map(str, by_label))} — cross-validation "
+            f"needs exactly {{'slop', 'clean'}}; anything else is scored as "
+            f"clean without saying so")
+
     # Round-robin dealing can only stratify while every class has at least one
     # item per fold. Past that, folds come out label-free and report a
     # vacuous P/R/F1 instead of failing — so fail here, where the cause is
-    # still visible.
-    smallest = min((label, len(idx)) for label, idx in by_label.items())
-    if k > smallest[1]:
+    # still visible. Compare by count, not by the (label, count) tuple: tuple
+    # order compares the label first, so a corpus with more clean than slop
+    # items would pick "clean" for being alphabetically smaller.
+    smallest_label = min(by_label, key=lambda label: len(by_label[label]))
+    smallest = len(by_label[smallest_label])
+    if k > smallest:
         raise ValueError(
-            f"k={k} exceeds the smallest class ({smallest[0]}: {smallest[1]} "
+            f"k={k} exceeds the smallest class ({smallest_label}: {smallest} "
             f"items) — folds could not be stratified")
 
     buckets = [[] for _ in range(k)]
@@ -231,9 +243,55 @@ def make_folds(items: list, k: int, seed: int = 17) -> list:
     return folds
 
 
+def random_start(fold: int, index: int) -> dict:
+    """A corpus-independent random point in the weight grid (#85).
+
+    The seed is derived from the fold and restart index alone — no corpus
+    content, no label, no previous fit — so a restart cannot smuggle in what
+    the held-out texts look like.
+    """
+    keys = sorted(slop_scorer.DEFAULT_WEIGHTS)
+    rng = random.Random(f"cv-start:{fold}:{index}")
+    return {key: rng.choice(CANDIDATE_VALUES) for key in keys}
+
+
+CANDIDATE_VALUES = [0.0, 0.02, 0.04, 0.06, 0.08, 0.10,
+                    0.12, 0.15, 0.18, 0.22, 0.26, 0.30]
+
+
+def _multi_start(calibrate_fn, calibrate_mod, train, rounds, verbose,
+                 threshold, starts, fold):
+    """Coordinate ascent from several corpus-independent starting points.
+
+    A single ascent from the uniform vector does not fit anything on this
+    corpus: the thresholded-F1 objective is piecewise constant, the ascent
+    accepts only a strict improvement from moving ONE coordinate, and the
+    uniform vector sits on a plateau that needs several to move together. It
+    therefore stops in round one, unchanged — and the run measures a uniform
+    baseline while calling itself a refit.
+
+    That is an optimizer failure, not a fact about the weights: the shipped
+    vector beats uniform on four of the five training folds (fold 2 ties), so
+    better points demonstrably exist where this ascent cannot reach them.
+    Restarting elsewhere in the grid is the cheap way to give it somewhere to
+    walk from. Restarts are seeded from the fold index only, never from the
+    corpus.
+    """
+    best = None
+    for index in range(starts):
+        start = neutral_weights() if index == 0 else random_start(fold, index)
+        result = calibrate_fn(train, rounds=rounds, verbose=verbose,
+                              initial_weights=start, threshold=threshold)
+        score = calibrate_mod.objective(
+            calibrate_mod.metrics(result["weights"], train, threshold), 0.95)
+        if best is None or score > best[0]:
+            best = (score, result)
+    return best[1]
+
+
 def cross_validate(items: list, k: int = 5, threshold: float = DEFAULT_THRESHOLD,
                    seed: int = 17, calibrator=None, rounds: int = 3,
-                   verbose: bool = False) -> dict:
+                   verbose: bool = False, starts: int = 4) -> dict:
     """Held-out metrics: fit the weights per fold, score the fold not seen.
 
     `calibrator` is injectable so the fold machinery can be tested without
@@ -242,6 +300,7 @@ def cross_validate(items: list, k: int = 5, threshold: float = DEFAULT_THRESHOLD
     """
     if calibrator is None:
         sys.path.insert(0, os.path.join(ROOT, "eval"))
+        import calibrate as calibrate_mod
         from calibrate import calibrate as calibrator_impl
 
         def calibrator(train, **kw):
@@ -251,9 +310,10 @@ def cross_validate(items: list, k: int = 5, threshold: float = DEFAULT_THRESHOLD
             # any parse of the text output. Progress to stderr, report to
             # stdout.
             with contextlib.redirect_stdout(sys.stderr):
-                return calibrator_impl(
-                    train, rounds=rounds, verbose=verbose,
-                    initial_weights=neutral_weights(), threshold=threshold)
+                return _multi_start(calibrator_impl, calibrate_mod, train,
+                                    rounds=rounds, verbose=verbose,
+                                    threshold=threshold, starts=starts,
+                                    fold=kw.get("fold", 0))
 
     clf = SlopClassifier(os.path.join(ROOT, "ontology.json"))
     folds = make_folds(items, k=k, seed=seed)
@@ -277,12 +337,13 @@ def cross_validate(items: list, k: int = 5, threshold: float = DEFAULT_THRESHOLD
     for number, (train_idx, test_idx) in enumerate(folds):
         train = [items[i] for i in train_idx]
         test = [items[i] for i in test_idx]
-        fitted = calibrator(train)
-        # Merge over the shipped defaults: the calibrator is injectable, and a
-        # caller's implementation may return only the keys it tuned. Passing a
-        # partial dict straight to the scorer raises KeyError on the first
-        # missing dimension.
-        weights = dict(_default_weights())
+        fitted = calibrator(train, fold=number)
+        # Merge over the NEUTRAL start, not the shipped defaults. The
+        # calibrator is injectable and may return only the keys it tuned;
+        # filling the rest from the corpus-fitted weights would re-open the
+        # very leak the neutral start closes — those values were selected
+        # using every held-out item. Same defect, one door further in.
+        weights = neutral_weights()
         weights.update(fitted["weights"])
         per_engine = {}
         for name, scorer in engines(weights).items():
@@ -317,6 +378,7 @@ def cross_validate(items: list, k: int = 5, threshold: float = DEFAULT_THRESHOLD
     return {
         "k": k,
         "seed": seed,
+        "starts": starts,
         "n": len(items),
         "folds": fold_reports,
         "held_out": {name: pooled(reports)
@@ -351,6 +413,17 @@ def format_cross_validation(result: dict) -> str:
                  "generalization. The unfitted classifier scores the same either")
     lines.append("  way by construction, and the pipeline takes the stronger of "
                  "the two — so its held-out figure understates the overfit.")
+    lines.append("")
+    lines.append("  LIMIT — held out with respect to the WEIGHTS ONLY. The "
+                 "scorer's feature inventories (BUZZWORD_TIERS,")
+    lines.append("  PHRASE_CATEGORIES and the other corpus-calibrated "
+                 "constants) were mined from the whole of")
+    lines.append("  eval/corpus.jsonl, the Batch-F phrases specifically from "
+                 "its false negatives. A fold can therefore be")
+    lines.append("  rewarded by signals designed after looking at its own "
+                 "texts. Refitting the weights per fold does not")
+    lines.append("  undo that; only an evaluation corpus that never fed "
+                 "feature selection would. See issue #107.")
     return "\n".join(lines)
 
 
@@ -415,6 +488,12 @@ if __name__ == "__main__":
         "--cv-seed", type=int, default=17, metavar="S",
         help="fold seed; the split is deterministic for a given seed (M8)")
     parser.add_argument(
+        "--cv-starts", type=int, default=4, metavar="S",
+        help="coordinate-ascent restarts per fold (default 4). One ascent "
+             "from the uniform vector fits nothing — it sits on a plateau the "
+             "one-coordinate-at-a-time search cannot leave. Starts are seeded "
+             "from the fold index, never from the corpus (#85).")
+    parser.add_argument(
         "--cv-rounds", type=int, default=3, metavar="R",
         help="coordinate-ascent rounds per fold (default 3, as in calibrate.py)")
     parser.add_argument(
@@ -439,7 +518,8 @@ if __name__ == "__main__":
                 "apply --min-precision/--min-recall; run the two separately")
         cv = cross_validate(load_corpus(args.corpus), k=args.cross_validate,
                             threshold=args.threshold, seed=args.cv_seed,
-                            rounds=args.cv_rounds, verbose=not args.json)
+                            rounds=args.cv_rounds, starts=args.cv_starts,
+                            verbose=not args.json)
         print(json.dumps(cv, indent=2) if args.json
               else format_cross_validation(cv))
         # A held-out run reports; the floors below gate the in-sample run and

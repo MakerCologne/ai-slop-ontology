@@ -1,8 +1,12 @@
 packaged_utc=2026-08-28
+updated_utc=2026-08-28 (nach PR #105)
 target_repo=https://github.com/MakerCologne/ai-slop-ontology
 handover_from=Claude Code Remote session, ai-slop-ontology consolidation
-master_at_handover=bffcc00
-version_at_handover=2.6.1
-tests_at_handover=596 passed, 850 subtests
-benchmark_at_handover=P 1.0 / R 0.995475 / F1 0.998 (n=330)
+master_at_handover=nach Merge PR #105 — mit `git log --oneline -1` pruefen
+version_at_handover=2.8.0
+tests_at_handover=655 passed
+corpus_at_handover=331 Texte (221 slop / 110 clean)
+benchmark_in_sample=P 1.0 / R 0.995475 / F1 0.998 (skill-pipeline)
+benchmark_held_out=nur bzgl. der Gewichte, kein Generalisierungsschaetzer (#107)
 open_blocker=#100 GitHub Actions disabled (needs a human)
+next_up=#106, #107 (beide aus dem Review von #85)

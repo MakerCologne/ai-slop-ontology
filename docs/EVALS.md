@@ -24,7 +24,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 
 ### L3 — Quartals-Re-Score / Kalibrierung
 
-- `eval/corpus.jsonl` — Benchmark-Korpus (314 Texte, Labels, Genres, Quellen; Belegtquote ≥ 60 %, adr/0005)
+- `eval/corpus.jsonl` — Benchmark-Korpus (331 Texte = 221 slop + 110 clean; Labels, Genres, Quellen; Belegtquote ≥ 60 %, adr/0005)
 - `eval/run_benchmark.py` — Precision/Recall/F1 @ 0.40 + FP-/FN-Rate je Genre
 - `eval/calibrate.py` — Gewichts-Kalibrierung aus Korpus-Statistik (nur im Re-Baseline-Zyklus, s. SCORE-GOVERNANCE.md)
 
