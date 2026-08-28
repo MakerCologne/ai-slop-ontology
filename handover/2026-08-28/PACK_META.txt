@@ -1,0 +1,8 @@
+packaged_utc=2026-08-28
+target_repo=https://github.com/MakerCologne/ai-slop-ontology
+handover_from=Claude Code Remote session, ai-slop-ontology consolidation
+master_at_handover=bffcc00
+version_at_handover=2.6.1
+tests_at_handover=596 passed, 850 subtests
+benchmark_at_handover=P 1.0 / R 0.995475 / F1 0.998 (n=330)
+open_blocker=#100 GitHub Actions disabled (needs a human)
