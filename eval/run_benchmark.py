@@ -145,6 +145,27 @@ def _default_weights() -> dict:
     return dict(slop_scorer.DEFAULT_WEIGHTS)
 
 
+def neutral_weights() -> dict:
+    """Corpus-independent starting point for a fold's calibration (#85).
+
+    The shipped DEFAULT_WEIGHTS were fitted on the whole corpus — every fold's
+    held-out texts included. Seeding a fold's coordinate ascent with them
+    leaks that fit through the *initialization*, even though the ascent itself
+    only ever sees the training part: ascent moves a weight only on strict
+    improvement, so a dimension the full-corpus fit already placed well simply
+    stays where the full corpus put it. The held-out number would then be
+    measured against weights that had, indirectly, seen the text.
+
+    Uniform mass 1/N is the uninformative alternative: every dimension counts
+    equally and no text influenced the value. It is a worse starting point, so
+    the held-out estimate it produces is a conservative one — which is the
+    right direction for a number whose whole purpose is to stop flattering
+    the engine.
+    """
+    keys = sorted(slop_scorer.DEFAULT_WEIGHTS)
+    return {key: 1.0 / len(keys) for key in keys}
+
+
 FITTED_ENGINES = ["skill-scorer"]
 UNFITTED_ENGINES = ["src-classifier"]
 MIXED_ENGINES = ["skill-pipeline (scorer+classifier)"]
@@ -184,6 +205,16 @@ def make_folds(items: list, k: int, seed: int = 17) -> list:
     for index, item in enumerate(items):
         by_label.setdefault(item.get("label"), []).append(index)
 
+    # Round-robin dealing can only stratify while every class has at least one
+    # item per fold. Past that, folds come out label-free and report a
+    # vacuous P/R/F1 instead of failing — so fail here, where the cause is
+    # still visible.
+    smallest = min((label, len(idx)) for label, idx in by_label.items())
+    if k > smallest[1]:
+        raise ValueError(
+            f"k={k} exceeds the smallest class ({smallest[0]}: {smallest[1]} "
+            f"items) — folds could not be stratified")
+
     buckets = [[] for _ in range(k)]
     for label in sorted(by_label, key=lambda x: (x is None, x)):
         indices = list(by_label[label])
@@ -220,7 +251,9 @@ def cross_validate(items: list, k: int = 5, threshold: float = DEFAULT_THRESHOLD
             # any parse of the text output. Progress to stderr, report to
             # stdout.
             with contextlib.redirect_stdout(sys.stderr):
-                return calibrator_impl(train, rounds=rounds, verbose=verbose)
+                return calibrator_impl(
+                    train, rounds=rounds, verbose=verbose,
+                    initial_weights=neutral_weights(), threshold=threshold)
 
     clf = SlopClassifier(os.path.join(ROOT, "ontology.json"))
     folds = make_folds(items, k=k, seed=seed)
@@ -397,6 +430,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.cross_validate is not None:
+        if args.min_precision is not None or args.min_recall is not None:
+            # The floors gate the in-sample run. Accepting them here and then
+            # exiting 0 without checking anything would turn the CI gate into
+            # a pass-through the moment someone adds --cross-validate to it.
+            parser.error(
+                "--cross-validate reports a held-out estimate and does not "
+                "apply --min-precision/--min-recall; run the two separately")
         cv = cross_validate(load_corpus(args.corpus), k=args.cross_validate,
                             threshold=args.threshold, seed=args.cv_seed,
                             rounds=args.cv_rounds, verbose=not args.json)

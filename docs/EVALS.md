@@ -34,6 +34,10 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 
 Für eine **Held-out**-Schätzung: `python eval/run_benchmark.py --cross-validate K`. Die Gewichte werden je Fold nur auf dem Trainingsteil gefittet, gemessen wird auf dem Teil, den sie nie gesehen haben. Der Lauf gibt beide Zahlen nebeneinander aus.
 
+**Der Startpunkt gehört zur Leckage.** Jeder Fold startet die Coordinate Ascent bei *uniformen* Gewichten (Masse 1/N), nicht bei den ausgelieferten `DEFAULT_WEIGHTS`. Die sind auf dem **gesamten** Korpus gefittet, also auch auf den Texten jedes Held-out-Folds; und weil Ascent ein Gewicht nur bei echter Verbesserung bewegt, bliebe eine vom Gesamt-Fit gut gesetzte Dimension einfach stehen — der Fit erreichte die Held-out-Zahl über die Initialisierung, obwohl der Kalibrator keinen Held-out-Text gesehen hat. Genau so war die erste Messung mit diesem Läufer kontaminiert (Held-out-Recall identisch zum In-sample-Recall, auf drei Stellen, auf beiden Engines). Der uniforme Start ist der schlechtere Startpunkt und liefert deshalb eine **konservative** Schätzung — die richtige Richtung für eine Zahl, deren Zweck es ist, die Engine nicht zu schmeicheln. Die Kalibrierung für den Re-Baseline-Zyklus startet unverändert bei den ausgelieferten Gewichten.
+
+Die Untergrenzen `--min-precision`/`--min-recall` gelten dem In-sample-Lauf und werden mit `--cross-validate` **abgelehnt**, nicht ignoriert — sonst würde das CI-Gate durchlässig, sobald jemand die Flagge dort ergänzt.
+
 Welcher Teil gefittet wird, entscheidet, wie aussagekräftig die Held-out-Zahl ist:
 
 | Engine | Art | Bedeutung der Held-out-Zahl |

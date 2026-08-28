@@ -101,6 +101,18 @@ class FoldTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     run_benchmark.make_folds(self.items, k=bad, seed=17)
 
+    def test_k_may_not_exceed_the_smallest_class(self):
+        """Past that, round-robin dealing produces label-free folds, and a
+        label-free fold reports a vacuous P/R/F1 instead of failing."""
+        smallest = min(
+            sum(1 for i in self.items if i.get("label") == label)
+            for label in {i.get("label") for i in self.items})
+        for bad in (smallest + 1, len(self.items) + 1):
+            with self.subTest(k=bad):
+                with self.assertRaises(ValueError):
+                    run_benchmark.make_folds(self.items, k=bad, seed=17)
+        run_benchmark.make_folds(self.items, k=smallest, seed=17)  # the edge holds
+
 
 class NoLeakageTest(unittest.TestCase):
     """The calibrator must never see the texts it will be judged on."""
@@ -118,6 +130,85 @@ class NoLeakageTest(unittest.TestCase):
                     shown & held_out, set(),
                     "the calibrator was shown texts from its own held-out fold",
                 )
+
+
+class InitializationLeakageTest(unittest.TestCase):
+    """Leakage through the *initialization*, not through the training items.
+
+    Found in review of this very change. `calibrate.calibrate` seeded its
+    coordinate ascent from `slop_scorer.DEFAULT_WEIGHTS` — weights fitted on
+    the whole corpus, every fold's held-out texts included. Ascent moves a
+    weight only on strict improvement, so a dimension the full-corpus fit had
+    already placed well simply stays there, and the fit reaches the held-out
+    score even though the calibrator never saw a held-out text. The first
+    measurement taken with this runner was contaminated exactly that way: the
+    held-out recall came out identical to the in-sample recall, to three
+    decimals, on both engines.
+
+    `NoLeakageTest` above cannot catch this — it checks which items the
+    calibrator was shown, and the answer there was correct.
+    """
+
+    def test_the_fold_start_carries_no_corpus_fit(self):
+        neutral = run_benchmark.neutral_weights()
+        self.assertEqual(sorted(neutral), sorted(slop_scorer_keys()),
+                         "a missing dimension would raise KeyError in the scorer")
+        self.assertEqual(len(set(neutral.values())), 1,
+                         "a uniform start is what makes it uninformative")
+        self.assertNotEqual(
+            neutral, run_benchmark._default_weights(),
+            "the fold start must not be the corpus-fitted weights")
+        self.assertAlmostEqual(sum(neutral.values()), 1.0, places=9)
+
+    def test_cross_validation_passes_the_neutral_start_to_the_calibrator(self):
+        seen = {}
+
+        def spy(train, **kw):
+            seen.update(kw)
+            return {"weights": {}, "metrics": {}}
+
+        run_benchmark.cross_validate(_corpus()[:40], k=2, seed=17,
+                                     calibrator=spy)
+        # The injected calibrator bypasses the wrapper, so assert on the real
+        # one: it must forward a start that is not the shipped weights.
+        import calibrate
+        import inspect
+        source = inspect.getsource(run_benchmark.cross_validate)
+        self.assertIn("initial_weights=neutral_weights()", source)
+        self.assertIn("initial_weights", inspect.signature(
+            calibrate.calibrate).parameters)
+
+    def test_calibrate_defaults_to_the_shipped_weights(self):
+        """The re-baseline path must keep starting where it always did."""
+        import calibrate
+        import inspect
+        self.assertIsNone(
+            inspect.signature(calibrate.calibrate)
+            .parameters["initial_weights"].default)
+
+    def test_a_partial_start_is_rejected(self):
+        import calibrate
+        with self.assertRaises(ValueError):
+            calibrate.calibrate(_corpus()[:4], rounds=0, verbose=False,
+                                initial_weights={"density": 0.1})
+
+    def test_the_threshold_reaches_the_calibrator(self):
+        """Refitting at 0.40 and reporting at 0.60 would compare two engines."""
+        import calibrate
+        import inspect
+        self.assertIn("threshold",
+                      inspect.signature(calibrate.calibrate).parameters)
+        strict = calibrate.calibrate(_corpus()[:24], rounds=0, verbose=False,
+                                     threshold=0.95)
+        loose = calibrate.calibrate(_corpus()[:24], rounds=0, verbose=False,
+                                    threshold=0.05)
+        self.assertNotEqual(strict["metrics"]["tp"], loose["metrics"]["tp"],
+                            "the threshold did not reach the measurement")
+
+
+def slop_scorer_keys():
+    import slop_scorer
+    return sorted(slop_scorer.DEFAULT_WEIGHTS)
 
 
 class CalibratorRunsTest(unittest.TestCase):
@@ -248,6 +339,18 @@ class CliTest(unittest.TestCase):
             with self.subTest(engine=engine):
                 self.assertEqual(result["held_out"][engine]["f1"],
                                  in_sample["f1"])
+
+    def test_floors_are_refused_rather_than_ignored(self):
+        """`--cross-validate` exits before the floor checks. Accepting the
+        floors and exiting 0 anyway would turn the CI gate into a
+        pass-through the moment someone added the flag to it."""
+        proc = subprocess.run(
+            [sys.executable, os.path.join(ROOT, "eval", "run_benchmark.py"),
+             "--cross-validate", "2", "--cv-rounds", "0",
+             "--min-precision", "0.99"],
+            capture_output=True, text=True, cwd=ROOT)
+        self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+        self.assertIn("--cross-validate", proc.stderr)
 
     def test_plain_run_is_unchanged(self):
         """Cross-validation is opt-in; the default report must not change."""

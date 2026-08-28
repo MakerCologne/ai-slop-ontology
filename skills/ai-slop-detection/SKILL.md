@@ -247,9 +247,13 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
   überlebt die Kreuzvalidierung also nicht — sie ist eine Eigenschaft der
   Trainingsmenge. Reproduzieren:
   `eval/run_benchmark.py --cross-validate 5 --cv-rounds 2` (L3, rund 30 min).
-- Diese Zahlen sind gegen einen frischen Benchmark-Lauf gepinnt
+- Gepinnt ist die **In-sample**-Zeile: Korpusgröße, Aufteilung, P/R/F1 und
+  Konfusionsmatrix laufen gegen einen frischen Benchmark-Lauf
   (`tests/test_cross_validation.py`) — der Korpusstand hier war zuvor
-  17 Clean-Texte alt, ohne dass ein Gate das bemerkt hätte.
+  17 Clean-Texte alt, ohne dass ein Gate das bemerkt hätte. Die Held-out-Zeile
+  ist ein **datierter Messwert**, kein Pin: sie kostet rund 30 Minuten und
+  gehört damit in den Re-Baseline-Zyklus (s. docs/EVALS.md), nicht in CI. Wer
+  den Korpus ändert, misst sie mit dem angegebenen Kommando neu.
 - Control Set: `eval/run_control_set.py` — Gate grün inkl. dokumentierter
   known-FNs.
 

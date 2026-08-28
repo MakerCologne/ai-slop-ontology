@@ -77,11 +77,28 @@ def objective(m: dict, precision_floor: float) -> float:
 
 
 def calibrate(items: list, precision_floor: float = 0.95,
-              rounds: int = 3, verbose: bool = True) -> dict:
-    # Start from the shipped defaults — read from the scorer, so a new
-    # dimension cannot silently drop out of the search.
-    weights = dict(slop_scorer.DEFAULT_WEIGHTS)
-    best = metrics(weights, items)
+              rounds: int = 3, verbose: bool = True,
+              initial_weights: dict = None,
+              threshold: float = THRESHOLD) -> dict:
+    """Coordinate ascent over the scorer's dimension weights.
+
+    `initial_weights` defaults to the shipped weights — read from the scorer,
+    so a new dimension cannot silently drop out of the search. A caller that
+    must not inherit what those weights already know about the corpus (the
+    cross-validation in run_benchmark.py, #85) passes its own starting point:
+    ascent moves a weight only on strict improvement, so a dimension the
+    previous fit already placed well simply stays put, and the fit travels
+    into the result through the initialization even when the ascent itself
+    never sees the held-out texts.
+    """
+    weights = dict(slop_scorer.DEFAULT_WEIGHTS if initial_weights is None
+                   else initial_weights)
+    missing = set(WEIGHT_KEYS) - set(weights)
+    if missing:
+        raise ValueError(
+            f"initial_weights is missing {sorted(missing)} — the scorer would "
+            f"raise KeyError on the first call")
+    best = metrics(weights, items, threshold)
     best_score = objective(best, precision_floor)
     if verbose:
         print(f"start: F1={best['f1']:.3f} P={best['precision']:.3f} "
@@ -95,7 +112,7 @@ def calibrate(items: list, precision_floor: float = 0.95,
                     continue
                 trial = dict(weights)
                 trial[key] = value
-                m = metrics(trial, items)
+                m = metrics(trial, items, threshold)
                 s = objective(m, precision_floor)
                 if s > best_score + 1e-9:
                     weights, best, best_score = trial, m, s
