@@ -9,6 +9,10 @@
 stages:
   - verify
 
+workflow:
+  rules:
+    - when: always
+
 verify-gates:
   stage: verify
   image: python:3.12-slim
@@ -17,16 +21,3 @@ verify-gates:
     - pip install --quiet pytest pyyaml hatchling
   script:
     - bash scripts/verify.sh
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "trigger"
-    - if: $CI_PIPELINE_SOURCE == "web"
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - "**/*.py"
-        - "**/*.json"
-        - "**/*.yaml"
-        - "**/*.yml"
-        - "**/*.md"
-        - "scripts/**"
-        - "eval/**"
-        - ".gitlab-ci.yml"
