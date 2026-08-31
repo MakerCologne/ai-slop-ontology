@@ -1,6 +1,6 @@
 ontology:
   name: ai_slop_ontology
-  version: "2.8.0"
+  version: "2.9.0"
   updated: "2026-08-28"
   purpose: >
     Classify, score, filter, cite, and mitigate low-quality synthetic or
