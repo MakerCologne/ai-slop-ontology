@@ -169,7 +169,7 @@ g  genres legal/academic/marketing/technical/config/recipe/lyric; 66% of lines s
   in slop composed of throat-clearing/emphasis-crutch phrases, which are documented
   ontology gaps (research deep-dives 01–07), not corpus mislabels. Precision holds at
   1.0 across all hard-negative genres (FP rate 0.0 everywhere).
-- **Calibrated weights** via `eval/calibrate.py`: skill pipeline F1 **0.47 → 0.98** at precision 1.0
+- **Calibrated weights** via `eval/calibrate.py`: skill pipeline F1 **0.47 → 0.98** at precision 1.0. Ehrliche Einordnung (#106): gegen den heutigen Korpus (n=331) liegt der Beitrag der Gewichte gegenüber uniformen Gewichten bei genau einem Text (F1 0.989 → 0.991); die historische 0.47→0.89-Sprung ging überwiegend auf Threshold/Aggregation (noisy-OR) zurück, nicht auf die Gewichte selbst.
 - **Noisy-OR score aggregation** — independent evidence accumulates instead of being averaged away
 - **New languages:** Hindi, Vietnamese, Urdu markers (closing the §12 language-bias gap)
 - New phrase category `authority_claims`; TTL synchronized; consistency checker (`scripts/check_consistency.py`) wired into CI; engine parity tests
