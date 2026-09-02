@@ -53,3 +53,14 @@ Für **jede** Score-/Gewichts-/Threshold-Änderung gilt zwingend:
 5. **Optimierungs-Freigabe** geprüft (Tabelle oben): ist die Größe überhaupt optimierbar? Falls nein: nur im Re-Baseline-Zyklus.
 
 Verstoß gegen 1–3 = Review-Blocker (CHANGES_REQUESTED), unabhängig vom Messergebnis.
+
+## Gewichts-Beitrag ehrlich gemessen (#106, 2026-09-02)
+
+Die behauptete Wirkung der Gewichts-Kalibrierung („F1 0.47 → 0.89“) misst den Beitrag der Gewichte selbst nicht sauber. Nachgemessen gegen `eval/corpus.jsonl` (n=331, neutraler Startpunkt):
+
+| Gewichte | P | R | F1 | Konfusion |
+|---|---|---|---|---|
+| uniform (1/14) | 1.000 | 0.977 | 0.989 | TP 216 / FP 0 / TN 110 / FN 5 |
+| `DEFAULT_WEIGHTS` | 1.000 | 0.982 | 0.991 | TP 217 / FP 0 / TN 110 / FN 4 |
+
+Vom neutralen Startpunkt aus findet Coordinate Ascent in keinem der fünf CV-Folds (`--cross-validate 5 --cv-rounds 3`, seed 17) einen verbessernden Zug. **Der gesamte Beitrag der 14-dimensionale Kalibrierung ist auf dem heutigen Korpus genau einen Text.** Der historische F1-Sprung stammte überwiegend aus Threshold/Aggregation (noisy-OR, adr/0002-Regime), nicht aus den Gewichten. Docstring in `slop_scorer.py` und README-Claim wurden entsprechend eingordnet. Regel: bevor Gewichte erneut als Herkunft einer Zahl genannt werden, muss der uniform-Vergleich mitgeliefert werden (Ablations-Pflicht).
