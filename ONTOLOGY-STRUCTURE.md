@@ -234,3 +234,7 @@ ConfirmedAI_Slop ≡ AI_SlopCandidate ∧ detectionEvidence.count ≥ 2
 **Slop kann Spam sein, aber nicht alles Slop ist Spam.**
 **Slop kann Misinformation sein, aber nicht alles Slop ist absichtlich.**
 **LowQualityHumanContent ist wertlos aber nicht zwingend Slop.**
+
+## Geltungsbereich Human Slop
+
+Ob und wie menschlich verfasster ideologischer Slop in die Ontologie gehört, ist in `adr/0008-human-ideological-slop-scope.md` behandelt (Status: proposed, Entscheidung offen — Issue #90). Bis zur Freigabe gilt: detect-only (adr/0006), kein Score-Beitrag.
