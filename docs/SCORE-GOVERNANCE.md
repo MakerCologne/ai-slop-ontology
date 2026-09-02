@@ -53,3 +53,16 @@ Für **jede** Score-/Gewichts-/Threshold-Änderung gilt zwingend:
 5. **Optimierungs-Freigabe** geprüft (Tabelle oben): ist die Größe überhaupt optimierbar? Falls nein: nur im Re-Baseline-Zyklus.
 
 Verstoß gegen 1–3 = Review-Blocker (CHANGES_REQUESTED), unabhängig vom Messergebnis.
+
+## Held-out-Grenze: Gewichte ja, Signalinventare nein (#107, 2026-09-02)
+
+`run_benchmark.py --cross-validate K` schließt die Leckage über die **Gewichte**, nicht über die **Merkmale**: `BUZZWORD_TIERS`, `PHRASE_CATEGORIES`, `STRUCTURAL_INDICATORS`, `MORAL_PATTERNS`, `AUTHORITY_PATTERNS`, `SUBSTITUTE_VERB_PATTERNS`, `INTENSIFIERS` sind als `corpus-calibrated` aus demselben Korpus gewonnen (Allowlist in `scripts/check_ssot.py` sagt es selbst; SKILL.md sagt es für Batch F).
+
+Konsequenz: Die Zahl aus `--cross-validate` ist ein **Held-out-Wert bezüglich der Gewichte**, kein Generalisierungsschätzer. Sie bleibt informativ, ist aber in Claim-Kontexten so zu nennen.
+
+Ehrliche Auswege (eigene Arbeit, nicht nebenbei):
+
+1. **Unberührter Evaluationskorpus** — ein zweites, nach dem Inventar-Schnitt eingefrorenes Korpus, das nie in Signals/Phrasen eingeflossen ist.
+2. **Anspruch in Doku zurücknehmen** — Zahlen konsequent als gewichts-held-out ausweisen (dieser Abschnitt + #106).
+
+Bis (1) gilt (2): alle Doku-Stellen, die CV-Zahlen als Generalisierung lesen lassen, verwenden die Formulierung „held-out bezüglich der Gewichte".
