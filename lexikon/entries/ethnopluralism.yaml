@@ -1,0 +1,93 @@
+id: LEX-2026-008
+term: Ethnopluralismus
+aliases: [Ethnopluralism, droit à la différence, Ethno-Differentialismus, Recht auf Differenz]
+definition: >
+  Ideologische Strategie, die Kulturen als gleichwertig UND unverträglich
+  erklärt und daraus getrennte, möglichst homogene Räume als einzige
+  operationale Policy ableitet. Modelliert nicht als Schlagwort, sondern als
+  Strategie (Ziel, Taktik, semantische Tarnung), weil genau die
+  Schlussform — von „Differenz“ auf Trennung — den Slop-Charakter erzeugt:
+  endlose „Differenz“-Prosa ohne operationalisierbaren Gehalt außer
+  Trennung (Detektionszweck, keine politische Wertung über den
+  analytischen Bedarf hinaus).
+category: type
+claims:
+  - statement: >
+      Genealogie: Die moderne Form geht auf Alain de Benoist / Nouvelle
+      Droite / GRECE zurück („droit à la différence“, Ethno-Differentialismus),
+      mit Vorläufern im französischen Neonationalismus der 1950/60er; die
+      Identitäre Bewegung ist die Aktivierungsform, in Deutschland über
+      Kubitschek/IBD in AfD-Nähe.
+    sources:
+      - url: https://de.wikipedia.org/wiki/Ethnopluralismus
+        quote: >-
+          Der Ethnopluralismus ist eine rechtsextreme Ideologie, die von der
+          Neuen Rechten um Alain de Benoist entwickelt wurde … demnach
+          dürften Kulturen nicht vermischt werden; jede Kultur habe „das
+          Recht auf Differenz“.
+        accessed: "2026-09-02"
+      - url: https://www.bpb.de/themen/rechtsextremismus/dossier-rechtsextremismus/526659/ethnopluralismus/
+        quote: >-
+          Ethnopluralismus bezeichnet eine völkisch-radikalisierte Variante
+          des Rassismus, die nicht auf eine Hierarchie der „Rassen“, sondern
+          auf die strikte Trennung der Ethnien zielt.
+        accessed: "2026-09-02"
+  - statement: >
+      Strategischer Kern (Taguieff, Rueda, Spektorowski): kein Verzicht auf
+      Exklusion, sondern Rebranding vom biologistischen zu kulturalistischem
+      Rassismus („cultural turn“) — Sprache von Diversität,
+      Antitotalitarismus, Antiimperialismus und Umweltschutz wird gekapert;
+      Taguieff beschreibt die Tarnung suprematistischer Gehalte hinter
+      egalitärem Vokabular.
+    sources:
+      - url: https://github.com/MakerCologne/ai-slop-ontology/issues/94
+        quote: >-
+          Strategischer Kern (Taguieff, Rueda, Spektorowski). Kein Verzicht
+          auf Exklusion, sondern Rebranding: biologistischer Rassismus →
+          kulturalistischer Rassismus („cultural turn"). Sprache von
+          Diversität, Antitotalitarismus, Antiimperialismus, Umweltschutz
+          wird gekapert. Taguieff: Tarnung suprematistischer Gehalte hinter
+          egalitärem Vokabular.
+        accessed: "2026-09-02"
+  - statement: >
+      Ambiguity-Befund (Journal of Political Ideologies 2023/25): Texte von
+      Benoist, Faye, Eichberg und Lichtmesz zeigen den Cultural Turn bei
+      gleichzeitig fortbestehenden biologistischen Resten — die
+      Doppelbödigkeit ist Design, nicht Nebeneffekt. Malik: Kultur wird zum
+      Synonym für Abstammung, sobald Zugehörigkeit an Herkunftsort und
+      Deszendenz gebunden wird.
+    sources:
+      - url: https://github.com/MakerCologne/ai-slop-ontology/issues/94
+        quote: >-
+          Ambiguity-Befund (Journal of Political Ideologies 2023/25). Texte
+          von Benoist, Faye, Eichberg, Lichtmesz: Cultural Turn ja, Reste
+          biologistischer Argumentation bleiben — die Doppelbödigkeit ist
+          Design.
+        accessed: "2026-09-02"
+  - statement: >
+      Metapolitik: Gramsci von rechts — kulturelle Hegemonie vor Staat.
+      Deshalb wirkt der Begriff als Slop-Generator: Er produziert endlose
+      „Differenz“-Prosa ohne operationalisierbare Policy außer
+      Trennung/Remigration.
+    sources:
+      - url: https://github.com/MakerCologne/ai-slop-ontology/issues/94
+        quote: >-
+          Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat.
+          Deshalb taugt der Begriff als Slop-Generator — er produziert endlos
+          „Differenz“-Prosa ohne operationalisierbare Policy außer
+          Trennung/Remigration.
+        accessed: "2026-09-02"
+detect:
+  hints:
+    - Schluss von „Differenz“/„Vielfalt“ auf getrennte Räume oder Remigration
+    - ökologische Mimikry (Biodiversität ↔ Völkervielfalt)
+    - „Recht auf Differenz“ als Politikforderung statt Ethnografie
+counter:
+  measure: >
+    Detect-only named evidence (Pattern EthnopluralistRebrand, #92); kein Score.
+    Kennzeichen ist die Schlussform, nicht das Wort: Ethnografische
+    Differenzbeschreibung ohne Segregationsforderung bleibt Hard-Negative.
+  keep_when: Ethnografie, Historiografie oder Ideologieforschung, die das Konzept beschreibt, ohne die Trennungspolitik zu fordern
+status: nursery
+version: 1
+see_also: ["LEX-2026-006", "LEX-2026-007", "adr/0008", "#92", "#93", "#96"]
