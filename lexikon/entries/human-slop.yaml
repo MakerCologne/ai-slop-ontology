@@ -1,0 +1,47 @@
+id: LEX-2026-006
+term: Human-Slop
+aliases: [menschlicher Slop, HumanSlopCandidate]
+definition: >
+  Menschlich verfasster oder menschlich gerahmter Content, der die
+  Slop-Kriterien erfüllt (Template, Informationsgewinn nahe null, geringe
+  Falsifizierbarkeit, Push-Distribution), ohne KI-Autorschaft. Schwesterklasse
+  zu SyntheticContent; Slop wird als Risikoprofil, nicht als Autorschaftsklasse
+  verstanden (adr/0008). Detect-only bis zur Korpus-Reife (#98).
+category: type
+claims:
+  - statement: >
+      Die Slop-Prototypen (Superficial Competence, Asymmetric Effort, Mass
+      Producibility) beschreiben auch menschlichen Output, sobald
+      Sorgfalt/Verifikation fehlen und Distribution Push ist — Grundlage des
+      Epics #89 und der HumanSlop-Kandidatenklasse.
+    sources:
+      - url: https://github.com/MakerCologne/ai-slop-ontology/issues/89
+        quote: >-
+          Befund: Willisons drei Bedingungen und Kommers' Prototypen
+          (Superficial Competence, Asymmetric Effort, Mass Producibility)
+          beschreiben auch menschlichen Output, sobald Sorgfalt/Verifikation
+          fehlen und Distribution Push ist.
+        accessed: "2026-09-02"
+  - statement: >
+      Der Detector bleibt Detector (adr/0001) und neue Module sind default
+      detect-only (adr/0006) — Human-Slop-Signale dürfen nicht zu einer
+      Gesinnungsnote werden; Hard-Negatives sind Pflicht (adr/0005).
+    sources:
+      - url: https://github.com/MakerCologne/ai-slop-ontology/issues/90
+        quote: >-
+          Score-Gate auf politische Sprache → Detector wird Zensor (Verstoß
+          gegen adr/0001). ... adr/0005: kein Benchmark-Gaming;
+          Hard-Negatives Pflicht.
+        accessed: "2026-09-02"
+detect:
+  hints:
+    - Totalerklärung ohne Einzelfall
+    - Herkunft als Kollektivschuld
+    - unfalsifizierbare Deutungsschablone
+    - Erlöser-Schema
+counter:
+  measure: detect-only named evidence; kein slop_score-Beitrag vor #98-Korpus
+  keep_when: Policy-Argument mit Akteur, Instrument, Beleg; Statistik mit Nenner, Zeitraum, Quelle; klar markierte Satire
+status: nursery
+version: 1
+see_also: ["LEX-2026-007", "adr/0008", "#93"]

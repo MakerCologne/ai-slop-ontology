@@ -1,0 +1,51 @@
+id: LEX-2026-007
+term: Ideological-Slop
+aliases: [IdeologicalSlop, Ritualprosa, Ritual-Frame]
+definition: >
+  Untertyp von Human-Slop: ritualhafte ideologische Prosa, die einen Frame
+  reproduziert, ohne Informationsgewinn zu erzeugen — Totalerklärungen,
+  Kollektivzuweisungen, Erlöser-Schemata, unfalsifizierbare
+  Deutungsschablonen. Abgegrenzt zum Policy-Argument: Dieses nennt Akteur,
+  Instrument und Beleg und ist falsifizierbar. Umsetzung als detect-only
+  Rhetorik-Layer (#92); Ontologie-Klasse in der Extension (#93).
+category: type
+claims:
+  - statement: >
+      Option B (detect-only Rhetorik-Layer) ist der kleinste Schritt, der das
+      Phänomen messbar macht, ohne den Detector zum Gesinnungsscanner zu
+      machen; Option A (Ontologie-Klasse mit Score) folgt nur nach Opt-in und
+      Korpus-Reife — Empfehlung des bewerteten Vorschlags in #91/adr/0008.
+    sources:
+      - url: https://github.com/MakerCologne/ai-slop-ontology/issues/91
+        quote: >-
+          B ist der kleinste Schritt, der das Phänomen messbar macht, ohne den
+          Detector zum Gesinnungsscanner zu machen. A ist der Schritt, der das
+          Phänomen denkbar macht — aber nur, wenn #86 und das neue ADR
+          denselben Satz sagen: Slop ist ein Risikoprofil, keine
+          Autorschaftsklasse.
+        accessed: "2026-09-02"
+  - statement: >
+      Ein ideologischer Frame wirkt als Slop-Generator über Metapolitik: Er
+      produziert endlose Frame-Prosa ohne operationalisierbare Policy außer
+      Trennung — Beispiel Ethnopluralismus (#94).
+    sources:
+      - url: https://github.com/MakerCologne/ai-slop-ontology/issues/94
+        quote: >-
+          Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat.
+          Deshalb taugt der Begriff als Slop-Generator — er produziert endlos
+          „Differenz"-Prosa ohne operationalisierbare Policy außer
+          Trennung/Remigration.
+        accessed: "2026-09-02"
+detect:
+  regex:
+    - "(die|den) System(-| )?(parteien|presse|medien)"
+    - "nur (noch )?(wir|[A-Z][a-z]+) k(ö|oe)nnen .* retten"
+  hints:
+    - jedes Ereignis bestätigt denselben Frame
+    - Schluss von Differenz auf Trennung
+counter:
+  measure: named evidence mit zitiertem Beleg; kein Score
+  keep_when: Konkretes Verfahren (Ausschuss, Verbot, Minderheitsregierung), Einzelclaim mit Testbedingung, Statistik mit Nenner/Zeitraum/Quelle
+status: nursery
+version: 1
+see_also: ["LEX-2026-006", "adr/0008", "#92", "#93"]
