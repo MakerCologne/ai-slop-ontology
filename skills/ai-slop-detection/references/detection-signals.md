@@ -157,6 +157,26 @@ patterns are mirrored as data in `ontology.json` under
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
 
+### Human Detection Empirics (why tool-assisted review)
+
+Humans are notoriously bad at distinguishing LLM text from human writing — the
+strongest argument against "I can spot AI text myself" and for tool-assisted,
+signal-based review instead of gut judgment:
+
+- **Cheng et al. 2025** (Advances in Simulation 10(1):66, DOI 10.1186/s41077-025-00396-6):
+  Human ability to distinguish LLM text from human text is **no better than random chance**.
+- **Fiedler & Döpke 2025** (Int. Review of Economics Education 49:100321, DOI 10.1016/j.iree.2025.100321):
+  German theses — humans recognized only **57 % of AI texts** and **64 % of human texts**.
+- **Russell, Karpinska & Iyyer 2025** (ACL 2025, arXiv:2501.15654): Heavy LLM users reach ~**90 % accuracy** —
+  but that still means **~10 % false positives**; light users are barely above chance (both directions).
+- **Language convergence**: LLM use shapes human writing, shrinking the gap the eye relies on —
+  Yakura et al. 2024 (arXiv:2409.01754, spoken content), Geng et al. 2025 (Findings of ACL 2025),
+  Galpin et al. 2025 (arXiv:2506.21817, semantic/lexical drift in scientific English).
+
+Consequence for this reference: human judgment alone is **not** a valid detection signal —
+it is the baseline the statistical/ML methods above must beat, and the reason every finding
+here is phrased as a named, checkable signal rather than an impression.
+
 ## Thresholds
 
 | Score | Risk | Action |
