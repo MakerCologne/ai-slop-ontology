@@ -1,0 +1,80 @@
+{
+  "@context": {
+    "@vocab": "http://btm.one/ontology/ai-slop#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "dc": "http://purl.org/dc/elements/1.1/"
+  },
+  "@type": "OntologyExtension",
+  "dc:title": "Human/Ideological Slop Extension",
+  "dc:date": "2026-09-02",
+  "dc:source": "adr/0008 (#90/#91), Epic #89, Taguieff 2023/2026, JPI 2023/25 Ambiguity-Studie, MIDEM 2024, BfV 2025",
+  "status": "nursery",
+  "scoringRule": "polemic_risk ist detect-only (named evidence) und geht NICHT in slop_score ein. CriticalReviewRequired nur bei polemic_risk + Democracy Risk + Entmenschlichung.",
+  "classes": {
+    "HumanSlopCandidate": {
+      "label": "Human Slop Candidate",
+      "subClassOf": "ContentItem",
+      "description": "Menschlich verfasster oder menschlich gerahmter Content, der Slop-Kriterien erfüllt: Template, Informationsgewinn ≈ 0, geringe Falsifizierbarkeit, Push-Distribution.",
+      "necessaryConditions": [
+        "humanOrOrgPrimarySource",
+        "ritualReproductionOversight",
+        "pushDistribution",
+        "informationGainNearZero",
+        "lowFalsifiability"
+      ]
+    },
+    "ConfirmedHumanSlop": {
+      "label": "Confirmed Human Slop",
+      "subClassOf": "HumanSlopCandidate"
+    },
+    "IdeologicalSlop": {
+      "label": "Ideological Slop",
+      "subClassOf": "ConfirmedHumanSlop",
+      "description": "Ritualprosa aus ideologischen Frames: Totalerklärung, Kollektivzuweisung, Erlöser-Schema, unfalsifizierbare Deutungsschablone.",
+      "examples": [
+        "ReplacementKicker",
+        "EthnopluralistRebrand",
+        "RitualFirewall"
+      ],
+      "hardNegatives": [
+        "Statistik mit Nenner/Zeitraum/Quelle",
+        "ethnografische Beschreibung ohne Segregationsforderung"
+      ]
+    },
+    "PolemicSlop": {
+      "label": "Polemic Slop",
+      "subClassOf": "ConfirmedHumanSlop",
+      "description": "Polemik als reproduzierbares Mem: Entmenschlichung, Schädlingsmetaphorik, Beißreflex ohne Beleg.",
+      "hardNegatives": [
+        "scharfe, aber belegte Einzelkritik",
+        "Satire klar markiert, nicht gegen Gruppen"
+      ]
+    },
+    "MoralPanicSlop": {
+      "label": "Moral Panic Slop",
+      "subClassOf": "ConfirmedHumanSlop",
+      "description": "Panik-Frame nach Cohen-Schema: skalierte Bedrohung, Erlöser-Aktoren, Unfalsifizierbarkeit.",
+      "hardNegatives": [
+        "konkreter, dokumentierter Schadensfall mit Zahlen"
+      ]
+    },
+    "PuritySlop": {
+      "label": "Purity Slop",
+      "subClassOf": "ConfirmedHumanSlop",
+      "description": "Identitätsregime über KI-Ablehnung: Kettensprüche, Sündenbock-Zuweisung ohne Diff/Postmortem.",
+      "examples": [
+        "PurityBan",
+        "VibeScapegoat"
+      ],
+      "hardNegatives": [
+        "technische AI-Kritik mit Energie-/Eval-/Provenienzbeleg"
+      ]
+    }
+  },
+  "intents": {
+    "identity_signaling": "Zugehörigkeit demonstrieren, nicht überzeugen",
+    "enemy_construction": "Gegner konstruieren statt widerlegen",
+    "mobilization": "Aktivierung ohne operationale Policy"
+  },
+  "hybridNote": "Hybrid-Formen (menschlicher Frame, synthetische Masse) sind ausdrücklich vorgesehen; Klassen beschreiben Frames, nicht nur Autorschaft."
+}

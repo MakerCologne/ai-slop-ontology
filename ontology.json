@@ -4178,5 +4178,132 @@
       "Nicht-westliche Plattformen (TikTok/Douyin, KakaoTalk, WhatsApp)",
       "Systematische Cross-modal-Detection"
     ]
+  },
+  "signalSeverity": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-02",
+    "source": "#55 (Severity-Tier je Signal)",
+    "note": "Loop-Nutzung: critical = Hard-Gate (nicht score-kompensierbar, z.B. fabricated proof metrics); Fix-Reihenfolge critical → high → medium → low (RPN-Logik, FMEA IEC 60812). fix_strategy_hint: delete | rewrite | condense.",
+    "rules": {
+      "criticalGate": "critical-Signale sind nicht score-kompensierbar — Fail bleibt Fail unabhängig vom slop_score",
+      "fixOrder": "kritische zuerst; innerhalb eines Tiers nach confidence absteigend"
+    },
+    "tiers": {
+      "critical": {
+        "signals": [
+          "HardcodedSecret",
+          "HallucinatedAPI",
+          "InventedPackage",
+          "FakeAuthoritySlop",
+          "PropagandaDisinfoSlop"
+        ],
+        "fix_strategy_hint_default": "delete_or_escalate"
+      },
+      "high": {
+        "signals": [
+          "ExcessiveEmDash",
+          "EmDashExcess",
+          "FakeStrongVerb",
+          "HollowKickerRecap",
+          "ThroatClearing",
+          "MirroredIntroConclusion",
+          "RepeatedOpenings",
+          "ChatbotLeftover",
+          "ExcessiveHedging",
+          "BinaryContrast",
+          "Workslop",
+          "SecurityReportSlop",
+          "PeerReviewSlop"
+        ],
+        "fix_strategy_hint_default": "rewrite"
+      },
+      "medium": {
+        "signals": [
+          "UniformSentenceLength",
+          "NumberedListOveruse",
+          "BalancedStructure",
+          "PerfectGrammarUniformTone",
+          "EllipsisExcess",
+          "ExclamationExcess",
+          "BoldFormatting",
+          "EmojiInProfessional",
+          "TitleCaseHeadings",
+          "CurlyQuotes",
+          "HyphenatedPairRate",
+          "BoldMidSentence",
+          "SynonymCycling",
+          "SuperficialAnalysis",
+          "NegativeListingFragmentation",
+          "FormattingSlop",
+          "RoboticRhythm",
+          "FauxInsightSetup",
+          "ImportancePuffery",
+          "ForcedTriad",
+          "ColonReveal",
+          "ExcessiveComments",
+          "GenericErrorHandling",
+          "OverlyVerboseNaming"
+        ],
+        "fix_strategy_hint_default": "rewrite_or_condense"
+      },
+      "low": {
+        "signals": [],
+        "fix_strategy_hint_default": "condense"
+      }
+    },
+    "fix_strategy_overrides": {
+      "HardcodedSecret": "delete",
+      "HallucinatedAPI": "delete",
+      "InventedPackage": "delete"
+    }
+  },
+  "collisionMatrix": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-02",
+    "source": "#46 (Signal-Kollisions-Matrix / Interferenz)",
+    "rule": "Ein Token-Vorkommen zählt maximal in einer Signalklasse (First-Match nach Priorität unten); Doppelbestrafung desselben Vorkommens ist ausgeschlossen. Unterschiedliche Vorkommen desselben Musters dürfen natürlich in beiden Klassen zählen.",
+    "resolutions": [
+      {
+        "id": "COLL-1",
+        "pair": [
+          "copula_rate (de_phrases/'serves as')",
+          "FakeStrongVerb"
+        ],
+        "token": "'serves as'",
+        "resolution": "FakeStrongVerb gewinnt — Vorkommen zählt nur als FakeStrongVerb, copula_rate ignoriert dasselbe Vorkommen",
+        "test_fixture": "tests/test_collision_matrix.py::test_serves_as_single_count"
+      },
+      {
+        "id": "COLL-2",
+        "pair": [
+          "punctuation_anomaly_score (EmDashExcess)",
+          "FormattingSlop"
+        ],
+        "token": "'—'",
+        "resolution": "EmDashExcess gewinnt für das Zeichenvorkommen; FormattingSlop zählt Em-Dash-Vorkommen nicht mit (weitere FormattingSlop-Trigger unberührt)",
+        "test_fixture": "tests/test_collision_matrix.py::test_emdash_single_count"
+      },
+      {
+        "id": "COLL-3",
+        "pair": [
+          "adverb_killlist (#24)",
+          "positive_voice_markers 'genuinely/truly' (#21)"
+        ],
+        "token": "'genuinely','truly'",
+        "resolution": "Kontext-Regel: als Hedge/Intensifier → Adverb-Signal gewinnt; als positive-voice-Marker (Empfehlungs-/Erfahrungskontext) → Voice-Signal gewinnt. Default bei Ambiguität: Adverb-Signal, Voice-Kontext muss per Heuristik (Satz mit Ich/Empfehlung) explizit sein",
+        "test_fixture": "tests/test_collision_matrix.py::test_adverb_voice_context"
+      },
+      {
+        "id": "COLL-4",
+        "pair": [
+          "#25 Regex-Targets",
+          "#18 Regex-Targets"
+        ],
+        "token": "überlappende Regex-Alternativen",
+        "resolution": "Regex-Targets werden dedupliziert: ein Match-Span zählt einmal; Merge-Regel dokumentiert in Signal-Definition (overlap: documented, precedence: neuere Issue-Nummer gewinnt)",
+        "test_fixture": "tests/test_collision_matrix.py::test_regex_span_dedup"
+      }
+    ],
+    "testContract": "Jede Kollisions-Auflösung braucht ein Fixture, das belegt, dass derselbe Beitrag genau einmal zählt (SIGNAL-DoD-Analogie)."
   }
 }

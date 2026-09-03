@@ -696,7 +696,16 @@ def mirrored_intro_conclusion(text: str) -> bool:
 
 # Calibrated 2026-07 via eval/calibrate.py (coordinate ascent on
 # eval/corpus.jsonl, precision floor 0.95): F1 0.47 -> 0.89 at threshold
-# 0.40 with zero false positives. Weights intentionally sum to > 1 — the
+# 0.40 with zero false positives.
+# EHRLICHE EINORDNUNG (#106, 2026-09-02): Gegen den aktuellen Korpus (n=331)
+# traegt die 14-dimensionale Kalibrierung genau einen Text mehr als
+# uniforme Gewichte (1/N): uniform P 1.000 / R 0.977 / F1 0.989 vs.
+# DEFAULT_WEIGHTS P 1.000 / R 0.982 / F1 0.991 (TP 217/FP 0/TN 110/FN 4
+# vs. TP 216/FP 0/TN 110/FN 5). Vom neutralen Startpunkt aus findet
+# Coordinate Ascent in keinem der 5 CV-Folds einen verbessernden Zug
+# (run_benchmark.py --cross-validate 5 --cv-rounds 3, seed 17). Die
+# Kalibrierung ist hier Korpus-Feintuning, keine Generalisierungsquelle.
+# Weights intentionally sum to > 1 — the
 # total is capped at 1.0, so strong evidence on a few dimensions is enough
 # to cross the threshold. Recalibrate for your domain with
 # eval/calibrate.py --corpus your_data.jsonl.

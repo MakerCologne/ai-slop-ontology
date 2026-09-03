@@ -1,0 +1,21 @@
+{
+  "note": "Kurzskelette (1-3 Sätze) als Annotation-Beispiele, source: own:handwritten — keine Presse-Volltexte (adr/0005, #98). Für Pattern-Tests gelten die 3/3/2-Fixtures des jeweiligen Signal-Issues.",
+  "examples": [
+    {"id": "HIS-IDE-P1", "class": "IdeologicalSlop", "label": "slop", "lang": "de", "source": "own:handwritten", "text": "Die Brandmauer halten — egal was kommt. Darum geht es jetzt."},
+    {"id": "HIS-IDE-P2", "class": "IdeologicalSlop", "label": "slop", "lang": "de", "source": "own:handwritten", "text": "Der globale Austausch ist kein Trend, er ist der Plan. Und jeder Preis steigt genau so, wie es die broad masses spüren."},
+    {"id": "HIS-IDE-N1", "class": "IdeologicalSlop", "label": "hard_negative", "lang": "de", "source": "own:handwritten", "text": "Nach dem Beschluss des Landtags schieden zwei Abgeordnete aus der Fraktion aus; die Fraktionsgröße sank von 38 auf 36 (Quelle: Landtagsamt, März 2026)."},
+    {"id": "HIS-IDE-N2", "class": "IdeologicalSlop", "label": "hard_negative", "lang": "de", "source": "own:handwritten", "text": "Feldforschung zur transhumanten Wanderweide im Alpenraum dokumentiert saisonale Zugrouten von drei Herdengemeinschaften (N=41 Betriebe, 2023–2025)."},
+    {"id": "HIS-POL-P1", "class": "PolemicSlop", "label": "slop", "lang": "de", "source": "own:handwritten", "text": "Diese Leute sind kein Teil von uns — man schafft Ungeziefer nicht, indem man es fragt."},
+    {"id": "HIS-POL-P2", "class": "PolemicSlop", "label": "slop", "lang": "de", "source": "own:handwritten", "text": "Wer denen noch eine Plattform gibt, ist selbst nur deren nützlichstes Infektionsvehikel."},
+    {"id": "HIS-POL-N1", "class": "PolemicSlop", "label": "hard_negative", "lang": "de", "source": "own:handwritten", "text": "Der Abgeordnete hat drei Anträge im Haushaltsausschuss blockiert und im Gegenzug zwei Posten für seinen Wahlkreis durchgesetzt — das ist dokumentiert (Protokoll S. 114ff)."},
+    {"id": "HIS-POL-N2", "class": "PolemicSlop", "label": "hard_negative", "lang": "de", "source": "own:handwritten", "text": "[SATIRE, klar markiert] Die Sitzung endete damit, dass alle fraktionsübergreifend dieselbe Floskel beigebracht bekamen."},
+    {"id": "HIS-MPA-P1", "class": "MoralPanicSlop", "label": "slop", "lang": "de", "source": "own:handwritten", "text": "Was diese Woche passierte, bestätigt nur, was wir immer gesagt haben. Das Muster ist immer dasselbe."},
+    {"id": "HIS-MPA-P2", "class": "MoralPanicSlop", "label": "slop", "lang": "de", "source": "own:handwritten", "text": "Nur noch X kann das Land retten — alle anderen sind Teil des Problems."},
+    {"id": "HIS-MPA-N1", "class": "MoralPanicSlop", "label": "hard_negative", "lang": "de", "source": "own:handwritten", "text": "Die Fallzahlen der Klinik stiegen 2025 um 14 % bei 4.312 Behandlungen; drei Ursachen werden im Bericht benannt und mit Daten belegt."},
+    {"id": "HIS-MPA-N2", "class": "MoralPanicSlop", "label": "hard_negative", "lang": "de", "source": "own:handwritten", "text": "Der Bericht prüft drei Hypothesen und verwirft zwei mangels Evidenz; die dritte wird mit Fallzahlen und Vergleichskommunen gestützt."},
+    {"id": "HIS-PUR-P1", "class": "PuritySlop", "label": "slop", "lang": "en", "source": "own:handwritten", "text": "AI IS THEFT. PASS IT ON."},
+    {"id": "HIS-PUR-P2", "class": "PuritySlop", "label": "slop", "lang": "en", "source": "own:handwritten", "text": "Service down again? Vibe-coded slop devs at work, as always. No diff needed to know."},
+    {"id": "HIS-PUR-N1", "class": "PuritySlop", "label": "hard_negative", "lang": "en", "source": "own:handwritten", "text": "Training-run energy for this model class is measured at 3.2 GWh with cited methodology; the audit compares two disclosure frameworks."},
+    {"id": "HIS-PUR-N2", "class": "PuritySlop", "label": "hard_negative", "lang": "en", "source": "own:handwritten", "text": "The regression came from commit 4f2a1c; the postmortem shows the missing test, the review gap, and the rollback path."}
+  ]
+}

@@ -1,0 +1,45 @@
+@prefix : <http://btm.one/ontology/ai-slop#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+# Human/Ideological Slop Extension — nursery, adr/0008 (#90/#93, Epic #89)
+# TTL-Parity zu human_ideological_slop.json. polemic_risk ist detect-only,
+# kein Beitrag zu slop_score (adr/0006, adr/0008).
+
+:HumanSlopCandidate a owl:Class ;
+    rdfs:label "Human Slop Candidate" ;
+    rdfs:subClassOf :ContentItem ;
+    rdfs:comment "Menschlich verfasster/gerahmter Content mit Slop-Kriterien: Template, Informationsgewinn nahe 0, geringe Falsifizierbarkeit, Push-Distribution. Bedingungen: humanOrOrgPrimarySource, ritualReproductionOversight, pushDistribution, informationGainNearZero, lowFalsifiability." .
+
+:ConfirmedHumanSlop a owl:Class ;
+    rdfs:label "Confirmed Human Slop" ;
+    rdfs:subClassOf :HumanSlopCandidate .
+
+:IdeologicalSlop a owl:Class ;
+    rdfs:label "Ideological Slop" ;
+    rdfs:subClassOf :ConfirmedHumanSlop ;
+    rdfs:comment "Ritualprosa aus ideologischen Frames: Totalerklärung, Kollektivzuweisung, Erlöser-Schema, unfalsifizierbare Deutungsschablone. Hard-Negatives: Statistik mit Nenner/Zeitraum/Quelle; Ethnografie ohne Segregationsforderung." .
+
+:PolemicSlop a owl:Class ;
+    rdfs:label "Polemic Slop" ;
+    rdfs:subClassOf :ConfirmedHumanSlop ;
+    rdfs:comment "Polemik als reproduzierbares Mem: Entmenschlichung, Schaedlingsmetaphorik, Beissreflex ohne Beleg. Hard-Negatives: scharfe, aber belegte Einzelkritik; klar markierte Satire." .
+
+:MoralPanicSlop a owl:Class ;
+    rdfs:label "Moral Panic Slop" ;
+    rdfs:subClassOf :ConfirmedHumanSlop ;
+    rdfs:comment "Panik-Frame nach Cohen-Schema: skalierte Bedrohung, Eloeser-Aktoren, Unfaelsifizierbarkeit. Hard-Negative: konkreter, dokumentierter Schadensfall mit Zahlen." .
+
+:PuritySlop a owl:Class ;
+    rdfs:label "Purity Slop" ;
+    rdfs:subClassOf :ConfirmedHumanSlop ;
+    rdfs:comment "Identitaetsregime ueber KI-Ablehnung: Kettensprueche, Suendenbock-Zuweisung ohne Diff/Postmortem. Hard-Negative: technische AI-Kritik mit Energie-/Eval-/Provenienzbeleg." .
+
+:identity_signaling a :IntentValue ; rdfs:label "Identity Signaling" ; rdfs:comment "Zugehoerigkeit demonstrieren, nicht ueberzeugen." .
+:enemy_construction a :IntentValue ; rdfs:label "Enemy Construction" ; rdfs:comment "Gegner konstruieren statt widerlegen." .
+:mobilization a :IntentValue ; rdfs:label "Mobilization" ; rdfs:comment "Aktivierung ohne operationale Policy." .
+
+:polemic_risk a owl:DatatypeProperty ;
+    rdfs:label "polemic risk" ;
+    rdfs:comment "Detect-only (named evidence). Geht NICHT in slop_score ein. CriticalReviewRequired nur bei polemic_risk + Democracy Risk + Entmenschlichung." .
