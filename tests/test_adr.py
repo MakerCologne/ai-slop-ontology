@@ -26,7 +26,10 @@ def test_each_adr_has_mandatory_fields():
         text = open(path, encoding="utf-8").read()
         for field in ("Status", "Context", "Decision", "Consequences"):
             assert field in text, f"{name}: '{field}' fehlt"
-        assert "accepted" in text.lower(), f"{name}: Status nicht accepted"
+        # Lifecycle (#63): proposed (decision-needed) ist gültig, solange die
+        # Entscheidung offen ist — check_methodology.py prüft dieselbe Regel.
+        is_proposed = "proposed" in text.lower() and "decision-needed" in text.lower()
+        assert is_proposed or "accepted" in text.lower(), f"{name}: Status nicht accepted"
         import re
         options = re.findall(r"^###?\s+Option\s+\w+", text, re.M)
         assert len(options) >= 2, f"{name}: <2 Considered Options"
@@ -38,7 +41,8 @@ def test_adrs_reference_burn_log():
         if name.startswith("0000-"):
             continue
         text = open(path, encoding="utf-8").read()
-        assert "burn-log" in text, f"{name}: kein burn-log-Verweis"
+        is_proposed = "proposed" in text.lower() and "decision-needed" in text.lower()
+        assert is_proposed or "burn-log" in text, f"{name}: kein burn-log-Verweis"
 
 
 def test_check_methodology_validates_adrs():

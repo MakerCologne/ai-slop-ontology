@@ -92,11 +92,21 @@ def check_adrs():
         text = open(path, encoding="utf-8").read()
         for field in ADR_REQUIRED:
             check(field in text, f"{name}: Pflichtfeld '{field}' fehlt")
-        check("accepted" in text.lower(), f"{name}: Status 'accepted' fehlt")
+        # Lifecycle (#63): ADRs dürfen als 'proposed (decision-needed)' leben,
+        # solange die Entscheidung offen ist. Beim Accept muss der Status auf
+        # 'accepted' geändert werden — dann greifen auch die strengen Checks.
+        is_proposed = "proposed" in text.lower() and "decision-needed" in text.lower()
+        check(is_proposed or "accepted" in text.lower(),
+              f"{name}: Status 'accepted' fehlt")
         options = re.findall(r"^###?\s+(?:Option\s+\d+|Option [A-Z0-9]+).*",
                              text, re.M)
         check(len(options) >= 2,
               f"{name}: weniger als 2 Considered Options dokumentiert")
+        # Burn-Log-Verweis ist Pflicht für akzeptierte Entscheidungen; für
+        # proposed-Entwürfe (noch keine Entscheidung) noch nicht fällig.
+        if not is_proposed:
+            check("burn-log" in text.lower(),
+                  f"{name}: kein burn-log-Verweis")
 
 
 # ---------------------------------------------------------------- #67

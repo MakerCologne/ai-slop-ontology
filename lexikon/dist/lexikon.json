@@ -52,6 +52,139 @@
     },
     {
       "aliases": [
+        "Ethnopluralism",
+        "droit à la différence",
+        "Ethno-Differentialismus",
+        "Recht auf Differenz"
+      ],
+      "category": "type",
+      "claims": [
+        {
+          "sources": [
+            {
+              "accessed": "2026-09-02",
+              "quote": "Der Ethnopluralismus ist eine rechtsextreme Ideologie, die von der Neuen Rechten um Alain de Benoist entwickelt wurde … demnach dürften Kulturen nicht vermischt werden; jede Kultur habe „das Recht auf Differenz“.",
+              "url": "https://de.wikipedia.org/wiki/Ethnopluralismus"
+            },
+            {
+              "accessed": "2026-09-02",
+              "quote": "Ethnopluralismus bezeichnet eine völkisch-radikalisierte Variante des Rassismus, die nicht auf eine Hierarchie der „Rassen“, sondern auf die strikte Trennung der Ethnien zielt.",
+              "url": "https://www.bpb.de/themen/rechtsextremismus/dossier-rechtsextremismus/526659/ethnopluralismus/"
+            }
+          ],
+          "statement": "Genealogie: Die moderne Form geht auf Alain de Benoist / Nouvelle Droite / GRECE zurück („droit à la différence“, Ethno-Differentialismus), mit Vorläufern im französischen Neonationalismus der 1950/60er; die Identitäre Bewegung ist die Aktivierungsform, in Deutschland über Kubitschek/IBD in AfD-Nähe.\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-09-02",
+              "quote": "Strategischer Kern (Taguieff, Rueda, Spektorowski). Kein Verzicht auf Exklusion, sondern Rebranding: biologistischer Rassismus → kulturalistischer Rassismus („cultural turn\"). Sprache von Diversität, Antitotalitarismus, Antiimperialismus, Umweltschutz wird gekapert. Taguieff: Tarnung suprematistischer Gehalte hinter egalitärem Vokabular.",
+              "url": "https://github.com/MakerCologne/ai-slop-ontology/issues/94"
+            }
+          ],
+          "statement": "Strategischer Kern (Taguieff, Rueda, Spektorowski): kein Verzicht auf Exklusion, sondern Rebranding vom biologistischen zu kulturalistischem Rassismus („cultural turn“) — Sprache von Diversität, Antitotalitarismus, Antiimperialismus und Umweltschutz wird gekapert; Taguieff beschreibt die Tarnung suprematistischer Gehalte hinter egalitärem Vokabular.\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-09-02",
+              "quote": "Ambiguity-Befund (Journal of Political Ideologies 2023/25). Texte von Benoist, Faye, Eichberg, Lichtmesz: Cultural Turn ja, Reste biologistischer Argumentation bleiben — die Doppelbödigkeit ist Design.",
+              "url": "https://github.com/MakerCologne/ai-slop-ontology/issues/94"
+            }
+          ],
+          "statement": "Ambiguity-Befund (Journal of Political Ideologies 2023/25): Texte von Benoist, Faye, Eichberg und Lichtmesz zeigen den Cultural Turn bei gleichzeitig fortbestehenden biologistischen Resten — die Doppelbödigkeit ist Design, nicht Nebeneffekt. Malik: Kultur wird zum Synonym für Abstammung, sobald Zugehörigkeit an Herkunftsort und Deszendenz gebunden wird.\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-09-02",
+              "quote": "Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat. Deshalb taugt der Begriff als Slop-Generator — er produziert endlos „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.",
+              "url": "https://github.com/MakerCologne/ai-slop-ontology/issues/94"
+            }
+          ],
+          "statement": "Metapolitik: Gramsci von rechts — kulturelle Hegemonie vor Staat. Deshalb wirkt der Begriff als Slop-Generator: Er produziert endlose „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.\n"
+        }
+      ],
+      "content_hash": "2bd3e511dcff0b3f",
+      "counter": {
+        "keep_when": "Ethnografie, Historiografie oder Ideologieforschung, die das Konzept beschreibt, ohne die Trennungspolitik zu fordern",
+        "measure": "Detect-only named evidence (Pattern EthnopluralistRebrand, #92); kein Score. Kennzeichen ist die Schlussform, nicht das Wort: Ethnografische Differenzbeschreibung ohne Segregationsforderung bleibt Hard-Negative.\n"
+      },
+      "definition": "Ideologische Strategie, die Kulturen als gleichwertig UND unverträglich erklärt und daraus getrennte, möglichst homogene Räume als einzige operationale Policy ableitet. Modelliert nicht als Schlagwort, sondern als Strategie (Ziel, Taktik, semantische Tarnung), weil genau die Schlussform — von „Differenz“ auf Trennung — den Slop-Charakter erzeugt: endlose „Differenz“-Prosa ohne operationalisierbaren Gehalt außer Trennung (Detektionszweck, keine politische Wertung über den analytischen Bedarf hinaus).",
+      "detect": {
+        "hints": [
+          "Schluss von „Differenz“/„Vielfalt“ auf getrennte Räume oder Remigration",
+          "ökologische Mimikry (Biodiversität ↔ Völkervielfalt)",
+          "„Recht auf Differenz“ als Politikforderung statt Ethnografie"
+        ]
+      },
+      "id": "LEX-2026-008",
+      "see_also": [
+        "LEX-2026-006",
+        "LEX-2026-007",
+        "adr/0008",
+        "#92",
+        "#93",
+        "#96"
+      ],
+      "status": "nursery",
+      "term": "Ethnopluralismus",
+      "version": 1
+    },
+    {
+      "aliases": [
+        "menschlicher Slop",
+        "HumanSlopCandidate"
+      ],
+      "category": "type",
+      "claims": [
+        {
+          "sources": [
+            {
+              "accessed": "2026-09-02",
+              "quote": "Befund: Willisons drei Bedingungen und Kommers' Prototypen (Superficial Competence, Asymmetric Effort, Mass Producibility) beschreiben auch menschlichen Output, sobald Sorgfalt/Verifikation fehlen und Distribution Push ist.",
+              "url": "https://github.com/MakerCologne/ai-slop-ontology/issues/89"
+            }
+          ],
+          "statement": "Die Slop-Prototypen (Superficial Competence, Asymmetric Effort, Mass Producibility) beschreiben auch menschlichen Output, sobald Sorgfalt/Verifikation fehlen und Distribution Push ist — Grundlage des Epics #89 und der HumanSlop-Kandidatenklasse.\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-09-02",
+              "quote": "Score-Gate auf politische Sprache → Detector wird Zensor (Verstoß gegen adr/0001). ... adr/0005: kein Benchmark-Gaming; Hard-Negatives Pflicht.",
+              "url": "https://github.com/MakerCologne/ai-slop-ontology/issues/90"
+            }
+          ],
+          "statement": "Der Detector bleibt Detector (adr/0001) und neue Module sind default detect-only (adr/0006) — Human-Slop-Signale dürfen nicht zu einer Gesinnungsnote werden; Hard-Negatives sind Pflicht (adr/0005).\n"
+        }
+      ],
+      "content_hash": "c1f24339fcb01a81",
+      "counter": {
+        "keep_when": "Policy-Argument mit Akteur, Instrument, Beleg; Statistik mit Nenner, Zeitraum, Quelle; klar markierte Satire",
+        "measure": "detect-only named evidence; kein slop_score-Beitrag vor"
+      },
+      "definition": "Menschlich verfasster oder menschlich gerahmter Content, der die Slop-Kriterien erfüllt (Template, Informationsgewinn nahe null, geringe Falsifizierbarkeit, Push-Distribution), ohne KI-Autorschaft. Schwesterklasse zu SyntheticContent; Slop wird als Risikoprofil, nicht als Autorschaftsklasse verstanden (adr/0008). Detect-only bis zur Korpus-Reife (#98).",
+      "detect": {
+        "hints": [
+          "Totalerklärung ohne Einzelfall",
+          "Herkunft als Kollektivschuld",
+          "unfalsifizierbare Deutungsschablone",
+          "Erlöser-Schema"
+        ]
+      },
+      "id": "LEX-2026-006",
+      "see_also": [
+        "LEX-2026-007",
+        "adr/0008",
+        "#93"
+      ],
+      "status": "nursery",
+      "term": "Human-Slop",
+      "version": 1
+    },
+    {
+      "aliases": [
         "adding soul",
         "soul principles",
         "positive Gegenprofil"
@@ -92,6 +225,62 @@
       ],
       "status": "beta",
       "term": "Human-Voice",
+      "version": 1
+    },
+    {
+      "aliases": [
+        "IdeologicalSlop",
+        "Ritualprosa",
+        "Ritual-Frame"
+      ],
+      "category": "type",
+      "claims": [
+        {
+          "sources": [
+            {
+              "accessed": "2026-09-02",
+              "quote": "B ist der kleinste Schritt, der das Phänomen messbar macht, ohne den Detector zum Gesinnungsscanner zu machen. A ist der Schritt, der das Phänomen denkbar macht — aber nur, wenn #86 und das neue ADR denselben Satz sagen: Slop ist ein Risikoprofil, keine Autorschaftsklasse.",
+              "url": "https://github.com/MakerCologne/ai-slop-ontology/issues/91"
+            }
+          ],
+          "statement": "Option B (detect-only Rhetorik-Layer) ist der kleinste Schritt, der das Phänomen messbar macht, ohne den Detector zum Gesinnungsscanner zu machen; Option A (Ontologie-Klasse mit Score) folgt nur nach Opt-in und Korpus-Reife — Empfehlung des bewerteten Vorschlags in #91/adr/0008.\n"
+        },
+        {
+          "sources": [
+            {
+              "accessed": "2026-09-02",
+              "quote": "Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat. Deshalb taugt der Begriff als Slop-Generator — er produziert endlos „Differenz\"-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.",
+              "url": "https://github.com/MakerCologne/ai-slop-ontology/issues/94"
+            }
+          ],
+          "statement": "Ein ideologischer Frame wirkt als Slop-Generator über Metapolitik: Er produziert endlose Frame-Prosa ohne operationalisierbare Policy außer Trennung — Beispiel Ethnopluralismus (#94).\n"
+        }
+      ],
+      "content_hash": "ec6e17c1036a4398",
+      "counter": {
+        "keep_when": "Konkretes Verfahren (Ausschuss, Verbot, Minderheitsregierung), Einzelclaim mit Testbedingung, Statistik mit Nenner/Zeitraum/Quelle",
+        "measure": "named evidence mit zitiertem Beleg; kein Score"
+      },
+      "definition": "Untertyp von Human-Slop: ritualhafte ideologische Prosa, die einen Frame reproduziert, ohne Informationsgewinn zu erzeugen — Totalerklärungen, Kollektivzuweisungen, Erlöser-Schemata, unfalsifizierbare Deutungsschablonen. Abgegrenzt zum Policy-Argument: Dieses nennt Akteur, Instrument und Beleg und ist falsifizierbar. Umsetzung als detect-only Rhetorik-Layer (#92); Ontologie-Klasse in der Extension (#93).",
+      "detect": {
+        "hints": [
+          "jedes Ereignis bestätigt denselben Frame",
+          "Schluss von Differenz auf Trennung"
+        ],
+        "regex": [
+          "(die|den) System(-| )?(parteien|presse|medien)",
+          "nur (noch )?(wir|[A-Z][a-z]+) k(ö|oe)nnen .* retten"
+        ]
+      },
+      "id": "LEX-2026-007",
+      "see_also": [
+        "LEX-2026-006",
+        "adr/0008",
+        "#92",
+        "#93"
+      ],
+      "status": "nursery",
+      "term": "Ideological-Slop",
       "version": 1
     },
     {
@@ -250,7 +439,7 @@
       "version": 1
     }
   ],
-  "entry_count": 5,
+  "entry_count": 8,
   "name": "slop-lexikon",
   "schema": "lexikon/schema/entry.schema.json"
 }
