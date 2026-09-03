@@ -45,9 +45,11 @@ def read_dist(filename):
         return f.read()
 
 
-def test_five_pilot_entries():
+def test_entry_count():
+    """#50 Pilot startete mit 5 Einträgen; #126/#128 erweiterten auf 8
+    (human-slop, ideological-slop, ethnopluralism)."""
     entries = load_entries()
-    assert len(entries) == 5
+    assert len(entries) == 8
     assert all(isinstance(v, dict) for v in entries.values())
 
 
@@ -123,7 +125,7 @@ def test_content_hash_in_both_views():
     index = read_dist("index.md")
     data = json.loads(read_dist("lexikon.json"))
     hashes = {e["id"]: e["content_hash"] for e in data["entries"]}
-    assert len(hashes) == 5
+    assert len(hashes) == 8  # #50 Pilot (5) + #126/#128 Erweiterung (3)
     for h in hashes.values():
         assert h in index, "content_hash missing from human view (index.md)"
 
