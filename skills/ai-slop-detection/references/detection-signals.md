@@ -157,6 +157,31 @@ patterns are mirrored as data in `ontology.json` under
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
 
+### Human Detection (Empirie)
+
+Humans are unreliable detectors — this is the strongest argument for tool-based
+detection instead of "I can spot AI text myself":
+
+1. **Cheng et al. 2025**: Human ability to distinguish LLM text from human
+   text is **no better than random chance** (crowdsourced evaluation).
+2. **Fiedler 2025** (German theses, DiLA study): Humans recognized **57% of AI
+texts** and **64% of human texts** — barely above chance, with high error
+   rates in both directions.
+3. **Russell 2025** (preprint): Heavy LLM users classified articles correctly
+   **~90% of the time** — but at a **~10% false-positive rate**: 1 in 10
+   "AI" calls is wrong. Non-expert users performed only slightly better than
+chance.
+4. **Language convergence** (Yakura et al. 2024; Geng et al. 2025; Galpin et
+   al. 2025): LLM output measurably influences human speech and writing —
+   human and AI text are becoming **more similar over time**, further eroding
+   the reliability of human judgment.
+
+**Consequence:** human judgment alone is neither sensitive nor specific enough;
+statistical/provenance signals must carry the detection decision. Human review
+remains necessary for context, but not as the primary detector.
+
+Source: [Wikipedia: Signs of AI writing — "Your detection ability"](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability)
+
 ## Thresholds
 
 | Score | Risk | Action |
