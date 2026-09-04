@@ -38,6 +38,32 @@ python3 scripts/slop_scorer.py "TEXT_TO_ANALYZE"
 
 Returns: `slop_score` (0–1), individual dimension scores, signal breakdown with tier information.
 
+### Step 1b: Project-local config (deslop.toml equivalent)
+
+Ship a JSON config in your repo and pass `--config` to adapt the detector
+to your domain (issue #11):
+
+```bash
+python3 scripts/slop_scorer.py --config slop.json --file text.txt
+```
+
+```json
+{
+  "disabled_signals": ["multilingual", "mirrored"],
+  "term_allowlist": ["harness", "leverage"],
+  "weight_overrides": {"buzzwords": 0.10}
+}
+```
+
+- `disabled_signals`: disable signal families entirely (buzzwords, phrases,
+  multilingual, provenance, trailing_moral, fake_authority, mirrored,
+  portability) — same mechanic as reviewed false positives.
+- `term_allowlist`: domain-legitimate terms ("harness" in an ML repo) are
+  stripped from signal matching only; structural dimensions keep the full text.
+- `weight_overrides`: per-dimension weight recalibration (0–1, keys = the
+  scorer's dimension names). Applied config is echoed in the JSON output
+  under `config`.
+
 ### Step 2: Classify slop type
 
 ```bash
