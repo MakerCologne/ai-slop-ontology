@@ -159,6 +159,12 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 **Citation Rule:**
 - Do NOT cite: AI-generated summaries without primary source, SEO listicles with no original reporting, articles with hallucinated references, synthetic social posts as evidence
 
+**Honest-Guarantee Rule (Fixpoint ≠ Optimum, #62):**
+- NEVER claim "slop-free" in absolute terms — only "slop-free per the scale of the AI Slop Ontology v<version>"
+- If a DESLOP loop run terminates with `EXIT_ESCALATE` (stagnation E3 or maxIter E5): report "human review required", never soft-pass it as success
+- Any guarantee derived from a loop run must cite verdict + detector version from `runs/<runId>/manifest.json`
+- Details: `docs/loop-guards/62-terminierungs-semantik.md`
+
 **Critical Review Rule:**
 - ALWAYS escalate (regardless of slop_score) for: legal, medical, political, financial, child safety, identity impersonation content
 - **LegalSlop** and **AcademicSlop** are ESPECIALLY DANGEROUS — they look professional but contain fabricated citations
