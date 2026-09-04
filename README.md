@@ -67,6 +67,25 @@ takes `--json` for machine-readable output.
 
 📖 **Full manual with use cases and tested examples: [docs/USER-GUIDE.md](docs/USER-GUIDE.md)**
 
+## Positioning: Detector, not a Rewriter
+
+This repo detects and scores — it never rewrites (ADR-0001). Every finding is
+`score + evidence`: matched signals, severities, weights, line references.
+Rewriting is deliberately out of scope (Goodhart risk: a rewriter coupled to its
+own detector optimizes the score instead of the text); repair guidance exists as
+documented countermeasures outside the scoring path.
+
+**Multi-domain is the differentiator** — the skills.sh "slop" market (100 hits,
+Aug 2026) is almost entirely rewrite skills, and none covers more than one domain:
+
+| Market skill | Installs | Approach | Domains |
+|---|---|---|---|
+| anti-ui-slop | 467k | rewrite (UI) | UI |
+| story-deslop | 12.4k | rewrite | text |
+| stop-slop | 11.7k | rewrite | text |
+| no-ai-slop | 7.2k | rewrite | text |
+| **AI Slop Ontology (this repo)** | — | **detect-only, score+evidence** | **text + code + UI** |
+
 ## What is AI Slop?
 
 AI Slop is **not** simply "AI-generated content." It is a **risk profile**. Three necessary conditions must ALL be met:
