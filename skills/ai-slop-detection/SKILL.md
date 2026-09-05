@@ -135,6 +135,10 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
 [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
+### Step 2d: Check UI slop on generated pages (detect-only)
+
+For screenshots of generated landing pages, run the `image` tool with the prompt extension from `references/ui-slop-signals.md`. For front-end source, flag `UiSlopStartCase` (≥3 consecutive Title Case words in UI string literals) and CSS defaults (indigo/purple gradients, glassmorphism, `border-radius: 9999px`). Report each hit with quoted evidence; do not fold into the numeric score.
+
 ### Step 3: Interpret results
 
 | Score Range | Risk Level | Action |
@@ -264,6 +268,7 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **Detection signals (22 techniques):** `references/detection-signals.md`
 - **Scored examples (8 cases):** `references/slop-examples.md`
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
+- **UI slop signals (visual, detect-only):** `references/ui-slop-signals.md` (#15)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
 
 ## Output Format

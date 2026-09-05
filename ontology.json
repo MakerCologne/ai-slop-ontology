@@ -2620,7 +2620,25 @@
           "description": "Methods that don't exist in the library",
           "confidence": 0.85
         }
-      ]
+      ],
+      "uiSlop": {
+        "description": "UI defaults in generated front-end code and string literals (landing pages).",
+        "detection": "detect-only: each match is a named signal with a quoted line of evidence for a human to check; NOT folded into the numeric slop score",
+        "detectOnly": true,
+        "indicators": [
+          {
+            "id": "UiSlopStartCase",
+            "description": "Three or more consecutive Title Case words in UI string literals (labels, buttons, i18n values) — generated marketing copy in UI chrome",
+            "confidence": 0.5,
+            "regex": "[A-Z][a-z]+ [A-Z][a-z]+ [A-Z][a-z]+",
+            "knownExamples": [
+              "Streamline Your Workflow",
+              "Unlock Your Potential",
+              "Transform Your Business"
+            ]
+          }
+        ]
+      }
     },
     "audio": {
       "description": "Patterns in AI-generated audio/music.",

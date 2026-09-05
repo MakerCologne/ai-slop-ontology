@@ -94,6 +94,7 @@ Regex patterns for: API keys, tokens, passwords, connection strings
 - SQL injection (string concatenation in queries)
 - Command injection (unsanitized shell inputs)
 - Off-by-one errors in AI-generated loops
+- **UI Title Case strings (detect-only)**: `UiSlopStartCase` — ≥3 consecutive Title Case words in UI string literals (labels/buttons/i18n); see `ui-slop-signals.md`
 
 ## Image Signals
 

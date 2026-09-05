@@ -8,6 +8,7 @@ Zaehlregel (dokumentiert, maschinell):
   3. signals.text.phrases.categories.<cat>.items[] -> 1 je Phrase
   4. signals.text.typePatterns.types.<type>      -> 1 je Typ
   5. signals.text.rhetoricalPatterns.patterns.<id> -> 1 je Pattern (detect-only, eigener Kanal)
+  6. signals.<medium>.<family> mit detectOnly: true -> Zaehler im Feld detect_only mitgezaehlt
 
 Ausgabe: JSON {total, by_channel, detect_only}; Exit 0 immer (Report-Tool, kein Gate).
 Usage: python scripts/count_signals.py [--root .]
@@ -30,6 +31,8 @@ def count(doc):
         for key, val in block.items():
             if isinstance(val, dict) and isinstance(val.get("indicators"), list):
                 n += len(val["indicators"])
+                if val.get("detectOnly") is True:
+                    out["detect_only"] += len(val["indicators"])
         if ch == "text":
             bw = block.get("buzzwords", {}).get("tiers", {})
             for tier in bw.values():
