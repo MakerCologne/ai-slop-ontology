@@ -1,0 +1,4 @@
+{
+  "threshold": 0.40,
+  "_note": "Single source of truth for the decision threshold. The threshold sweep (GL #6.3) updates THIS file, never script constants. Consumers load it via src/threshold_config.py; a missing or invalid file must abort, not silently fall back (issue #157 / GL #10)."
+}

@@ -24,11 +24,15 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "skills", "ai-slop-detection", "scripts"))
+sys.path.insert(0, os.path.join(ROOT, "src"))
 
 import slop_scorer
+from threshold_config import load_threshold
 
 DEFAULT_CORPUS = os.path.join(ROOT, "eval", "corpus.jsonl")
-THRESHOLD = 0.40
+# Single source: config/threshold.json (#157) — the sweep (GL #6.3) updates
+# that file, never this constant.
+THRESHOLD = load_threshold()
 
 # Read from the scorer, not copied. The previous hardcoded list held 13 names
 # while the scorer had grown a 14th (`portability`, #14), so slop_score raised
