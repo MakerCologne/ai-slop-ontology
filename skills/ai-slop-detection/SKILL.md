@@ -1,11 +1,28 @@
 ---
 name: ai-slop-detection
-description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.2.0. Analyze content for syntheticity signals, quality deficits, and slop patterns across 14 detection dimensions with 100+ buzzword signals, 7 phrase categories, multilingual detection (DE/FR/ES/HI/VI/UR), and 14 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
+description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.2.0. Detector, not rewriter: score + evidence only. Analyze content for syntheticity signals, quality deficits, and slop patterns across 14 detection dimensions with 100+ buzzword signals, 7 phrase categories, multilingual detection (DE/FR/ES/HI/VI/UR), and 14 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
 ---
 
 # AI Slop Detection v2
 
 Classify and score content for AI slop using the AI Slop Ontology v1.0.0.
+
+## Positioning: Detector, not a Rewriter
+
+This skill **detects and scores — it never rewrites** (ADR-0001). Every finding is
+returned as `score + evidence` (matched signals, line references, weights), never
+as a "humanized" rewrite. Rationale: a rewriter coupled to its own detector invites
+Goodhart-style self-gaming; repair guidance stays documented as countermeasures,
+outside the scoring path. Unlike market skills that focus on rewriting text, this is
+the only ontology-based detector covering **text + code + UI** in one skill.
+
+| Market skill (skills.sh, Aug 2026) | Installs | Approach | Domains |
+|---|---|---|---|
+| anti-ui-slop | 467k | rewrite (UI) | UI |
+| story-deslop | 12.4k | rewrite | text |
+| stop-slop | 11.7k | rewrite | text |
+| no-ai-slop | 7.2k | rewrite | text |
+| **ai-slop-detection (this skill)** | — | **detect-only, score+evidence** | **text + code + UI** |
 
 ## Core Concept
 
