@@ -266,6 +266,10 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
 
+## Termination Semantics (Fix-/Review-Loops, #62)
+
+maxIter never terminates as success. Terminal states are only **OUTPUT** ("slop-frei nach Maßstab der Ontology v1.x, Signalstand <Datum>") or **ESCALATE** ("human review required" + run report). The guarantee is scale-bound: paraphrased slop beyond the triggered signals stays invisible to the detector (Krishna et al., arXiv:2303.13408). Anti-pattern list and state machine: `../../docs/loop-guards/62-terminierungs-semantik.md`.
+
 ## Output Format
 
 When reporting slop analysis to users:
