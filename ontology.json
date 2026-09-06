@@ -2664,10 +2664,22 @@
           "die Synergieeffekte",
           "ganzheitlicher Ansatz",
           "der Gamechanger",
-          "auf Augenhöhe",
-          "Best Practices"
+          "auf Augenhöhe"
         ],
-        "note": "German AI output often mixes Denglisch (English loanwords) with formal register"
+        "note": "German AI output often mixes Denglisch (English loanwords) with formal register. 'Best Practices' is conditional (see conditional_buzzwords): alone it is a common legitimate term, it only counts as AI marker when coupled with a generic intensifier.",
+        "conditional_buzzwords": {
+          "Best Practices": {
+            "intensifiers": [
+              "allen",
+              "branchenweit",
+              "modernen",
+              "gängigen",
+              "sämtlichen"
+            ],
+            "window_chars": 60,
+            "keep_when": "Fires only coupled with a generic intensifier ('allen Best Practices', 'den modernen Best Practices'); plain references ('folgt den Best Practices für Migrationen') are legitimate and must not count."
+          }
+        }
       },
       "french": {
         "buzzwords": [
