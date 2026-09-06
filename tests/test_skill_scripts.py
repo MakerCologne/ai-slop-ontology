@@ -24,6 +24,20 @@ class TestSkillScorer(unittest.TestCase):
         self.assertIn("german", result)
         self.assertGreaterEqual(len(result["german"]), 3)
 
+    def test_auf_augenhoehe_marker_fires(self):
+        # Regression #155: the marker was stored as "aufAugenhöhe" (no space)
+        # and could never match natural German text — dead signal.
+        result = slop_scorer.multilingual_buzzword_score(
+            "Wir kommunizieren auf Augenhöhe und begegnen uns auf Augenhöhe."
+        )
+        self.assertIn("german", result)
+        self.assertIn("auf augenhöhe", [m.lower() for m in result["german"]])
+        # negative: the glued form must not be treated as a separate marker
+        dead = slop_scorer.multilingual_buzzword_score(
+            "Das Wort aufAugenhöhe taucht hier als Token auf."
+        )
+        self.assertNotIn("aufaugenhöhe", [m.lower() for m in dead.get("german", [])])
+
     def test_german_slop_floors_at_suspicious(self):
         result = slop_scorer.slop_score(
             "Im heutigen schnelllebigen digitalen Zeitalter gilt es zu beachten, "

@@ -341,7 +341,8 @@ MULTILINGUAL_BUZZWORDS = {
         "im digitalen Zeitalter", "die sich ständig wandelnde", "sowohl als auch",
         "es ist wichtig zu betonen", "im Folgenden",
         "zusammenfassend lässt sich sagen", "ein tiefgreifender Wandel",
-        "die Synergieeffekte", "ganzheitlicher Ansatz", "der Gamechanger"
+        "die Synergieeffekte", "ganzheitlicher Ansatz", "der Gamechanger",
+        "auf Augenhöhe"
     ],
     "french": [
         "il est important de noter", "dans le paysage actuel",
