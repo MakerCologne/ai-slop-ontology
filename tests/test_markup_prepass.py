@@ -27,8 +27,11 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 
 import markup_prepass  # noqa: E402
 from classifier import SlopClassifier  # noqa: E402
+from threshold_config import load_threshold  # noqa: E402
 
-THRESHOLD = 0.40
+# Single source: config/threshold.json (#157) — tests follow the config so a
+# sweep change moves the gate with it instead of diverging silently.
+THRESHOLD = load_threshold()
 
 # Documents that are *about* slop and quote it.
 SELF_DOCS = [
