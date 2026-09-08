@@ -2742,6 +2742,27 @@
           "مجموعی طور پر"
         ]
       }
+    },
+    "metadata": {
+      "description": "Detect-only slop signals on metadata/config/data surfaces (commit messages, PR bodies, JSON data fields, config boilerplate); issue #45.",
+      "note": "Detect-only: findings are advisory, never part of the numeric text/code slop score (ADR-0001). Implementation: src/metadata_slop.py.",
+      "indicators": [
+        {
+          "id": "CommitMessageSlop",
+          "description": "Generated commit messages / PR bodies: verb-first summary plus generic benefit clause ('This PR refactors ... to improve readability and maintainability')",
+          "confidence": 0.8
+        },
+        {
+          "id": "JsonFieldSlop",
+          "description": "Data fields filled with template output instead of content ('description': 'A comprehensive suite of tools ...', TODO placeholders, key restatement)",
+          "confidence": 0.8
+        },
+        {
+          "id": "ConfigBoilerplateSlop",
+          "description": "Narrating boilerplate comments in Dockerfile/YAML/Terraform ('# Install dependencies' over an obvious RUN/COPY line)",
+          "confidence": 0.6
+        }
+      ]
     }
   },
   "normativeFramings": {
