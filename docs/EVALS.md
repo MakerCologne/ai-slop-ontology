@@ -95,6 +95,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)
 - `tests/test_docs_examples.py` — Doku-Beispiele stimmen mit Scorer-Verhalten überein (#48)
+- `tests/test_project_config.py` — #11 Projekt-lokale Config (--config: disabled_signals/term_allowlist/weight_overrides, Fail-loud-Validierung, Strukturdimensionen unangetastet)
 - `tests/test_engine_sync.py` — SSOT-Parity Scorer↔ontology.json (ADR-0002)
 - `tests/test_ssot.py` — #49 SSOT-Gate (check_ssot.py: Ontology-Kopie, Generated-View, Konstanten-Register)
 - `tests/test_evals_doc.py` — diese Zuordnung prüfen (#68, Meta)

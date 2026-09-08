@@ -54,6 +54,34 @@ python3 scripts/slop_scorer.py "TEXT_TO_ANALYZE"
 
 Returns: `slop_score` (0–1), individual dimension scores, signal breakdown with tier information.
 
+### Step 1b: Project-local config (optional)
+
+```bash
+python3 scripts/slop_scorer.py --config slop.json --file TEXT.txt
+```
+
+Signal weights are global; project vocabulary is not ("harness" is a
+legitimate ML term in an ML repo, buzzword filler elsewhere). A project
+config (deslop.toml-equivalent) tunes the scorer locally:
+
+```json
+{
+  "disabled_signals": ["portability"],
+  "term_allowlist": ["harness", "robust"],
+  "weight_overrides": {"buzzwords": 0.05}
+}
+```
+
+- `disabled_signals` — weight set to 0 (dimension stays in the report, no
+  longer contributes to the score)
+- `term_allowlist` — terms stripped from signal matching before the metrics
+  (like `--genre` exempt terms); structural dimensions keep the full text
+- `weight_overrides` — per-signal weight in [0, 1]
+
+Validation is fail-loud: unknown signals/keys or out-of-range values abort
+with an error instead of silently no-oping. The applied config is echoed in
+the JSON output as `project_config`.
+
 ### Step 2: Classify slop type
 
 ```bash

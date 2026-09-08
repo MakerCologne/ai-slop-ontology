@@ -28,6 +28,7 @@ import input_norm
 import learning_store
 import portability
 import provenance_signals
+import project_config
 import register_profile
 import tokenizer
 
@@ -735,7 +736,7 @@ DEFAULT_WEIGHTS = {
 
 
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
-              not_slop_store=None) -> dict:
+              not_slop_store=None, term_allowlist: Optional[list] = None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
     # and zero-width obfuscation of telltale words must not bypass signals.
     text = input_norm.normalize(text)
@@ -769,6 +770,12 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             entries, learning_store.sample_hash(text))
 
     signal_text = fp_guards.strip_quotes(text)
+    if term_allowlist:
+        # Project-local config (#11): allowlisted terms are legitimate
+        # project vocabulary — strip from signal matching like the #42
+        # genre exempt_terms. Structural dimensions keep the full text.
+        signal_text = genre_profiles.strip_exempt_terms(
+            signal_text, term_allowlist)
     if genre_profile is not None:
         signal_text = genre_profiles.strip_exempt_terms(
             signal_text, genre_profile["exempt_terms"])
@@ -1214,6 +1221,17 @@ if __name__ == "__main__":
             sys.exit(2)
         args = args[:i] + args[i + 2:]
 
+    # Issue #11: project-local config (--config slop.json) —
+    # disabled_signals / term_allowlist / weight_overrides.
+    config_path = None
+    if "--config" in args:
+        i = args.index("--config")
+        if i + 1 >= len(args):
+            print("Error: --config requires a path", file=sys.stderr)
+            sys.exit(2)
+        config_path = args[i + 1]
+        args = args[:i] + args[i + 2:]
+
     # Issue #29: explicit learning-store path; default: not_slop.jsonl next
     # to the scored file (auto-detected only for --file input).
     not_slop_store = _opt("--not-slop-store")
@@ -1257,13 +1275,34 @@ if __name__ == "__main__":
               file=sys.stderr)
         sys.exit(1)
 
+    if config_path is not None:
+        try:
+            cli_cfg = project_config.load_config(config_path, DEFAULT_WEIGHTS)
+        except project_config.ConfigError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(2)
+        cli_weights = project_config.merge_weights(cli_cfg, DEFAULT_WEIGHTS)
+        cli_allowlist = cli_cfg["term_allowlist"]
+    else:
+        cli_weights, cli_allowlist = None, None
+
     if not_slop_store is None and file_path is not None:
         default_store = os.path.join(
             os.path.dirname(os.path.abspath(file_path)), "not_slop.jsonl")
         if os.path.isfile(default_store):
             not_slop_store = default_store
 
-    result = slop_score(text, genre=genre, not_slop_store=not_slop_store)
+    result = slop_score(text, genre=genre, not_slop_store=not_slop_store,
+                        weights=cli_weights, term_allowlist=cli_allowlist)
+
+    if config_path is not None:
+        result["project_config"] = {
+            "path": config_path,
+            "disabled_signals": cli_cfg["disabled_signals"],
+            "term_allowlist": cli_cfg["term_allowlist"],
+            "weight_overrides": cli_cfg["weight_overrides"],
+            "weights": cli_weights,
+        }
 
     if use_json:
         print(json.dumps(result, indent=2))
