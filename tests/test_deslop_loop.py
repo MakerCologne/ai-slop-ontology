@@ -240,3 +240,44 @@ def test_integration_demo_deletion_fix_reduces_score(tmp_runs):
     assert res.score_initial > res.score_final
     # verdict is honest whichever way it ends
     assert res.verdict in ("EXIT_OK", "EXIT_ESCALATE")
+
+
+# ---- run-audit standard (#61) ----
+
+def test_run_audit_standard_files(tmp_runs):
+    """runs/<runId>/ must contain the full standard set and be
+    reconstructible: signal -> action -> score per iteration."""
+    det = ScriptedDetector([
+        (0.9, [fd("A", 0.9), fd("B", 0.8)]),   # baseline
+        (0.9, [fd("A", 0.9), fd("B", 0.8)]),   # confirm
+        (0.5, [fd("A", 0.6)]),                  # after fix 1
+        (0.3, []),                               # after fix 2 -> below 0.4
+    ])
+    loop = DeslopLoop(detector=det,
+                      params=LoopParams(score_threshold=0.4),
+                      runs_dir=tmp_runs, run_id="audit-demo")
+    res = loop.run("slop text", fix=lambda t, f: t[10:] if len(t) > 10 else t)
+    assert res.verdict == "EXIT_OK"
+
+    rd = os.path.join(tmp_runs, "audit-demo")
+    for name in ("manifest.json", "scan.md", "iterations.jsonl",
+                 "fixes.md", "trajectory.json", "result.json", "report.md"):
+        assert os.path.isfile(os.path.join(rd, name)), f"missing {name}"
+
+    scan = open(os.path.join(rd, "scan.md")).read()
+    assert "score_initial: 0.900" in scan
+    assert "| A |" in scan and "| B |" in scan
+
+    fixes = open(os.path.join(rd, "fixes.md")).read()
+    assert "| 1 | accepted |" in fixes
+    assert "0.900 → 0.500" in fixes
+
+    traj = json.load(open(os.path.join(rd, "trajectory.json")))
+    assert traj["run_id"] == "audit-demo"
+    scores = [(r["action"], r["score_before"], r["score_after"])
+              for r in traj["iterations"]]
+    assert ("exit_ok", 0.3, 0.3) in scores
+
+    report = open(os.path.join(rd, "report.md")).read()
+    assert "verdict: EXIT_OK" in report
+    assert "trajectory.json" in report  # reconstruction index
