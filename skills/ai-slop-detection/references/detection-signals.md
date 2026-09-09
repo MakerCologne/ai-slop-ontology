@@ -150,6 +150,30 @@ Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
 patterns are mirrored as data in `ontology.json` under
 `signals.text.rhetoricalPatterns`.
 
+## Chat-Paste Artifacts (detect-only)
+
+Six deterministic micro-signals for code/instruction files that betray pasted
+LLM chat output or silently elided content (issue #113). Same schema as the
+micro patterns above: named signal, quoted evidence, `keep_when` guard,
+never scored.
+
+Sources: [mgiovani/stopslop](https://github.com/mgiovani/stopslop)
+(SLOP001/002), scanaislop/aislop, jv-k/desloper.
+
+| Signal | Smells like | Keep when |
+|--------|-------------|----------|
+| elision-comment | `// ... rest of the code remains unchanged` | Explicitly scoped review excerpt with full file elsewhere |
+| chat-preamble | `Certainly! Here's the updated handler:` as line 1 | Documented chat transcripts, chatbot test fixtures |
+| fence-in-code | Indented ``` fences inside source files | Markdown files, docstring example blocks at column 0 |
+| meta-process-comment | `# Phase 2: now we add the handler` | Build-pipeline phase labels (about the artifact, not the generation) |
+| list-label-marker | `- G1: Introduce the product` | Established label-based vocab (spec IDs, gap-analysis BS-I3) |
+| placeholder-credential-shape | `API_KEY = "***"` | Template files (.env.example), placeholder test fixtures |
+
+Run: `python3 scripts/chat_artifacts.py "FILE_TEXT"` (or
+`result.chat_artifacts` from the classifier). Prose elision without a
+code-comment marker is NOT `elision-comment`; credential detection requires
+an assignment shape — bare prose mentions never match.
+
 ## Statistical/ML Methods
 
 1. **DetectGPT** (Mitchell et al. 2023): Curvature-based probability discrimination
