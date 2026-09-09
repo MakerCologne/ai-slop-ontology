@@ -54,6 +54,28 @@ python3 scripts/slop_scorer.py "TEXT_TO_ANALYZE"
 
 Returns: `slop_score` (0–1), individual dimension scores, signal breakdown with tier information.
 
+### Step 1b: Project-local config (GH #11 / #1138)
+
+```bash
+python3 scripts/slop_scorer.py --config slop.json --file TEXT.md
+```
+
+`slop.json` (alle Keys optional, unbekannte Keys/Signale = Fehler):
+
+```json
+{
+  "disabled_signals": ["buzzwords"],
+  "term_allowlist": ["harness"],
+  "weight_overrides": {"phrases": 0.10}
+}
+```
+
+- `disabled_signals` — Signal-Familien (Namen wie in den 14 Dimensionen) werden auf Gewicht 0 gesetzt
+- `term_allowlist` — Domain-Terme werden vor dem Signal-Matching entfernt (gleiche Mechanik wie Genre-Exemptions #42; Struktur-Dimensionen sehen weiterhin den vollen Text; komponiert mit `--genre`)
+- `weight_overrides` — Merge über DEFAULT_WEIGHTS (Zahlen ≥ 0)
+
+Angewendete Config erscheint als `config`-Key im `--json`-Output (Reflexivität/Auditierbarkeit). Fail-loud: ungültige Config = Exit 2.
+
 ### Step 2: Classify slop type
 
 ```bash
