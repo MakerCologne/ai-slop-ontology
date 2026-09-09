@@ -54,6 +54,31 @@ python3 scripts/slop_scorer.py "TEXT_TO_ANALYZE"
 
 Returns: `slop_score` (0–1), individual dimension scores, signal breakdown with tier information.
 
+### Step 1c: Findings with receipts (Issue #119)
+
+```bash
+python3 scripts/slop_scorer.py --findings "TEXT_TO_ANALYZE"
+```
+
+Emits one JSON receipt per detected signal hit — the machine-readable
+findings standard (`finding = {signal_id, span, evidence_quote,
+reliability, suggested_action}`):
+
+- `signal_id`: family + qualifier, e.g. `buzzword.tier1_critical`,
+  `phrase.opening_formulas`, `authority`, `moral`
+- `span`: `{start, end}` (character offsets into the scored text) plus
+  1-based `line`
+- `evidence_quote`: the exact matched text at that span
+- `reliability`: heuristic default from the family's calibration tier
+  (buzzword tier confidence; phrase 0.7; authority 0.65; multilingual 0.6;
+  structural binaries 0.5)
+- `suggested_action`: concrete rewrite guidance per family
+
+Structural binary signals (trailing moral, list-heavy, mirrored
+intro/conclusion) get one whole-text receipt each. Register findings
+(#74) stay detect-only and are excluded. The same `findings` array is
+part of every `--json` output.
+
 ### Step 2: Classify slop type
 
 ```bash
