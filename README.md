@@ -235,3 +235,14 @@ Compatible with: LangGraph-Node, MCP-Tool, AutoGen-Function
 ## License
 
 CC BY 4.0
+
+## Issue-Nummern: Konvention (GitLab vs. GitHub)
+
+Zwei aktive Tracker mit getrennten Nummernräumen: **GitHub** (Signalarbeit/Landscape, dieses Repo) und **GitLab Burn-Tracker** (`maker-cologne/ai-slop-ontology`, Projekt 74 auf vmd80537; Burn/Pipeline).
+
+**Kurzregel:**
+- Issue-Nummern **ohne Präfix** = GitHub (dieses Repo)
+- GitLab-Issues immer als **„GL #N“**, GitLab-MRs als **„GL !N“** zitieren
+- Cross-Links: GitHub-Issues tragen eine „GitLab-Bezug:“-Zeile; GitLab-Issues eine „GitHub-Äquivalent:“-Zeile
+
+*Eingeführt via Tracker #158 (Nummern-Kollision GitLab↔GitHub).*
