@@ -56,6 +56,18 @@ from typing import Callable, Optional
 Detector = Callable[[str], "tuple[float, list[Finding]]"]
 Fixer = Callable[[str, list["Finding"]], Optional[str]]
 
+# RPN-style fix order (issue #55, FMEA IEC 60812): critical → high →
+# medium → low; within a tier by confidence descending.
+SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+
+
+def rpn_fix_order(findings: "list[Finding]") -> "list[Finding]":
+    """Order confirmed findings for the fix callback: severity tier first,
+    then confidence descending (RPN-Logik: kritische zuerst)."""
+    return sorted(findings,
+                  key=lambda f: (SEVERITY_ORDER.get(f.severity, 9),
+                                 -f.confidence))
+
 _TOKEN_RE = re.compile(r"\b\w+\b")
 
 
@@ -67,6 +79,13 @@ class Finding:
     confidence: float
     evidence: str
     severity: str = "medium"
+    fix_strategy: str = ""  # fix_strategy_hint from signalSeverity block (#55)
+
+
+def ordered_findings_text(findings: "list[Finding]") -> str:
+    """Stable debug representation: fix order first, then alphabetical
+    signal name as tie-break (deterministic output for audit records)."""
+    return ", ".join(f.signal for f in rpn_fix_order(findings)) or "-"
 
 
 @dataclass
@@ -106,7 +125,8 @@ def default_detector(ontology_path: str = "ontology.json") -> Detector:
         res = clf.classify_text(text)
         findings = [
             Finding(signal=m.signal_id, confidence=m.confidence,
-                    evidence=m.evidence, severity=m.severity)
+                    evidence=m.evidence, severity=m.severity,
+                    fix_strategy=clf.fix_strategy_for(m.signal_id))
             for m in res.signals_detected
         ]
         return res.overall_slop_score, findings
@@ -247,7 +267,7 @@ class DeslopLoop:
                 self._audit_iter(run_dir, records[-1])
                 break
 
-            candidate = fix(current, confirmed)
+            candidate = fix(current, rpn_fix_order(confirmed))
             if candidate is None:
                 verdict, exit_check = "EXIT_ESCALATE", "NO_CANDIDATE"
                 guarantee = ("human review required — fix callback returned "
