@@ -22,6 +22,7 @@ import sys
 from collections import Counter
 from typing import Optional
 
+import domain_bindings
 import fp_guards
 import genre_profiles
 import input_norm
@@ -735,7 +736,7 @@ DEFAULT_WEIGHTS = {
 
 
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
-              not_slop_store=None) -> dict:
+              domain: Optional[str] = None, not_slop_store=None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
     # and zero-width obfuscation of telltale words must not bypass signals.
     text = input_norm.normalize(text)
@@ -747,6 +748,12 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     genre_profile = None
     if genre is not None:
         genre_profile = genre_profiles.get_profile(genre)
+    # Issue #35: explicit domain context (no auto-detection), fail-loud
+    # on unknown domains. Domain-gated signals (triggered_by: domain in
+    # ontology.json domainBindings) zero their mapped weight dimensions;
+    # raw metrics stay visible. Default (domain=None): no change.
+    domain_bindings.validate_domain(domain)
+    gated_dims = domain_bindings.weight_dims_gated(domain)
     if weights is None:
         weights = dict(DEFAULT_WEIGHTS)
 
@@ -774,6 +781,10 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             signal_text, genre_profile["exempt_terms"])
         weights = dict(weights)
         for k in genre_profile.get("zero_weights", []):
+            weights[k] = 0.0
+    if gated_dims:
+        weights = dict(weights)
+        for k in gated_dims:
             weights[k] = 0.0
     buzz_count, buzz_hits, buzz_tiers = buzzword_score(signal_text)
     if "buzzwords" in exempted_families:
@@ -963,6 +974,9 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         "risk_level": risk,
         "action": action,
         **({"genre": genre} if genre else {}),
+        **({"domain": domain,
+            "domain_gated_signals": domain_bindings.gated_signals(domain),
+            "domain_gated_weight_dims": gated_dims} if domain else {}),
         "context": {
             "register_profile": register_ctx,
             "register_findings": register_findings,
@@ -1214,6 +1228,21 @@ if __name__ == "__main__":
             sys.exit(2)
         args = args[:i] + args[i + 2:]
 
+    # Issue #35: explicit domain (--domain changelog|essay|...), fail-loud
+    domain = None
+    if "--domain" in args:
+        i = args.index("--domain")
+        if i + 1 >= len(args):
+            print("Error: --domain requires a name", file=sys.stderr)
+            sys.exit(2)
+        domain = args[i + 1]
+        try:
+            domain_bindings.validate_domain(domain)
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(2)
+        args = args[:i] + args[i + 2:]
+
     # Issue #29: explicit learning-store path; default: not_slop.jsonl next
     # to the scored file (auto-detected only for --file input).
     not_slop_store = _opt("--not-slop-store")
@@ -1253,7 +1282,7 @@ if __name__ == "__main__":
               file=sys.stderr)
         text = " ".join(args)
     else:
-        print("Usage: python3 slop_scorer.py [--json] [--genre NAME] (--file PATH | - | \"Text\")",
+        print("Usage: python3 slop_scorer.py [--json] [--genre NAME] [--domain NAME] (--file PATH | - | \"Text\")",
               file=sys.stderr)
         sys.exit(1)
 
@@ -1263,7 +1292,8 @@ if __name__ == "__main__":
         if os.path.isfile(default_store):
             not_slop_store = default_store
 
-    result = slop_score(text, genre=genre, not_slop_store=not_slop_store)
+    result = slop_score(text, genre=genre, domain=domain,
+                        not_slop_store=not_slop_store)
 
     if use_json:
         print(json.dumps(result, indent=2))

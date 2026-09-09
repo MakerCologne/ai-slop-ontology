@@ -153,6 +153,9 @@ SSOT_REGISTER = {
         "MIN_MARKERS_PER_HALF": ("engine-config", "fixture-calibrated"),
         "PUNCT_PER_CHARS": ("engine-config", "deviation"),
     },
+    "domain_bindings.py": {
+        "SIGNAL_WEIGHT_MAP": ("engine-config", "synced-via-ontology_domainBindings"),
+    },
     "discourse_metrics.py": {
         "RANKED_LINE_RE": ("compiled-regex-matcher", "deviation"),
         "CRITERION_MARKERS": ("closed-list", "deviation"),

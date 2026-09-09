@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.9.1] — 2026-09-09 (#35 — Domain-Trigger-Metadatum je Signal)
+
+Slop-Defaults sind domain-konditional (unslop). Statische Signale ohne
+Domain-Kontext erzeugen systematische False Positives (z.B. "we fixed X" im
+Changelog ist legitime Sprecherrolle, kein Workslop).
+
+- `ontology.json` → neue Top-Level-Section `domainBindings`: optionales
+  Metadatum `triggered_by: domain` je Signal mit `applies_to` (Whitelist,
+  wins) / `restricted_in` (Blacklist) + `rationale`; 5 Pilot-Signale
+  (Workslop, PeerReviewSlop, SecurityReportSlop, NumberedListOveruse,
+  FakeAuthoritySlop), 7 Domains (essay, marketing, ui_copy, changelog,
+  devtools_docs, academic, security_report)
+- Scorer: `--domain NAME` (fail-loud, Exit 2 bei unbekannter Domain);
+  `slop_score(text, domain=...)` zero-t die gemappten Gewichtsdimensionen
+  (`domain_bindings.SIGNAL_WEIGHT_MAP`: Workslop→phrases,
+  NumberedListOveruse→list_heavy, FakeAuthoritySlop→fake_authority);
+  `--json`-Output zeigt `domain`, `domain_gated_signals`,
+  `domain_gated_weight_dims`
+- Classifier: `classify_text(text, domain=...)` filtert gebundene Signale
+  VOR der Noisy-OR-Aggregation (Score reflects domain-conditioned evidence)
+- Default ohne Domain: unverändert (Opt-in, analog #42-Genre — keine
+  Engine-Drift); komponierbar mit `--genre`
+- Tests: `tests/test_domain_bindings.py` (12); SSOT-Register-Eintrag für
+  `domain_bindings.py`; SKILL.md Step 1b
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills

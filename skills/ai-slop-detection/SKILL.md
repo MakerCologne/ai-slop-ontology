@@ -54,6 +54,21 @@ python3 scripts/slop_scorer.py "TEXT_TO_ANALYZE"
 
 Returns: `slop_score` (0–1), individual dimension scores, signal breakdown with tier information.
 
+### Step 1b: Domain context (--domain, #35)
+
+Slop-Defaults sind domain-konditional (unslop: "If the page is for devtools → ...").
+Signale mit `triggered_by: domain` (SSOT: `ontology.json` → `domainBindings`, 5 Pilot-Signale) feuern nur in ihren Domains:
+
+```bash
+python3 scripts/slop_scorer.py --domain changelog --file CHANGELOG-entry.md
+```
+
+- Whitelist (`applies_to`) schlägt Blacklist (`restricted_in`); Signale ohne Bindung sind domain-agnostisch
+- Gating wirkt auf Scorer-Gewichtsdimensionen (gemappt via `scripts/domain_bindings.py` `SIGNAL_WEIGHT_MAP`, z.B. Workslop→phrases, NumberedListOveruse→list_heavy) und auf Classifier-Findings (`classify_text(text, domain=)` filtert vor der Noisy-OR-Aggregation)
+- Fail-loud: unbekannte Domain → Exit 2; `--json` zeigt `domain`, `domain_gated_signals`, `domain_gated_weight_dims` (Auditierbarkeit)
+- Default ohne `--domain`: unverändertes Verhalten (Opt-in, analog #42-Genre)
+- Domains (v1): `essay`, `marketing`, `ui_copy`, `changelog`, `devtools_docs`, `academic`, `security_report`
+
 ### Step 2: Classify slop type
 
 ```bash

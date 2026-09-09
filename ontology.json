@@ -4338,5 +4338,61 @@
       }
     ],
     "testContract": "Jede Kollisions-Auflösung braucht ein Fixture, das belegt, dass derselbe Beitrag genau einmal zählt (SIGNAL-DoD-Analogie)."
+  },
+  "domainBindings": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-09",
+    "source": "#35 (Domain-Trigger-Metadatum je Signal)",
+    "note": "Optionales Metadatum triggered_by je Signal: Slop-Defaults sind domain-konditional (unslop: 'If the page is for devtools → ...'). Ein Signal mit triggered_by=domain wird nur in den gelisteten Domains gewertet (applies_to, Whitelist) bzw. in den gelisteten Domains nicht gewertet (restricted_in, Blacklist). Whitelist schlägt Blacklist (applies_to wins). Signale ohne triggered_by sind domain-agnostisch. Scorer: --domain NAME CLI-Parameter (fail-loud bei unbekannter Domain). 5 Pilot-Signale.",
+    "domains": [
+      "essay",
+      "marketing",
+      "ui_copy",
+      "changelog",
+      "devtools_docs",
+      "academic",
+      "security_report"
+    ],
+    "signals": {
+      "Workslop": {
+        "triggered_by": "domain",
+        "restricted_in": [
+          "changelog",
+          "devtools_docs"
+        ],
+        "rationale": "'We fixed X / at our company we ...' ist in Changelogs und Devtools-Doku die native, legitime Sprecherrolle — kein Slop-Marker."
+      },
+      "PeerReviewSlop": {
+        "triggered_by": "domain",
+        "applies_to": [
+          "academic",
+          "essay"
+        ],
+        "rationale": "Peer-Review-Floskeln ('as noted by the authors') sind nur im akademischen/essayistischen Register Slop-signifikant."
+      },
+      "SecurityReportSlop": {
+        "triggered_by": "domain",
+        "applies_to": [
+          "security_report",
+          "devtools_docs"
+        ],
+        "rationale": "Security-Report-Floskeln sind ohne Security-Kontext (Advisory, Pentest-Report) inhaltsleer; dort dagegen fachlich normal."
+      },
+      "NumberedListOveruse": {
+        "triggered_by": "domain",
+        "restricted_in": [
+          "changelog",
+          "devtools_docs"
+        ],
+        "rationale": "Nummerierte Listen sind in Changelogs und API-Doku das native Format — kein Slop-Indikator."
+      },
+      "FakeAuthoritySlop": {
+        "triggered_by": "domain",
+        "restricted_in": [
+          "changelog"
+        ],
+        "rationale": "Autoritative Rahmensätze ('studies show') in Changelogs sind falsch-positiv-anfällig: Changelog-Sätze referenzieren Tickets/Commits als legitime Autorität."
+      }
+    }
   }
 }
