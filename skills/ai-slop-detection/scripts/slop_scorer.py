@@ -559,29 +559,42 @@ SUBSTITUTE_VERB_PATTERNS = [
 ]
 
 
+# #46 prevention, COLL-1 (collisionMatrix): substitute matches that overlap
+# a FakeStrongVerb rhetorical match ("serves as a centralized hub") are
+# also excluded — that occurrence counts ONLY as FakeStrongVerb and must
+# not simultaneously lower the copula rate. Import of the detect-only
+# module is safe (no circular dependency).
+import rhetorical_patterns as _rhet
+
+
 def copula_stats(text: str) -> dict:
     """Copula rate: is/are/was/were vs. substitute linking verbs (#22).
 
     Returns {"copulas", "substitutes", "rate"} where rate = copulas /
     (copulas + substitutes); 0.0 when neither occurs. Substitute matches
-    overlapping buzzword spans are excluded from the denominator
-    (#46 prevention, see SUBSTITUTE_VERB_PATTERNS note above).
+    overlapping buzzword spans OR FakeStrongVerb spans are excluded from
+    the denominator (#46 prevention, COLL-1 — FakeStrongVerb wins, the
+    same occurrence never lowers the copula rate too).
     """
     text_lower = text.lower()
     copula_spans = [m.span() for m in re.finditer(r"\b(?:is|are|was|were)\b", text_lower)]
+    buzzword_rx = re.compile(
+        r"(?:" + "|".join(
+            _term_pattern(w) for t in BUZZWORD_TIERS.values() for w in t["words"]
+        ) + r")"
+    )
+    fake_strong_rx = _rhet._FAKE_STRONG_VERB
     sub_spans = []
     for m in re.finditer(
         r"\b(?:" + "|".join(re.escape(v) for v in SUBSTITUTE_VERB_PATTERNS) + r")\b",
         text_lower,
     ):
         # #46 prevention: ignore substitutes that overlap a buzzword match
-        all_terms = [w for t in BUZZWORD_TIERS.values() for w in t["words"]]
+        # or a FakeStrongVerb match (COLL-1)
         overlapping = any(
             m.start() < be and m.end() > bs
-            for bm in re.finditer(
-                r"(?:" + "|".join(_term_pattern(w) for w in all_terms) + r")",
-                text_lower,
-            )
+            for rx in (buzzword_rx, fake_strong_rx)
+            for bm in rx.finditer(text_lower)
             for bs, be in [bm.span()]
         )
         if not overlapping:
@@ -599,6 +612,37 @@ def copula_stats(text: str) -> dict:
 ADVERB_RATE_THRESHOLD = 0.04   # > 4% -ly words
 ADVERB_MIN_WORDS = 40          # rate is meaningless on very short texts
 INTENSIFIERS = ["very", "really", "extremely", "incredibly", "remarkably"]
+
+# COLL-3 (collisionMatrix, #46): 'genuinely'/'truly' are positive-voice
+# markers (#21) AND -ly adverbs. Resolution: in an explicit voice context
+# (first person or recommendation, per heuristics below) the voice reading
+# wins and the occurrence is excluded from the adverb rate; in hedge/
+# intensifier use (or ambiguous default) the adverb signal wins and it counts.
+_VOICE_CONTEXT_ADVERBS = ["genuinely", "truly"]
+_VOICE_CONTEXT_RX = re.compile(
+    r"\b(?:i|i'm|i've|i'll|we|we're|my|our)\b|\b(?:recommend|empfehl)\w*",
+    re.IGNORECASE,
+)
+
+
+def _voice_marker_spans(text_lower: str) -> list:
+    """Spans of genuinely/truly whose sentence carries an explicit voice
+    context (#21). Ambiguous cases default to the adverb reading (COLL-3)."""
+    spans = []
+    for m in re.finditer(
+        r"\b(?:" + "|".join(_VOICE_CONTEXT_ADVERBS) + r")\b", text_lower
+    ):
+        # sentence around the match (split on . ! ? boundaries)
+        start = text_lower.rfind(".", 0, m.start())
+        start = max(start + 1, text_lower.rfind("!", 0, m.start()) + 1,
+                    text_lower.rfind("?", 0, m.start()) + 1)
+        end_candidates = [p for p in (text_lower.find(".", m.end()),
+                                      text_lower.find("!", m.end()),
+                                      text_lower.find("?", m.end())) if p != -1]
+        end = min(end_candidates) if end_candidates else len(text_lower)
+        if _VOICE_CONTEXT_RX.search(text_lower[start:end]):
+            spans.append(m.span())
+    return spans
 
 
 def adverb_stats(text: str) -> dict:
@@ -618,11 +662,14 @@ def adverb_stats(text: str) -> dict:
                          text_lower):
         intensifier_spans.append(m.span())
     intensifiers = len(intensifier_spans)
-    # -ly words minus intensifier spans (span-overlap exclusion like copula_stats)
+    voice_spans = _voice_marker_spans(text_lower)
+    excluded_spans = intensifier_spans + voice_spans
+    # -ly words minus intensifier/voice-marker spans (span-overlap
+    # exclusion like copula_stats; COLL-3 voice markers count as voice, not adverb)
     ly_spans = [m.span() for m in re.finditer(r"\b\w+ly\b", text_lower)]
     pure_ly = sum(
         1 for ws, we in ly_spans
-        if not any(ws < ie and we > i_s for i_s, ie in intensifier_spans)
+        if not any(ws < ie and we > i_s for i_s, ie in excluded_spans)
     )
     # denominator: all words except the intensifier occurrences themselves
     denom = len(total) - intensifiers

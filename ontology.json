@@ -4291,8 +4291,8 @@
     }
   },
   "collisionMatrix": {
-    "version": "1.0.0",
-    "lastUpdated": "2026-09-02",
+    "version": "1.1.0",
+    "lastUpdated": "2026-09-09",
     "source": "#46 (Signal-Kollisions-Matrix / Interferenz)",
     "rule": "Ein Token-Vorkommen zählt maximal in einer Signalklasse (First-Match nach Priorität unten); Doppelbestrafung desselben Vorkommens ist ausgeschlossen. Unterschiedliche Vorkommen desselben Musters dürfen natürlich in beiden Klassen zählen.",
     "resolutions": [

@@ -414,11 +414,17 @@ def find_rhetorical_patterns(text: str):
         em = text.count("\u2014") + text.count("\u2013")
         word_count = len(text.split())
         sent_count = max(len(_sentences(text)), 1)
-        if em >= 1 and word_count <= 120:
+        # COLL-2 (collisionMatrix, #46): the em-dash-cluster branch
+        # (em >= 3 and em / sent_count > 0.5) was removed — it is a strict
+        # subset of the classifier's EmDashExcess (>0.5 em dashes per
+        # sentence), so every cluster occurrence was double-reported.
+        # EmDashExcess owns cluster detection; FormattingSlop keeps only the
+        # doctrine branches EmDashExcess does not cover (short copy, long-draft
+        # allowance) — gated on em/sentence <= 0.5 so an EmDashExcess-cluster
+        # occurrence is never re-reported here.
+        if em >= 1 and word_count <= 120 and em / sent_count <= 0.5:
             formatting_evidence = f"em dash in short copy: {em} in {word_count} words"
-        elif em >= 3 and em / sent_count > 0.5:
-            formatting_evidence = f"em-dash cluster: {em} dashes in {sent_count} sentences"
-        elif em > 2 and word_count > 120:
+        elif em > 2 and word_count > 120 and em / sent_count <= 0.5:
             formatting_evidence = f"em dashes beyond long-draft allowance: {em} in {word_count} words"
     if formatting_evidence:
         add("FormattingSlop", formatting_evidence)
