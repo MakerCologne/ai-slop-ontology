@@ -2009,7 +2009,8 @@
             "pattern": "—",
             "threshold": "> 0.5 per sentence",
             "confidence": 0.85,
-            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged"
+            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged",
+            "model_notes": "Weaker for GPT-5.1+ (em-dashes measurably suppressed); Claude output uses more em-dashes than professional writers (Economist study 07/2026). Weight review quarterly (#47), evidence via sampling loop (#12)."
           },
           {
             "id": "UniformSentenceLength",
@@ -2041,7 +2042,8 @@
             "id": "PerfectGrammarUniformTone",
             "pattern": "Zero grammar errors + identical formality throughout",
             "confidence": 0.55,
-            "note": "Weak signal alone — professional editors also produce this"
+            "note": "Weak signal alone — professional editors also produce this",
+            "model_notes": "Confidence erodes as post-editing humanizer tools spread (unslop et al.); monitor via quarterly re-score (#47)."
           }
         ]
       },
@@ -2053,7 +2055,8 @@
             "char": "—",
             "threshold_per_sentence": 0.5,
             "confidence": 0.85,
-            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster"
+            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster",
+            "model_notes": "Weaker for GPT-5.1+ (suppressed by default); Claude-only deployments: expect higher FP rate in professional-prose genres — apply genre register (#42) before flagging."
           },
           {
             "id": "EllipsisExcess",
@@ -2088,7 +2091,8 @@
             "id": "CurlyQuotes",
             "pattern": "“ ” in plain text",
             "confidence": 0.6,
-            "note": "Smart quotes in raw text/markdown are a typeset-output tell"
+            "note": "Smart quotes in raw text/markdown are a typeset-output tell",
+            "model_notes": "ChatGPT/DeepSeek-only tell (Wikipedia AICURLY); weak-to-zero for Claude/Gemini outputs. Treat as single-model evidence, not cross-model."
           },
           {
             "id": "HyphenatedPairRate",
@@ -2455,7 +2459,8 @@
               "unprecedented",
               "ever-evolving landscape",
               "ever-changing landscape"
-            ]
+            ],
+            "model_notes": "Marker vocabulary shifts with model generations: 'blatantly positive' puffery is being replaced by 'subtly positive' variants (Wikipedia AIPUFFERY); markers list needs quarterly refresh (#12/#47)."
           },
           "ForcedTriad": {
             "label": "Forced triad",
@@ -4288,6 +4293,53 @@
       "HardcodedSecret": "delete",
       "HallucinatedAPI": "delete",
       "InventedPackage": "delete"
+    }
+  },
+  "signalModelDynamics": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-09",
+    "source": "#36 (Modell-Dynamik: model_notes je Signal & Signal-Halbwertszeiten)",
+    "note": "Signals are model- and generation-dependent; static weights age silently. model_notes is the optional per-signal field documenting known model dependencies ('weaker for GPT-5.1+', 'Claude-only'). Quarterly Empirie-Notiz per signal; evidence comes from the sampling loop (#12), drift detection per #47, score trajectory monitoring per #59.",
+    "rules": {
+      "scope": "model_notes documents weakening/strengthening of a signal across model generations — never a substitute for weight changes (those go through SCORE-GOVERNANCE re-baseline)",
+      "evidence": "every model_note cites its source (study, Wikipedia AIDASH/AICURLY/AIPUFFERY, or quarterly sampling artifact eval/drift/YYYY-Qn.json)",
+      "review": "status_since + model_notes are reviewed together in the quarterly re-baseline cycle (SCORE-GOVERNANCE.md)"
+    },
+    "halfLifeGuidance": {
+      "definition": "Signal-Halbwertszeit = time until the signal's true-positive contribution halves on current-model output, observed on the frozen reference corpus (adr/0005 discipline)",
+      "categories": {
+        "short": "surface typography & vocabulary tells (CurlyQuotes, marker lists like ImportancePuffery): months — refresh vocabulary quarterly",
+        "medium": "structural/rhythm tells (UniformSentenceLength, RepeatedOpenings): 1-2 years — re-score quarterly, deprecate on two failing cycles (#63 lifecycle)",
+        "long": "semantic/provenance tells (FakeAuthoritySlop, hallucinated APIs, missing primary sources): robust across generations — review yearly"
+      },
+      "measurement": "empirically estimated via eval/drift artifacts (P50/P90 contribution shift, #47) — not guessed; a signal with no measurement gets no half-life claim, only 'unmeasured'"
+    },
+    "entries": {
+      "ExcessiveEmDash": {
+        "model_notes": "weaker for GPT-5.1+; Claude above professional baseline",
+        "half_life": "short (surface typography)",
+        "evidence": "Economist study 07/2026; Wikipedia AIDASH"
+      },
+      "EmDashExcess": {
+        "model_notes": "weaker for GPT-5.1+; Claude above professional baseline",
+        "half_life": "short (surface typography)",
+        "evidence": "Economist study 07/2026; Wikipedia AIDASH"
+      },
+      "CurlyQuotes": {
+        "model_notes": "ChatGPT/DeepSeek-only",
+        "half_life": "short (surface typography)",
+        "evidence": "Wikipedia AICURLY"
+      },
+      "ImportancePuffery": {
+        "model_notes": "marker vocabulary generation-shifts ('blatantly' → 'subtly positive')",
+        "half_life": "short (vocabulary list)",
+        "evidence": "Wikipedia AIPUFFERY"
+      },
+      "PerfectGrammarUniformTone": {
+        "model_notes": "erodes as humanizer post-editing spreads",
+        "half_life": "medium (structural)",
+        "evidence": "unmeasured (quarterly #47)"
+      }
     }
   },
   "collisionMatrix": {

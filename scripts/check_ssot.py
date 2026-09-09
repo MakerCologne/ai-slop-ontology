@@ -78,6 +78,10 @@ SSOT_REGISTER = {
         "ADVERB_MIN_WORDS": ("engine-config", "deviation"),
         "INTENSIFIERS": ("corpus-calibrated", "deviation"),
         "DECISION_THRESHOLD": ("engine-config", "synced"),
+        # #119 findings receipts: UI/output layer, not signal data —
+        # actions & reliability defaults are presentation constants.
+        "FINDING_ACTIONS": ("engine-config", "deviation"),
+        "FAMILY_RELIABILITY": ("engine-config", "deviation"),
         "DEFAULT_WEIGHTS": ("engine-config", "calibration-output"),
     },
     "quantifiers.py": {

@@ -60,6 +60,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_issue104_doc_drift.py` — #104 Slice A: Doku<->SSOT-Drift (L1) — Gate-Test für scripts/check_doc_signals.py (D1/D2, beide Richtungen) plus die beiden Issue-Beispiele als Matcher-/Classifier-Fixtures ('it is worth noting' in hedging_qualifiers, Template 'in today's [X]' in opening_formulas; konkrete SSOT-Varianten bleiben matchbar)
 - `tests/test_threshold_config.py` — #157 zentraler Threshold: config/threshold.json als einzige Quelle (Verhalten folgt der Config, Missing/Malformed/Out-of-Range brechen ab statt still zu fallen, committeter Wert 0.40 als Ratsche bis zum Sweep GL #6.3)
 - `tests/test_short_text_guards.py` — #52 Kurztext-Guards: dokumentierte Mindestlängen je Metrik in config/threshold.json (short_text_guards), definiertes Skip-Verhalten (neutral + ausgewiesene skipped-Liste + Gewicht-Re-Normalisierung, buzzwords bleibt aktiv), Fixtures für 5-/20-/50-Wort-Texte (L1)
+- `tests/test_model_notes.py` — #36 Modell-Dynamik: signalModelDynamics-SSOT-Sektion (schema, evidence-Pflicht M6, Halbwertszeit-Vokabular, Entries referenzieren reale Signale) + per-signal model_notes der Pilot-Signale + loop-guard-Doc-Existenz (L1)
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
 - `tests/test_adverb_rate.py` — Signal #24 Adverb-Rate (Fixtures)
 - `tests/test_anchor_drift.py` — #78 Anchor-Drift (detect-only, Anker-Diff, Dezimal-Grenzfall)
@@ -88,6 +89,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_binary_contrast_ext.py` — Signal #26 BinaryContrast
 - `tests/test_classifier.py` — src/classifier.py Klassifikation
 - `tests/test_cli.py` — CLI-Härtung (MS-I1)
+- `tests/test_findings_receipts.py` — #119 Findings-Standard mit Receipts: Feld-Vollständigkeit ({signal_id, span, evidence_quote, reliability, suggested_action}), Span↔Quote-Konsistenz, Sortierung, Clean-Text-Leerlauf, Mehrzeilen-Line-Nummern, build_findings auf Minimal-Result (L1)
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
