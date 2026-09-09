@@ -55,6 +55,13 @@ Benchmark-Korpus (eval/corpus.jsonl, slop-0101/slop-0504), Beleg-Disziplin
   Boilerplate (Serien slop-0303/0606) — "let me know if you'd like more
   detail", "of course! here's the summary", "based on available
   information", "up to my last training update", "some critics argue", ...
+- `conversational_fillers` (conf 0.55, #110 — Hassid-Liste Punkte 4-8):
+  konversationelle Fuell-Floskeln aus gesprochenen Mustern — "here's the
+  thing", "hope this helps", "to provide a quick update", "^most people"
+  (claus-initial). Hard-Negative-Guards: "hope this helps" feuert nicht in
+  den letzten 100 Zeichen vor einer Grussformel (Support-Mail-Kontext);
+  "most people" feuert nicht bei direkter Quellenangabe ("most people I
+  interviewed"). Detect-only, Kumulativschwelle >=2.
 
 ### Punctuation Anomalies
 - Em-dash rate > 0.5 per sentence
