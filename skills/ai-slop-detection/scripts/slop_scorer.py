@@ -706,6 +706,10 @@ def mirrored_intro_conclusion(text: str) -> bool:
 # Coordinate Ascent in keinem der 5 CV-Folds einen verbessernden Zug
 # (run_benchmark.py --cross-validate 5 --cv-rounds 3, seed 17). Die
 # Kalibrierung ist hier Korpus-Feintuning, keine Generalisierungsquelle.
+# Ihr messbarer Beitrag liegt in der Schwere-Graduierung: 24 Slop-Texte
+# erreichen mit DEFAULT_WEIGHTS Tier "Slop" (>= 0.70), mit uniform 1/N
+# keiner (Tests: tests/test_weight_gain_pin.py; Doku: SCORE-GOVERNANCE.md
+# #106-DoD-Nachtrag; calibrate.py druckt gain_vs_uniform).
 # Weights intentionally sum to > 1 — the
 # total is capped at 1.0, so strong evidence on a few dimensions is enough
 # to cross the threshold. Recalibrate for your domain with
