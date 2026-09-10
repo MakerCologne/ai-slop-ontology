@@ -2763,6 +2763,48 @@
           "confidence": 0.6
         }
       ]
+    },
+    "paste_artifacts": {
+      "description": "Detect-only micro-signals for chat-paste artifacts and elision markers in code/doc files (issue #113); corpus-backed from the slop-detection landscape (stopslop, scanaislop/aislop, jv-k/deslopper).",
+      "note": "Detect-only: findings are advisory, never part of the numeric text/code slop score (ADR-0001). Implementation: src/paste_artifacts.py.",
+      "indicators": [
+        {
+          "id": "elision-comment",
+          "description": "Elision comments that silently drop code ('// ... rest of the code unchanged'); the elided region is unverifiable",
+          "confidence": 0.9,
+          "keep_when": "Quoted/tutorial excerpts where the elided region is explicitly labeled 'not shown'"
+        },
+        {
+          "id": "chat-preamble",
+          "description": "Assistant conversational preamble pasted into the file ('Certainly! Here's the updated code')",
+          "confidence": 0.9,
+          "keep_when": "Transcript/chat-log files that deliberately document an assistant conversation"
+        },
+        {
+          "id": "fence-in-code",
+          "description": "Stray Markdown fence pairs (```) inside code files",
+          "confidence": 0.7,
+          "keep_when": "Markdown surfaces where fences are the native format (classifier skips them via is_markdown=True)"
+        },
+        {
+          "id": "meta-process-comment",
+          "description": "Comments narrating the generation process ('Phase 2 of the plan', 'the model output', 'per my previous response')",
+          "confidence": 0.7,
+          "keep_when": "A real project phase plan ('Phase 2: v1.1 migration') with concrete milestones"
+        },
+        {
+          "id": "list-label-marker",
+          "description": "Synthetic taxonomy labels glued onto list items ('- G1: ...', '- NG2: ...'); classification residue from agent workflows",
+          "confidence": 0.6,
+          "keep_when": "A spec that genuinely uses the label taxonomy as its subject matter"
+        },
+        {
+          "id": "placeholder-credential-shape",
+          "description": "Template credential placeholders left in shipped files ('your_api_key_here', 'INSERT_TOKEN')",
+          "confidence": 0.85,
+          "keep_when": "Template/example files whose purpose is to be filled in (e.g. .env.example)"
+        }
+      ]
     }
   },
   "normativeFramings": {
