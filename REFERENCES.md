@@ -56,6 +56,11 @@
 37. **ANU/PNAS (2026), Human detection of AI faces via hyper-typicality** — Menschen auf near-perfect Accuracy trainierbar; Basis für Image-Signal `HyperTypicality`. (Bericht: Gizmodo)
 38. **Deezer Newsroom (20.04.2026 / 11.06.2026)** — 44 % AI-Anteil an Neu-Uploads (~75.000/Tag; 1–3 % der Streams, ~85 % Fraud); öffentlicher AI-Musik-Detektor für Fremdkataloge. https://newsroom-deezer.com/2026/04/ai-generated-tracks-represent-44-of-new-uploaded-music/
 
+## v1.2.0 (September 2026)
+
+40. **Weber-Wulff et al. (2023), Testing of detection tools for AI-generated text** (International Journal for Educational Integrity 19:26) — 14 kommerzielle Detektoren, alle <80 % Akkuratesse, laufinstabil. Basis für docs/TOOL-EVAL-CHECKLIST.md (#71).
+41. **Liang et al. (2023), GPT detectors are biased against non-native English writers** (Patterns 4(7)) — FP-Bias gegen nicht-muttersprachliche Autoren; Begründung für diverse Hard Negatives.
+
 ## Adaptierte Fremdprojekte
 
 39. **Yang, "No AI slop" Editing-Skill** ([petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop), MIT) — Prosa-Editor mit ~20 rhetorischen AI-Mustern. Neun struktureller Satz-/Absatz-Muster wurden als detect-only Detektoren in `signals.text.rhetoricalPatterns` und `skills/ai-slop-detection/scripts/rhetorical_patterns.py` übernommen (eigene Regexe/Beispiele, benannte Evidenz statt Score).
