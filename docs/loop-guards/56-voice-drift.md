@@ -1,6 +1,6 @@
 # Voice-Drift-Guardrail (#56)
 
-**Status:** spec · **Verwandt:** adr/0001 (Detector, kein Rewriter — Guardrail für Loop-Rewrites), Minimum-Effective-Edit
+**Status:** implemented (src/voice_drift.py · tests/test_voice_drift.py · Loop-Integration in src/deslop_loop.py) · **Verwandt:** adr/0001 (Detector, kein Rewriter — Guardrail für Loop-Rewrites), Minimum-Effective-Edit
 
 ## Voice-Budget
 
@@ -9,4 +9,12 @@
 
 ## Implementierung
 
-`guard/voice_drift.py` (detect-only Guard, kein Score): Eingabe Draft_0 + Draft_n, Output `voice_drift: {token_change_pct, burstiness_delta, ttr_delta, verdict: ok|rollback}`. Akzeptanz: Rewrite-Serie über 5 Benchmark-Texte bleibt unter Budget; Verletzung wird reproduzierbar gemeldet.
+`src/voice_drift.py` (detect-only Guard, kein Score; `guard/voice_drift.py`-Pfad aus der Spec auf src/ gemappt): `evaluate(draft_0, draft_n)` → `VoiceDriftVerdict {verdict: ok|budget|regression|too_short, token_change_pct, burstiness_0/n/delta, ttr_0/n/delta, reasons}`.
+
+- **token_change_vs:** (removed + inserted) / draft_0-Tokens, gedeckelt bei 1.0 — exakt die Spec-Formel (Summe eingefügter + ersetzter Tokens / Draft_0-Tokens), nicht die symmetrische Loop-Interne-Heuristik.
+- **burstiness:** Variationskoeffizient der Satz-Längen (Sqrt(Var)/Mean); gleichförmiger Maschinenrhythmus kollabiert → 0.
+- **lexical_diversity:** windowed TTR (Fenster 50) über Content-Words (leichter Stopword-Filter, DE+EN) als Synonym-Vielfalt-Proxy, längenrobust.
+- **Non-Regression:** Floor = draft_0 × 0.9 je Metrik; Verstoß → `regression`.
+- **Loop-Integration (#56 → #51):** DeslopLoop prüft zusätzlich zum bisherigen per-Step-voice_budget jetzt kumulativ vs Draft_0; Ablehnung → `rejected_voice_drift_{budget|regression}` mit vollständigem `voice_drift`-Payload im Iterations-Audit (#61-Format).
+
+Akzeptanz erfüllt: Verletzung wird reproduzierbar gemeldet (11 Tests, inkl. Loop-Roundtrips mit Fake-Detektor); Rewrite-Serien unter Budget laufen unverändert durch. Verbleibend (out of scope, S-Aufwand): Benchmark-Texte-Serie aus eval/ als End-to-End-Akzeptanz.
