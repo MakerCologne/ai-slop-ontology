@@ -154,6 +154,19 @@ rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
 Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
 `eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
 
+### Step 2i: Chat-Paste-Artefakte & Elision (detect-only, #113)
+
+`scripts/chat_artifacts.py` — sechs deterministische Mikro-Signale für
+Code-/Instruktions-/Kommentar-Dateien, die eingefügte LLM-Chat-Ausgabe
+verraten: `elision-comment` („// … rest of code unchanged" — stillschweigend
+gelöschter Code), `chat-preamble` („Certainly! Here's …" als erste Zeile),
+`fence-in-code` (eingerückte Markdown-Fences in Quelldateien),
+`meta-process-comment` (Kommentare erzählen den Generierungsprozess),
+`list-label-marker` (G1/NG2-Gliederungsmarker in Listpunkten/Headern),
+`placeholder-credential-shape` (your-api-key/sk-XXX/changeme als
+gesetzter Wert). Interface wie `micro_patterns.py`: `find_chat_artifacts(text)`
+→ `[{id, confidence, evidence, keep_when}]`, nie score-wirksam.
+
 ### DE-Phrase-Layer (#76/#77, SSOT in ontology.json)
 
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
