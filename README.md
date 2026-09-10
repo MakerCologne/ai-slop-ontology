@@ -4,6 +4,14 @@ A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*.
 
 **Version:** 1.9.0 | **Date:** 2026-08-25 | **License:** CC BY 4.0
 
+## Issue Conventions
+
+Two trackers are active for this project: GitHub (signal/analysis work) and GitLab (burn/pipeline development).
+
+- Issue-Nummern **ohne Präfix = GitHub** (dieses Repo)
+- GitLab-Issues werden **immer als `GL #N`** zitiert (z. B. `GL #5`), GitLab-Merge-Requests als `GL !N`
+- Bei Bedarf: Cross-Link-Zeilen „GitHub-Äquivalent“ / „GitLab-Bezug“ in den jeweiligen Issue-Bodies (vgl. GL #11)
+
 ## Positioning: Detector, not a Rewriter
 
 Market scan (skills.sh, 2026-08, 100 hits for "slop"): nearly the entire market consists of rewrite/humanizer skills. This project deliberately occupies the **detector niche**: it delivers `slop_score` + per-finding evidence (signal_id, span, quote) and leaves the fix decision to the human. The CLI is detect-only by design (`slop score`, `slop classify`, `slop rhetoric`, `slop code`).
