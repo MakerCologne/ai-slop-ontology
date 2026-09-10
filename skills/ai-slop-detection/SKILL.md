@@ -54,6 +54,29 @@ python3 scripts/slop_scorer.py "TEXT_TO_ANALYZE"
 
 Returns: `slop_score` (0–1), individual dimension scores, signal breakdown with tier information.
 
+### Step 1b: Project-local config (#11)
+
+Teams in domain-specific repos get legitimate false positives: "harness" in an ML repo, "agents" in an LLM tool. A `slop.json` in the project (checked in, like `deslop.toml`) adapts the scorer:
+
+```json
+{
+  "disabled_signals": ["portability", "mirrored"],
+  "term_allowlist": ["harness", "agent"],
+  "weight_overrides": {"buzzwords": 0.10}
+}
+```
+
+```bash
+python3 scripts/slop_scorer.py --file README.md --config slop.json
+# or: slop.json next to (or above) the scored file is auto-discovered
+python3 scripts/slop_scorer.py --file README.md
+```
+
+- `disabled_signals`: valid ids are the 14 dimension families (density, repetition, burstiness, buzzwords, phrases, punctuation, trailing_moral, list_heavy, fake_authority, verbosity, multilingual, mirrored, structural, portability) plus adverb, copula, provenance. Exemptable families are fully excluded (no matches, no escalation/floor); purely weighted dimensions get weight 0.
+- `term_allowlist`: terms stripped from signal matching only (same mechanic as genre exempt terms); structural dimensions keep the full text. Only the strong-evidence floors that remain after disabling are honest — allowlisting does not silence everything.
+- `weight_overrides`: merged over DEFAULT_WEIGHTS (no re-normalization; scores cap at 1.0).
+- Auto-discovery runs for `--file` input only; piped stdin stays environment-independent.
+
 ### Step 2: Classify slop type
 
 ```bash
