@@ -4235,14 +4235,12 @@
       "high": {
         "signals": [
           "ExcessiveEmDash",
-          "EmDashExcess",
           "FakeStrongVerb",
           "HollowKickerRecap",
           "ThroatClearing",
           "MirroredIntroConclusion",
           "RepeatedOpenings",
           "ChatbotLeftover",
-          "ExcessiveHedging",
           "BinaryContrast",
           "Workslop",
           "SecurityReportSlop",
@@ -4256,8 +4254,6 @@
           "NumberedListOveruse",
           "BalancedStructure",
           "PerfectGrammarUniformTone",
-          "EllipsisExcess",
-          "ExclamationExcess",
           "BoldFormatting",
           "EmojiInProfessional",
           "TitleCaseHeadings",
@@ -4273,14 +4269,19 @@
           "ImportancePuffery",
           "ForcedTriad",
           "ColonReveal",
-          "ExcessiveComments",
           "GenericErrorHandling",
-          "OverlyVerboseNaming"
+          "OverlyVerboseNaming",
+          "EmDashExcess",
+          "ExcessiveHedging"
         ],
         "fix_strategy_hint_default": "rewrite_or_condense"
       },
       "low": {
-        "signals": [],
+        "signals": [
+          "EllipsisExcess",
+          "ExclamationExcess",
+          "ExcessiveComments"
+        ],
         "fix_strategy_hint_default": "condense"
       }
     },
@@ -4288,7 +4289,8 @@
       "HardcodedSecret": "delete",
       "HallucinatedAPI": "delete",
       "InventedPackage": "delete"
-    }
+    },
+    "calibration_note": "Tier-Zuordnung empirisch kalibriert am Hard-Negatives-Korpus (Null-Edit-Contract, eval/corpus.jsonl): EllipsisExcess/ExclamationExcess/ExcessiveComments=low, EmDashExcess/ExcessiveHedging=medium — hand-annotierte 'high/medium'-Tiers dieser 5 Signale erzeugten FPs auf clean-Texten (z.B. hardneg-049: EmDashExcess 0.85 -> 0.595 >= 0.4)."
   },
   "collisionMatrix": {
     "version": "1.0.0",
