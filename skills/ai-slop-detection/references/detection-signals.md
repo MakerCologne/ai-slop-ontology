@@ -9,6 +9,7 @@ Detailed detection techniques from the AI Slop Ontology. Use when deeper analysi
 4. [Behavioral Signals](#behavioral-signals)
 5. [Provenance Signals](#provenance-signals)
 6. [Statistical/ML Methods](#statisticalml-methods)
+   - [Human Detection Empirics](#human-detection-empirics)
 7. [Thresholds](#thresholds)
 
 ## Text Signals
@@ -156,6 +157,34 @@ patterns are mirrored as data in `ontology.json` under
 2. **Binoculars** (Hans et al. 2024): Zero-shot LLM detection (AUROC ~0.95)
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
+
+### Human Detection Empirics
+
+The section above covers machine detectors — but the empirics on *human* detection
+performance are the strongest argument against "I can spot AI text myself" and for
+tool-based detection.
+
+| Study | Finding | Implication |
+|-------|---------|-------------|
+| Cheng et al. 2025 (Advances in Simulation, DOI [10.1186/s41077-025-00396-6](https://doi.org/10.1186/s41077-025-00396-6)) | Human ability to distinguish LLM text from human text is **no better than random chance** | Unaided human judgment is not a valid detection signal |
+| Fiedler & Döpke 2025 (Int. Review of Economics Education, DOI [10.1016/j.iree.2025.100321](https://doi.org/10.1016/j.iree.2025.100321)) | German theses: humans recognized **57% of AI texts** and **64% of human texts** — well below reliable thresholds | Even domain context (academic writing) does not lift humans to usability |
+| Russell 2025 (preprint) | Heavy LLM users: **~90% correct at ~10% false-positive rate** — every 10th "AI" tag is a false positive; light users only slightly above chance | Skill helps, but the FP rate remains too high for single-reviewer verdicts |
+| Yakura et al. 2024 ([arXiv:2409.01754](https://arxiv.org/abs/2409.01754)); Geng et al. 2025 (ACL Findings, DOI [10.18653/v1/2025.findings-acl.987](https://doi.org/10.18653/v1/2025.findings-acl.987)); Galpin et al. 2025 ([arXiv:2506.21817](https://arxiv.org/abs/2506.21817), DOI [10.32473/flairs.38.1.138958](https://doi.org/10.32473/flairs.38.1.138958)) | **Language convergence**: LLM influence measurably spreads into human spoken and written language (podcasts, academic semantics, word choice) | The human/AI baseline keeps shifting — human-judgment "calibration" degrades over time |
+
+**Operational consequences:**
+
+1. **Never gate on human judgment alone** — human review is a corroborating
+   signal, not a primary detector (mirrors the ≥2-independent-confirmations rule
+   of the scoring formula).
+2. **Prefer tool + human combination** — empirical machine detectors (Binoculars
+   AUROC ~0.95) outperform unaided humans; use humans to adjudicate borderline
+   cases, not to replace detection.
+3. **Re-calibrate regularly** — language convergence (Yakura/Geng/Galpin) erodes
+   both human and trained-detector baselines; see the calibration-drift procedure
+   for the quarterly re-scoring cadence.
+
+Sources: [Wikipedia: Signs of AI writing — Your detection ability](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability);
+full research in `research/slop-ontology-gap-2026-08-24/` (deep/03, I33).
 
 ## Thresholds
 
