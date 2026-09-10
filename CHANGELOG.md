@@ -1,5 +1,23 @@
 # Changelog
 
+## [Unreleased]
+
+### feat(#75, Signal 6): ComparativeFraming / Komparativ-Rahmung (detect-only)
+
+Sechstes Struktur-Signal aus #75: Kontrastframes als Beschreibungsersatz
+("weniger X als vielmehr Y", "eher X als Y", "nicht X, sondern Y",
+"less about X, (and) more about Y" / "less about X than about Y").
+
+- `structure_metrics.comparative_framing` (M72): >=2 Treffer ab 25 Woertern,
+  Einzeltreffer bleibt unmarkiert (DoD 3/3/2-Fixtures in
+  `tests/test_structure_comparative.py`), Konfidenz 0.5, detect-only —
+  nie im numerischen Slop-Score.
+- SSOT: `rhetoricalPatterns.patterns.ComparativeFraming` (total 319 → 320,
+  detect_only 15 → 16), Catalog-Parity in `rhetorical_patterns.py`.
+- Kollisionsdisziplin (#46): EN "not just X but Y" bleibt exklusiv bei
+  BinaryContrast; ComparativeFraming deckt die DE-Frames + "less about …
+  more about …" ab.
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
