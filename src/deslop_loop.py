@@ -51,6 +51,11 @@ import os
 import re
 from collections import Counter
 from dataclasses import asdict, dataclass, field
+
+try:
+    from src.voice_drift import VoiceDriftParams, evaluate as voice_drift_evaluate
+except ImportError:  # direct module import without package context
+    from voice_drift import VoiceDriftParams, evaluate as voice_drift_evaluate  # noqa: E402
 from typing import Callable, Optional
 
 Detector = Callable[[str], "tuple[float, list[Finding]]"]
@@ -76,6 +81,7 @@ class LoopParams:
     epsilon: float = 0.01
     voice_budget: float = 0.25
     confirm_confidence: float = 0.9
+    voice_drift: VoiceDriftParams = field(default_factory=VoiceDriftParams)
 
 
 @dataclass
@@ -262,15 +268,19 @@ class DeslopLoop:
                 self._audit_iter(run_dir, records[-1])
                 break
 
-            # ---- VOICE BUDGET (guardrail before verify) ----
+            # ---- VOICE BUDGET (per-step) + VOICE DRIFT (#56, cumulative vs draft_0) ----
             budget = token_change_rate(current, candidate)
-            if budget > p.voice_budget:
+            vd = voice_drift_evaluate(text, candidate, p.voice_drift)
+            vd_violation = vd.verdict in ("budget", "regression")
+            if budget > p.voice_budget or vd_violation:
                 records.append({"iter": it, "score_before": top_score,
                                 "score_after": current_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
-                                "action": "rejected_budget",
-                                "budget_used": round(budget, 4)})
+                                "action": ("rejected_budget" if budget > p.voice_budget
+                                           else f"rejected_voice_drift_{vd.verdict}"),
+                                "budget_used": round(budget, 4),
+                                "voice_drift": asdict(vd)})
                 self._audit_iter(run_dir, records[-1])
                 continue
 
