@@ -56,6 +56,13 @@
 37. **ANU/PNAS (2026), Human detection of AI faces via hyper-typicality** — Menschen auf near-perfect Accuracy trainierbar; Basis für Image-Signal `HyperTypicality`. (Bericht: Gizmodo)
 38. **Deezer Newsroom (20.04.2026 / 11.06.2026)** — 44 % AI-Anteil an Neu-Uploads (~75.000/Tag; 1–3 % der Streams, ~85 % Fraud); öffentlicher AI-Musik-Detektor für Fremdkataloge. https://newsroom-deezer.com/2026/04/ai-generated-tracks-represent-44-of-new-uploaded-music/
 
+## Human Detection Empirics (2026-09-03)
+
+40. **Cheng et al. (2025), Ability of AI detection tools and humans to accurately identify different forms of AI-generated written content** — Advances in Simulation 10(1):66. Menschen ≈ Chance-Level. DOI 10.1186/s41077-025-00396-6
+41. **Fiedler & Döpke (2025), Do humans identify AI-generated text better than machines?** — Int. Review of Economics Education 49:100321. 57 % (AI) / 64 % (Mensch) bei deutschen Abschlussarbeiten. DOI 10.1016/j.iree.2025.100321
+42. **Russell, Karpinska & Iyyer (2025), People who frequently use ChatGPT for writing tasks are accurate and robust detectors of AI-generated text** — ACL 2025, S. 5342–5373. ~90 % Accuracy bei Heavy-Usern ⇒ ~10 % FP; Light-User knapp über Chance. DOI 10.18653/v1/2025.acl-long.267 (arXiv:2501.15654)
+43. **Sprach-Konvergenz (LLM-Einfluss auf menschliche Sprache)** — Yakura et al. 2024 (arXiv:2409.01754, gesprochene Sprache), Geng et al. 2025 (Findings of ACL 2025, DOI 10.18653/v1/2025.findings-acl.987), Galpin et al. 2025 (arXiv:2506.21817, semantisch-lexikalischer Wandel). Basis für „Human detection"-Abschnitt in detection-signals.md.
+
 ## Adaptierte Fremdprojekte
 
 39. **Yang, "No AI slop" Editing-Skill** ([petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop), MIT) — Prosa-Editor mit ~20 rhetorischen AI-Mustern. Neun struktureller Satz-/Absatz-Muster wurden als detect-only Detektoren in `signals.text.rhetoricalPatterns` und `skills/ai-slop-detection/scripts/rhetorical_patterns.py` übernommen (eigene Regexe/Beispiele, benannte Evidenz statt Score).
