@@ -133,6 +133,9 @@ SSOT_REGISTER = {
         "MIN_NUANCE_MARKERS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_FAKE_ANALYSIS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_NUANCE": ("engine-config", "fixture-calibrated"),
+        "COMPARATIVE_FRAMING_PATTERNS": ("closed-list", "deviation"),
+        "MIN_FRAMING_HITS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_FRAMING": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
@@ -204,6 +207,13 @@ ALLOWLIST_NOTES = [
     "project page 'Anzeichen fuer KI-generierte Inhalte' + own examples; "
     "no third-party pattern material copied). MIN_* thresholds are "
     "fixture-pinned (tests/test_structure_metrics.py).",
+    "structure_metrics (#75, Signal 6) COMPARATIVE_FRAMING_PATTERNS is a "
+    "self-derived EN/DE contrast-frame inventory (weniger X als vielmehr Y / "
+    "eher X als Y / nicht X, sondern Y / not X but rather Y / less about X, "
+    "more about Y) for the detect-only ComparativeFraming signal (concept "
+    "from issue #75 Signal 6, Komparativ-Rahmung; own regexes and own "
+    "examples; no third-party pattern material copied). MIN_* thresholds "
+    "are fixture-pinned (tests/test_structure_comparative.py).",
     "de_typography (#76) closed lists (DE function words, capitalized "
     "function words, EN month names, brand allowlist) are self-derived "
     "DE gate/matcher inventories after de.wikipedia Anzeichen-fuer-KI-"

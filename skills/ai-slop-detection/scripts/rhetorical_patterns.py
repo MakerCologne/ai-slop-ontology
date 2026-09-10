@@ -205,6 +205,28 @@ RHETORICAL_PATTERNS = {
             "let me know if you have any questions",
         ],
     },
+    "ComparativeFraming": {
+        "label": "Comparative framing",
+        "confidence": 0.5,
+        "description": ("Contrast frames as a substitute for description: "
+                        "'weniger X als vielmehr Y', 'eher X als Y', "
+                        "'nicht X, sondern Y', 'less about X, more about Y'. "
+                        "Clustered use replaces concrete property statements. "
+                        "Engine implementation: structure_metrics."
+                        "comparative_framing (#75, Signal 6); EN 'not just X "
+                        "but Y' stays with BinaryContrast (collision "
+                        "discipline #46). Detect-only."),
+        "example_slop": ("Der Wandel ist eher eine Neujustierung als eine "
+                         "Revolution. Es geht nicht um Werkzeuge, sondern um "
+                         "Haltung."),
+        "example_fix": ("Der Wandel passt bestehende Ablaeufe an und "
+                        "veraendert keine Grundsaetze; ausschlaggebend ist "
+                        "die Haltung der Beteiligten."),
+        "keep_when": ("Real comparisons with concrete quantities (numbers, "
+                      "measures, named entities) do not count; a single "
+                      "contrast frame is normal rhetoric and stays "
+                      "unmarked; advisory only, never score-dominant."),
+    },
 }
 
 

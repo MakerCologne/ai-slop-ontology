@@ -2491,6 +2491,20 @@
               "as of my last update",
               "let me know if you have any questions"
             ]
+          },
+          "ComparativeFraming": {
+            "label": "Comparative framing",
+            "confidence": 0.5,
+            "description": "Contrast frames as a substitute for description: 'weniger X als vielmehr Y', 'eher X als Y', 'nicht X, sondern Y', 'less about X, more about Y'. Clustered use replaces concrete property statements. EN 'not just X but Y' stays with BinaryContrast (collision discipline #46). Detect-only (#75, Signal 6).",
+            "example_slop": "Der Wandel ist eher eine Neujustierung als eine Revolution. Es geht nicht um Werkzeuge, sondern um Haltung.",
+            "example_fix": "Der Wandel passt bestehende Ablaeufe an und veraendert keine Grundsaetze; ausschlaggebend ist die Einstellung der Beteiligten zu den neuen Werkzeugen.",
+            "keep_when": "Real comparisons with concrete quantities (numbers, measures, named entities) do not count; a single contrast frame is normal rhetoric and stays unmarked; advisory only, never score-dominant.",
+            "phrases": [
+              "als vielmehr",
+              "eher .* als",
+              "nicht .*, sondern",
+              "less about .* more about"
+            ]
           }
         }
       }
