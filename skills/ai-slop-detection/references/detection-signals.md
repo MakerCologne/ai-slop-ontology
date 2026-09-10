@@ -171,6 +171,10 @@ patterns are mirrored as data in `ontology.json` under
 
 ```
 weights = {critical: 1.0, high: 0.7, medium: 0.4, low: 0.2}
-slop_score = min(1.0, sum(weights[s.severity] * s.confidence) / max(1, n))
+noisy_or = 1 - Π(1 - weights[s.severity] * s.confidence)        # default
+d_i     = 1 - Π_(s ∈ dim_i)(1 - weights[s.severity] * s.confidence)
+geometric = Π(d_i ^ w_i) ^ (1 / Σ w_i)   with w_i = max weight in dim_i
+# aggregation="geometric": dimension-grouped, damps double punishment
+# within one signal family (#117); complements the collision matrix
 is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
