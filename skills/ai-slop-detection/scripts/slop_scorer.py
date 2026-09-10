@@ -325,6 +325,32 @@ PHRASE_CATEGORIES = {
     # den einzigen Beleg von slop-0303-021 traegt (Benchmark-Regression
     # R 0.982 -> 0.977). Nachziehen erst mit Clean-Genre 'menschliche
     # Arbeitsprosa' (FU-13). Beleg-Disziplin wie Batch F.
+    # --- #110 (Hassid-Liste Punkte 4-8): konversationelle Fuell-
+    # Floskeln, die LLMs aus gesprochenen Gespraechsmustern in Schrift-
+    # texte importieren. Detect-only per Default-Kumulativregel (>= 2
+    # Treffer). confidence bewusst unter der 0.75-Single-Hit-Eskalations-
+    # schwelle: zwei der vier Phrasen sind in Support-/Erfahrungsprosa
+    # legitime Formulierungen, die Hard-Negative-Guards (fp_guards,
+    # mask_conversation_fillers) vor dem Matching maskieren:
+    #   - "hope this helps" nicht zaehlen, wenn innerhalb der letzten
+    #     100 Zeichen vor einer Grussformel (Support-Mail-Kontext)
+    #   - "most people" nicht zaehlen bei direkter Quellenangabe
+    #     ("most people I interviewed ...") — Pseudo-Empirie vs. echte
+    #   - "^most people" nur claus-initial (#88-Positionssemantik):
+    #     "Most people ..." als Absatzopener, nicht mid-sentence
+    # Nicht uebernommen aus der Quelle: delve/crucial/robust (Buzzword-
+    # Tiers), "It's not X, it's Y" (Binary-Contrast), Adverb-Abuse.
+    # Pre-2022-Cap prueft nicht: Floskeln sind vor-menschlich alt
+    # (Begruendung im Issue/CHANGELOG), daher bewusst kein Cap.
+    "conversational_fillers": {
+        "confidence": 0.55,
+        "phrases": [
+            "here's the thing",
+            "hope this helps",
+            "to provide a quick update",
+            "^most people"
+        ]
+    },
     "generic_phrases": {
         "confidence": 0.65,
         "min_hits": 3,
@@ -636,6 +662,13 @@ def adverb_stats(text: str) -> dict:
 
 def phrase_category_score(text: str) -> dict:
     text_lower = text.lower()
+    # #110: Hard-Negative-Guards fuer conversational_fillers muessen
+    # VOR dem Matching greifen — unterstuetzungs-/erfahrungsprosa-
+    # Kontexte (Grussformel-Naehe, direkte Quellenangabe) maskieren die
+    # betroffenen Phrasen, statt sie nachtraeglich aus den Counts zu
+    # entfernen (Maskierung = Positions- und Ueberlappungslogik bleibt
+    # fuer alle anderen Kategorien unveraendert).
+    text_lower = fp_guards.mask_conversation_fillers(text_lower)
     term_to_cat = {}
     all_terms = []
     for cat_name, cat_def in PHRASE_CATEGORIES.items():

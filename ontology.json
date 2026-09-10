@@ -947,6 +947,42 @@
               "insiders claim"
             ]
           },
+          "conversational_fillers": {
+            "confidence": 0.55,
+            "description": "NEU #110 (Hassid-Liste Punkte 4-8): konversationelle Fuell-Floskeln — LLMs importieren gesprochene Gespraechsmuster in Schrifttexte. Detect-only per Kumulativregel (>=2 Treffer). Hard-Negative-Guards: 'hope this helps' zaehlt nicht in den letzten 100 Zeichen vor Grussformel (Support-Mail-Kontext); '^most people' nur claus-initial (#88-Positionssemantik) und nicht bei direkter Quellenangabe ('most people I interviewed'). Pre-2022-Cap bewusst nicht gesetzt: Floskeln sind vor-menschlich alt. Nicht uebernommen aus der Quelle: delve/crucial/robust (Buzzword-Tiers), It's not X it's Y (Binary-Contrast), Adverb-Abuse.",
+            "items": [
+              "here's the thing",
+              "hope this helps",
+              "to provide a quick update",
+              "^most people"
+            ],
+            "evidence": {
+              "here's the thing": [
+                {
+                  "source": "own:issue-110",
+                  "note": "Ruben Hassid '12 AI tells' Punkt 4 — Gespraechs-Setup ohne referentielles 'thing', typischer LLM-Absatzopener; Risiko niedrig"
+                }
+              ],
+              "hope this helps": [
+                {
+                  "source": "own:issue-110",
+                  "note": "Hassid Punkt 5 — Chatbot-Sign-off, migriert in Blog/LinkedIn; Risiko HOCH: legitimer Abschluss in echten Support-Mails → positionsbasierter Guard (kein Fire in den letzten 100 Zeichen vor Grussformel)"
+                }
+              ],
+              "to provide a quick update": [
+                {
+                  "source": "own:issue-110",
+                  "note": "Hassid Punkt 6 — Meta-Ankuendigung statt Inhalt ('Just give the update'); Risiko niedrig"
+                }
+              ],
+              "^most people": [
+                {
+                  "source": "own:issue-110",
+                  "note": "Hassid Punkte 7-8 — pseudo-empirische Weasel-Quantifikation als Opener; Risiko mittel; Abgrenzung zu WeaselAttribution: eigene claus-initial-Phrase, Doppelbestrafung durch Laengsten-Match-Overlap-Suppression verhindert; direkte Quellenangabe (most people I interviewed) kein Fire"
+                }
+              ]
+            }
+          },
           "de_calque": {
             "confidence": 0.6,
             "description": "DE-Anglizismus-Calques (M45): wörtlich übersetzte EN-KI-Floskeln statt deutscher Idiomatik",

@@ -54,7 +54,10 @@ def _all_phrases():
 
 def _instantiate(phrase: str) -> str:
     """The phrase with placeholders filled in — a text it must match."""
-    out = phrase.lower()
+    # A leading "^" is the #88 clause-initial position marker, not
+    # content: the instantiated text starts with the phrase, which the
+    # clause-start pattern matches at start-of-text.
+    out = phrase.lower().lstrip("^")
     for token, filler in FILLERS.items():
         out = out.replace(token, filler)
     return out
