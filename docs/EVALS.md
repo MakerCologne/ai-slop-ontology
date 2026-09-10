@@ -89,6 +89,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_classifier.py` — src/classifier.py Klassifikation
 - `tests/test_cli.py` — CLI-Härtung (MS-I1)
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
+- `tests/test_project_config.py` — #11 projekt-lokale Config: --config slop.json (disabled_signals, term_allowlist, weight_overrides), strikte Validierung, Noisy-OR-Re-Scoring nach Filterung (L1)
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate
