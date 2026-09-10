@@ -304,6 +304,8 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **Scored examples (8 cases):** `references/slop-examples.md`
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
+- **Editing doctrine (Minimum-Effective-Edit):** `references/editing-doctrine.md` (#30, Teil 1)
+- **Edit self-check (Re-Check-Loop):** `references/edit-self-check.md` (#30, Teil 2)
 
 ## Termination Semantics (Fix-/Review-Loops, #62)
 
