@@ -54,6 +54,29 @@ python3 scripts/slop_scorer.py "TEXT_TO_ANALYZE"
 
 Returns: `slop_score` (0–1), individual dimension scores, signal breakdown with tier information.
 
+### Step 1b: Project-local config — `--config slop.json` (#11)
+
+Terms that are legitimate in *your* domain ("harness" in an ML repo) and
+signals your team has explicitly vetted can be configured per project:
+
+```json
+{
+  "disabled_signals": ["EmDashExcess", "ListHeavy"],
+  "term_allowlist":    ["harness", "synergy"],
+  "weight_overrides":  {"low": 0.1}
+}
+```
+
+```bash
+python3 -m slopkit --config slop.json score --file draft.md
+```
+
+Allowlisted terms are removed from buzzword tiers and phrase categories
+before detection; disabled signals are dropped from reports and the overall
+score is recomputed (Noisy-OR, escalation only for still-weighted critical /
+≥2 high signals). Config errors (unknown keys, bad severities, weights
+outside [0,1]) abort with exit code 2 instead of silently mis-scoring.
+
 ### Step 2: Classify slop type
 
 ```bash

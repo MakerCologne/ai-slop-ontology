@@ -82,7 +82,7 @@ def _ensure_paths():
 class Engine:
     """Composed detection front-end used by every CLI subcommand."""
 
-    def __init__(self, ontology: Path = None):
+    def __init__(self, ontology: Path = None, project_config=None):
         _ensure_paths()
         from classifier import SlopClassifier  # from src/
         from rhetorical_patterns import (  # from skill scripts
@@ -94,17 +94,29 @@ class Engine:
         self._classifier = SlopClassifier(str(self.ontology_file))
         self._find_rhetorical = find_rhetorical_patterns
         self._rhetorical_catalogue = RHETORICAL_PATTERNS
+        self._disabled_signals = set()
+        if project_config is not None:
+            from .project_config import apply_to_engine
+            apply_to_engine(self, project_config)
 
     # --- text ---
     def classify_text(self, text: str):
-        return self._classifier.classify_text(text)
+        result = self._classifier.classify_text(text)
+        if self._disabled_signals or getattr(self, "_severity_weights", None):
+            from .project_config import reclassify_with_config
+            return reclassify_with_config(self, result)
+        return result
 
     def rhetorical(self, text: str):
         return self._find_rhetorical(text)
 
     # --- code ---
     def classify_code(self, code: str, language: str = ""):
-        return self._classifier.classify_code(code, language)
+        result = self._classifier.classify_code(code, language)
+        if self._disabled_signals or getattr(self, "_severity_weights", None):
+            from .project_config import reclassify_with_config
+            return reclassify_with_config(self, result)
+        return result
 
     # --- metadata ---
     def signal_stats(self) -> dict:

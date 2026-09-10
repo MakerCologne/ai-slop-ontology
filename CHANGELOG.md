@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased] (#11 — projekt-lokale Config, btm #1138)
+
+- `slopkit --config slop.json`: `disabled_signals`, `term_allowlist`,
+  `weight_overrides` als projekt-lokale Konfiguration (deslop.toml-Äquivalent)
+- Allowlist filtert Buzzword-Tiers + Phrase-Kategorien vor der Detektion
+- Disabled Signals werden entfernt und der Score neu aggregiert
+  (Noisy-OR, Eskalation nur bei noch wirksam gewichteten critical/2×high)
+- Strikte Validierung: unbekannte Keys, ungültige Severities,
+  Gewichte außerhalb [0,1] → Exit 2 (fail loud)
+- Neue Tests: `tests/test_project_config.py` (13 Tests)
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
