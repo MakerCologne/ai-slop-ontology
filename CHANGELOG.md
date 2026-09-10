@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased] — #46 Signal-Kollisions-Matrix: DoD-Fixtures + Engine-Enforcement
+
+Die in `ontology.json#/collisionMatrix` (Version 1.0.0) dokumentierten
+Kollisions-Auflösungen waren teilweise noch nicht vom Code erzwungen und
+hatten keine Fixtures (SIGNAL-DoD Punkt 6, testContract der Matrix).
+
+- **COLL-1** — `copula_stats()` (slop_scorer) schließt Substitut-Matches,
+  die einen FakeStrongVerb-Span (`rhetorical_patterns._FAKE_STRONG_VERB`)
+  überlappen, aus dem Nenner aus: „serves as a centralized hub“ zählt nur
+  als FakeStrongVerb, nicht zusätzlich als Copula-Substitut.
+- **COLL-2** — der Em-Dash-Cluster-Zweig (em ≥ 3 und > 0.5/Satz) in
+  `FormattingSlop` (rhetorical_patterns) ist entfernt und die verbleibenden
+  Doctrine-Zweige (short copy, long-draft allowance) auf em/Satz ≤ 0.5
+  gegt: EmDashExcess besitzt Cluster-Vorkommen exklusiv.
+- **COLL-3** — `adverb_stats()`: „genuinely“/„truly“ zählen in explizitem
+  Voice-Kontext (Ich/Empfehlung, Heuristik) nicht in die -ly-Rate
+  (positive-voice-Marker #21); Default bei Ambiguität bleibt Adverb.
+- **COLL-4** — bereits durch `find_term_matches()`-Span-Dedup erzwungen;
+  Fixture sperrt das Verhalten.
+- Neu: `tests/test_collision_matrix.py` mit den vier in der Matrix
+  referenzierten Fixtures; `docs/EVALS.md` um die Zuordnung ergänzt.
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
