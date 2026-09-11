@@ -1,5 +1,21 @@
 # Changelog
 
+## [unreleased] — 2026-09-11 (#114 — Academic-Register-Signale, invertierbar)
+
+Genre-Register `academic` erhält drei **invertierbare** detect-only
+Signale (BS-I3, COLING-2025-Evidenz arXiv:2412.11385, Regelquellen
+cbsteh/anti-ai-writing): `EpistemicMismatch` (starkes epistemisches Verb
++ Hedge im selben Satz), `UnquantifiedScopeClaim` (Vollständigkeitsanspruch
+ohne n=/Anzahl/Zeitraum im selben Satz), `VagueAttribution` („the
+literature suggests“ ohne Zitatmarker im ±120-Zeichen-Fenster). Inversion:
+mit akademischer Absicherung feuern sie nicht — echte Papers bleiben
+unangetastet (Register-Guard), slopige Texte feuern (Slop-Signal).
+Nie score-wirksam (ADR-0001). Neues Modul
+`skills/ai-slop-detection/scripts/academic_register.py`, Wiring in
+`slop_classifier.py` (Report + JSON), Doku in SKILL.md +
+detection-signals.md, 13 neue Tests (je Signal 2 Positive + Hard-Negatives),
+EVALS.md-Zuordnung L1.
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills

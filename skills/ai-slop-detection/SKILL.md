@@ -91,6 +91,20 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 python3 scripts/rhetorical_patterns.py "TEXT_TO_ANALYZE"
 ```
 
+### Step 2b-academic: Academic-Register-Signale (detect-only, #114)
+
+```bash
+python3 scripts/academic_register.py "TEXT_FILE" # oder - für stdin
+```
+
+Drei **invertierbare** Signale für Fachtexte (BS-I3, COLING-2025-Evidenz
+arXiv:2412.11385): `EpistemicMismatch` (starkes epistemisches Verb +
+Hedge im selben Satz), `UnquantifiedScopeClaim` („comprehensive analysis“
+ohne n=/Zeitraum im selben Satz), `VagueAttribution` („the literature
+suggests“ ohne Zitatmarker, ±120-Zeichen-Fenster). Jedes Signal invertiert
+mit der akademischen Absicherung (Zahl, Referenz, Quelle) — echte Papers
+feuern nicht. Nie score-wirksam.
+
 ### Step 2c: Check anchor drift between two versions (detect-only)
 
 ```bash
