@@ -113,6 +113,23 @@ class SlopClassifier:
         with open(ontology_path) as f:
             self.ontology = json.load(f)
         self._load_signals()
+        # Domain bindings (issue #35): optional per-signal `triggered_by: domain`
+        # metadata — signals bound to a domain scope are skipped when the caller
+        # passes a different `domain` (systematic FP/FN reduction, cf. unslop).
+        self.signal_domains = (
+            self.ontology.get("signalDomains", {}).get("signals", {})
+        )
+
+    def _domain_allowed(self, signal_id: str, domain: Optional[str]) -> bool:
+        """A signal fires if it has no domain binding, or if the binding's
+        `domains` list contains the requested domain. Without a `domain`
+        argument every signal stays active (backwards compatible)."""
+        if domain is None:
+            return True
+        binding = self.signal_domains.get(signal_id)
+        if not binding or binding.get("triggered_by") != "domain":
+            return True
+        return domain in binding.get("domains", [])
 
     def _load_signals(self):
         """Pre-compile all signal patterns from the ontology."""
@@ -154,8 +171,13 @@ class SlopClassifier:
         # --- Multilingual ---
         self.multilingual = sigs.get("multilingual", {})
 
-    def classify_text(self, text: str) -> ClassificationResult:
-        """Classify a text for AI slop using the full signal database."""
+    def classify_text(self, text: str, domain: Optional[str] = None) -> ClassificationResult:
+        """Classify a text for AI slop using the full signal database.
+
+        `domain` (issue #35): optional domain scope such as "ui_copy",
+        "changelog" or "essay". Signals with a `triggered_by: domain`
+        binding in ontology.json are only evaluated when the scope matches.
+        """
         result = ClassificationResult(modality="text")
 
         text_lower = text.lower()
@@ -416,6 +438,20 @@ class SlopClassifier:
         # accumulate instead of being averaged away — a mean-based formula let
         # three medium signals cancel each other down to ~0.29. Escalation for
         # any critical signal or >= 2 high-severity signals still applies.
+        # Domain gate (issue #35): drop signals whose `triggered_by: domain`
+        # binding excludes the requested scope, before severity/scoring.
+        if domain is not None:
+            dropped = [s.signal_id for s in result.signals_detected
+                       if not self._domain_allowed(s.signal_id, domain)]
+            if dropped:
+                result.signals_detected = [
+                    s for s in result.signals_detected
+                    if self._domain_allowed(s.signal_id, domain)
+                ]
+                result.notes.append(
+                    f"domain_filter[{domain}]: skipped " + ", ".join(dropped)
+                )
+
         for s in result.signals_detected:
             s.severity = _severity_for(s.signal_id)
 

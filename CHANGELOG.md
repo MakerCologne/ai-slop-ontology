@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased] — feat(#35): triggered_by:domain — optionale Domain-Bindung je Signal
+
+`ontology.json` erhält einen `signalDomains`-Block (analog `signalSeverity`):
+5 Pilot-Signale (`ExclamationExcess`, `TrailingMoral`, `ListHeavy`,
+`ThroatClearing`, `EllipsisExcess`) mit `triggered_by: "domain"`, Domänenliste
+und `rationale`. `SlopClassifier.classify_text(text, domain=...)` und
+`scripts/deslop_loop_cli.py --domain` überspringen gebundene Signale außerhalb
+des Scopes vor dem Scoring (auditiert über `notes`); ohne `domain`-Angabe
+bleibt das Verhalten unverändert. Tests: `tests/test_domain_trigger.py` (6).
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
