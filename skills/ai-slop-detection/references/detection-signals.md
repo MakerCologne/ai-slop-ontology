@@ -157,6 +157,27 @@ patterns are mirrored as data in `ontology.json` under
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
 
+### Human detection (Empirie)
+
+Humans are notoriously bad at distinguishing LLM text from human text — the
+strongest argument against "I can spot AI text myself" and for tool use:
+
+1. **Cheng 2025**: Human ability to distinguish LLM text from human text is no
+   better than random chance.
+2. **Fiedler 2025** (German theses): Recognition rate of only 57% for AI texts
+   and 64% for human-generated texts.
+3. **Russell 2025** (preprint): Heavy LLM users identified AI-generated articles
+   ~90% of the time — but at ~10% false positives, i.e. 1 in 10 tags is wrong.
+   Low-exposure participants performed only slightly better than chance.
+4. **Sprach-Konvergenz**: Human writing converges toward LLM style (Yakura 2024 —
+   significant LLM influence in spoken content; Geng 2025; Galpin 2025 —
+   semantics and word choices). Signal vocabularies decay over time; see
+   #47 (Kalibrierungs-Drift) for the re-scoring mandate.
+
+Sources: [Wikipedia: Signs of AI writing — Your detection ability](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability);
+research `deep/03` (I33). This subsection is detect-only context — no scoring
+impact.
+
 ## Thresholds
 
 | Score | Risk | Action |

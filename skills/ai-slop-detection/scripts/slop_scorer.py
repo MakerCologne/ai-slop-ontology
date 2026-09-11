@@ -1207,6 +1207,39 @@ if __name__ == "__main__":
             return args[i + 1]
         return None
 
+    # Issue #120: simple learn input — freetext + optional file is enough.
+    # Unlike --mark-not-slop this imposes no schema: signal_id optional
+    # (default "reviewed"), note itself doubles as the sample context when
+    # no --file is given. See docs/loop-guards/120-learn-input-standard.md.
+    if "--learn" in args:
+        i = args.index("--learn")
+        if i + 1 >= len(args):
+            print("Error: --learn requires a freetext note", file=sys.stderr)
+            sys.exit(2)
+        note = args[i + 1]
+        learn_file = _opt("--file")
+        if learn_file is not None and not os.path.isfile(learn_file):
+            print(f"Error: --file not found: {learn_file}", file=sys.stderr)
+            sys.exit(2)
+        sample_text = None
+        if learn_file:
+            with open(learn_file, encoding="utf-8", errors="replace") as f:
+                sample_text = f.read()
+        store = _opt("--store") or (
+            os.path.join(os.path.dirname(os.path.abspath(learn_file)), "not_slop.jsonl")
+            if learn_file else os.path.join(os.getcwd(), "not_slop.jsonl"))
+        try:
+            entry = learning_store.learn_entry(
+                store, note, signal_id=_opt("--signal"),
+                sample_text=sample_text, added_by=_opt("--by") or "manual")
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(2)
+        src = learn_file or "<note-as-sample>"
+        print(f"Learned: {entry['signal_id']} ({src}, hash {entry['sample_hash']}, "
+              f"store: {store})")
+        sys.exit(0)
+
     if "--mark-not-slop" in args:
         signal_id = _opt("--mark-not-slop")
         mark_file = _opt("--file")
