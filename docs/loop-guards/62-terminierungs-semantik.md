@@ -1,48 +1,39 @@
 # Terminierungs-Semantik: Fixpoint ≠ Optimum (#62)
 
-**Status:** normativ · **Geltungsbereich:** jeder DESLOP-Loop-Run (`src/deslop_loop.py`, #51) und jede Aussage über Loop-Output · **Quellen:** research/slop-loop-pipeline-2026-08-24/report.md Abschnitt (f) (externes Research, Herleitung ebd. Abschnitt (b)–(e)); Krishna et al., arXiv:2303.13408 (Paraphrase-/Entfernungs-Robustheit)
+**Status:** spec · **Verwandt:** #59 (Trajectory-Guard), #47 (Quartals-Drift), SCORE-GOVERNANCE.md · **Quellen:** Krishna et al., arXiv:2303.13408 (Paraphrase-Detektion versagt jenseits beobachteter Trigger); Loop-Design Herleitung (b)–(e), Report-Abschnitt (f)
 
-## 1. Kernaussage
+## Kernaussage
 
-Ein Loop-Terminierungszustand ist **keine** Aussage über die Qualität des Textes, sondern über den **Maßstab des Detektors**. Der Fixpoint (keine weiteren bestätigten Signale im Detektor-Score) ist nicht das Optimum (bestmöglicher menschlicher Text). Der Scorer sieht paraphrasierten Slop jenseits seiner Trigger nicht (Krishna et al., arXiv:2303.13408). Deshalb sind alle Output-Garantien **maßstabsgebunden**.
+Ein Loop, der `maxIter` erreicht, terminiert **nie** als Erfolg. Der Fixpoint eines Fix-/Review-Loops ist ein lokales Optimum relativ zum Detektor-Maßstab der Ontology v1.x — nicht eine Garantie über Slop-Freiheit im Allgemeinen. Wer beides gleichsetzt, optimiert den Detektor statt die Qualität (Goodhart, vgl. M9).
 
-## 2. Terminierungs-Semantik: OUTPUT vs. ESCALATE
+## Terminierungs-Zustände (Zustandsmaschine M7)
 
-| Verdict | Auslöser (Exit-Check) | Bedeutung | Erlaubte Formulierung |
-|---|---|---|---|
-| `EXIT_OK` | E1 ∧ E2 ∧ E4 (am Top-of-Iteration-DETECT) | Alle bestätigten Signale unterhalb der Schwellen; keine kritischen Hard-Gate-Signale; keine neu inkubierten Signale | „slop-frei **nach Maßstab der AI Slop Ontology v\<version\>**“ |
-| `EXIT_ESCALATE` | E3 (Stagnation: 2 akzeptierte Iterationen mit Δ < ε) | Fixpoint oberhalb des Schwellwerts erreicht — ehrliches Eingeständnis, dass der Fix endet, obwohl Signale bleiben | „human review required“ |
-| `EXIT_ESCALATE` | E5 (`maxIter` erreicht) | Budget erschöpft — **nie** still als Erfolg durchgehen | „human review required“ |
-| `EXIT_ESCALATE` | E4-Verletzung / NO_FIX / NO_CANDIDATE | Fixes inkubieren neue Signale oder kein Fix verfügbar | „human review required“ |
+Der EXIT-CHECK des Loops (`DETECT→TRIAGE→FIX→VERIFY→EXIT-CHECK`) kennt genau zwei terminale Zustände:
 
-`EXIT_OK` erfordert **alle drei** Checks E1, E2 **und** E4 gleichzeitig; E3 und E5 sind **immer** ESCALATE-Terminals. Es gibt keinen Weg, per maxIter still zum OUTPUT zu kommen.
+| Zustand | Bedingung | Ausgabe-Formulierung |
+|---|---|---|
+| **OUTPUT** | Score < Schwellwert **und** alle Guards grün **und** Voice-Non-Regression bestanden | „slop-frei nach Maßstab der Ontology v1.x (Stand <Datum>)" |
+| **ESCALATE** | maxIter erreicht, Guard-Anomalie (#59), Rollback-Kette, oder ungelöste Hard-Gate-Verletzung (#55) | „human review required" + Run-Report (`runs/<runId>/`, #61) |
 
-## 3. Formulierungsregeln
+Es gibt keinen dritten Zustand „maxIter erreicht, sieht gut aus → OUTPUT". Genau das ist das Anti-Pattern des weichen maxIter-Passthroughs: die Iterationsgrenze wird zum Qualitätsurteil umgedeutet.
 
-**Erlaubt (maßstabsgebunden, versioniert):**
-- „slop-frei nach Maßstab der AI Slop Ontology v2.9.0“
-- „keine bestätigten Signale über Schwellenwert X des Scorer-Satzes v\<version\>“
-- „ESCALATE: human review required (E5: maxIter)“
+## Warum die Garantie maßstabsgebunden ist
 
-**Verboten (absolute Garantien):**
-- „Text ist jetzt sauber / menschlich / optimal“
-- „Kein AI-Slop mehr enthalten“
-- „Erfolgreich bereinigt“ ohne Verdict-Angabe
+Der Scorer sieht nur die Signale der Ontology v1.x. Paraphrasiertes Slop, das keine getriggerte Signale mehr matcht, ist für den Detektor unsichtbar — nicht verschwunden (Krishna et al., arXiv:2303.13408: Paraphrase-Angriffe umgehen auch trainierte Detektoren mit hoher Rate). Daher:
 
-Jede Aussage, die aus einem Loop-Run abgeleitet wird, muss den Verdict (`EXIT_OK`/`EXIT_ESCALATE`) **und** die Detektor-Version (aus `runs/<runId>/manifest.json`) tragen.
+- Die Ausgabe-Garantie lautet immer relativ: „nach Maßstab der Ontology v1.x, Signalstand <Datum/Commit>", nie absolut „KI-ferenzfrei".
+- Ein Score von 0.00 ist ein Messwert des Detektors, keine Eigenschaft des Textes. Plötzliche Perfekt-Scores sind sogar ein Evasions-Signal (#59, Trigger 1).
 
-## 4. Anti-Pattern-Liste
+## Anti-Pattern-Liste
 
-1. **Weiches maxIter-Passthrough:** „maxIter erreicht, Score aber schon viel besser → als Erfolg werten“. Verboten — E5 ist per Definition ESCALATE. Score-Verbesserung ist kein Ersatz für Schwellen-Erfüllung.
-2. **Absolute Output-Garantie:** „slop-frei“ ohne Maßstabs- und Versionsbindung. Der Scorer erkennt paraphrasierten Slop jenseits seiner Trigger nicht.
-3. **Stiller Erfolg:** Loop-Ende ohne Verdict im Report/Audit. `result.json` ohne `verdict`-Feld ist ein Defekt.
-4. **Fixpoint = Optimum-Gleichsetzung:** „Der Loop terminiert im Optimum.“ Falsch — der Fixpoint ist detektorspezifisch; ein anderer Scorer kann am selben Text noch Signale finden.
-5. **Score-Verfall kaschieren:** Δ-Score-Stagnation als „konvergiert“ statt als E3-ESCALATE melden.
-6. **Versionssprung stillschweigend:** Garantie mit Detektor v2.x ausgesprochen, nachgelagert mit v2.y verifiziert — Garantien gelten pro Version (Re-Score nötig).
+1. **Weiches maxIter-Passthrough:** „6 Iterationen durch, Score 0.05 — passt" ohne ESCALATE-Markierung. Iterationsgrenze ≠ Qualitätsgate.
+2. **Absolute Output-Formulierung:** „Der Text ist jetzt slop-frei" ohne Maßstabs-Bindung (Ontology-Version + Datum).
+3. **Score als alleiniges Exit-Kriterium:** Score-Threshold ohne Guardrails (Voice-Drift #56, Trajektorie #59, Bestätigung #58) — ein Rewriter kann den Detektor optimieren statt die Qualität.
+4. **Stillsuccess bei Anomalie:** Guard-Rot (Evasions-Verdacht, Rollback-Kette) wird im Report erwähnt, der Lauf aber dennoch als OUTPUT klassifiziert.
+5. **Unversionierte Garantie:** Output-Zusicherung ohne Ontology-Stand — unvergleichbar mit späteren Re-Scores (#47) und nicht reproduzierbar (M6).
 
-## 5. Durchsetzung
+## Umsetzung
 
-- Implementiert in `src/deslop_loop.py` (E1–E5, Verdict-Enum `EXIT_OK | EXIT_ESCALATE`, kein Silent-Success-Pfad).
-- Audit-Pflicht: `runs/<runId>/result.json` führt Verdict + maßstabsgebundene Garantie-Formel (Konzept #61).
-- L1-Tests der Exit-Checks (13 Tests, deterministische Fake-Detektoren/Fixer) sichern ab, dass E3/E5 nie als `EXIT_OK` durchgehen.
-- Verwandt: #51 (Loop-Runner), #61 (Run-Audit-Format), #58 (Signal-Bestätigung), #59 (Trajectory-Monitoring als Evasions-Gegenmaßnahme).
+- Loop-Runner MUSS am maxIter-Abbruch `verdict: escalate` setzen und den Run-Report verlinken; STILLER Erfolg ist ein Testfehler.
+- Output-Text MUSS die Formulierung aus der Tabelle tragen (maßstabsgebunden bei OUTPUT, `human review required` bei ESCALATE).
+- Review-Checks für Loop-PRs prüfen die Terminal-Zustands-Klassifikation mit (`tests/`-Seite, s. DoD #64).

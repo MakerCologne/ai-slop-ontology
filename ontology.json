@@ -2664,10 +2664,22 @@
           "die Synergieeffekte",
           "ganzheitlicher Ansatz",
           "der Gamechanger",
-          "aufAugenhöhe",
-          "Best Practices"
+          "auf Augenhöhe"
         ],
-        "note": "German AI output often mixes Denglisch (English loanwords) with formal register"
+        "note": "German AI output often mixes Denglisch (English loanwords) with formal register. 'Best Practices' is conditional (see conditional_buzzwords): alone it is a common legitimate term, it only counts as AI marker when coupled with a generic intensifier.",
+        "conditional_buzzwords": {
+          "Best Practices": {
+            "intensifiers": [
+              "allen",
+              "branchenweit",
+              "modernen",
+              "gängigen",
+              "sämtlichen"
+            ],
+            "window_chars": 60,
+            "keep_when": "Fires only coupled with a generic intensifier ('allen Best Practices', 'den modernen Best Practices'); plain references ('folgt den Best Practices für Migrationen') are legitimate and must not count."
+          }
+        }
       },
       "french": {
         "buzzwords": [
@@ -2730,6 +2742,27 @@
           "مجموعی طور پر"
         ]
       }
+    },
+    "metadata": {
+      "description": "Detect-only slop signals on metadata/config/data surfaces (commit messages, PR bodies, JSON data fields, config boilerplate); issue #45.",
+      "note": "Detect-only: findings are advisory, never part of the numeric text/code slop score (ADR-0001). Implementation: src/metadata_slop.py.",
+      "indicators": [
+        {
+          "id": "CommitMessageSlop",
+          "description": "Generated commit messages / PR bodies: verb-first summary plus generic benefit clause ('This PR refactors ... to improve readability and maintainability')",
+          "confidence": 0.8
+        },
+        {
+          "id": "JsonFieldSlop",
+          "description": "Data fields filled with template output instead of content ('description': 'A comprehensive suite of tools ...', TODO placeholders, key restatement)",
+          "confidence": 0.8
+        },
+        {
+          "id": "ConfigBoilerplateSlop",
+          "description": "Narrating boilerplate comments in Dockerfile/YAML/Terraform ('# Install dependencies' over an obvious RUN/COPY line)",
+          "confidence": 0.6
+        }
+      ]
     }
   },
   "normativeFramings": {

@@ -341,7 +341,8 @@ MULTILINGUAL_BUZZWORDS = {
         "im digitalen Zeitalter", "die sich ständig wandelnde", "sowohl als auch",
         "es ist wichtig zu betonen", "im Folgenden",
         "zusammenfassend lässt sich sagen", "ein tiefgreifender Wandel",
-        "die Synergieeffekte", "ganzheitlicher Ansatz", "der Gamechanger"
+        "die Synergieeffekte", "ganzheitlicher Ansatz", "der Gamechanger",
+        "auf Augenhöhe"
     ],
     "french": [
         "il est important de noter", "dans le paysage actuel",
@@ -734,7 +735,7 @@ DEFAULT_WEIGHTS = {
 
 
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
-              not_slop_store=None) -> dict:
+              not_slop_store=None, project_config: Optional[dict] = None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
     # and zero-width obfuscation of telltale words must not bypass signals.
     text = input_norm.normalize(text)
@@ -748,6 +749,20 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         genre_profile = genre_profiles.get_profile(genre)
     if weights is None:
         weights = dict(DEFAULT_WEIGHTS)
+    # Issue #11: project-local config (slop.json). disabled_signals zeroes
+    # the family weight (exemptable families are additionally excluded via
+    # the exemption mechanic below, killing escalation/floor contributions);
+    # weight_overrides merge over the defaults.
+    allowlist_terms = []
+    if project_config:
+        weights = dict(weights)
+        for fam in project_config.get("disabled_signals", []):
+            weights[fam] = 0.0
+            if fam in ("adverb", "copula", "provenance"):
+                weights[fam] = 0.0  # conditional contributions: weights.get()
+        for k, v in project_config.get("weight_overrides", {}).items():
+            weights[k] = v
+        allowlist_terms = project_config.get("term_allowlist", [])
 
     density = information_density(text)
     rep = repetition_ratio(text)
@@ -766,8 +781,20 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
                    if isinstance(not_slop_store, str) else list(not_slop_store))
         exempted_families = learning_store.exemptions_for(
             entries, learning_store.sample_hash(text))
+    if project_config:
+        # Issue #11: disabled exemptable families behave like reviewed
+        # false positives — no matches, no escalation, no floor.
+        from project_config import _EXEMPTABLE_FAMILIES
+        for fam in project_config.get("disabled_signals", []):
+            if fam in _EXEMPTABLE_FAMILIES:
+                exempted_families.add(fam)
 
     signal_text = fp_guards.strip_quotes(text)
+    # Issue #11: project term allowlist — same mechanic as genre exempt
+    # terms (#42): strip from signal matching only, structural dimensions
+    # keep the full text.
+    if allowlist_terms:
+        signal_text = genre_profiles.strip_exempt_terms(signal_text, allowlist_terms)
     if genre_profile is not None:
         signal_text = genre_profiles.strip_exempt_terms(
             signal_text, genre_profile["exempt_terms"])
@@ -1217,6 +1244,22 @@ if __name__ == "__main__":
     # to the scored file (auto-detected only for --file input).
     not_slop_store = _opt("--not-slop-store")
 
+    # Issue #11: project-local config. Explicit --config PATH, or
+    # auto-discovered slop.json next to/above the scored file.
+    project_cfg = None
+    if "--config" in args:
+        i = args.index("--config")
+        if i + 1 >= len(args):
+            print("Error: --config requires a path", file=sys.stderr)
+            sys.exit(2)
+        cfg_path = args[i + 1]
+        if not os.path.isfile(cfg_path):
+            print(f"Error: no such config file: {cfg_path}", file=sys.stderr)
+            sys.exit(2)
+        import project_config as pconf
+        project_cfg = pconf.load_config(cfg_path)
+        args = args[:i] + args[i + 2:]
+
     # --file PATH: explicit file input (preferred)
     file_path = None
     if "--file" in args:
@@ -1262,7 +1305,14 @@ if __name__ == "__main__":
         if os.path.isfile(default_store):
             not_slop_store = default_store
 
-    result = slop_score(text, genre=genre, not_slop_store=not_slop_store)
+    if project_cfg is None and file_path is not None:
+        import project_config as pconf
+        auto = pconf.auto_discover(os.path.dirname(os.path.abspath(file_path)))
+        if auto:
+            project_cfg = pconf.load_config(auto)
+
+    result = slop_score(text, genre=genre, not_slop_store=not_slop_store,
+                        project_config=project_cfg)
 
     if use_json:
         print(json.dumps(result, indent=2))

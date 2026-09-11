@@ -1,11 +1,27 @@
 ---
 name: ai-slop-detection
-description: Detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.2.0. Analyze content for syntheticity signals, quality deficits, and slop patterns across 14 detection dimensions with 100+ buzzword signals, 7 phrase categories, multilingual detection (DE/FR/ES/HI/VI/UR), and 14 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), or academic plagiarism detection.
+description: Detector, not a rewriter — detect, classify, and score AI slop in text, code, and web content using the AI Slop Ontology v1.2.0. Every verdict ships score + evidence (signal_id, span, quote). Multi-domain: text + code + UI in one detector — the only three-class solution on the market (market scan skills.sh 2026-08: ~100 slop skills, nearly all rewriters; no competitor covers text+code+UI). Analyze content for syntheticity signals, quality deficits, and slop patterns across 14 detection dimensions with 100+ buzzword signals, 7 phrase categories, multilingual detection (DE/FR/ES/HI/VI/UR), and 14 slop types. Provides slop_score (0-1), risk level (Clean/Suspicious/Slop/Malicious), detection signals, and actionable recommendations. Use when: (1) evaluating web search results or fetched content for quality, (2) checking if content is AI-generated slop before citing or storing in memory, (3) scoring text for syntheticity signals, (4) reviewing content before publishing or sharing, (5) "is this slop", "check for slop", "AI slop", "quality check content", "is this AI-generated", "slop score", "slop detection", "content quality audit". NOT for: factual fact-checking (use web_search), image analysis (use image tool), academic plagiarism detection, or parsing audio/video files (media containers are out of scope; text tracks like transcripts, captions, titles of media may be scored indirectly via docs/scope-audio-video.md).
 ---
 
 # AI Slop Detection v2
 
 Classify and score content for AI slop using the AI Slop Ontology v1.0.0.
+
+## Market Positioning: Detector, not a Rewriter (#38)
+
+skills.sh market scan (2026-08, 100 hits for "slop"): the market is dominated by rewrite/humanizer skills; the detector niche is barely occupied. This skill deliberately positions itself as a **detector** — it reports `slop_score` + evidence and never silently rewrites content (detect-only layers document patterns; fixes stay the user's decision).
+
+**Unique selling point: text + code + UI in one detector.** No market skill covers all three classes.
+
+| Skill (skills.sh) | Installs | Text | Code | UI | Score + Evidence | Type |
+|---|---|---|---|---|---|---|
+| anti-ui-slop | 467k | ✗ | ✗ | ✓ | ✗ | Rewriter |
+| story-deslop | 12.4k | ✓ (fiction) | ✗ | ✗ | ✗ | Rewriter |
+| stop-slop | 11.7k | ✓ | ✗ | ✗ | ✗ | Rewriter |
+| no-ai-slop | 7.2k | ✓ | ✗ | ✗ | ✗ | Rewriter |
+| **ai-slop-detection (this)** | — | ✓ | ✓ | ✓ | ✓ | **Detector** |
+
+Sources: `research/slop-ontology-gap-2026-08-24/` (report.md + deep/01–10, market-I2/I4).
 
 ## Core Concept
 
@@ -37,6 +53,29 @@ python3 scripts/slop_scorer.py "TEXT_TO_ANALYZE"
 ```
 
 Returns: `slop_score` (0–1), individual dimension scores, signal breakdown with tier information.
+
+### Step 1b: Project-local config (#11)
+
+Teams in domain-specific repos get legitimate false positives: "harness" in an ML repo, "agents" in an LLM tool. A `slop.json` in the project (checked in, like `deslop.toml`) adapts the scorer:
+
+```json
+{
+  "disabled_signals": ["portability", "mirrored"],
+  "term_allowlist": ["harness", "agent"],
+  "weight_overrides": {"buzzwords": 0.10}
+}
+```
+
+```bash
+python3 scripts/slop_scorer.py --file README.md --config slop.json
+# or: slop.json next to (or above) the scored file is auto-discovered
+python3 scripts/slop_scorer.py --file README.md
+```
+
+- `disabled_signals`: valid ids are the 14 dimension families (density, repetition, burstiness, buzzwords, phrases, punctuation, trailing_moral, list_heavy, fake_authority, verbosity, multilingual, mirrored, structural, portability) plus adverb, copula, provenance. Exemptable families are fully excluded (no matches, no escalation/floor); purely weighted dimensions get weight 0.
+- `term_allowlist`: terms stripped from signal matching only (same mechanic as genre exempt terms); structural dimensions keep the full text. Only the strong-evidence floors that remain after disabling are honest — allowlisting does not silence everything.
+- `weight_overrides`: merged over DEFAULT_WEIGHTS (no re-normalization; scores cap at 1.0).
+- Auto-discovery runs for `--file` input only; piped stdin stays environment-independent.
 
 ### Step 2: Classify slop type
 
@@ -271,6 +310,10 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **Scored examples (8 cases):** `references/slop-examples.md`
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
+
+## Termination Semantics (Fix-/Review-Loops, #62)
+
+maxIter never terminates as success. Terminal states are only **OUTPUT** ("slop-frei nach Maßstab der Ontology v1.x, Signalstand <Datum>") or **ESCALATE** ("human review required" + run report). The guarantee is scale-bound: paraphrased slop beyond the triggered signals stays invisible to the detector (Krishna et al., arXiv:2303.13408). Anti-pattern list and state machine: `../../docs/loop-guards/62-terminierungs-semantik.md`.
 
 ## Output Format
 

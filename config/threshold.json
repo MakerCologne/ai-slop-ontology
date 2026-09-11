@@ -1,0 +1,14 @@
+{
+  "threshold": 0.4,
+  "_note": "Single source of truth for the decision threshold. The threshold sweep (GL #6.3) updates THIS file, never script constants. Consumers load it via src/threshold_config.py; a missing or invalid file must abort, not silently fall back (issue #157 / GL #10).",
+  "short_text_guards": {
+    "min_words_density": 40,
+    "min_words_repetition": 20,
+    "min_sentences_burstiness": 3,
+    "min_words_burstiness": 30,
+    "min_sentences_punctuation": 2,
+    "min_words_trailing_moral": 15,
+    "min_lines_list_heavy": 4,
+    "_note": "Per-metric minimum input sizes (upstream #52). Below the minimum a metric is skipped: neutral contribution, reported in result.skipped, weight re-normalized over active metrics. buzzwords stays active (absolute count). Single source of truth — consumers load via src/short_text_guards.py; no silent defaults."
+  }
+}

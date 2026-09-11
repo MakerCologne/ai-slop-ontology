@@ -58,6 +58,8 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 ### L1 — Unit-Assertions (tests/)
 
 - `tests/test_issue104_doc_drift.py` — #104 Slice A: Doku<->SSOT-Drift (L1) — Gate-Test für scripts/check_doc_signals.py (D1/D2, beide Richtungen) plus die beiden Issue-Beispiele als Matcher-/Classifier-Fixtures ('it is worth noting' in hedging_qualifiers, Template 'in today's [X]' in opening_formulas; konkrete SSOT-Varianten bleiben matchbar)
+- `tests/test_threshold_config.py` — #157 zentraler Threshold: config/threshold.json als einzige Quelle (Verhalten folgt der Config, Missing/Malformed/Out-of-Range brechen ab statt still zu fallen, committeter Wert 0.40 als Ratsche bis zum Sweep GL #6.3)
+- `tests/test_short_text_guards.py` — #52 Kurztext-Guards: dokumentierte Mindestlängen je Metrik in config/threshold.json (short_text_guards), definiertes Skip-Verhalten (neutral + ausgewiesene skipped-Liste + Gewicht-Re-Normalisierung, buzzwords bleibt aktiv), Fixtures für 5-/20-/50-Wort-Texte (L1)
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
 - `tests/test_adverb_rate.py` — Signal #24 Adverb-Rate (Fixtures)
 - `tests/test_anchor_drift.py` — #78 Anchor-Drift (detect-only, Anker-Diff, Dezimal-Grenzfall)
@@ -87,6 +89,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_classifier.py` — src/classifier.py Klassifikation
 - `tests/test_cli.py` — CLI-Härtung (MS-I1)
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
+- `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
@@ -100,6 +103,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_human_voice.py` — #21 positive Gegenprofil-Referenz (Struktur-Pinning, kein Scorer)
 - `tests/test_fu_batch_g.py` — FU-Register-Abrechnung Batch G (FU-2/3/4 Red-Fixes aus Reviews C/D)
 - `tests/test_fu_batch_g2.py` — FU-5/7/10 (as_any-Kommentar-Guard, CHANGELOG-Claim, SKILL-Benchmark-Spiegel)
+- `tests/test_trajectory_guard.py` — #59 Score-Trajectory-Monitoring: ANOMALY/DIMINISHING/ROLLBACK_CHAIN-Trigger, Präzedenz, Konfigurierbarkeit, Run-Dir-Ingest (L1)
 - `tests/test_deslop_loop.py` — #51 Loop-Runner-Orchestrator: E1–E5-Exit-Checks, Rollback, Voice-Budget, Signal-Bestätigung, Audit-Vollständigkeit (deterministische Fake-Detektoren, L1)
 - `tests/test_lexikon.py` — #50 Lexikon-Pilot: Schema-Validierung, Beleg-Pflicht, Build-Determinismus, Sync-Gate (dist == Neubau), llms.txt-Struktur (L1)
 - `tests/test_fu12_watchlist.py` — FU-12 Generic-Phrase-Watchlist (Reviewer-Gegenproben < 0.40, Benchmark-Verteidigung)
@@ -107,8 +111,10 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_genre_profiles.py` — #42 Genre-Opt-in-Profile (ADR-0004)
 - `tests/test_governance_doc.py` — #67 Governance-Pflichtabschnitte (Meta)
 - `tests/test_input_norm.py` — #40 Input-Normalisierung/Evasion
+- `tests/test_project_config.py` — #11 Projekt-lokale Config (disabled_signals/term_allowlist/weight_overrides, Auto-Discovery)
 - `tests/test_instruction_slop.py` — Signal Instruction-Slop
 - `tests/test_intensifier_fix.py` — FU-1 Intensifier-Fix
+- `tests/test_best_practices_guard.py` — #156 FP-Guard: 'Best Practices' zählt nur mit generischem Verstärker (conditional_buzzwords), Plain-Referenz ist kein Marker (L1, TP+Hard Negative+SSOT-Pin)
 - `tests/test_learning_store.py` — #29 Learning-Store (--learn, Escalations-Schutz)
 - `tests/test_markup_anomalies.py` — Signal Markup-Anomalien
 - `tests/test_methodology_doc.py` — #63 Kodex-Konsistenz (Meta)

@@ -19,9 +19,9 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 try:
-    from scorer import find_term_matches
+    from scorer import find_term_matches, _term_pattern
 except ImportError:  # allow import as package module
-    from src.scorer import find_term_matches
+    from src.scorer import find_term_matches, _term_pattern
 
 
 def _trailing_moral(text):
@@ -371,6 +371,22 @@ class SlopClassifier:
             if isinstance(lang_data, dict) and "buzzwords" in lang_data:
                 lang_hits = sorted(find_term_matches(
                     text_lower, [w.lower() for w in lang_data["buzzwords"]]))
+                # Conditional markers (#156): common legitimate terms (e.g.
+                # 'Best Practices') only count as AI markers when coupled
+                # with a generic intensifier ('allen', 'modernen', ...) in
+                # a window before the marker. Plain references are not slop.
+                conditional = lang_data.get("conditional_buzzwords", {})
+                for marker, rule in conditional.items():
+                    marker_l = marker.lower()
+                    intensifiers = [i.lower() for i in rule.get("intensifiers", [])]
+                    window = int(rule.get("window_chars", 60))
+                    for m in re.finditer(_term_pattern(marker_l), text_lower):
+                        ctx = text_lower[max(0, m.start() - window):m.start()]
+                        if any(re.search(
+                                _term_pattern(i), ctx) for i in intensifiers):
+                            lang_hits.append(marker_l)
+                            break
+                lang_hits = sorted(set(lang_hits))
                 if len(lang_hits) >= 2:
                     result.signals_detected.append(SignalMatch(
                         f"Multilingual_{lang}", 0.70,

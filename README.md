@@ -4,6 +4,22 @@ A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*.
 
 **Version:** 1.9.0 | **Date:** 2026-08-25 | **License:** CC BY 4.0
 
+## Positioning: Detector, not a Rewriter
+
+Market scan (skills.sh, 2026-08, 100 hits for "slop"): nearly the entire market consists of rewrite/humanizer skills. This project deliberately occupies the **detector niche**: it delivers `slop_score` + per-finding evidence (signal_id, span, quote) and leaves the fix decision to the human. The CLI is detect-only by design (`slop score`, `slop classify`, `slop rhetoric`, `slop code`).
+
+**Unique selling point — multi-domain:** text + code + UI in one detector. No market skill covers all three classes:
+
+| Skill (skills.sh) | Installs | Text | Code | UI | Score + Evidence | Type |
+|---|---|---|---|---|---|---|
+| anti-ui-slop | 467k | ✗ | ✗ | ✓ | ✗ | Rewriter |
+| story-deslop | 12.4k | ✓ (fiction) | ✗ | ✗ | ✗ | Rewriter |
+| stop-slop | 11.7k | ✓ | ✗ | ✗ | ✗ | Rewriter |
+| no-ai-slop | 7.2k | ✓ | ✗ | ✗ | ✗ | Rewriter |
+| **AI Slop Ontology / `slop`** | — | ✓ | ✓ | ✓ | ✓ | **Detector** |
+
+Sources: `research/slop-ontology-gap-2026-08-24/` (report.md + deep/01–10, market-I2/I4).
+
 ## Quick Start
 
 ```python
@@ -219,3 +235,14 @@ Compatible with: LangGraph-Node, MCP-Tool, AutoGen-Function
 ## License
 
 CC BY 4.0
+
+## Issue-Nummern: Konvention (GitLab vs. GitHub)
+
+Zwei aktive Tracker mit getrennten Nummernräumen: **GitHub** (Signalarbeit/Landscape, dieses Repo) und **GitLab Burn-Tracker** (`maker-cologne/ai-slop-ontology`, Projekt 74 auf vmd80537; Burn/Pipeline).
+
+**Kurzregel:**
+- Issue-Nummern **ohne Präfix** = GitHub (dieses Repo)
+- GitLab-Issues immer als **„GL #N“**, GitLab-MRs als **„GL !N“** zitieren
+- Cross-Links: GitHub-Issues tragen eine „GitLab-Bezug:“-Zeile; GitLab-Issues eine „GitHub-Äquivalent:“-Zeile
+
+*Eingeführt via Tracker #158 (Nummern-Kollision GitLab↔GitHub).*
