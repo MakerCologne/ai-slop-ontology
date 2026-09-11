@@ -1,5 +1,29 @@
 # Changelog
 
+## [Unreleased]
+
+### #58: Signal-Bestätigung — ≥ 2 unabhängige Nachweise vor jedem Fix (ConfirmGate)
+
+- `src/confirm.py` (neu): `ConfirmGate` als injizierbares Bestätigungstor
+  fuer den Deslop-Loop. Ein Finding zaehlt erst ab 2 unabhaengigen
+  Nachweisen — Pfad A: deterministisch + LLM-Zweitcheck (injizierbarer
+  Callback, #57-Anbindung), Pfad B: deterministisch + Resample
+  (deterministische Perturbationen: Whitespace, Interpunktion, Case;
+  kein RNG — audit-reproduzierbar), Pfad C (legacy-kompatibel):
+  confidence >= 0.9 oder Stabilitaet ueber zwei aufeinanderfolgende
+  DETECT-Runs.
+- `src/deslop_loop.py`: TRIAGE nutzt jetzt das injizierbare Gate
+  (`DeslopLoop(..., confirm=gate)`); ohne Gate bleibt das bisherige
+  Inline-Kriterium unangetastet. Audit-Records (`iterations.jsonl`)
+  fuehren nun ein `evidence`-Feld je bestaetigtem Signal (Spec-DoD).
+- `fp_fix_rate()`-Metrik (Spec-Akzeptanz): verhinderte Einzel-Nachweis-
+  Fixe / alle Findings — Rohstoff fuer den Vor/Nach-Vergleich auf dem
+  Benchmark-Korpus.
+- `docs/loop-guards/58-signal-bestätigung.md`: Status spec →
+  implementiert, Umsetzungsanker ergaenzt.
+- Tests: `tests/test_confirm.py` (13 Tests: Resample-Determinismus,
+  alle 4 Pfade einzeln, FP-Metrik, Loop-Integration mit und ohne Gate).
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills

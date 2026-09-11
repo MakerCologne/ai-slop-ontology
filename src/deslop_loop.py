@@ -30,9 +30,11 @@ claims success it cannot guarantee. All guarantees are bound to the
 detector's scale ("slop-frei nach Maßstab des Detektors"), not to absolute
 quality (#62: Fixpoint != Optimum).
 
-Signal confirmation (#58/Self-CheckGPT concept): a finding is only passed
-to the fix callback if it appeared in two consecutive top-of-iteration
-DETECT runs OR its confidence >= confirm_confidence.
+Signal confirmation (#58/SelfCheckGPT concept): a finding is only passed
+to the fix callback if it is confirmed by ≥ 2 independent evidences
+(``src/confirm.py`` ConfirmGate): deterministic match PLUS one of
+LLM second check, resample perturbation, stability across two
+top-of-iteration DETECTs, or confidence >= confirm_confidence.
 
 Voice-budget guardrail: a candidate whose token-change rate relative to
 the current text exceeds voice_budget (default 25%, Minimum-Effective-Edit
@@ -52,6 +54,8 @@ import re
 from collections import Counter
 from dataclasses import asdict, dataclass, field
 from typing import Callable, Optional
+
+from src.confirm import ConfirmedFinding, ConfirmGate, ConfirmParams  # noqa: F401  (re-export)
 
 Detector = Callable[[str], "tuple[float, list[Finding]]"]
 Fixer = Callable[[str, list["Finding"]], Optional[str]]
@@ -133,9 +137,12 @@ class DeslopLoop:
     def __init__(self, detector: Optional[Detector] = None,
                  params: Optional[LoopParams] = None,
                  runs_dir: Optional[str] = None,
-                 run_id: Optional[str] = None):
+                 run_id: Optional[str] = None,
+                 confirm: Optional[ConfirmGate] = None):
         self.detector = detector or default_detector()
         self.params = params or LoopParams()
+        # #58: injizierbares Bestätigungstor; None -> Legacy-Inline-Kriterium
+        self.confirm = confirm
         self.runs_dir = runs_dir
         self.run_id = run_id or datetime.datetime.now().strftime(
             "%Y%m%d-%H%M%S") + f"-{id(self) % 10000:04d}"
@@ -200,13 +207,22 @@ class DeslopLoop:
 
         while it < p.max_iter:
             it += 1
-            # ---- DETECT + TRIAGE (confirmation) ----
+            # ---- DETECT + TRIAGE (confirmation, #58) ----
             top_score, findings = self.detector(current)
-            confirmed = [
-                f for f in findings
-                if f.confidence >= p.confirm_confidence
-                or (prev_top_ids is not None and f.signal in prev_top_ids)
-            ]
+            if self.confirm is not None:
+                confirmed_objs = self.confirm.confirm(
+                    current, findings, prev_ids=prev_top_ids,
+                    detector=self.detector)
+                confirmed = [cf.finding for cf in confirmed_objs]
+                evidence_map = {cf.finding.signal: cf.evidence
+                                for cf in confirmed_objs}
+            else:
+                confirmed = [
+                    f for f in findings
+                    if f.confidence >= p.confirm_confidence
+                    or (prev_top_ids is not None and f.signal in prev_top_ids)
+                ]
+                evidence_map = None
             confirmed_ids = {f.signal for f in confirmed}
             prev_top_ids = {f.signal for f in findings}
             open_signals = sorted(confirmed_ids)
@@ -228,6 +244,7 @@ class DeslopLoop:
                                 "score_after": top_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                                 "action": "exit_ok", "budget_used": 0.0})
                 self._audit_iter(run_dir, records[-1])
                 break
@@ -242,6 +259,7 @@ class DeslopLoop:
                                 "score_after": top_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                                 "action": "escalate_no_fix",
                                 "budget_used": 0.0})
                 self._audit_iter(run_dir, records[-1])
@@ -257,6 +275,7 @@ class DeslopLoop:
                                 "score_after": top_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                                 "action": "escalate_no_candidate",
                                 "budget_used": 0.0})
                 self._audit_iter(run_dir, records[-1])
@@ -269,6 +288,7 @@ class DeslopLoop:
                                 "score_after": current_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                                 "action": "rejected_budget",
                                 "budget_used": round(budget, 4)})
                 self._audit_iter(run_dir, records[-1])
@@ -288,6 +308,7 @@ class DeslopLoop:
                             "score_after": cand_score,
                             "findings": sorted({f.signal for f in findings}),
                             "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                             "action": action,
                             "budget_used": round(budget, 4)})
             self._audit_iter(run_dir, records[-1])
