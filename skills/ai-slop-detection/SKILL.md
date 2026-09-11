@@ -154,6 +154,20 @@ rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
 Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
 `eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
 
+### Step 2i: Findings-Standard mit Receipts (#119)
+
+`scripts/findings_standard.py` — Ausgabe-Vertrag für jeden Befund:
+`{signal_id, span, evidence_quote, reliability, suggested_action}`.
+Adapter für rhetorical_patterns / register_profile / naturalness_guard
+und `findings_from_result(result, text)` für receipts aus einem
+`slop_score()`-Ergebnis (buzzword/phrase/authority/multilingual mit
+char-Offsets; nicht lokalisierbare Befunde setzen `span: null`).
+**Nur Ausgabe, kein Score** — reliability beschreibt Beweislage
+(high/medium/low), nie eine Eskalationsstufe; detect-only-Hinweis ist
+Bestandteil jeder suggested_action. Normiert den Community-Konsens
+"Score mit receipts" (Slopdar/ZeroSlop/hallucinot,
+`tests/test_findings_standard.py`).
+
 ### DE-Phrase-Layer (#76/#77, SSOT in ontology.json)
 
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
