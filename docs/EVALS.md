@@ -115,6 +115,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_instruction_slop.py` — Signal Instruction-Slop
 - `tests/test_intensifier_fix.py` — FU-1 Intensifier-Fix
 - `tests/test_best_practices_guard.py` — #156 FP-Guard: 'Best Practices' zählt nur mit generischem Verstärker (conditional_buzzwords), Plain-Referenz ist kein Marker (L1, TP+Hard Negative+SSOT-Pin)
+- `tests/test_academic_register.py` — #114 Academic-Register-Signale: EpistemicMismatch, UnquantifiedScopeClaim, VagueAttribution — je Signal 2 Positive + 2 Hard-Negatives (Inversion mit n=/Zeitraum/Zitat; L1)
 - `tests/test_learning_store.py` — #29 Learning-Store (--learn, Escalations-Schutz)
 - `tests/test_markup_anomalies.py` — Signal Markup-Anomalien
 - `tests/test_methodology_doc.py` — #63 Kodex-Konsistenz (Meta)

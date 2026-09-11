@@ -122,6 +122,21 @@ Regex patterns for: API keys, tokens, passwords, connection strings
 | False authorship | Strong suspicion |
 | Disclosed AI + human review | Rather exonerating |
 
+## Academic-Register Signals (detect-only, #114)
+
+Invertierbar: feuern nur ohne akademische Absicherung im Kontext.
+
+### EpistemicMismatch
+Starkes epistemisches Verb (`demonstrate`, `prove`, `confirm`, `conclusively show`) **und** Hedge (`may`, `might`, `suggest`, `appears`) im selben Satz. Inversion: Hedge ohne starkes Verb; starkes Verb mit n=/Quantifizierung.
+
+### UnquantifiedScopeClaim
+Vollständigkeitenspruch (`comprehensive analysis/survey/study`, `exhaustive …`, `all relevant studies`) ohne Zahl (n=, Anzahl, Zeitraum, %) im selben Satz. Inversion: „comprehensive survey of 214 papers (2018–2025)“.
+
+### VagueAttribution
+`the literature suggests/shows`, `studies show`, `research indicates`, `it is well established that` ohne Zitatmarker (`[12]`, `(Smith et al., 2020)`, `\cite{}`) im ±120-Zeichen-Fenster. Inversion: mit Zitat.
+
+Quelle: cbsteh/anti-ai-writing, arXiv:2412.11385 (COLING 2025). Texte < 40 Wörter werden geprüfungsfrei ignoriert.
+
 ## Rhetorical Patterns (detect-only)
 
 Sentence- and paragraph-level *shapes* that mark AI-assisted prose, independent

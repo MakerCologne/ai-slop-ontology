@@ -25,6 +25,7 @@ from slop_scorer import (
     punctuation_anomaly_score, mirrored_intro_conclusion, find_term_matches,
 )
 from rhetorical_patterns import find_rhetorical_patterns
+from academic_register import find_academic_register_findings
 
 
 @dataclass
@@ -52,6 +53,10 @@ class ClassificationResult:
     # Detect-only: named rhetorical patterns with quoted evidence. These are
     # reported for the user to check; they do NOT feed the numeric score.
     rhetorical_patterns: list = field(default_factory=list)
+    # Detect-only (issue #114): academic-register signals — invertierbar,
+    # nie gescort. Feuern nur, wenn die akademische Absicherung (Zahl,
+    # Referenz, Quelle) fehlt — echte Papers bleiben unangetastet.
+    academic_register: list = field(default_factory=list)
 
 
 # --- Slop Type Pattern Definitions (extended from ontology.json v1.0.0) ---
@@ -319,6 +324,9 @@ def classify_text(text: str) -> ClassificationResult:
     # Detect-only rhetorical patterns (named evidence, no score contribution).
     result.rhetorical_patterns = find_rhetorical_patterns(text)
 
+    # Detect-only academic-register signals (#114, invertierbar, BS-I3).
+    result.academic_register = find_academic_register_findings(text)
+
     return result
 
 
@@ -346,6 +354,11 @@ def format_report(result: ClassificationResult) -> str:
         for p in result.rhetorical_patterns:
             lines.append(f"  • {p['label']} ({p['confidence']:.0%}) — \"{p['evidence']}\"")
 
+    if result.academic_register:
+        lines.append(f"\n🎓 Academic-register findings ({len(result.academic_register)}):")
+        for a in result.academic_register:
+            lines.append(f"  • {a['id']} ({a['confidence']:.0%}) — {a['evidence'][:100]}")
+
     if result.countermeasures:
         lines.append(f"\n🛡️ Recommended actions:")
         for c in result.countermeasures:
@@ -361,6 +374,7 @@ def to_dict(result: ClassificationResult) -> dict:
         "slop_types": [{"name": t.name, "score": t.score, "description": t.description} for t in result.slop_types],
         "signals": [{"signal": s.signal_id, "confidence": s.confidence, "evidence": s.evidence} for s in result.signals],
         "rhetorical_patterns": result.rhetorical_patterns,
+        "academic_register": result.academic_register,
         "countermeasures": result.countermeasures,
     }
 
