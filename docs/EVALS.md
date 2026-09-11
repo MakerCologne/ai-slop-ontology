@@ -128,6 +128,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_rhythm_openers.py` — Signal Rhythm-Opener
 - `tests/test_scorer.py` — Scorer-Kern (Score-Berechnung, Threshold)
 - `tests/test_signal_dod.py` — #64 DoD-Check-Script (Meta)
+- `tests/test_signal_reliability.py` — #116 signalReliability-Register + UI-Tells (Enums, Datumsformat, weak⇒FP-Pflicht, CC-BY-SA-Attribution) (L1)
 - `tests/test_skill_scripts.py` — Skill-Skripte-Smoke
 - `tests/test_templates.py` — #66 Templates-Pflichtfelder (Meta)
 - `tests/test_tokenizer.py` — #43 Tokenizer
