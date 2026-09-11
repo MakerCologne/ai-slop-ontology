@@ -4290,6 +4290,78 @@
       "InventedPackage": "delete"
     }
   },
+  "signalDomains": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-11",
+    "source": "issue #35 / research/slop-ontology-gap-2026-08-24 deep/04 (unslop): slop defaults are domain-conditional",
+    "note": "Optional per-signal domain binding. A signal with triggered_by: 'domain' is only evaluated when the scorer receives a matching --domain scope. Without a domain argument all signals stay active (backwards compatible). Rationale: static signals without domain context produce systematic false positives/negatives (e.g. legitimate exclamation marks in marketing copy, list-heavy changelogs).",
+    "domains_vocabulary": [
+      "essay",
+      "blog",
+      "article",
+      "docs",
+      "social",
+      "marketing_copy",
+      "ui_copy",
+      "changelog",
+      "commit_message",
+      "technical_report"
+    ],
+    "signals": {
+      "ExclamationExcess": {
+        "triggered_by": "domain",
+        "domains": [
+          "essay",
+          "blog",
+          "article",
+          "docs",
+          "technical_report"
+        ],
+        "rationale": "Exclamation marks are legitimate register in marketing_copy/ui_copy/social; only indicative of slop in restrained written genres."
+      },
+      "TrailingMoral": {
+        "triggered_by": "domain",
+        "domains": [
+          "essay",
+          "blog",
+          "article",
+          "social"
+        ],
+        "rationale": "Moral/lesson closings do not occur in ui_copy/changelog/commit_message; restricting avoids odd cross-genre matches."
+      },
+      "ListHeavy": {
+        "triggered_by": "domain",
+        "domains": [
+          "essay",
+          "blog",
+          "article",
+          "technical_report"
+        ],
+        "rationale": "Lists are the native format of docs, changelogs and commit messages; only list-heavy prose is a signal."
+      },
+      "ThroatClearing": {
+        "triggered_by": "domain",
+        "domains": [
+          "essay",
+          "blog",
+          "article",
+          "technical_report"
+        ],
+        "rationale": "Introductions do not exist in ui_copy or commit messages."
+      },
+      "EllipsisExcess": {
+        "triggered_by": "domain",
+        "domains": [
+          "essay",
+          "blog",
+          "article",
+          "technical_report",
+          "social"
+        ],
+        "rationale": "Ellipses in ui_copy/changelog are rare and usually stylistic, not evidence of AI generation."
+      }
+    }
+  },
   "collisionMatrix": {
     "version": "1.0.0",
     "lastUpdated": "2026-09-02",

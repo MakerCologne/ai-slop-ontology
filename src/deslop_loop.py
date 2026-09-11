@@ -92,8 +92,14 @@ class LoopResult:
     run_dir: Optional[str] = None
 
 
-def default_detector(ontology_path: str = "ontology.json") -> Detector:
-    """Read-only wrapper around the repo's deterministic classifier."""
+def default_detector(ontology_path: str = "ontology.json",
+                     domain: Optional[str] = None) -> Detector:
+    """Read-only wrapper around the repo's deterministic classifier.
+
+    `domain` (issue #35): optional domain scope forwarded to
+    classify_text — signals with a `triggered_by: domain` binding in
+    ontology.json are skipped when the scope does not match.
+    """
     import sys
 
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -103,7 +109,7 @@ def default_detector(ontology_path: str = "ontology.json") -> Detector:
     clf = SlopClassifier(ontology_path)
 
     def detect(text: str):
-        res = clf.classify_text(text)
+        res = clf.classify_text(text, domain=domain)
         findings = [
             Finding(signal=m.signal_id, confidence=m.confidence,
                     evidence=m.evidence, severity=m.severity)

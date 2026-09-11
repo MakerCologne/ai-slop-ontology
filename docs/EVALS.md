@@ -114,6 +114,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_project_config.py` — #11 Projekt-lokale Config (disabled_signals/term_allowlist/weight_overrides, Auto-Discovery)
 - `tests/test_instruction_slop.py` — Signal Instruction-Slop
 - `tests/test_intensifier_fix.py` — FU-1 Intensifier-Fix
+- `tests/test_domain_trigger.py` — #35 Domain-Bindung: triggered_by:domain-Signale feuern nur im passenden Scope, ungebundene Signale und No-Arg-Pfad unverändert (L1, TP+Scope-Negativ+SSOT-Pin)
 - `tests/test_best_practices_guard.py` — #156 FP-Guard: 'Best Practices' zählt nur mit generischem Verstärker (conditional_buzzwords), Plain-Referenz ist kein Marker (L1, TP+Hard Negative+SSOT-Pin)
 - `tests/test_learning_store.py` — #29 Learning-Store (--learn, Escalations-Schutz)
 - `tests/test_markup_anomalies.py` — Signal Markup-Anomalien
