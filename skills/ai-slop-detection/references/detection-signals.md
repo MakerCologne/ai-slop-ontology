@@ -56,6 +56,30 @@ Benchmark-Korpus (eval/corpus.jsonl, slop-0101/slop-0504), Beleg-Disziplin
   detail", "of course! here's the summary", "based on available
   information", "up to my last training update", "some critics argue", ...
 
+**#115 (2026-09-11, ZeroSlop-Adaption)** — zwei Prosa-Kategorien mit
+keep_when-Guards (fp_guards.mask_performative_stakes, wirken VOR dem
+Matching):
+- `performative_voice` (conf 0.55): Persoenlichkeits-Theater — "here's
+  the thing nobody tells you", "nobody tells you", "i'm going to be
+  honest with you", "let me be brutally honest", "i don't say this
+  lightly", "unpopular opinion, but", "call me old-fashioned, but".
+  Hard-Negative-Guard: kein Fire bei First-Person-Erfahrungs-Anker im
+  +-120-Zeichen-Fenster ("when I ...", "in my experience",
+  "I lost/spent/learned/tried/failed") — gelebte statt performte
+  Stimme.
+- `manufactured_stakes` (conf 0.6): Dringlichkeit ohne Sache — "in
+  today's fast-paced", "the stakes have never been higher", "now more
+  than ever", "at a critical juncture", "time is running out", "don't
+  get left behind", "before it's too late". Hard-Negative-Guard: kein
+  Fire bei konkretem Termin/Fakt im 120-Zeichen-Folgfenster ("deadline
+  15 October", "by Friday", Ziffern mit Einheit) — echte statt
+  dramatisierte Dringlichkeit.
+
+  Beide Kategorien detect-only per Kumulativregel (≥ 2 Treffer).
+  Fact-Gate-Invariante (ontology.json → deslopInvariants): "Deslop
+  löscht keine Facts" — der Score trifft die Inszenierung, nie den
+  Fakt dahinter.
+
 ### Punctuation Anomalies
 - Em-dash rate > 0.5 per sentence
 - Ellipsis rate > 0.3 per sentence

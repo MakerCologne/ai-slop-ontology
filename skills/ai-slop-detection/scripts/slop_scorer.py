@@ -205,6 +205,50 @@ PHRASE_CATEGORIES = {
             "people are saying", "sources say", "insiders claim"
         ]
     },
+    # --- #115 (ZeroSlop): 'performed voice' + 'manufactured stakes'.
+    # Zwei Prosa-Muster, die LLMs aus Sozial-Media-/Marketing-Prosa
+    # importieren: Persoenlichkeits-Theater ("here's the thing nobody
+    # tells you") und Dringlichkeit ohne Sache ("in today's fast-paced").
+    # Beide Kategorien sind detect-only ueber die Kumulativregel (>= 2
+    # Treffer) und tragen keep_when-Guards (fp_guards.
+    # mask_performative_stakes), die VOR dem Matching maskieren:
+    #   - performative_voice: kein Fire, wenn im +-120-Zeichen-Fenster
+    #     ein First-Person-Erfahrungs-Anker steht ("when I ...",
+    #     "in my experience", "I lost/spent/learned/tried/failed")
+    #     — gelebte statt performte Stimme
+    #   - manufactured_stakes: kein Fire, wenn im Folgfenster (120
+    #     Zeichen) ein konkreter Termin/Fakt steht ("by Friday",
+    #     "deadline 15 October", Ziffern mit Einheit) — echte statt
+    #     dramatisierte Dringlichkeit
+    # Ueberlappung mit report_hedging "here's what nobody tells you"
+    # wird durch Longest-Match-Overlap-Suppression aufgelöst (keine
+    # Doppelbestrafung). Fact-Gate-Kopplung: Deslop löscht keine Facts
+    # (ontology.json deslopInvariants, #115) — der Score trifft die
+    # Inszenierung, nie den Fakt dahinter.
+    "performative_voice": {
+        "confidence": 0.55,
+        "phrases": [
+            "here's the thing nobody tells you",
+            "nobody tells you",
+            "i'm going to be honest with you",
+            "let me be brutally honest",
+            "i don't say this lightly",
+            "unpopular opinion, but",
+            "call me old-fashioned, but"
+        ]
+    },
+    "manufactured_stakes": {
+        "confidence": 0.6,
+        "phrases": [
+            "in today's fast-paced",
+            "the stakes have never been higher",
+            "now more than ever",
+            "at a critical juncture",
+            "time is running out",
+            "don't get left behind",
+            "before it's too late"
+        ]
+    },
     # --- Batch F (2026-08-25), cluster C2: business/report hedging and
     # fake-authority report formulas mined from FN series slop-0202 of
     # eval/corpus.jsonl. Same evidence discipline as C1 (>=3 slop texts,
@@ -636,6 +680,11 @@ def adverb_stats(text: str) -> dict:
 
 def phrase_category_score(text: str) -> dict:
     text_lower = text.lower()
+    # #115: keep_when-Guards (echte Meinung / echte Dringlichkeit)
+    # muessen VOR dem Matching greifen — gleiche Mechanik wie die
+    # Quote-Exemption: Maskierung statt Post-Filter haelt Positionen und
+    # Longest-Match-Overlap-Logik fuer alle Kategorien intakt.
+    text_lower = fp_guards.mask_performative_stakes(text_lower)
     term_to_cat = {}
     all_terms = []
     for cat_name, cat_def in PHRASE_CATEGORIES.items():

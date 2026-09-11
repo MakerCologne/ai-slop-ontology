@@ -947,6 +947,120 @@
               "insiders claim"
             ]
           },
+          "performative_voice": {
+            "confidence": 0.55,
+            "description": "NEU #115 (ZeroSlop 'performed voice'): Inszenierung von Persönlichkeit als Formel — LLMs imitieren Meinungsstärke, statt Meinung zu haben. Kumulativregel >= 2 Treffer. keep_when (echte Meinung): Phrase zaehlt nicht, wenn im +-120-Zeichen-Fenster ein First-Person-Erfahrungs-Anker steht ('when I ...', 'in my experience', 'I lost/spent/learned/tried/failed') — das ist gelebte, nicht performte Stimme. Verwandt, aber getrennt von conversational_fillers (#110): dort Gespraechs-Floskeln, hier Identitaets-Theater.",
+            "items": [
+              "here's the thing nobody tells you",
+              "nobody tells you",
+              "i'm going to be honest with you",
+              "let me be brutally honest",
+              "i don't say this lightly",
+              "unpopular opinion, but",
+              "call me old-fashioned, but"
+            ],
+            "evidence": {
+              "here's the thing nobody tells you": [
+                {
+                  "source": "own:issue-115",
+                  "note": "ZeroSlop Muster 'performed voice' — Geheimnis-Setup als Persoenlichkeits-Claim ohne referentiellen Gehalt; Risiko niedrig (sehr spezifische Phrase)"
+                }
+              ],
+              "nobody tells you": [
+                {
+                  "source": "own:issue-115",
+                  "note": "ZeroSlop Kernmuster; Risiko HOCH: echte Erfahrungsprosa nutzt es mit folgendem Fakt → First-Person-Erfahrungs-Anker-Guard (fp_guards.mask_performative_stakes)"
+                }
+              ],
+              "i'm going to be honest with you": [
+                {
+                  "source": "own:issue-115",
+                  "note": "angekuendigte Ehrlichkeit statt Ehrlichkeit; Risiko mittel, Rueckgrat ist die Kumulativregel"
+                }
+              ],
+              "let me be brutally honest": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Intensiv-Steigerung; Risiko mittel"
+                }
+              ],
+              "i don't say this lightly": [
+                {
+                  "source": "own:issue-115",
+                  "note": "vor-behauptete Schwere statt belegter Schwere; Risiko niedrig"
+                }
+              ],
+              "unpopular opinion, but": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Social-Media-Eroeffnungsformel; Risiko HOCH: menschliche Hot-Take-Kultur → nur mit 'but'-Anschluss + Kumulativregel"
+                }
+              ],
+              "call me old-fashioned, but": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Rollen-Overnahme als Opener; Risiko niedrig; konservative Kolumnenprosa bleibt unter Kumulativregel"
+                }
+              ]
+            }
+          },
+          "manufactured_stakes": {
+            "confidence": 0.6,
+            "description": "NEU #115 (ZeroSlop 'manufactured stakes'): Dringlichkeit ohne Sache — dramatisierte Relevanz statt benanntem Termindruck. Kumulativregel >= 2 Treffer. keep_when (echte Dringlichkeit): Phrase zaehlt nicht, wenn innerhalb der naechsten 120 Zeichen ein konkreter Termin/Fakt steht ('by Friday', 'until 30 September', 'deadline', Ziffern mit Einheit) — dann ist die Dringlichkeit real. Fact-Gate-Kopplung: 'Deslop loescht keine Facts' (deslopInvariants, #115) — Score trifft die Inszenierung, nie den Fakt.",
+            "items": [
+              "in today's fast-paced",
+              "the stakes have never been higher",
+              "now more than ever",
+              "at a critical juncture",
+              "time is running out",
+              "don't get left behind",
+              "before it's too late"
+            ],
+            "evidence": {
+              "in today's fast-paced": [
+                {
+                  "source": "own:issue-115",
+                  "note": "ZeroSlop Beispiel 'In today's fast-paced ...' — Beschleunigungs-Claim ohne Referenzobjekt; konsistent mit opening_formulas, aber eigene Dringlichkeits-Semantik"
+                }
+              ],
+              "the stakes have never been higher": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Superlativ-Stakes ohne Zahl; Risiko niedrig"
+                }
+              ],
+              "now more than ever": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Risiko HOCH: menschliche politische Rede nutzt die Phrase seit Jahrzehnten → feuert nur kumulativ (>= 2 Treffer pro Kategorie)"
+                }
+              ],
+              "at a critical juncture": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Geopolitik-Floskel; Risiko niedrig"
+                }
+              ],
+              "time is running out": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Countdown ohne Datum → Termin-Guard (fp_guards): konkreter Termin im Folgfenster maskiert"
+                }
+              ],
+              "don't get left behind": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Marketing-Angst-Appell; Risiko niedrig"
+                }
+              ],
+              "before it's too late": [
+                {
+                  "source": "own:issue-115",
+                  "note": "unbestimmte Frist → Termin-Guard wie (5)"
+                }
+              ]
+            }
+          },
           "de_calque": {
             "confidence": 0.6,
             "description": "DE-Anglizismus-Calques (M45): wörtlich übersetzte EN-KI-Floskeln statt deutscher Idiomatik",
@@ -2922,6 +3036,15 @@
       "countermeasures": [
         "string"
       ]
+    }
+  },
+  "deslopInvariants": {
+    "description": "NEU #115: Invarianten fuer Deslop-/Repair-Eingriffe. Ein Verstoss ist ein Bug, kein Tuning-Parameter. Verwandt mit #30 (Edit-Modus), aber als Prinzip formuliert, nicht als Feature.",
+    "factGate": {
+      "statement": "Deslop löscht keine Facts: Zahlen, Claims und benannte Referenzen des Drafts muessen die Edition ueberleben. Slop-Entfernung darf Formulierung, Dramatisierung und Inszenierung tilgen — nie eine Behauptung.",
+      "scope": "alle Deslop-/Rewrite-/Repair-Pfade (Skill-Modus, Edit-Modus #30, Best-of-N #60)",
+      "enforcement": "Human-Review-Gate vor Uebergabe + diff_mode-Fact-Diff (Zahlen/Claims vor/nach) als deterministischer Check",
+      "related": ["#30", "#60", "#115"]
     }
   },
   "relatedResearch": {
