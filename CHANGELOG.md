@@ -1,5 +1,28 @@
 # Changelog
 
+## [unreleased] — 2026-09-11 (#115 — performative_voice + manufactured_stakes + Fact-Gate-Invariante)
+
+ZeroSlop-Adaption („performed voice" / „manufactured stakes"): zwei neue
+Phrase-Kategorien mit keep_when-Guards, plus die Doktrin „Deslop löscht
+keine Facts" als Invariante in der Ontology.
+
+- `performative_voice` (conf 0.55): Persönlichkeits-Theater — „here's the
+  thing nobody tells you", „nobody tells you", „let me be brutally honest",
+  „unpopular opinion, but", ... Guard: kein Fire bei First-Person-
+  Erfahrungs-Anker im ±120-Zeichen-Fenster (gelebte statt performte
+  Stimme).
+- `manufactured_stakes` (conf 0.6): Dringlichkeit ohne Sache — „in today's
+  fast-paced", „the stakes have never been higher", „now more than ever",
+  ... Guard: kein Fire bei konkretem Termin/Fakt im 120-Zeichen-
+  Folgfenster (echte statt dramatisierte Dringlichkeit).
+- `fp_guards.mask_performative_stakes` maskiert VOR dem Matching
+  (gleiche Mechanik wie #110-Entwurf: Maskierung statt Post-Filter).
+- `ontology.json → deslopInvariants.factGate`: Zahlen/Claims/Referenzen
+  müssen die Edition überleben; verwandt #30, als Prinzip formuliert.
+  Konsistenzliste M10 erweitert (check_methodology).
+- 20 neue Tests (`tests/test_performative_stakes.py`), Doku in
+  detection-signals.md + EVALS.md + METHODOLOGY.md (M10).
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
