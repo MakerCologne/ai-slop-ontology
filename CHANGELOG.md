@@ -1,5 +1,16 @@
 # Changelog
 
+## [unreleased] — feat(#120): Learn-Input-Standard — Freitext + optionaler Pfad reicht
+
+- `learning_store.learn_entry()`: minimaler Learn-Input (Issue #120) —
+  Freitext-Note ist Pflicht, alles andere optional (signal_id-Default
+  `reviewed`, Sample-Hash fallback auf die Note selbst).
+- CLI: `--learn "<freetext>"` am Scorer und `learning_store.py learn` —
+  bewusst schema-frei (Landscape: sloppoke/flamehaven/axonscanner).
+- Doku: `docs/loop-guards/120-learn-input-standard.md` (Standard, Regeln,
+  Akzeptanz).
+- Tests: 6 neue Fälle in `tests/test_learning_store.py`.
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
