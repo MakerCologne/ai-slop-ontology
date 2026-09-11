@@ -39,6 +39,8 @@ jobs:
         run: python scripts/check_methodology.py
       - name: Gate — signal DoD
         run: python scripts/check_signal_dod.py
+      - name: Gate — signal reliability/status register (#116)
+        run: python scripts/check_signal_reliability.py
       - name: Gate — false-positive baseline
         run: python scripts/fp_baseline.py --check
       - name: Gate — golden control set

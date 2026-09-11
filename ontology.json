@@ -4338,5 +4338,125 @@
       }
     ],
     "testContract": "Jede Kollisions-Auflösung braucht ein Fixture, das belegt, dass derselbe Beitrag genau einmal zählt (SIGNAL-DoD-Analogie)."
+  },
+  "signalReliability": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-11",
+    "source": "#116 (reliability- + status-Felder je Signal, Kalibrierungsdrift BS-I8)",
+    "note": "Verfalls-/Verlässlichkeits-Dimension je Signal. Methodik-Vorbild: febbhav/signs-of-ai-design (CC BY-SA 4.0): reliability = how much a single match tells you; status = whether the tell still applies to current tools. Eintrags-Pflicht: nur mit dokumentierter Quelle (Konfidenz-Mapping oder Evidenz), kein freies Raten.",
+    "schema": {
+      "reliability": {
+        "enum": [
+          "strong",
+          "moderate",
+          "weak"
+        ],
+        "meaning": "strong = wenige Menschen produzieren das zufällig; moderate = aussagekräftig vor allem in Kombination; weak = Menschen machen es ständig, nur Dichte zählt"
+      },
+      "status": {
+        "enum": [
+          "current",
+          "fading",
+          "obsolete"
+        ],
+        "meaning": "current = gilt für aktuelle Modelle; fading = Migration erkennbar; obsolete = gepatcht, kein Detektionssignal mehr (nur Forensik)"
+      },
+      "last_verified": {
+        "format": "ISO-8601 date",
+        "meaning": "Datum des letzten #47-Quartals-Re-Scores oder der letzten dokumentierten Evidenz"
+      },
+      "false_positives": {
+        "format": "string, optional",
+        "meaning": "Legitime menschliche Arbeit mit gleichem Zeichen (Pflicht bei weak)"
+      }
+    },
+    "rules": {
+      "obsoleteExcluded": "obsolete-Signale werden nicht mehr gescort, bleiben aber im Register (Forensik + Kalibrierungshistorie)",
+      "weakRequiresFP": "weak-Einträge müssen false_positives dokumentieren",
+      "quarterlyRefresh": "last_verified wird im #47-Quartals-Re-Score aktualisiert; Statuswechsel (current->fading->obsolete) nur mit Evidenz aus eval/drift/YYYY-Qn.json"
+    },
+    "reliabilityFromConfidence": {
+      "mapping": "confidence >= 0.85 -> strong; 0.6 <= confidence < 0.85 -> moderate; confidence < 0.6 -> weak",
+      "rationale": "deterministische Mapping-Regel aus bestehenden Konfidenz-Feldern der Achsen — keine Neu-Kalibrierung, nur Notation"
+    },
+    "entries": {
+      "ExtraLimbs": {
+        "reliability": "strong",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "UnnaturalSmoothness": {
+        "reliability": "moderate",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "DistortedText": {
+        "reliability": "strong",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "SymmetryAnomaly": {
+        "reliability": "moderate",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "UncannyFaces": {
+        "reliability": "moderate",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "WatermarkRemnants": {
+        "reliability": "strong",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "NonsensicalText": {
+        "reliability": "strong",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "ShrimpJesus": {
+        "reliability": "strong",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "HyperRealisticStyle": {
+        "reliability": "moderate",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "HyperTypicality": {
+        "reliability": "moderate",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "image",
+        "confidence_source": "signals.image.indicators"
+      },
+      "tier1_critical": {
+        "reliability": "strong",
+        "status": "current",
+        "last_verified": "2026-08-25",
+        "axis": "text.buzzwords",
+        "confidence_source": "signals.text.buzzwords.tiers.tier1_critical (confidence 0.9)"
+      }
+    }
   }
 }

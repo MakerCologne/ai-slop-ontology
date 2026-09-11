@@ -1,0 +1,140 @@
+# UI/Design-Tells — Machine-Made Visuals (Websites, Apps, Decks)
+#
+# Kuratierte Import-Auswahl aus febbhav/signs-of-ai-design
+# (https://github.com/febbhav/signs-of-ai-design), lizenziert CC BY-SA 4.0.
+# Attribution: febbhav. Ableitungen dieser Datei stehen für die übernommenen
+# Einträge ebenfalls unter CC BY-SA 4.0 (ShareAlike).
+#
+# Zweck: schließt die UI-Achse (#116; ~40 %-Lücke laut
+# research/slop-detection-landscape-2026-09-02). Detect-only-Datenbasis,
+# kein Scanner-Bestandteil — Visuals brauchen Screenshot-/DOM-Inspektion.
+#
+# Interpretations-Regeln (aus der Quelle, sinngemäß übernommen):
+#   1. Stack signs, never single ones — das Fingerprint ist die Ko-Okurrenz
+#      vieler Defaults ohne jede Abweichung, nicht ein einzelnes Muster.
+#   2. Judge the absence of decisions, not the presence of a style —
+#      Slop ist der ungewählte statistische Median.
+#   3. Menschen detektieren KI-Bilder kaum über Chance-Level — jede
+#      Schlussfolgerung ist probabilistisch (#37, docs/37-…-empirie).
+#
+# Felder: reliability/status gemäß ontology.json.signalReliability (#116).
+meta:
+  id_prefix: UIT
+  source_repo: https://github.com/febbhav/signs-of-ai-design
+  source_license: CC BY-SA 4.0
+  imported: '2026-09-11'
+  issue: '116'
+  scope: Websites, App-Interfaces, Slide-Decks, Social Graphics
+  excluded_here: reine Bild-/Video-Artefakte (siehe signals.image)
+entries:
+- id: UIT_PURPLE_INDIGO_GRADIENT
+  category: color
+  tell: 'Indigo-/Violet-Gradient-Hero und Gradient-Buttons in exakten Tailwind-Defaults (indigo-500 #6366F1,
+    violet-500 #8B5CF6, purple-500 #A855F7)'
+  why: Tailwind-Demo-Akzent seit 2019, von Tutorials saturiert; generierte Sites re-enteren Trainingsdaten
+    und verstärken den Bias
+  false_positives: Lila ist legitime Brand-Farbe; das Zeichen ist der ungewählte Gradient in exakter Default-Farbe,
+    gestapelt mit anderen Defaults
+  reliability: moderate
+  status: fading
+  status_note: Migration Richtung Cream-Paletten erkennbar (2. Welle)
+  last_verified: '2026-09-11'
+- id: UIT_CREAM_TASTEFUL_PALETTE
+  category: color
+  tell: Warme Cream/Beige-Fläche mit Amber-Akzent als „geschmackvolles Startup“-Reflex
+  why: 'Modelle absorbierten die Anti-Purple-Backlash und lernten: cream = tasteful'
+  false_positives: Editorial-, Food- und Craft-Brands nutzen warme Neutrals bewusst
+  reliability: moderate
+  status: current
+  status_note: steigend
+  last_verified: '2026-09-11'
+- id: UIT_NEON_DARK_GLOW
+  category: color
+  tell: Cyan/Violett/Pink auf Near-Black mit farbigen Box-Shadows hinter Karten/Buttons
+  why: Dark-SaaS-Look dominiert Design-Inspiration-Trainingsdaten; v0/Cursor-Signatur
+  false_positives: 'groß: der handgebaute „Linear-Stil“ (Linear, Raycast, Reflect) und tausende Nachahmer
+    seit ~2019'
+  reliability: weak
+  status: current
+  last_verified: '2026-09-11'
+- id: UIT_INTER_EVERYWHERE
+  category: typography
+  tell: Inter (oder System-Sans) als einzige Schrift — das Zeichen ist die ungewählte Wahl neben zwanzig
+    anderen Defaults
+  why: meistgenutzte Interface-Typeface in Trainingsdaten; Default des Tailwind/shadcn-Stacks
+  false_positives: zahllose handgebaute Produkte nutzen Inter bewusst, inkl. Linear selbst
+  reliability: weak
+  status: current
+  last_verified: '2026-09-11'
+- id: UIT_OVERSIZED_ITALIC_SERIF_HERO
+  category: typography
+  tell: Riesige italic Serif-Hero-Headline oder einzelnes Serif-Italic-Wort in Sans-Headline
+  why: Modelle verwechseln distinctive mit appropriate
+  false_positives: 'Editorial-Brands wollen expressive Serifs legitim; Frage: arbeitet die Serif oder
+    dekoriert sie'
+  reliability: moderate
+  status: current
+  status_note: steigend; 2025/26-Reflex
+  last_verified: '2026-09-11'
+- id: UIT_EYEBROW_CHIP_HERO
+  category: hero
+  tell: Tiny uppercase getracktes Label / Pill-Badge („New“, Sparkle-Prefix) direkt über zentrierter Riesen-Headline
+  why: default AI-SaaS-Hero-Shape; Modell behandelt Ornament als editorial polish
+  false_positives: Badge mit echter Neuigkeit ist legitim
+  reliability: moderate
+  status: current
+  status_note: eines der erkennbarsten aktuellen Tells
+  last_verified: '2026-09-11'
+- id: UIT_FULL_HERO_FORMULA
+  category: hero
+  tell: 'Zentrierter Stack: Badge, Satz ≥64px, Einzeilen-Subhead, zwei CTAs (Gradient „Get Started“ +
+    Ghost), Gradient-Orb dahinter'
+  why: modale SaaS-Hero in Trainingsdaten; konversionswirksam, daher modal geworden
+  false_positives: Struktur funktioniert und wird von Menschen absichtlich genutzt; Tell ist Formel ohne
+    jede Abweichung + Copy, die jedes Produkt beschreiben könnte
+  reliability: moderate
+  status: current
+  last_verified: '2026-09-11'
+- id: UIT_THREE_CARD_FEATURE_ROW
+  category: layout
+  tell: 'Exakt drei gleiche Karten unter dem Hero: Icon oben, Kurz-Heading, zwei Zeilen Text'
+  why: Tailwind-Tutorials lehrten 3-Spalten-Grid; v0 emitiert es default; Output wird nächste Trainingsdaten
+  false_positives: Triptychon ist sauber, responsiv, menschlicher Default; Verdacht steigt erst mit inhaltsleeren
+    Karten
+  reliability: moderate
+  status: current
+  last_verified: '2026-09-11'
+- id: UIT_GRADIENT_ORBS_BLOBS
+  category: layout
+  tell: Abstrakte Purple/Violet-Gradient-Blobs hinter dem Hero (teils animiert, cursor-following)
+  why: Tailwind-Demo-Deko-Muster
+  false_positives: bewusste Editorial-Deko
+  reliability: moderate
+  status: current
+  last_verified: '2026-09-11'
+- id: UIT_LUCIDE_ICON_UNIFORMITY
+  category: iconography
+  tell: Ausschließlich Lucide-Icons in Einheitsstrichstärke, ohne ikonografische Variation
+  why: Default des shadcn/v0-Stacks
+  false_positives: Lucide ist eine bewusste, gute Wahl; das Zeichen ist Ausschließlichkeit plus restliche
+    Defaults
+  reliability: weak
+  status: current
+  last_verified: '2026-09-11'
+- id: UIT_EMERALD_FALLBACK
+  category: color
+  tell: 'Wenn Purple verboten wird: Kaskade auf Emerald (#10B981) als nächsten sicheren Akzent, teils
+    gegen explizite Anweisung'
+  why: nächstwahrscheinlicher Akzent in der gelernten Hierarchie
+  false_positives: Grün ist Standard für Success-States, Finance/Health-Brands
+  reliability: moderate
+  status: current
+  last_verified: '2026-09-11'
+- id: UIT_MONOSPACE_DECORATION
+  category: typography
+  tell: Body-Copy oder gewöhnliche Labels in Code-Font für „Hacker“-Atmosphäre
+  why: Generator überspringt typografisches Urteil
+  false_positives: Dev-Tool-Docs und terminal-nahe Produkte
+  reliability: moderate
+  status: current
+  last_verified: '2026-09-11'
