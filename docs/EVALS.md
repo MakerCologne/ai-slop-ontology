@@ -57,6 +57,10 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 
 ### L1 — Unit-Assertions (tests/)
 
+- `tests/test_human_work_seo_extension.py` — #86 Portierung PR#6: Status-/Parent-/Source-Resolution der Work-/SEO-Slop-Extension, FP-Exclusions je Typ, Nicht-Kollaps Human/AI-Generierung, SEOSlop-Generationsneutralität (L1)
+- `tests/test_parity_human_work_seo.py` — #86 DoD-2: JSON↔TTL-Parität der Extension-Klassen (detect-only-Niveau) + Import-Verbot im Scorer (adr/0009) (L1)
+- `tests/test_source_verification.py` — #86 Quellenregister: Offline-Strukturprüfungen (arXiv/DOI/URL, Zukunftsdatum-Guard, Coverage-Ausweis) des aus PR#6 portierten `verify_sources.py`, inkl. Regressionstest des „no dead links bei Totalausfall"-Defekts (L1)
+
 - `tests/test_issue104_doc_drift.py` — #104 Slice A: Doku<->SSOT-Drift (L1) — Gate-Test für scripts/check_doc_signals.py (D1/D2, beide Richtungen) plus die beiden Issue-Beispiele als Matcher-/Classifier-Fixtures ('it is worth noting' in hedging_qualifiers, Template 'in today's [X]' in opening_formulas; konkrete SSOT-Varianten bleiben matchbar)
 - `tests/test_threshold_config.py` — #157 zentraler Threshold: config/threshold.json als einzige Quelle (Verhalten folgt der Config, Missing/Malformed/Out-of-Range brechen ab statt still zu fallen, committeter Wert 0.40 als Ratsche bis zum Sweep GL #6.3)
 - `tests/test_short_text_guards.py` — #52 Kurztext-Guards: dokumentierte Mindestlängen je Metrik in config/threshold.json (short_text_guards), definiertes Skip-Verhalten (neutral + ausgewiesene skipped-Liste + Gewicht-Re-Normalisierung, buzzwords bleibt aktiv), Fixtures für 5-/20-/50-Wort-Texte (L1)

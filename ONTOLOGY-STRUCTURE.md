@@ -238,3 +238,5 @@ ConfirmedAI_Slop ≡ AI_SlopCandidate ∧ detectionEvidence.count ≥ 2
 ## Geltungsbereich Human Slop
 
 Ob und wie menschlich verfasster ideologischer Slop in die Ontologie gehört, ist in `adr/0008-human-ideological-slop-scope.md` behandelt (Status: proposed, Entscheidung offen — Issue #90). Bis zur Freigabe gilt: detect-only (adr/0006), kein Score-Beitrag.
+
+Dasselbe Prinzip für Arbeits- und Distributionskontexte (Work-/SEO-Slop, Portierung aus PR #6): `adr/0009-human-work-seo-slop-scope.md` (Status: proposed, Issue #86). Die Extension `extensions/human-work-seo-slop/` ist detect-only/nursery — 11 dimensionale Definitionen, Quellenregister mit Online-Verifikation (`verify_sources.py`), keine score-wirksamen Signale, kein Scorer-Import.
