@@ -68,6 +68,48 @@ class TestYamlOntology(unittest.TestCase):
         self.assertIn("empirical_updates_2026_07", data["ontology"])
 
 
+class TestDatasetSeeds(unittest.TestCase):
+    """Issue #124: seed registry for the labeled corpus (BS-I2)."""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(ROOT, "eval", "dataset_seeds.json")) as f:
+            cls.seeds = json.load(f)
+
+    def test_schema(self):
+        self.assertEqual(self.seeds["schema_version"], 1)
+        self.assertEqual(self.seeds["issue"], 124)
+        for key in ("purpose", "selection_rules", "datasets", "gaps"):
+            self.assertIn(key, self.seeds)
+
+    def test_selection_rules_pinned(self):
+        rules = self.seeds["selection_rules"]
+        self.assertGreaterEqual(len(rules), 5)
+        self.assertTrue(any("license" in r.lower() for r in rules))
+        self.assertTrue(any("dedup" in r.lower() for r in rules))
+
+    def test_every_dataset_has_required_fields(self):
+        ids = []
+        for ds in self.seeds["datasets"]:
+            for key in ("id", "source", "label", "label_mapping", "license", "preference", "risks"):
+                self.assertIn(key, ds, f"dataset {ds.get('id')} missing {key}")
+            self.assertIn(ds["label"], ("ai", "human", "both"))
+            self.assertIn(ds["preference"], ("high", "medium", "low"))
+            self.assertIsInstance(ds["risks"], list)
+            self.assertTrue(ds["risks"])
+            ids.append(ds["id"])
+        self.assertEqual(len(ids), len(set(ids)), "duplicate dataset ids")
+
+    def test_license_policy_enforced_in_manifest(self):
+        # selection rule 3: no-license datasets must not be high preference
+        for ds in self.seeds["datasets"]:
+            lic = ds["license"].lower()
+            if "none" in lic or "unverified" in lic:
+                self.assertNotEqual(
+                    ds["preference"], "high",
+                    f"{ds['id']}: no/unclear license must not be high preference")
+
+
 class TestExamples(unittest.TestCase):
     def test_example_files_parse(self):
         exdir = os.path.join(ROOT, "examples")
