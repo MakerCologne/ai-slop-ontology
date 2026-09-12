@@ -2744,7 +2744,7 @@
       }
     },
     "metadata": {
-      "description": "Detect-only slop signals on metadata/config/data surfaces (commit messages, PR bodies, JSON data fields, config boilerplate); issue #45.",
+      "description": "Detect-only slop signals on metadata/config/data surfaces (commit messages, PR bodies, JSON data fields, config boilerplate); issue #45. Issue #111 extension: behavioral commit-velocity, PR-structure and commit-keyword signals (blind-spot A7/BS-I6).",
       "note": "Detect-only: findings are advisory, never part of the numeric text/code slop score (ADR-0001). Implementation: src/metadata_slop.py.",
       "indicators": [
         {
@@ -2761,6 +2761,21 @@
           "id": "ConfigBoilerplateSlop",
           "description": "Narrating boilerplate comments in Dockerfile/YAML/Terraform ('# Install dependencies' over an obvious RUN/COPY line)",
           "confidence": 0.6
+        },
+        {
+          "id": "CommitVelocitySlop",
+          "description": "Behavioral commit signals (Cadence-calibrated): >100 additions/min sustained, <60s inter-commit burst clusters, >90% add/delete ratio with volume, unnaturally consistent ratios; fires only when >=2 independent rules hit (FP guard)",
+          "confidence": 0.75
+        },
+        {
+          "id": "PRStructureSlop",
+          "description": "PR-structure rules (anti-slop-calibrated): >=2 emoji in title, blocked marketing term, code references with no relation to the actual diff, oversized keyword-laden message; >=2 rules must fire",
+          "confidence": 0.75
+        },
+        {
+          "id": "CommitKeywordSlop",
+          "description": "Commit-message vocabulary/structure (gitorit-calibrated): agent gerund/marketing keywords combined with >200-char length or bullet-gerund list structure",
+          "confidence": 0.7
         }
       ]
     }
