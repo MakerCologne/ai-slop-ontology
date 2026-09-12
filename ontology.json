@@ -1998,6 +1998,18 @@
                 }
               ]
             }
+          },
+          "conversational_fillers": {
+            "confidence": 0.7,
+            "description": "Conversational fillers (issue #110, Hassid list 4-8): spoken-conversation patterns migrated into written content; 'hope this helps' and 'most people' carry hard-negative guards (sign-off position / first-person source) implemented in slop_scorer.apply_conversational_guards; 'here's the thing' remains in listicle_tells (one term, one category); bare 'quick update on' deliberately excluded (natural work-email phrasing, FP baseline clean-email-01)",
+            "items": [
+              "to provide a quick update",
+              "just a quick update",
+              "giving you a quick update",
+              "here's a quick update",
+              "wanted to give you a quick update",
+              "most people (guarded: sentence-initial, no first-person source)"
+            ]
           }
         }
       },

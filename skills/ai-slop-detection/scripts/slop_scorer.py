@@ -197,6 +197,24 @@ PHRASE_CATEGORIES = {
             "there's a lot to unpack", "more than meets the eye"
         ]
     },
+    # --- Issue #110: conversational fillers (Hassid "12 AI tells",
+    # points 4-8) — spoken-conversation patterns that migrate into written
+    # content. "here's the thing" already lives in listicle_tells (one term,
+    # one category — overlap documented in #110); "hope this helps" is
+    # covered by assistant_signoff; "most people" is guarded (see
+    # apply_conversational_guards) and injected at match time.
+    "conversational_fillers": {
+        "confidence": 0.7,
+        "phrases": [
+            "to provide a quick update", "just a quick update",
+            "giving you a quick update", "here's a quick update",
+            "wanted to give you a quick update"
+            # NOT included: bare "quick update on ..." — natural work-email
+            # phrasing when the update follows immediately (FP baseline
+            # fixture clean-email-01); the tell is the meta-announcement,
+            # not the noun phrase.
+        ]
+    },
     "weasel_attribution": {
         "confidence": 0.75,
         "phrases": [
@@ -648,7 +666,69 @@ def phrase_category_score(text: str) -> dict:
     for term in matched:
         for cat in term_to_cat.get(term, []):
             results.setdefault(cat, []).append(term)
-    return results
+    return apply_conversational_guards(text, results)
+
+
+# --- Issue #110 guards (DoD 3, hard negatives) ---------------------------
+
+# (a) "Hope this helps" / "I hope this helps": legitimate closing in real
+#     support mails and forum replies. Positional guard (per #110 review
+#     recommendation): a hit is NOT counted when it appears within the last
+#     100 characters before a sign-off formula — that is a human support
+#     close, not a migrated chatbot tell.
+_SIGN_OFF_RE = re.compile(
+    r"\b(best regards|kind regards|warm regards|regards|sincerely|"
+    r"yours truly|yours sincerely|cheers|thank you for your patience|"
+    r"thanks for your patience)\b", re.IGNORECASE)
+_HOPE_THIS_HELPS_RE = re.compile(r"\b(?:i )?hope (?:this|that) helps\b", re.IGNORECASE)
+
+# (b) "Most people": pseudo-empirical weasel quantifier, but a real empirical
+#     claim when tied to a first-person source ("Most people I interviewed…")
+#     or a citation. Only counted at sentence-opener position AND without a
+#     source continuation. Matches are injected into conversational_fillers.
+_MOST_PEOPLE_RE = re.compile(r"(?:^|[.!?\n]\s+|;\s+)most people\b", re.IGNORECASE)
+_MOST_PEOPLE_SOURCE_RE = re.compile(
+    r"most people\b[^.!?]{0,40}?\b(i|we|my|our|interviewed|surveyed|asked|"
+    r"polled|respondents|in the (survey|poll)|according to)\b", re.IGNORECASE)
+
+
+def apply_conversational_guards(text: str, matches: dict) -> dict:
+    """Issue #110 hard-negative guards, applied to phrase matches.
+
+    (a) removes "hope this helps" family hits from every category when the
+        occurrence sits in the 100 chars before a sign-off formula;
+    (b) counts guarded "most people" occurrences (sentence-initial, no
+        first-person/citation continuation) into conversational_fillers.
+    """
+    lowered = text.lower()
+
+    # (a) positional sign-off guard
+    hope_variants = ("i hope this helps", "hope this helps",
+                     "i hope that helps", "hope that helps")
+    for m in _HOPE_THIS_HELPS_RE.finditer(text):
+        window = text[m.end():m.end() + 100]
+        if not _SIGN_OFF_RE.search(window):
+            continue
+        for hits in matches.values():
+            removed = False
+            for variant in hope_variants:
+                if variant in hits:
+                    hits.remove(variant)
+                    removed = True
+                    break
+            if removed:
+                break
+
+    # (b) guarded "most people"
+    guarded_hits = []
+    for m in _MOST_PEOPLE_RE.finditer(lowered):
+        span = lowered[m.start():m.start() + 60]
+        if _MOST_PEOPLE_SOURCE_RE.search(span):
+            continue
+        guarded_hits.append("most people")
+    if guarded_hits:
+        matches.setdefault("conversational_fillers", []).extend(guarded_hits)
+    return matches
 
 
 def multilingual_buzzword_score(text: str) -> dict:
