@@ -1,5 +1,25 @@
 # Changelog
 
+## [Unreleased]
+
+### feat(#57): LLM-Zweit-Scanner — Layer 2 (advisory only)
+
+Umsetzung des Vertrags aus `docs/loop-guards/57-llm-zweit-scanner.md`:
+`scripts/llm_scanner.py` mit injizierbarem Judge (`judge: prompt -> str`,
+JSON-Antworten mit `signal_id` + `evidence_quote`) — keine Modell-API, kein
+Netzwerk im Modul, Tests mit Fake-Judges. Pro Scan genau ein Pass:
+≥3 rotierte Prompt-Varianten × Vorwärts/Rückwärts-Reihenfolge der Signale
+(Position-Swap gegen MT-Bench-Positionsbias, arXiv:2306.05685); keine
+Selbstkorrektur-Runden ohne externes Feedback (arXiv:2310.01798).
+Befunde müssen wortgleich aus dem Text zitieren (erfundene Zitate werden
+verworfen); Reproduktionsrate < 0.9 → Downgrade auf `stability: "unsicher"`
+mit niedrigerer Konfidenz statt Fix-Trigger. Layer-2-Befunde sind advisory
+(`is_fix_trigger: False`, Konfidenz ≤ 0.5/0.35) und gehen nie in den
+numerischen Score ein; unlesbare Judge-Antworten → `status: "inconclusive"`
+statt Crash. 13 neue Tests (DoD 3/3/2 + Bias-Akzeptanz auf Control-Set +
+Score-Disziplin); SSOT-Register + ALLOWLIST-Notiz, SKILL.md Step 2i,
+EVALS.md-Mapping.
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
