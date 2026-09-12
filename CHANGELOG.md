@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.9.2] — 2026-09-12 (#61 Run-Audit-Format)
+
+Jeder Loop-Run mit `--runs-dir` erzeugt jetzt vier Standard-Dateien in
+`runs/<runId>/` (additiv; Legacy-Artefakte bleiben): `scan.md` (initiale
+Detektion mit Evidence), `fixes.md` (Action/Score/Budget je Iteration),
+`trajectory.json` (maschinenlesbare Iterations-Records), `report.md`
+(Verdict, Exit-Check, Guarantee). Akzeptanzkriterium aus #61 erfüllt:
+Ein vergangener Run ist aus den Dateien vollständig rekonstruierbar.
+Loop bleibt rewrite-frei (ADR-0001); Audit-Writer bricht den Loop nie
+(try/except, stderr-Warnung). Tests: `tests/test_run_audit_format_61.py`.
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
