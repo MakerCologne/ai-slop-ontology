@@ -56,6 +56,21 @@ Benchmark-Korpus (eval/corpus.jsonl, slop-0101/slop-0504), Beleg-Disziplin
   detail", "of course! here's the summary", "based on available
   information", "up to my last training update", "some critics argue", ...
 
+**Issue #110 (2026-09-12)** — `conversational_fillers` (conf 0.70):
+Konversationelle Füll-Floskeln (Hassid-Liste 4–8) — gesprochene
+Gesprächs-Muster, die in Schrifttexte migrieren. Quick-Update-Floskeln
+("to provide a quick update", "just a quick update", "quick update on",
+...) plus zwei bewachte Spezialfälle:
+- `most people` — nur satzinitial UND ohne First-Person-Quelle gezählt
+  ("Most people I interviewed…" feuert nicht; Pseudo-Empirie ist das
+  Signal, nicht die Quantifikation).
+- `hope this helps`-Familie — positionsbasierter Guard: Treffer in den
+  letzten 100 Zeichen vor einer Grußformel (echte Support-Mail) zählen
+  nicht, in jeder Kategorie.
+"here's the thing" bleibt in `listicle_tells` (ein Term, eine Kategorie).
+Pre-2022-Cap bewusst nicht angewandt (Floskeln sind vormenschlich;
+Signal ist Genre-Migration, nicht Rezenz).
+
 ### Punctuation Anomalies
 - Em-dash rate > 0.5 per sentence
 - Ellipsis rate > 0.3 per sentence

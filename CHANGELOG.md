@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.9.1] — 2026-09-12 (#110 — Konversationelle Floskeln, Hassid-Liste 4–8)
+
+Neue detect-only Phrase-Kategorie `conversational_fillers`
+(gesprochenen Gesprächs-Muster, die in Schrifttexte migrieren) mit
+zwei hart bewachten Spezialfällen:
+
+- **Quick-Update-Floskeln** („to provide a quick update“ u.a.):
+  Update-Ankündigung statt Inhalt, kumulative Schwelle >= 2 Treffer wie
+  jede Kategorie.
+- **„most people“** ( guarded): nur satzinitial gezählt und nur ohne
+  First-Person-Quelle („Most people I interviewed…“ feuert nicht) —
+  Pseudo-Empirie ist das Signal, nicht die Quantifikation selbst.
+- **„hope this helps“**-Familie: positionsbasierter Hard-Negative-Guard
+  — ein Treffer in den letzten 100 Zeichen vor einer Grußformel
+  (echte Support-Mail/Forenantwort) wird aus allen Kategorien entfernt.
+  „here's the thing" bleibt bewusst in listicle_tells (ein Term, eine
+  Kategorie; Überlappung in #110 dokumentiert).
+
+Pre-2022-Doktrin bewusst nicht angewandt: die Floskeln sind vormenschlich
+(älter als LLMs), ein zeitlicher Cap trennt nicht Mensch von KI — das
+diskriminative Signal ist die Genre-Migration, nicht die Rezenz.
+
+`apply_conversational_guards` in slop_scorer implementiert (a)+(b) und
+wird in `phrase_category_score` integriert (Scorer UND Klassifikator).
+13 neue Tests (tests/test_conversational_fillers.py). Spiegel in
+ontology.json (signals.text.phrases.categories).
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
