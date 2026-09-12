@@ -28,6 +28,14 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `eval/corpus.jsonl` — Benchmark-Korpus (331 Texte = 221 slop + 110 clean; Labels, Genres, Quellen; Belegtquote ≥ 60 %, adr/0005)
 - `eval/run_benchmark.py` — Precision/Recall/F1 @ 0.40 + FP-/FN-Rate je Genre
 - `eval/calibrate.py` — Gewichts-Kalibrierung aus Korpus-Statistik (nur im Re-Baseline-Zyklus, s. SCORE-GOVERNANCE.md)
+- `eval/sample_mine.py` — #12 Empirischer Re-Kalibrierungs-Loop: N Samples pro Modell/Domain generieren (OpenAI-kompatibler Endpoint, offline über `--samples` umgehbar), n-gram-Wiederholung schürfen, Kandidaten für neue Tiers vorschlagen — gefiltert gegen die bestehende Scorer-Vokabular-SSOT, damit nur **unbedeckte** Muster vorgeschlagen werden. Integration: `calibrate.py --sample-mine <samples.jsonl>` druckt die Tier-Vorschläge neben den Gewichten. Vorschläge sind Review-Input, nie automatische Vokabular-Änderung (Kalibrierungsdisziplin s. #47/#104).
+
+#### Loop-Reihenfolge (#12)
+
+1. `sample_mine.py generate` (oder fremd generierte Samples als JSONL) →
+2. `sample_mine.py mine --out-candidates` → Review der Kandidaten →
+3. manuelle Tier-Aufnahme über den SSOT-Pfad (ontology/Skill-Doku-Gates) →
+4. `calibrate.py` (ggf. `--sample-mine`) + `run_benchmark.py` gegen unverändertes Korpus (keine EN-Regression).
 
 #### Welche Zahl ist welcher Art (#85)
 
@@ -90,6 +98,8 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_cli.py` — CLI-Härtung (MS-I1)
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
+- `tests/test_metadata_slop_111.py` — #111 Metadata-Slop-Erweiterung: CommitVelocitySlop (Cadence-Verhalten), PRStructureSlop (anti-slop-Regeln), CommitKeywordSlop (gitorit-Vokabular); FP-Guards per Einzel-Regel-Negativ-Fixtures
+- `tests/test_sample_mine.py` — #12 Sampling-Harness: Mine schlägt nur unbedeckte n-Gramme vor (SSOT-Filter gegen Scorer-Vokabular), Doc-Frequency-Ranking, Kandidaten-Cap, Einmal-Vorkommen wird ignoriert, `generate` ohne Endpoint verweigert sauber; `calibrate.py --sample-mine` druckt Tier-Vorschläge
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
