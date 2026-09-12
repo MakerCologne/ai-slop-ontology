@@ -54,6 +54,7 @@ SIGNAL_MODULES = [
     "skills/ai-slop-detection/scripts/structure_metrics.py",
     "skills/ai-slop-detection/scripts/register_profile.py",
     "skills/ai-slop-detection/scripts/discourse_metrics.py",
+    "skills/ai-slop-detection/scripts/llm_scanner.py",
 ]
 
 # "source" values:
@@ -160,6 +161,13 @@ SSOT_REGISTER = {
         "MIN_ENUM_ITEMS": ("engine-config", "fixture-calibrated"),
         "MAX_ENUM_CONFIDENCE": ("engine-config", "deviation"),
     },
+    "llm_scanner.py": {
+        "PROMPT_VARIANTS": ("closed-list", "deviation"),
+        "MIN_AGREEMENT": ("engine-config", "contract-pinned"),
+        "ADVISORY_MAX_CONFIDENCE": ("engine-config", "contract-pinned"),
+        "UNSICHER_MAX_CONFIDENCE": ("engine-config", "contract-pinned"),
+        "MIN_WORDS_SCAN": ("engine-config", "fixture-calibrated"),
+    },
 }
 
 # ALLOWLIST — conscious deviations (C3): why these lists do not come from
@@ -225,6 +233,13 @@ ALLOWLIST_NOTES = [
     "fixture-pinned (tests/test_discourse_metrics.py). Short public "
     "quotes in the reference corpus are attributed; no CC BY-SA pattern "
     "material copied.",
+    "llm_scanner (#57) PROMPT_VARIANTS are three self-written rotation "
+    "templates (question form + ordering instruction) for the advisory "
+    "Layer 2 judge; contract constants (MIN_AGREEMENT 0.9, advisory "
+    "confidence caps) are pinned by docs/loop-guards/57-llm-zweit-scanner.md "
+    "and tests/test_llm_scanner.py. The judge is injectable — no model API "
+    "and no network in the module; findings are advisory-only and never "
+    "feed the numeric score.",
 ]
 
 
