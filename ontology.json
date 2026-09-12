@@ -4338,5 +4338,88 @@
       }
     ],
     "testContract": "Jede Kollisions-Auflösung braucht ein Fixture, das belegt, dass derselbe Beitrag genau einmal zählt (SIGNAL-DoD-Analogie)."
+  },
+  "signalModelDynamics": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-12",
+    "source": "#36 (Modell-Dynamik: model_notes je Signal & Signal-Halbwertszeiten)",
+    "note": "Modelle wandern: Signale sind modell- und generationsabhaengig (GPT-5.1+ supprimiert Em-Dashes, Claude nutzt sie haeufiger als Profis; CurlyQuotes nur bei ChatGPT/DeepSeek; Puffery-Vokabular wandert von 'blatantly' zu 'subtly'). Statische Gewichte veralten still — dieses Register macht die Modellabhaengigkeit je Signal explizit und zeitlich befristet. Eintrags-Pflicht analog signalReliability: nur mit dokumentierter Quelle (Evidenz-String), kein freies Raeten. Verknuepft mit Kalibrierungs-Drift #47 (Quartals-Re-Score liefert die Empirie) und Sampling-Loop #12 (neue Generationsstichproben).",
+    "schema": {
+      "model_notes": {
+        "format": "Liste von Eintraegen je Signal",
+        "model": "String, Modell- oder Generationsbezeichnung (z.B. 'gpt-5.1+', 'claude-4-famille', 'chatgpt/deepseek')",
+        "effect": {
+          "enum": [
+            "weaker",
+            "stronger",
+            "absent",
+            "only_model"
+          ],
+          "meaning": "weaker = Signal tritt bei diesem Modell seltener auf; stronger = haeufiger; absent = wurde supprimiert; only_model = Signal ist praktisch nur bei diesem Modell/Cluster zu finden"
+        },
+        "evidence": "String, Pflicht — dokumentierte Quelle (Studie, Quartals-Re-Score-Artefakt, Sampling-Run)",
+        "asOf": "Quartal YYYY-Qq des letzten Evidenzstands"
+      },
+      "halfLives": {
+        "quarters": "Integer > 0 — geschaetzte Halbwertszeit des Signals in Quartalen bis zur geplanten Ueberpruefung",
+        "rationale": "String — Basis der Schaetzung (Evidenzdichte, Patch-Geschwindigkeit der Anbieter)",
+        "reviewed_on": "ISO-8601 Datum der letzten Review"
+      }
+    },
+    "rules": {
+      "evidenceRequired": "Jeder model_notes-Eintrag braucht evidence + asOf; Eintraege aelterer als 2 Quartale ohne Re-Score gelten als 'stale' und werden beim #47-Drift-Review eskaliert",
+      "quarterlyEmpirieNote": "Pro Quartal mindestens eine Empirie-Notiz je Signal mit effect=weaker/absent/only_model — geliefert vom #47-Quartals-Re-Score bzw. #12-Sampling-Loop, nicht frei geraten",
+      "halfLifeReview": "halfLives.quarters <= 2 bedeuten 'heiss' (haeufig re-testen); Review spätestens bei Ablauf der Halbwertszeit, sonst zaehlt das Signal als ungeprueft",
+      "noScoreImpact": "model_notes veraendern Score-Gewichte NICHT automatisch — sie steuern nur Review-Kadenz und Risiko-Kommunikation; Gewichtsaenderungen laufen ueber die Kalibrierung (#47/#12)"
+    },
+    "modelNotes": {
+      "ExcessiveEmDash": [
+        {
+          "model": "gpt-5.1+",
+          "effect": "weaker",
+          "evidence": "Wikipedia 'Signs of AI writing' (AIDASH) + Economist-Studie 07/2026: GPT-5.1 supprimiert Em-Dashes im Default-Output; deep/03 (I31)",
+          "asOf": "2026-Q3"
+        },
+        {
+          "model": "claude-4-famille",
+          "effect": "stronger",
+          "evidence": "Economist-Studie 07/2026: Claude nutzt Em-Dashes haeufiger als menschliche Profi-Autoren; deep/03 (I31)",
+          "asOf": "2026-Q3"
+        }
+      ],
+      "CurlyQuotes": [
+        {
+          "model": "chatgpt/deepseek",
+          "effect": "only_model",
+          "evidence": "Wikipedia AICURLY: Curly Quotes bis 2026 fast nur bei ChatGPT/DeepSeek-Output belegt; deep/03 (I31)",
+          "asOf": "2026-Q3"
+        }
+      ],
+      "ImportancePuffery": [
+        {
+          "model": "gpt-5.1+",
+          "effect": "weaker",
+          "evidence": "Wikipedia AIPUFFERY: Puffery-Vokabular wandert ('blatantly positive' -> 'subtly positive'), klassische Marker werden substituiert; deep/03 (I31)",
+          "asOf": "2026-Q3"
+        }
+      ]
+    },
+    "halfLives": {
+      "ExcessiveEmDash": {
+        "quarters": 1,
+        "rationale": "Aktiv supprimiert (OpenAI); schnellste Patch-Achse im Katalog",
+        "reviewed_on": "2026-09-12"
+      },
+      "CurlyQuotes": {
+        "quarters": 2,
+        "rationale": "Cluster-spezifisch (ChatGPT/DeepSeek); wandert mit naechster Generation",
+        "reviewed_on": "2026-09-12"
+      },
+      "ImportancePuffery": {
+        "quarters": 2,
+        "rationale": "Vokabular-Substitution laeuft graduell, kein harter Patch",
+        "reviewed_on": "2026-09-12"
+      }
+    }
   }
 }
