@@ -2763,6 +2763,75 @@
           "confidence": 0.6
         }
       ]
+    },
+    "domainBindings": {
+      "description": "Issue #35: optionale Domain-Bindung je Signal (triggered_by: domain). Domains werden explizit via --domain uebergeben (keine Auto-Erkennung). Pilot: 5 Signale. Semantiken: only-triggers-in (Signal feuert nur in gelisteten Domains) und suppressed-in (Signal ist dort Genre-Konvention und wird nicht bestraft). Ohne --domain aendert sich nichts.",
+      "domains": [
+        "essay",
+        "blog",
+        "review",
+        "ui_copy",
+        "landing_page",
+        "changelog",
+        "release_notes",
+        "support_reply",
+        "chat",
+        "legal",
+        "compliance"
+      ],
+      "bindings": [
+        {
+          "signal": "meta_commentary",
+          "triggered_by": "domain",
+          "semantics": "only-triggers-in",
+          "domains": [
+            "essay",
+            "blog",
+            "review"
+          ],
+          "rationale": "Self-referential framing is genre-defining in essays/blogs; noise elsewhere."
+        },
+        {
+          "signal": "marketing_cta",
+          "triggered_by": "domain",
+          "semantics": "suppressed-in",
+          "domains": [
+            "ui_copy",
+            "landing_page"
+          ],
+          "rationale": "CTA formulas are conventional on landing pages."
+        },
+        {
+          "signal": "list_heavy",
+          "triggered_by": "domain",
+          "semantics": "suppressed-in",
+          "domains": [
+            "changelog",
+            "release_notes"
+          ],
+          "rationale": "Changelogs are lists by convention."
+        },
+        {
+          "signal": "assistant_signoff",
+          "triggered_by": "domain",
+          "semantics": "suppressed-in",
+          "domains": [
+            "support_reply",
+            "chat"
+          ],
+          "rationale": "'Hope this helps' is functional in support correspondence."
+        },
+        {
+          "signal": "hedging_qualifiers",
+          "triggered_by": "domain",
+          "semantics": "suppressed-in",
+          "domains": [
+            "legal",
+            "compliance"
+          ],
+          "rationale": "Hedged language is genre-required in legal writing."
+        }
+      ]
     }
   },
   "normativeFramings": {

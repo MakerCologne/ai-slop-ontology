@@ -23,6 +23,7 @@ from collections import Counter
 from typing import Optional
 
 import fp_guards
+import domain_bindings
 import genre_profiles
 import input_norm
 import learning_store
@@ -735,7 +736,8 @@ DEFAULT_WEIGHTS = {
 
 
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
-              not_slop_store=None, project_config: Optional[dict] = None) -> dict:
+              not_slop_store=None, project_config: Optional[dict] = None,
+              domain: Optional[str] = None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
     # and zero-width obfuscation of telltale words must not bypass signals.
     text = input_norm.normalize(text)
@@ -747,6 +749,13 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     genre_profile = None
     if genre is not None:
         genre_profile = genre_profiles.get_profile(genre)
+    # Issue #35: explicit domain context (--domain ui_copy|changelog|...).
+    # Domain-bound signals (SIGNAL_DOMAIN_BINDINGS) are deactivated for
+    # domains where they are genre-conventional (suppressed-in) or not
+    # meaningful (only-triggers-in). No --domain -> no change.
+    inactive_signals = set()
+    if domain is not None:
+        inactive_signals = domain_bindings.signals_inactive_in_domain(domain)
     if weights is None:
         weights = dict(DEFAULT_WEIGHTS)
     # Issue #11: project-local config (slop.json). disabled_signals zeroes
@@ -807,6 +816,13 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     phrase_matches = phrase_category_score(signal_text)
     if "phrases" in exempted_families:
         phrase_matches = {}
+    # Issue #35: domain-bound phrase categories do not count in domains
+    # where they are conventional or meaningless.
+    if inactive_signals:
+        phrase_matches = {
+            cat: hits for cat, hits in phrase_matches.items()
+            if cat not in inactive_signals
+        }
     multilingual_matches = multilingual_buzzword_score(signal_text)
     if "multilingual" in exempted_families:
         multilingual_matches = {}
@@ -854,6 +870,9 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     if "trailing_moral" in exempted_families:
         moral_slop = 0.0
     list_slop = 1.0 if list_heavy(text) else 0.0
+    # Issue #35: list-heaviness is genre-conventional in changelogs.
+    if "list_heavy" in inactive_signals:
+        list_slop = 0.0
     authority_matches = find_term_matches(signal_text.lower(), AUTHORITY_PATTERNS)
     if "fake_authority" in exempted_families:
         authority_matches = {}
@@ -1240,6 +1259,20 @@ if __name__ == "__main__":
             sys.exit(2)
         args = args[:i] + args[i + 2:]
 
+    # Issue #35: explicit domain context (--domain ui_copy|changelog|...)
+    domain = None
+    if "--domain" in args:
+        i = args.index("--domain")
+        if i + 1 >= len(args):
+            print("Error: --domain requires a name", file=sys.stderr)
+            sys.exit(2)
+        domain = args[i + 1]
+        if domain not in domain_bindings.KNOWN_DOMAINS:
+            print(f"Error: unknown domain '{domain}' (available: "
+                  f"{', '.join(domain_bindings.KNOWN_DOMAINS)})", file=sys.stderr)
+            sys.exit(2)
+        args = args[:i] + args[i + 2:]
+
     # Issue #29: explicit learning-store path; default: not_slop.jsonl next
     # to the scored file (auto-detected only for --file input).
     not_slop_store = _opt("--not-slop-store")
@@ -1295,7 +1328,7 @@ if __name__ == "__main__":
               file=sys.stderr)
         text = " ".join(args)
     else:
-        print("Usage: python3 slop_scorer.py [--json] [--genre NAME] (--file PATH | - | \"Text\")",
+        print("Usage: python3 slop_scorer.py [--json] [--genre NAME] [--domain NAME] (--file PATH | - | \"Text\")",
               file=sys.stderr)
         sys.exit(1)
 
@@ -1312,7 +1345,7 @@ if __name__ == "__main__":
             project_cfg = pconf.load_config(auto)
 
     result = slop_score(text, genre=genre, not_slop_store=not_slop_store,
-                        project_config=project_cfg)
+                        project_config=project_cfg, domain=domain)
 
     if use_json:
         print(json.dumps(result, indent=2))
