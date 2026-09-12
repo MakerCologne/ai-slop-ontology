@@ -1,5 +1,21 @@
 # Changelog
 
+## [unreleased] — feat(#60): Best-of-N Fix-Strategien (Auswahl-Harness)
+
+Neu `fixer/strategies.py`: parallele Fix-Varianten pro Iteration statt
+sequenzieller Einzelkandidaten-Kaskade. N injizierte Strategien
+(delete/rewrite/restructure, Standard-Fixer-Signatur) laufen parallel;
+Auswahl per verifiziertem Detektor-Score, Tie-Break innerhalb
+`selection_epsilon` auf kleinsten Edit (Voice-Ähnlichkeit, anti-
+Verbositäts-/Struktur-Bias, Minimum-Effective-Edit #30; Verifier-Auswahl
+nach Cobbe et al., arXiv:2110.14168). Voice-Budget-Guardrail (#56) greift
+vor der Verifikation; kein Kandidat im Budget → `None` (kein stiller
+Pass). `BestOfNFixer` kapselt die Strategien als einen Fix-Callback für
+`DeslopLoop.run` — ADR-0001 unangetastet (Repo besitzt keine
+Rewrite-Logik). Receipt je Auswahl (`BestOfNResult`) als Audit-Trail
+(#61-Manier). Doku: `docs/loop-guards/60-best-of-n-fix.md`. Tests:
+`tests/test_fixer_strategies.py` (7).
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills

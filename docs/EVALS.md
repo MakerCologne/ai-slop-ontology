@@ -105,6 +105,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_fu_batch_g2.py` — FU-5/7/10 (as_any-Kommentar-Guard, CHANGELOG-Claim, SKILL-Benchmark-Spiegel)
 - `tests/test_trajectory_guard.py` — #59 Score-Trajectory-Monitoring: ANOMALY/DIMINISHING/ROLLBACK_CHAIN-Trigger, Präzedenz, Konfigurierbarkeit, Run-Dir-Ingest (L1)
 - `tests/test_deslop_loop.py` — #51 Loop-Runner-Orchestrator: E1–E5-Exit-Checks, Rollback, Voice-Budget, Signal-Bestätigung, Audit-Vollständigkeit (deterministische Fake-Detektoren, L1)
+- `tests/test_fixer_strategies.py` — #60 Best-of-N Fix-Strategien: Auswahl-Harness (Primärkriterium Score, Tie-Break kleinster Edit innerhalb epsilon, Voice-Budget-Guardrail, Abstention/Crash-Isolation, Loop-Integration als Fix-Callback) (deterministische Fakes, L1)
 - `tests/test_lexikon.py` — #50 Lexikon-Pilot: Schema-Validierung, Beleg-Pflicht, Build-Determinismus, Sync-Gate (dist == Neubau), llms.txt-Struktur (L1)
 - `tests/test_fu12_watchlist.py` — FU-12 Generic-Phrase-Watchlist (Reviewer-Gegenproben < 0.40, Benchmark-Verteidigung)
 - `tests/test_generated_docs.py` — #34 generierte Doku/CHANGELOG
