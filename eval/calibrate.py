@@ -138,7 +138,22 @@ if __name__ == "__main__":
     parser.add_argument("--precision-floor", type=float, default=0.95)
     parser.add_argument("--rounds", type=int, default=3)
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--sample-mine", metavar="SAMPLES_JSONL", default=None,
+                        help="#12: also mine the samples file for new "
+                             "buzzword candidates (eval/sample_mine.py) and "
+                             "print tier suggestions next to the weights")
     args = parser.parse_args()
+
+    mine_candidates = None
+    if args.sample_mine:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
+        from sample_mine import load_samples, mine
+        samples = load_samples(args.sample_mine)
+        if samples:
+            mine_candidates = mine(samples)
+        else:
+            print(f"warning: no usable samples in {args.sample_mine}",
+                  file=sys.stderr)
 
     items = load_corpus(args.corpus)
     result = calibrate(items, args.precision_floor, args.rounds,
@@ -152,3 +167,10 @@ if __name__ == "__main__":
         m = result["metrics"]
         print(f"\nFinal: F1={m['f1']} P={m['precision']} R={m['recall']} "
               f"(TP={m['tp']} FP={m['fp']} TN={m['tn']} FN={m['fn']})")
+    if mine_candidates:
+        print(f"\n#12 sample-mine tier suggestions ({len(mine_candidates)}):")
+        for c in mine_candidates:
+            print(f"  [{c['min_tier_hint']}] df={c['doc_frequency']}  "
+                  f"{c['phrase']}")
+    elif args.sample_mine and args.json:
+        print(json.dumps({"sample_mine_candidates": []}))
