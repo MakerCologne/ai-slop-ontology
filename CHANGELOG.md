@@ -1,3 +1,14 @@
+## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
+
+- 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg
+  Wikipedia-Projektseite + own:corpus de-ev-23..25):
+  - `de_dichotomy_close` (M7 Dichotom-Schluss + Lob->Herausforderung->Ausblick-Schablone)
+  - `de_quote_fabrication` (M26 Zitat-/Quellenfabrikation)
+  - `de_register_shift` (M30 Stilwechsel zwischen Absaetzen)
+- DE_LAYER-Pin 22 -> 25 Kategorien (C4); de-coverage.md M7/M26/M30 GEDECKT,
+  DE-Signal-Zaehler 31
+- `tests/test_de_variant_rest3.py` neu (Schema/Belege/Kollisionen/Detektion)
+
 # Changelog
 
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 4 — DE-Variante-Rest: vierte DE-Phrase-Welle)

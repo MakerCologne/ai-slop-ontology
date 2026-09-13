@@ -2442,6 +2442,228 @@
                 }
               ]
             }
+          },
+          "de_dichotomy_close": {
+            "confidence": 0.6,
+            "description": "M7 Dichotom-Schluss + Lob->Herausforderung->Ausblick-Schablone (binary-framing closing template)",
+            "items": [
+              "die wahre frage lautet",
+              "die gute nachricht ist",
+              "die schlechte nachricht ist",
+              "die herausforderung besteht darin",
+              "die lösung liegt darin",
+              "der erste schritt besteht darin"
+            ],
+            "evidence": {
+              "die wahre frage lautet": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-23) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die gute nachricht ist": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-23) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die schlechte nachricht ist": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-23) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die herausforderung besteht darin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-23) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die lösung liegt darin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-23) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "der erste schritt besteht darin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-23) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_quote_fabrication": {
+            "confidence": 0.6,
+            "description": "M26 Zitat-/Quellenfabrikation: nicht nachpruefbare Experten-/Insider-Zitate",
+            "items": [
+              "wie ein experte einmal sagte",
+              "ein bekannter journalist schrieb einst",
+              "wie ein weiser mann einst sagte",
+              "ein insider verriet kürzlich",
+              "ein branchenkenner erklärte",
+              "in einem gespräch gestand ein"
+            ],
+            "evidence": {
+              "wie ein experte einmal sagte": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-24) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ein bekannter journalist schrieb einst": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-24) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "wie ein weiser mann einst sagte": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-24) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ein insider verriet kürzlich": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-24) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ein branchenkenner erklärte": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-24) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "in einem gespräch gestand ein": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-24) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_register_shift": {
+            "confidence": 0.6,
+            "description": "M30 Stilwechsel zwischen Absaetzen: Register-Kipp-Marker als Absatznaehte",
+            "items": [
+              "ganz praktisch gedacht",
+              "anders formuliert",
+              "auf den punkt gebracht",
+              "umschalten wir den blickwinkel",
+              "aus einem anderen blickwinkel",
+              "im klartext"
+            ],
+            "evidence": {
+              "ganz praktisch gedacht": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-25) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "anders formuliert": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-25) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "auf den punkt gebracht": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-25) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "umschalten wir den blickwinkel": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-25) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "aus einem anderen blickwinkel": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-25) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "im klartext": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-25) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
           }
         }
       },
