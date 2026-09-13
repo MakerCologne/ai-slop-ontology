@@ -32,7 +32,7 @@
 | M15 | Emojis vor Überschriften | GEDECKT | markup_anomalies/formatting slop |
 | M16 | Gedankenstrich-Cluster | GEDECKT | EmDashExcess + Em-Dash-Doctrine |
 | M17 | Briefartiger Aufbau (Betreff/Anrede/Grußformel) | NEU (klein) | Kandidat instruction/provenance-Umfeld |
-| M18 | Kollaborativ-Floskeln („Ich hoffe, das hilft") | DE-VARIANTE | chatbot leftovers (EN) → #77 |
+| M18 | Kollaborativ-Floskeln („Ich hoffe, das hilft“) | **GEDECKT (neu, #77-Rest 13.09.)** | **de_chatbot_leftover (Voll-Zweibeleg de-ev-17)** |
 | M19 | Wissensgrenzen-Hinweise („Stand …") | GEDECKT | provenance #20 (Update-Marker) |
 | M20 | Prompt-Ablehnungsreste | GEDECKT | provenance #20 / instruction slop |
 | M21 | Platzhaltertext ([Name einfügen]) | GEDECKT | markup_anomalies/proof_metrics |
@@ -47,7 +47,7 @@
 | M30 | Stilwechsel zwischen Absätzen | DE-VARIANTE | register_drift #81 → DE-Marker |
 | M31 | Ich-Form-Bearbeitungszusammenfassungen | NEU (verhaltensbasiert) | out of scope (Text-Engine) |
 | M32 | Autoritäts-Floskeln („die eigentliche Frage ist") | DE-VARIANTE | rhetorical_setups/authority → #77 |
-| M33 | Signposting/Ankündigungen | DE-VARIANTE | rhetorical_setups → #77 |
+| M33 | Signposting/Ankündigungen | **GEDECKT (neu, #77-Rest 13.09.)** | **de_signposting (Voll-Zweibeleg de-ev-18)** |
 | M34 | Fragment-Überschriften (Einzeiler-Nachspann) | DE-VARIANTE | rhythm/kicker-Signale → DE |
 | M35 | Rhetorische Fragen als Fake-Dialog | DE-VARIANTE | rhetorical_patterns → #77 |
 | M36 | Universal-Geschichts-Eröffnung („Seit jeher") | **GEDECKT (neu, T2)** | **de_opening (Teil 2)** | |
@@ -79,7 +79,7 @@
 | M62 | Bewertender Schluss-Satz ohne neue Info | NEU | verwandt TrailingMoral |
 | M63 | Modalpartikel-Anomalie | OFFEN (Stub) | naturalness_guard.modal_particle_anomaly = Stub; DE-Inventar folgt (s. #81) |
 | M64 | KI-Marker-Vokabular DE | → #77 | de_ai_vocab (dieser Batch, Teil 2) |
-| M65 | Kopula-Vermeidung („fungiert als") | DE-VARIANTE | copula_rate #22 → DE-Verben |
+| M65 | Kopula-Vermeidung („fungiert als“) | **GEDECKT (neu, #77-Rest 13.09.)** | **de_copula_avoidance (Voll-Zweibeleg de-ev-19)** |
 | M66 | Fake-Analyse-Anhang (Relativsatz ohne Info) | **GEDECKT (neu, #76-Rest)** | **structure_metrics.fake_analysis_appendix (≥2 Treffer, detect-only)** |
 | M67 | Ankündigungs-Spaltsatz („Was mich überraschte …") | **GEDECKT (neu, T2)** | **de_announcement_cleft (Teil 2)** | |
 | M68 | Komparativ-Rahmung („weniger X als vielmehr Y") | NEU | Kandidat phrase DE |
@@ -92,7 +92,13 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M7, M18, M26, M30, M32/33 (DE-Teil), M34, M35, M44, M54, M59, M65, M69, M70 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M7, M26, M30, M32/33 ist M33 seit 13.09. gedeckt, M34, M35, M44, M54, M59, M69, M70 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
+
+## Bilanz (#77-Rest-Batch, 13.09.2026)
+
+- **GEDECKT (neu, #77-Rest):** 3 weitere Muster — M18 `de_chatbot_leftover`, M33 `de_signposting`, M65 `de_copula_avoidance` (je 6 Phrasen, conf 0.6, **Voll-Zweibeleg** je Phrase: Wikipedia-Projektseite + own:corpus de-ev-17..19)
+- **DE-Signal-Zähler:** 22 + 3 = **25 DE-Signale gesamt**
+- Fixtures je Kategorie 3/3/2 in tests/test_de_variant_rest.py; DE_LAYER-Pin auf 19 Kategorien erweitert (C4: 81/114 Phrasen mit ≥ 2 Belegen — neue 18 Phrasen vollständig zweibelegt)
 
 ## Bilanz (Teil 1)
 

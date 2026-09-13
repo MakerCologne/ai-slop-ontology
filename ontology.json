@@ -1998,6 +1998,228 @@
                 }
               ]
             }
+          },
+          "de_chatbot_leftover": {
+            "confidence": 0.6,
+            "description": "M18 Chatbot-Restfloskeln: kooperative Gespraechsreste aus Assistenten-Kontext im Fliesstext",
+            "items": [
+              "ich hoffe, das hilft",
+              "gerne helfe ich weiter",
+              "lassen sie mich wissen",
+              "bei weiteren fragen",
+              "zögern sie nicht nachzufragen",
+              "ich hoffe, das war hilfreich"
+            ],
+            "evidence": {
+              "ich hoffe, das hilft": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-17) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "gerne helfe ich weiter": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-17) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "lassen sie mich wissen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-17) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "bei weiteren fragen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-17) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "zögern sie nicht nachzufragen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-17) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ich hoffe, das war hilfreich": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-17) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_signposting": {
+            "confidence": 0.6,
+            "description": "M33 Signposting/Ankuendigungs-Schablonen: strukturuende Vorankuendigungen statt Inhalt",
+            "items": [
+              "in diesem abschnitt werden wir",
+              "im folgenden werden wir",
+              "wenden wir uns nun",
+              "sehen wir uns genauer an",
+              "kommen wir nun zum",
+              "ein genauerer blick auf"
+            ],
+            "evidence": {
+              "in diesem abschnitt werden wir": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-18) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "im folgenden werden wir": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-18) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "wenden wir uns nun": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-18) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "sehen wir uns genauer an": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-18) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "kommen wir nun zum": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-18) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ein genauerer blick auf": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-18) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_copula_avoidance": {
+            "confidence": 0.6,
+            "description": "M65 Kopula-Vermeidung: 'ist' wird ueber Funktionsverb-Gefuege umgangen (fungiert/dient als-Familie)",
+            "items": [
+              "fungiert als",
+              "agiert als",
+              "funktioniert als",
+              "spielt die rolle von",
+              "nimmt die rolle ein",
+              "in der funktion eines"
+            ],
+            "evidence": {
+              "fungiert als": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-19) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "agiert als": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-19) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "funktioniert als": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-19) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "spielt die rolle von": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-19) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "nimmt die rolle ein": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-19) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "in der funktion eines": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert (Meta-Sprache/kollaborative Kommunikation/Ankuendigungs-Schablonen)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-19) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
           }
         }
       },

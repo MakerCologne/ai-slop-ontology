@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased] — 2026-09-13 (#77-Rest — DE-Variante-Rest: dritte DE-Phrase-Welle)
+
+- 3 neue de_*-Kategorien (M18 `de_chatbot_leftover`, M33 `de_signposting`,
+  M65 `de_copula_avoidance`), je 6 Phrasen conf 0.6, **Voll-Zweibeleg** je
+  Phrase (Wikipedia-Projektseite + own:corpus de-ev-17..19)
+- docs/de-coverage.md: M18/M33/M65 → GEDECKT; DE-Signal-Zähler 22 → 25
+- scripts/check_ssot.py: DE_LAYER-Pin 16 → 19 Kategorien (C4)
+- tests/test_de_variant_rest.py: Schema/Kollision/Detection/DoD (3/3/2)
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
