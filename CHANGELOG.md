@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.9.1] — 2026-09-13 (#56 Voice-Drift-Guardrail)
+
+`guard/voice_drift.py` (neu, Issue #56 / slopgh-#56, P1/LOOP-I4):
+Non-Regression-Guardrail gegen Stil-Homogenisierung durch iteriertes
+Rewriten (Model Collapse, arXiv:2305.17493). Drei messbare Kriterien,
+bewertet immer gegen Draft_0 (nicht Kette n→n+1, damit Drift nicht
+unter lauter grünen Zwischenschritten akkumuliert):
+
+- **Token-Budget (β=25%)**: geänderte Token-Fraktion vs. Draft_0 via
+  SequenceMatcher-OpCodes, normiert auf max(len) — KL-Guardrail-Analogon
+  (Gao et al., arXiv:2210.10760), als Edit-Distanz-Budget umgesetzt.
+- **Burstiness (σ/µ der Satzlängen)**: Non-Regression >= 0.9 × Baseline —
+  glattgeschliffener Rhythmus ist ein Drift-Tell.
+- **TTR (Type-Token-Ratio)**: Non-Regression >= 0.9 × Baseline als
+  Synonym-Vielfalt-Proxy gegen lexikalische Verarmung.
+
+Detect-only (ADR-0001): liest und urteilt, schreibt nie Text. Kurztexte
+(< 25 Token) → SKIP, keine Aussage. Verdict: OK | VOICE_DRIFT | SKIP mit
+Metriken und Gründen. Abgrenzung zu #59 (Score-Trajektorie je Run) und
+#47 (Score-Shift je Quartal) im Modul-Docstring dokumentiert.
+
+Tests: `tests/test_voice_drift.py` (17 Fälle: Tokenizer, Ratio-Grenzen,
+Burstiness-/TTR-Metriken, OK/DRIFT/SKIP-Pfade, Custom-β). Ebenen-
+Zuordnung in `docs/EVALS.md` (L1) nachgetragen — check_methodology grün.
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
