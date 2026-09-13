@@ -254,6 +254,9 @@ DE_LAYER = {
     "de_chatbot_leftover": 6,
     "de_signposting": 6,
     "de_copula_avoidance": 6,
+    "de_fake_dialog": 6,
+    "de_faux_candid": 6,
+    "de_false_agency": 6,
 }
 
 _DE_WIKI_OK = "/wiki/Wikipedia:Anzeichen"

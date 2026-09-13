@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased] — 2026-09-13 (#77-Rest Welle 4 — DE-Variante-Rest: vierte DE-Phrase-Welle)
+
+- 3 neue de_*-Kategorien (M35 `de_fake_dialog`, M59 `de_faux_candid`,
+  M70 `de_false_agency`), je 6 Phrasen conf 0.6, **Voll-Zweibeleg** je
+  Phrase (Wikipedia-Projektseite + own:corpus de-ev-20..22)
+- docs/de-coverage.md: M35/M59/M70 → GEDECKT; DE-Signal-Zähler 25 → 28
+- scripts/check_ssot.py: DE_LAYER-Pin 19 → 22 Kategorien (C4)
+- tests/test_de_variant_rest2.py: Schema/Kollision/Detection/DoD (3/3/2)
+
 ## [Unreleased] — 2026-09-13 (#77-Rest — DE-Variante-Rest: dritte DE-Phrase-Welle)
 
 - 3 neue de_*-Kategorien (M18 `de_chatbot_leftover`, M33 `de_signposting`,

@@ -2220,6 +2220,228 @@
                 }
               ]
             }
+          },
+          "de_fake_dialog": {
+            "confidence": 0.6,
+            "description": "M35 Rhetorische Fragen als Fake-Dialog: simulierte Leser-Gespraeche statt Inhalt",
+            "items": [
+              "haben sie sich schon einmal gefragt",
+              "warum ist das so wichtig",
+              "was bedeutet das für sie",
+              "die antwort ist einfach",
+              "wie sieht das in der praxis aus",
+              "was hat das mit ihnen zu tun"
+            ],
+            "evidence": {
+              "haben sie sich schon einmal gefragt": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "warum ist das so wichtig": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "was bedeutet das für sie": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die antwort ist einfach": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "wie sieht das in der praxis aus": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "was hat das mit ihnen zu tun": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_faux_candid": {
+            "confidence": 0.6,
+            "description": "M59 Forcierte Ich-Lockerheit: inszenierte Ehrlichkeits- und Vorgriffsfloskeln",
+            "items": [
+              "um ehrlich zu sein",
+              "ganz ehrlich gesagt",
+              "ich muss zugeben",
+              "wenn ich ehrlich bin",
+              "um es kurz zu machen",
+              "um es vorwegzunehmen"
+            ],
+            "evidence": {
+              "um ehrlich zu sein": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ganz ehrlich gesagt": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ich muss zugeben": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "wenn ich ehrlich bin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "um es kurz zu machen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "um es vorwegzunehmen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_false_agency": {
+            "confidence": 0.6,
+            "description": "M70 Falsche Agency abstrakter Subjekte: Zahlen/Geschichte/Forschung als handelnde Akteure",
+            "items": [
+              "die geschichte lehrt uns",
+              "die zahlen sprechen eine eigene sprache",
+              "die statistik zeigt ein klares bild",
+              "die studienlage deutet darauf hin",
+              "die technologie verändert die art",
+              "die entwicklung zeigt deutlich"
+            ],
+            "evidence": {
+              "die geschichte lehrt uns": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die zahlen sprechen eine eigene sprache": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die statistik zeigt ein klares bild": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die studienlage deutet darauf hin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die technologie verändert die art": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die entwicklung zeigt deutlich": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
           }
         }
       },
