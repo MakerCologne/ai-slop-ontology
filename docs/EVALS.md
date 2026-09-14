@@ -78,6 +78,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_de_variant_rest.py` — #77-Rest: M18/M33/M65 als de_chatbot_leftover/de_signposting/de_copula_avoidance (Voll-Zweibeleg de-ev-17..19, DoD 3/3/2)
 - `tests/test_de_variant_rest2.py` — #77-Rest Welle 4: M35/M59/M70 als de_fake_dialog/de_faux_candid/de_false_agency (Voll-Zweibeleg de-ev-20..22, DoD 3/3/2)
 - `tests/test_de_variant_rest3.py` — #77-Rest Welle 5: M7/M26/M30 als de_dichotomy_close/de_quote_fabrication/de_register_shift (Voll-Zweibeleg de-ev-23..25, DoD 3/3/2)
+- `tests/test_de_variant_rest4.py` — #77-Rest Welle 6: M32/M56/M72 als de_rhetorical_setup/de_aphorism/de_therapeutic_validation (Voll-Zweibeleg de-ev-26..28, DoD 3/3/2)
 - `tests/test_de_evidence_densification.py` — #76-Rest RI-2-FU: Evidence-Verdichtung (≥2 unabhängige Belege für ≥50% der de_*-Phrasen; L1) mit own:corpus-Belegtexten `eval/de_evidence_texts.jsonl` (L1-Belegtextdatei, eigene Handschrift) und C4-Coverage-Pin (Manipulationsprobe)
 - `tests/test_structure_rest.py` — #76-Rest: M66 Fake-Analyse-Anhang + M71 Scheinnuance (detect-only ≤0.5, DoD 3/3/2); M67 bewusst nicht dupliziert (schon de_announcement_cleft)
 - `tests/test_discourse_metrics.py` — #72 L4: explorative Diskurs-Signale rank_without_criterion & identical_enumeration (conf ≤0.35, `exploratory: True`, DoD 3/3/2) gegen versionierten L4-Referenzkorpus `eval/discourse_ref.jsonl` (Artefakt-Typen deep/10 + deep/06, Kontrollartefakte inklusive)
