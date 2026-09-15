@@ -19,7 +19,8 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 
 ### L2 — Control Set
 
-- `eval/human_ideological.jsonl` — Seed-Korpus Human/Ideological Slop (#98-Vorlauf, 40 Einträge, alle `own:handwritten`, adr/0005: keine fremden Volltexte); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
+- `eval/human_ideological.jsonl` — Korpus Human/Ideological Slop (#98-Zielstand: 46 positiv / 40 negativ, alle `own:handwritten`, adr/0005: keine fremden Volltexte; positives Merkmal nie allein Phrase — Leak-Check-Feld `features`); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
+- `eval/run_human_ideological.py` — Korpus-Gate #98 (L2): Integrität 40/40 + Segment-Pins + Leak-Check + Precision-Pin ≥ 0.95 der Rhetorik-Gruppe auf Hard-Negatives; Gate 5b in `scripts/verify.sh`
 - `eval/control_set.jsonl` — Golden Control Set: 10 handgeschriebene Texte (5 Slop / 5 Hard Negatives), known-FN-Register (ADR-0003)
 - `eval/run_control_set.py` — FN/FP-Gate (Threshold 0.40, known_fn-Ausnahmen, RESOLVED-Meldung); läuft bei jedem Issue im Burn
 
@@ -91,6 +92,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
+- `tests/test_human_ideological_runner.py` — #98-Zielstand: Runner-Exit-Code, 40/40 + Segment-Pins, Quellendisziplin, Leak-Check je Positivem
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)

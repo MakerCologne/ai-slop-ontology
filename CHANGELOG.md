@@ -1,5 +1,25 @@
 # Changelog
 
+## [Unreleased] — #98-Zielstand: Human/Ideological-Korpus 46/40 + Runner-Gate 5b
+
+Der Seed-Stand (PR #132, 24/16) erreicht den Zielstand aus Issue #98: 46
+positive / 40 negative eigene Texte (alle `own:handwritten`, adr/0005 — keine
+fremden Volltexte), die fünf Kern-Segmente (Ritual-Brandmauer, Kollektivframe,
+Purity-Kette, Salvation-Kette, Ethnopluralismus-Rebrand) je ≥ 8, dazu 6
+Bonus-Positive außerhalb der Segmente und 24 neue Hard-Negatives
+(substanzielle AfD-Kritik, Migrations-/Gerichtspolicy mit Belegstruktur,
+BfV-/Plenarprotokoll-Provenance, technische AI-Kritik, Empirie,
+ethnografische Differenz ohne Segregationsforderung, markierte Satire).
+
+Neu: `eval/run_human_ideological.py` (Gate 5b in `scripts/verify.sh` bzw.
+GitLab-CI): Integritäts-Pins (40/40, Segmente, eindeutige IDs,
+Quellendisziplin), Leak-Check (je Positiv ein `structure:`-Merkmal außerhalb
+der Marker-Phrase — keine Trainingsphrase als einziges Positiv-Merkmal) und
+Precision-Pin ≥ 0.95 der Rhetorik-Gruppe (ideologienahe `de_*`-Kategorien
+aus `ontology.json`) auf Hard-Negatives. Erstlauf: 0 FP / 40 Negativen,
+Precision 1.0000. Recall bewusst nachrangig bis #92 (Option B) dedizierte
+Ritual-/Purity-Signale liefert; `polemic_risk` bleibt gesperrt (adr/0008).
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills

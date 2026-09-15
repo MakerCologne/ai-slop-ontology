@@ -60,6 +60,9 @@ rm -rf "$tmp"
 step "5 Benchmark-Untergrenzen"
 python eval/run_benchmark.py --min-precision 1.0 --min-recall 0.99 | tail -1; check ${PIPESTATUS[0]}
 
+step "5b Human/Ideological-Korpus (#98-Zielstand)"
+python eval/run_human_ideological.py | tail -1; check ${PIPESTATUS[0]}
+
 printf '\n===================================\n'
 if [ "$fail" -eq 0 ]; then echo "ALLE GATES GRUEN"; else echo "MINDESTENS EIN GATE ROT"; fi
 exit "$fail"
