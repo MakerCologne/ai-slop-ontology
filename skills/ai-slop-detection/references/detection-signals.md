@@ -157,6 +157,25 @@ patterns are mirrored as data in `ontology.json` under
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
 
+### Human Detection Empirie (Menschen ≈ Chance-Level)
+
+ML-Detektoren sind das eine — die andere Hälfte der Empirie: **Menschliche Erkennungsleistung ist schlecht.** Das ist das stärkste Argument gegen „ich erkenne KI-Text schon selbst“ und für Tool-Einsatz + Checklisten-Ansatz.
+
+| Studie | Befund |
+|--------|--------|
+| Cheng 2025 | Menschliche Unterscheidung LLM- vs. Menschentext **nicht besser als Zufallsniveau** |
+| Fiedler 2025 (deutsche Abschlussarbeiten) | Erkennungsrate **57 % für KI-Texte**, 64 % für menschliche Texte |
+| Russell 2025 (Preprint) | Schwere LLM-Nutzer: ~**90 % korrekt** — aber bei 10 markierten Seiten ≈ 1 False Positive; Wenig-Nutzer kaum über Zufall |
+
+**Sprach-Konvergenz verschärft das Problem:** Menschliche Sprache wird von LLMs beeinflusst und ähnelt KI-Output zunehmend — nachgewiesen für gesprochene Inhalte/Podcasts (Yakura 2024) sowie weiterführend für Lexik und Semantik/Word-Choice (Geng 2025, Galpin 2025). Grundannahme „Menschentext sieht anders aus“ erodiert über Zeit; lebenslange Signaturen (eigener Stil, Belege, Provenance) werden relativ wichtiger als Oberflächen-Signale.
+
+**Implikationen für dieses Skill:**
+- Selbst-Diagnose („das liest sich menschlich“) ist kein valides Kriterium — Signal-Katalog + Scorer schlagen Intuition.
+- Einzelne Signale sind hinweisend, nicht beweisend; Score-Aggregation + Schwellenentscheidung beachten.
+- Russell-2025-Caveat gilt auch für Tools: ~90 % Genauigkeit ⇒ ~10 % False-Positive-Rate einkalkulieren, kritische Aktionen nie auf einen einzelnen Score stützen.
+
+Quelle (Zugriff): [Wikipedia: Signs of AI writing — Your detection ability](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability); Details Deep-Dive `research/slop-ontology-gap-2026-08-24/deep/03` (I33).
+
 ## Thresholds
 
 | Score | Risk | Action |
