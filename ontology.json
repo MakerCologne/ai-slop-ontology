@@ -2032,6 +2032,13 @@
             "pattern": "Every section same length regardless of topic importance",
             "confidence": 0.65
           },
+   {
+    "id": "CircularExplanation",
+    "pattern": "definitional verb + subject/predicate stem overlap",
+    "threshold": "shared >=4-char content stem both sides of is/means/validates/..., predicate adds <=3 new stems, >=5 words",
+    "confidence": 0.45,
+    "note": "Tautological definition (issue #122, PRISM context): 'The auth module validates authentic user authentication.' Detect-only prose signal, implemented in skills/ai-slop-detection/scripts/circular_explanations.py; never score-dominant. Hard negatives: technical reference ('handles') and genuine definitions (>3 new stems) must not fire."
+   },
           {
             "id": "ExcessiveHedging",
             "pattern": ">3 hedging phrases per 500 words",
