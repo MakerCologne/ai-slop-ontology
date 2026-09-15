@@ -23,6 +23,7 @@ from collections import Counter
 from typing import Optional
 
 import fp_guards
+import gates
 import genre_profiles
 import input_norm
 import learning_store
@@ -1085,6 +1086,15 @@ def format_report(result: dict) -> str:
     if signals["authority_phrases"]:
         lines.append(f"\n📢 Authority claims: {', '.join(signals['authority_phrases'])}")
 
+    # Issue #118: hard gates — binary signals, no score contribution.
+    gates_out = result.get("gates")
+    if gates_out and gates_out.get("gates"):
+        lines.append("\n🚧 Hard Gates (binär, kein Score-Anteil):")
+        for g in gates_out["gates"]:
+            mark = "❌ FAIL" if g["status"] == "fail" else "✅ pass"
+            lines.append(f"  {mark} {g['id']}" +
+                         (f" — {g['evidence']}" if g["status"] == "fail" else ""))
+
     # Issue #74: register context — detect-only style card, advisory.
     ctx = result.get("context") or {}
     card = ctx.get("register_profile")
@@ -1108,7 +1118,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     use_json = "--json" in sys.argv
-    args = [a for a in sys.argv[1:] if a != "--json"]
+    args = [a for a in sys.argv[1:] if a not in ("--json", "--gates")]
 
     # Issue #78: anchor-diff mode — protected anchors (numbers, quotes,
     # URLs, DOIs) must survive rewrites; drift is reported per changed
@@ -1313,6 +1323,10 @@ if __name__ == "__main__":
 
     result = slop_score(text, genre=genre, not_slop_store=not_slop_store,
                         project_config=project_cfg)
+
+    # Issue #118: hard gates for binary signals — never a score
+    # contribution; auto-run for code/markup input, --gates forces them.
+    result["gates"] = gates.run_gates(text, force="--gates" in sys.argv)
 
     if use_json:
         print(json.dumps(result, indent=2))

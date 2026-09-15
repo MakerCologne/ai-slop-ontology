@@ -174,3 +174,15 @@ weights = {critical: 1.0, high: 0.7, medium: 0.4, low: 0.2}
 slop_score = min(1.0, sum(weights[s.severity] * s.confidence) / max(1, n))
 is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
+
+## Hard Gates (Binärsignale, #118)
+
+Einige Signale sind binäre Fakten, keine Score-Beiträge: Platzhalter-Credentials,
+Elision-Comments (`// ... rest of implementation`), Lorem Ipsum, tote Anker
+(`href="#"`), Placeholder-Bild-URLs, Launch-Blocker-TODOs. Diese laufen als
+**Gates statt Score** (Implementierung: `scripts/gates.py`, Ausgabe: `gates`-Key
+im Scorer-JSON): FAIL → harte Markierung mit Evidence, PASS → kein Beitrag —
+keine Kalibrierung, keine fp-guards, score-neutral by construction. Semantik
+„necessary, not sufficient" (nach piyushbhattadforapps/pseo-quality-gate):
+ein FAIL ist ein starker Prädiktor, alle PASS garantieren nichts.
+Auto-Run bei Code/Markup-Input; `--gates` erzwingt die Gates für Prosa.
