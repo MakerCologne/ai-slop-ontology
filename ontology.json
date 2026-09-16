@@ -2769,6 +2769,12 @@
           "id": "ConfigBoilerplateSlop",
           "description": "Narrating boilerplate comments in Dockerfile/YAML/Terraform ('# Install dependencies' over an obvious RUN/COPY line)",
           "confidence": 0.6
+        },
+        {
+          "id": "ReviewApprovalSlop",
+          "description": "Counterfactual Test (PRISM, issue #122): review comment carries a generic approval marker (LGTM, looks good, +1, thanks, consider adding ...) AND zero domain anchors (no code, path, identifier, issue ref, number) — such a comment fits any PR",
+          "confidence": 0.4,
+          "note": "Detect-only, never score-wirksam (ADR-0001). Implemented in src/metadata_slop.py classify_review_comment. Hard negatives: any anchor (identifier, path, #ref, digit) suppresses the finding."
         }
       ]
     }
