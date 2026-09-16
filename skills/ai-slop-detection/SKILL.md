@@ -304,7 +304,8 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **Scored examples (8 cases):** `references/slop-examples.md`
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
-- **Praeventive Schreibregeln:** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
+- **Praeventive Schreibregeln (Aufzaehlung/Rhythmik):** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
+- **Praeventive Schreibregeln (write-side, P1/#228):** `references/writing-rules.md` - Einstiegstypen statt Ersatzliste, Inhalt statt Ankuendigung, differenziertes Ich, LinkedIn-Kommentar-Default, Konnektor-Absaetze, Style-Prompt-Snippet fuer die Erstgenerierung
 
 ## Termination Semantics (Fix-/Review-Loops, #62)
 
