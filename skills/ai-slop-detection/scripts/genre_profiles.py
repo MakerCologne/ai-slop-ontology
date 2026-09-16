@@ -61,6 +61,23 @@ GENRE_PROFILES = {
         "zero_weights": ["list_heavy"],
         "decision_threshold": 0.45,
     },
+    "comment": {
+        "description": "Social comments and personal messages — short, "
+                       "enthusiastic register and formulaic niceties "
+                       "(congratulations, thanks, emoji) are convention, "
+                       "not slop (#231). Opt-in only; the sequence signal "
+                       "engagement_comment_default (praise -> paraphrase -> "
+                       "addition -> question) is reported separately as a "
+                       "detect-only finding.",
+        "exempt_terms": [
+            "thanks for sharing", "thank you for sharing",
+            "congratulations", "congrats", "well said",
+            "great post", "great read", "great article",
+            "best of luck", "all the best", "keep them coming",
+        ],
+        "zero_weights": ["burstiness", "verbosity"],
+        "decision_threshold": 0.30,
+    },
 }
 
 

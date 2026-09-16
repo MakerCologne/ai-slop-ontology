@@ -109,6 +109,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_fu12_watchlist.py` — FU-12 Generic-Phrase-Watchlist (Reviewer-Gegenproben < 0.40, Benchmark-Verteidigung)
 - `tests/test_generated_docs.py` — #34 generierte Doku/CHANGELOG
 - `tests/test_genre_profiles.py` — #42 Genre-Opt-in-Profile (ADR-0004)
+- `tests/test_engagement_sequences.py` — #231 Kommentar-Genre (comment) + Sequenz-Signal engagement_comment_default (detect-only, Lob→Paraphrase→Ergänzung→Frage); Control-Set: 10 Kommentar-Texte, FP-Rate 0 auf legitimen Kommentaren (Genre-Threshold 0.30)
 - `tests/test_governance_doc.py` — #67 Governance-Pflichtabschnitte (Meta)
 - `tests/test_input_norm.py` — #40 Input-Normalisierung/Evasion
 - `tests/test_project_config.py` — #11 Projekt-lokale Config (disabled_signals/term_allowlist/weight_overrides, Auto-Discovery)
