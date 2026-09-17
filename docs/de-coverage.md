@@ -125,3 +125,26 @@ Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind d
   wo Konnektor-Absaetze Konvention sind.
 - Hard Negatives getestet in tests/test_opener_announcement.py (Begruendung im Satz,
   mid-text-Ich, juristischer Einzel-Konnektor, Kurztext).
+
+## 2026-09-17: Genre-Profil comment/message + LinkedIn-Kommentar-Evals (#231 / P4)
+
+- **Genre-Profile `comment` und `message`** (genre_profiles.py, Opt-in via `--genre`,
+  ADR-0004: kein Auto-Detect): kurze Saetze und Ritual-Formeln (Grussformeln) sind
+  Genres-Konvention, kein Slop — exempt_terms fuer Grussformeln, zero_weights fuer
+  verbosity/list_heavy, decision_threshold 0.50. Lob-Auftakt und Triaden bleiben
+  voll verdächtig (Advisories verweisen auf OpenerAnnouncement /
+  engagement_comment_default / ForcedTriad).
+- **`engagement_comment_default`** (rhetorical_patterns.py, detect-only,
+  Konfidenz 0.45): feuert erst, wenn EIN Text mindestens 3 der 4 Sequenzelemente
+  IN REIHENFOLGE enthaelt (Lob-Anfang -> Paraphrase-Marker -> Ergaenzungs-Ankuendigung
+  -> schliessende Frage). Einzelne Elemente (auch Paraphrase + Frage) feuern nicht.
+  keep_when: echte FAQ-Konversation/Interview/Moderation.
+- **Control-Set-Erweiterung** (eval/control_set.jsonl, 10 -> 20 Texte, ADR-0005
+  eigene Handschrift): 5 CommentSlop-Sequenzen (als known_fn dokumentiert — kurze
+  Kommentare erreichen die Score-Eskalation nicht; Detektion laeuft detect-only,
+  ADR-0006) und 5 legitime LinkedIn-Kommentare als Hard Negatives
+  (differenzierter Widerspruch, echte Detailfrage, inhaltliche Zustimmung mit
+  Ergaenzung, Kritik am Vergleich, technische Gegenanalyse).
+  **FP-Rate auf den 5 legitimen Kommentaren: 0** (kein Signal, Score < 0.08).
+- Tests: tests/test_comment_genre.py (TP >= 1, Hard Negatives >= 2 inkl.
+  Control-Set-Texte, Opt-in ohne Auto-Detect).

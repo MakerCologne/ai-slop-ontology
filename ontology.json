@@ -2507,6 +2507,14 @@
             "example_slop": "Spannender Punkt. Ich denke, ein weiterer wichtiger Aspekt ist die Frage, wie viel Prozesswissen verfuegbar ist.",
             "example_fix": "Wie viel Prozesswissen ist tatsaechlich verfuegbar?",
             "keep_when": "Genuine stance differentiation: 'Ich denke, dass X, weil Y belegt' carries content and a reason. Mid-text occurrences and ritual formulas stay unflagged."
+          },
+          "engagement_comment_default": {
+            "label": "Engagement comment default",
+            "confidence": 0.45,
+            "description": "The default LinkedIn comment sequence - praise opener, paraphrase marker ('Sie schreiben/In Ihrem Beitrag', 'you describe/your post'), an announced add-on ('Ein weiterer Aspekt ist ...') and a closing engagement question - with at least 3 of the 4 elements in order. Fires when ONE text walks the whole template, not on any single element.",
+            "example_slop": "Danke für diesen spannenden Beitrag. Sie beschreiben sehr treffend, wie FHUs unter Personalnot leiden. Ein weiterer Aspekt ist die Zulassungsdauer. Wie sehen Sie das?",
+            "example_fix": "Die Zulassungsdauer in Ihrem Beispiel passt nicht zu unseren Zahlen: 14 Monate Standardverfahren, 9 Monate im beschleunigten Verfahren. Wir hadern eher mit den Zusatzanforderungen der Krankenkassen.",
+            "keep_when": "A genuine FAQ conversation, interview or moderation where question and reference to the other side carry real information, not engagement ritual."
           }
         }
       }

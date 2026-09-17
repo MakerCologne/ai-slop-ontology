@@ -146,6 +146,7 @@ Adapted from the "No AI slop" editing skill by Peter Yang
 | Robotic rhythm | 3+ stacked short sentences | One deliberate burst for emphasis |
 | Decorative separator triad | Slogan-shaped "X \| Y \| Z" or #X #Y #Z of short items | Real breadcrumb, shortcut chain, or table row |
 | Opener announcement (17.09., #230) | Praise-/Ankuendigungs-Frames am Satzanfang ('Spannender Punkt.', 'Ein weiterer Aspekt ist ...', text-initiales 'Ich denke' ohne Begrundung) | Echte Haltungsdifferenzierung mit Begrundung; Ritual-Formeln |
+| Engagement comment default (17.09., #231) | LinkedIn-Kommentar-Default-Sequenz: Lob-Auftakt -> Paraphrase-Marker ('Sie schreiben', 'In Ihrem Beitrag', 'you describe') -> angekuendigte Ergaenzung -> abschliessende Engagement-Frage; feuert erst ab 3 von 4 Elementen IN REIHENFOLGE in EINEM Text | Echte FAQ-Konversation, Interview oder Moderation, in der Frage und Bezug genuine Information tragen |
 | Forced triad (erweitert 15.09.) | Auch Nomen-/Verb-Triaden ("verstehen, gestalten, transformieren"), Staccato-Dreier ("Menschen. Prozesse. Technologie."), dt. "X, Y und Z" (alle drei gleiche Flexionsklasse) | Drei wirklich verschiedene, einzeln tragende Punkte |
 
 Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
