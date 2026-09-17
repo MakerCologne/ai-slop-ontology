@@ -9,7 +9,7 @@ Classify and score content for AI slop using the AI Slop Ontology v1.0.0.
 
 ## Market Positioning: Detector, not a Rewriter (#38)
 
-skills.sh market scan (2026-08, 100 hits for "slop"): the market is dominated by rewrite/humanizer skills; the detector niche is barely occupied. This skill deliberately positions itself as a **detector** — it reports `slop_score` + evidence and never silently rewrites content (detect-only layers document patterns; fixes stay the user's decision).
+skills.sh market scan (2026-08, 100 hits for "slop"): the market is dominated by rewrite/humanizer skills; the detector niche is barely occupied. This skill deliberately positions itself as a **detector** — it reports `slop_score` + evidence and never silently rewrites content (detect-only layers document patterns; fixes stay the user's decision). Rationale (ADR-0001): a rewriter coupled to its own detector invites Goodhart-style self-gaming; repair guidance stays documented as countermeasures, outside the scoring path.
 
 **Unique selling point: text + code + UI in one detector.** No market skill covers all three classes.
 
@@ -22,7 +22,6 @@ skills.sh market scan (2026-08, 100 hits for "slop"): the market is dominated by
 | **ai-slop-detection (this)** | — | ✓ | ✓ | ✓ | ✓ | **Detector** |
 
 Sources: `research/slop-ontology-gap-2026-08-24/` (report.md + deep/01–10, market-I2/I4).
-
 ## Core Concept
 
 AI Slop is not a binary type — it is a **risk profile**. Three necessary conditions (all must be met for confirmed slop):
