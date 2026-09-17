@@ -33,6 +33,9 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 sys.path.insert(0, os.path.join(ROOT, "skills", "ai-slop-detection", "scripts"))
+sys.path.insert(0, os.path.join(ROOT, "src"))
+
+from threshold_config import load_threshold  # noqa: E402
 
 import scorer as src_scorer  # noqa: E402
 import slop_scorer as skill_scorer  # noqa: E402
@@ -41,7 +44,9 @@ from classifier import SlopClassifier  # noqa: E402
 
 ONTOLOGY = os.path.join(ROOT, "ontology.json")
 CORPUS = os.path.join(ROOT, "eval", "corpus.jsonl")
-THRESHOLD = 0.40
+# Single source: config/threshold.json (#157) — tests follow the config so a
+# sweep change moves the gate with it instead of diverging silently.
+THRESHOLD = load_threshold()
 
 PATTERN_ENGINES = [
     ("src.scorer", src_scorer),

@@ -4,6 +4,22 @@ A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*.
 
 **Version:** 1.9.0 | **Date:** 2026-08-25 | **License:** CC BY 4.0
 
+## Positioning: Detector, not a Rewriter
+
+Market scan (skills.sh, 2026-08, 100 hits for "slop"): nearly the entire market consists of rewrite/humanizer skills. This project deliberately occupies the **detector niche**: it delivers `slop_score` + per-finding evidence (signal_id, span, quote) and leaves the fix decision to the human. The CLI is detect-only by design (`slop score`, `slop classify`, `slop rhetoric`, `slop code`).
+
+**Unique selling point — multi-domain:** text + code + UI in one detector. No market skill covers all three classes:
+
+| Skill (skills.sh) | Installs | Text | Code | UI | Score + Evidence | Type |
+|---|---|---|---|---|---|---|
+| anti-ui-slop | 467k | ✗ | ✗ | ✓ | ✗ | Rewriter |
+| story-deslop | 12.4k | ✓ (fiction) | ✗ | ✗ | ✗ | Rewriter |
+| stop-slop | 11.7k | ✓ | ✗ | ✗ | ✗ | Rewriter |
+| no-ai-slop | 7.2k | ✓ | ✗ | ✗ | ✗ | Rewriter |
+| **AI Slop Ontology / `slop`** | — | ✓ | ✓ | ✓ | ✓ | **Detector** |
+
+Sources: `research/slop-ontology-gap-2026-08-24/` (report.md + deep/01–10, market-I2/I4).
+
 ## Quick Start
 
 ```python
@@ -66,6 +82,25 @@ Every text command reads a positional string, `--file PATH`, or stdin (`-`), and
 takes `--json` for machine-readable output.
 
 📖 **Full manual with use cases and tested examples: [docs/USER-GUIDE.md](docs/USER-GUIDE.md)**
+
+## Positioning: Detector, not a Rewriter
+
+This repo detects and scores — it never rewrites (ADR-0001). Every finding is
+`score + evidence`: matched signals, severities, weights, line references.
+Rewriting is deliberately out of scope (Goodhart risk: a rewriter coupled to its
+own detector optimizes the score instead of the text); repair guidance exists as
+documented countermeasures outside the scoring path.
+
+**Multi-domain is the differentiator** — the skills.sh "slop" market (100 hits,
+Aug 2026) is almost entirely rewrite skills, and none covers more than one domain:
+
+| Market skill | Installs | Approach | Domains |
+|---|---|---|---|
+| anti-ui-slop | 467k | rewrite (UI) | UI |
+| story-deslop | 12.4k | rewrite | text |
+| stop-slop | 11.7k | rewrite | text |
+| no-ai-slop | 7.2k | rewrite | text |
+| **AI Slop Ontology (this repo)** | — | **detect-only, score+evidence** | **text + code + UI** |
 
 ## What is AI Slop?
 
@@ -219,3 +254,14 @@ Compatible with: LangGraph-Node, MCP-Tool, AutoGen-Function
 ## License
 
 CC BY 4.0
+
+## Issue-Nummern: Konvention (GitLab vs. GitHub)
+
+Zwei aktive Tracker mit getrennten Nummernräumen: **GitHub** (Signalarbeit/Landscape, dieses Repo) und **GitLab Burn-Tracker** (`maker-cologne/ai-slop-ontology`, Projekt 74 auf vmd80537; Burn/Pipeline).
+
+**Kurzregel:**
+- Issue-Nummern **ohne Präfix** = GitHub (dieses Repo)
+- GitLab-Issues immer als **„GL #N“**, GitLab-MRs als **„GL !N“** zitieren
+- Cross-Links: GitHub-Issues tragen eine „GitLab-Bezug:“-Zeile; GitLab-Issues eine „GitHub-Äquivalent:“-Zeile
+
+*Eingeführt via Tracker #158 (Nummern-Kollision GitLab↔GitHub).*
