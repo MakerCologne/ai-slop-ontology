@@ -19,9 +19,11 @@ import os
 import re
 import subprocess
 import sys
+from bisect import bisect_right
 from collections import Counter
 from typing import Optional
 
+import domain_bindings
 import fp_guards
 import gates
 import genre_profiles
@@ -206,6 +208,50 @@ PHRASE_CATEGORIES = {
             "people are saying", "sources say", "insiders claim"
         ]
     },
+    # --- #115 (ZeroSlop): 'performed voice' + 'manufactured stakes'.
+    # Zwei Prosa-Muster, die LLMs aus Sozial-Media-/Marketing-Prosa
+    # importieren: Persoenlichkeits-Theater ("here's the thing nobody
+    # tells you") und Dringlichkeit ohne Sache ("in today's fast-paced").
+    # Beide Kategorien sind detect-only ueber die Kumulativregel (>= 2
+    # Treffer) und tragen keep_when-Guards (fp_guards.
+    # mask_performative_stakes), die VOR dem Matching maskieren:
+    #   - performative_voice: kein Fire, wenn im +-120-Zeichen-Fenster
+    #     ein First-Person-Erfahrungs-Anker steht ("when I ...",
+    #     "in my experience", "I lost/spent/learned/tried/failed")
+    #     — gelebte statt performte Stimme
+    #   - manufactured_stakes: kein Fire, wenn im Folgfenster (120
+    #     Zeichen) ein konkreter Termin/Fakt steht ("by Friday",
+    #     "deadline 15 October", Ziffern mit Einheit) — echte statt
+    #     dramatisierte Dringlichkeit
+    # Ueberlappung mit report_hedging "here's what nobody tells you"
+    # wird durch Longest-Match-Overlap-Suppression aufgelöst (keine
+    # Doppelbestrafung). Fact-Gate-Kopplung: Deslop löscht keine Facts
+    # (ontology.json deslopInvariants, #115) — der Score trifft die
+    # Inszenierung, nie den Fakt dahinter.
+    "performative_voice": {
+        "confidence": 0.55,
+        "phrases": [
+            "here's the thing nobody tells you",
+            "nobody tells you",
+            "i'm going to be honest with you",
+            "let me be brutally honest",
+            "i don't say this lightly",
+            "unpopular opinion, but",
+            "call me old-fashioned, but"
+        ]
+    },
+    "manufactured_stakes": {
+        "confidence": 0.6,
+        "phrases": [
+            "in today's fast-paced",
+            "the stakes have never been higher",
+            "now more than ever",
+            "at a critical juncture",
+            "time is running out",
+            "don't get left behind",
+            "before it's too late"
+        ]
+    },
     # --- Batch F (2026-08-25), cluster C2: business/report hedging and
     # fake-authority report formulas mined from FN series slop-0202 of
     # eval/corpus.jsonl. Same evidence discipline as C1 (>=3 slop texts,
@@ -326,6 +372,36 @@ PHRASE_CATEGORIES = {
     # den einzigen Beleg von slop-0303-021 traegt (Benchmark-Regression
     # R 0.982 -> 0.977). Nachziehen erst mit Clean-Genre 'menschliche
     # Arbeitsprosa' (FU-13). Beleg-Disziplin wie Batch F.
+    # --- #110 (Hassid-Liste Punkte 4-8): konversationelle Fuell-
+    # Floskeln, die LLMs aus gesprochenen Gespraechsmustern in Schrift-
+    # texte importieren. Detect-only per Default-Kumulativregel (>= 2
+    # Treffer). confidence bewusst unter der 0.75-Single-Hit-Eskalations-
+    # schwelle: zwei der vier Phrasen sind in Support-/Erfahrungsprosa
+    # legitime Formulierungen, die Hard-Negative-Guards (fp_guards,
+    # mask_conversation_fillers) vor dem Matching maskieren:
+    #   - "hope this helps" nicht zaehlen, wenn innerhalb der letzten
+    #     100 Zeichen vor einer Grussformel (Support-Mail-Kontext)
+    #   - "most people" nicht zaehlen bei direkter Quellenangabe
+    #     ("most people I interviewed ...") — Pseudo-Empirie vs. echte
+    #   - "^most people" nur claus-initial (#88-Positionssemantik):
+    #     "Most people ..." als Absatzopener, nicht mid-sentence
+    # Nicht uebernommen aus der Quelle: delve/crucial/robust (Buzzword-
+    # Tiers), "It's not X, it's Y" (Binary-Contrast), Adverb-Abuse.
+    # Pre-2022-Cap prueft nicht: Floskeln sind vor-menschlich alt
+    # (Begruendung im Issue/CHANGELOG), daher bewusst kein Cap.
+    "conversational_fillers": {
+        "confidence": 0.55,
+        "phrases": [
+            "here's the thing",
+            "hope this helps",
+            "to provide a quick update",
+            "^most people",
+            "just a quick update",
+            "giving you a quick update",
+            "here's a quick update",
+            "wanted to give you a quick update"
+        ]
+    },
     "generic_phrases": {
         "confidence": 0.65,
         "min_hits": 3,
@@ -560,29 +636,42 @@ SUBSTITUTE_VERB_PATTERNS = [
 ]
 
 
+# #46 prevention, COLL-1 (collisionMatrix): substitute matches that overlap
+# a FakeStrongVerb rhetorical match ("serves as a centralized hub") are
+# also excluded — that occurrence counts ONLY as FakeStrongVerb and must
+# not simultaneously lower the copula rate. Import of the detect-only
+# module is safe (no circular dependency).
+import rhetorical_patterns as _rhet
+
+
 def copula_stats(text: str) -> dict:
     """Copula rate: is/are/was/were vs. substitute linking verbs (#22).
 
     Returns {"copulas", "substitutes", "rate"} where rate = copulas /
     (copulas + substitutes); 0.0 when neither occurs. Substitute matches
-    overlapping buzzword spans are excluded from the denominator
-    (#46 prevention, see SUBSTITUTE_VERB_PATTERNS note above).
+    overlapping buzzword spans OR FakeStrongVerb spans are excluded from
+    the denominator (#46 prevention, COLL-1 — FakeStrongVerb wins, the
+    same occurrence never lowers the copula rate too).
     """
     text_lower = text.lower()
     copula_spans = [m.span() for m in re.finditer(r"\b(?:is|are|was|were)\b", text_lower)]
+    buzzword_rx = re.compile(
+        r"(?:" + "|".join(
+            _term_pattern(w) for t in BUZZWORD_TIERS.values() for w in t["words"]
+        ) + r")"
+    )
+    fake_strong_rx = _rhet._FAKE_STRONG_VERB
     sub_spans = []
     for m in re.finditer(
         r"\b(?:" + "|".join(re.escape(v) for v in SUBSTITUTE_VERB_PATTERNS) + r")\b",
         text_lower,
     ):
         # #46 prevention: ignore substitutes that overlap a buzzword match
-        all_terms = [w for t in BUZZWORD_TIERS.values() for w in t["words"]]
+        # or a FakeStrongVerb match (COLL-1)
         overlapping = any(
             m.start() < be and m.end() > bs
-            for bm in re.finditer(
-                r"(?:" + "|".join(_term_pattern(w) for w in all_terms) + r")",
-                text_lower,
-            )
+            for rx in (buzzword_rx, fake_strong_rx)
+            for bm in rx.finditer(text_lower)
             for bs, be in [bm.span()]
         )
         if not overlapping:
@@ -600,6 +689,37 @@ def copula_stats(text: str) -> dict:
 ADVERB_RATE_THRESHOLD = 0.04   # > 4% -ly words
 ADVERB_MIN_WORDS = 40          # rate is meaningless on very short texts
 INTENSIFIERS = ["very", "really", "extremely", "incredibly", "remarkably"]
+
+# COLL-3 (collisionMatrix, #46): 'genuinely'/'truly' are positive-voice
+# markers (#21) AND -ly adverbs. Resolution: in an explicit voice context
+# (first person or recommendation, per heuristics below) the voice reading
+# wins and the occurrence is excluded from the adverb rate; in hedge/
+# intensifier use (or ambiguous default) the adverb signal wins and it counts.
+_VOICE_CONTEXT_ADVERBS = ["genuinely", "truly"]
+_VOICE_CONTEXT_RX = re.compile(
+    r"\b(?:i|i'm|i've|i'll|we|we're|my|our)\b|\b(?:recommend|empfehl)\w*",
+    re.IGNORECASE,
+)
+
+
+def _voice_marker_spans(text_lower: str) -> list:
+    """Spans of genuinely/truly whose sentence carries an explicit voice
+    context (#21). Ambiguous cases default to the adverb reading (COLL-3)."""
+    spans = []
+    for m in re.finditer(
+        r"\b(?:" + "|".join(_VOICE_CONTEXT_ADVERBS) + r")\b", text_lower
+    ):
+        # sentence around the match (split on . ! ? boundaries)
+        start = text_lower.rfind(".", 0, m.start())
+        start = max(start + 1, text_lower.rfind("!", 0, m.start()) + 1,
+                    text_lower.rfind("?", 0, m.start()) + 1)
+        end_candidates = [p for p in (text_lower.find(".", m.end()),
+                                      text_lower.find("!", m.end()),
+                                      text_lower.find("?", m.end())) if p != -1]
+        end = min(end_candidates) if end_candidates else len(text_lower)
+        if _VOICE_CONTEXT_RX.search(text_lower[start:end]):
+            spans.append(m.span())
+    return spans
 
 
 def adverb_stats(text: str) -> dict:
@@ -619,11 +739,14 @@ def adverb_stats(text: str) -> dict:
                          text_lower):
         intensifier_spans.append(m.span())
     intensifiers = len(intensifier_spans)
-    # -ly words minus intensifier spans (span-overlap exclusion like copula_stats)
+    voice_spans = _voice_marker_spans(text_lower)
+    excluded_spans = intensifier_spans + voice_spans
+    # -ly words minus intensifier/voice-marker spans (span-overlap
+    # exclusion like copula_stats; COLL-3 voice markers count as voice, not adverb)
     ly_spans = [m.span() for m in re.finditer(r"\b\w+ly\b", text_lower)]
     pure_ly = sum(
         1 for ws, we in ly_spans
-        if not any(ws < ie and we > i_s for i_s, ie in intensifier_spans)
+        if not any(ws < ie and we > i_s for i_s, ie in excluded_spans)
     )
     # denominator: all words except the intensifier occurrences themselves
     denom = len(total) - intensifiers
@@ -637,6 +760,18 @@ def adverb_stats(text: str) -> dict:
 
 def phrase_category_score(text: str) -> dict:
     text_lower = text.lower()
+    # #115: keep_when-Guards (echte Meinung / echte Dringlichkeit)
+    # muessen VOR dem Matching greifen — gleiche Mechanik wie die
+    # Quote-Exemption: Maskierung statt Post-Filter haelt Positionen und
+    # Longest-Match-Overlap-Logik fuer alle Kategorien intakt.
+    text_lower = fp_guards.mask_performative_stakes(text_lower)
+    # #110: Hard-Negative-Guards fuer conversational_fillers muessen
+    # VOR dem Matching greifen — unterstuetzungs-/erfahrungsprosa-
+    # Kontexte (Grussformel-Naehe, direkte Quellenangabe) maskieren die
+    # betroffenen Phrasen, statt sie nachtraeglich aus den Counts zu
+    # entfernen (Maskierung = Positions- und Ueberlappungslogik bleibt
+    # fuer alle anderen Kategorien unveraendert).
+    text_lower = fp_guards.mask_conversation_fillers(text_lower)
     term_to_cat = {}
     all_terms = []
     for cat_name, cat_def in PHRASE_CATEGORIES.items():
@@ -707,6 +842,10 @@ def mirrored_intro_conclusion(text: str) -> bool:
 # Coordinate Ascent in keinem der 5 CV-Folds einen verbessernden Zug
 # (run_benchmark.py --cross-validate 5 --cv-rounds 3, seed 17). Die
 # Kalibrierung ist hier Korpus-Feintuning, keine Generalisierungsquelle.
+# Ihr messbarer Beitrag liegt in der Schwere-Graduierung: 24 Slop-Texte
+# erreichen mit DEFAULT_WEIGHTS Tier "Slop" (>= 0.70), mit uniform 1/N
+# keiner (Tests: tests/test_weight_gain_pin.py; Doku: SCORE-GOVERNANCE.md
+# #106-DoD-Nachtrag; calibrate.py druckt gain_vs_uniform).
 # Weights intentionally sum to > 1 — the
 # total is capped at 1.0, so strong evidence on a few dimensions is enough
 # to cross the threshold. Recalibrate for your domain with
@@ -736,7 +875,8 @@ DEFAULT_WEIGHTS = {
 
 
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
-              not_slop_store=None, project_config: Optional[dict] = None) -> dict:
+              domain: Optional[str] = None, not_slop_store=None,
+              project_config: Optional[dict] = None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
     # and zero-width obfuscation of telltale words must not bypass signals.
     text = input_norm.normalize(text)
@@ -748,6 +888,12 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     genre_profile = None
     if genre is not None:
         genre_profile = genre_profiles.get_profile(genre)
+    # Issue #35: explicit domain context (no auto-detection), fail-loud
+    # on unknown domains. Domain-gated signals (triggered_by: domain in
+    # ontology.json domainBindings) zero their mapped weight dimensions;
+    # raw metrics stay visible. Default (domain=None): no change.
+    domain_bindings.validate_domain(domain)
+    gated_dims = domain_bindings.weight_dims_gated(domain)
     if weights is None:
         weights = dict(DEFAULT_WEIGHTS)
     # Issue #11: project-local config (slop.json). disabled_signals zeroes
@@ -801,6 +947,10 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             signal_text, genre_profile["exempt_terms"])
         weights = dict(weights)
         for k in genre_profile.get("zero_weights", []):
+            weights[k] = 0.0
+    if gated_dims:
+        weights = dict(weights)
+        for k in gated_dims:
             weights[k] = 0.0
     buzz_count, buzz_hits, buzz_tiers = buzzword_score(signal_text)
     if "buzzwords" in exempted_families:
@@ -985,11 +1135,14 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     register_ctx = register_profile.register_profile(text)
     register_findings = register_profile.find_register_findings(text, genre=genre)
 
-    return {
+    result = {
         "slop_score": score,
         "risk_level": risk,
         "action": action,
         **({"genre": genre} if genre else {}),
+        **({"domain": domain,
+            "domain_gated_signals": domain_bindings.gated_signals(domain),
+            "domain_gated_weight_dims": gated_dims} if domain else {}),
         "context": {
             "register_profile": register_ctx,
             "register_findings": register_findings,
@@ -1045,6 +1198,128 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             "provenance": prov_matches,
         }
     }
+
+    # Issue #119: receipts standard — one finding per signal hit.
+    result["findings"] = build_findings(text, result)
+    return result
+
+
+# --- Issue #119: Findings-Standard mit Receipts -------------------------
+# finding = {signal_id, span, evidence_quote, reliability, suggested_action}
+# Community receipts standard (Slopdar evidence-per-hit, ZeroSlop --explain,
+# hallucinot rule-id + line + quote). Reliability values are heuristic
+# defaults derived from the signal family's calibration tier; spans are
+# character offsets into the scored text plus 1-based line number.
+
+FINDING_ACTIONS = {
+    "buzzword": "Ersetzen durch konkretes Verb/Substantiv oder streichen "
+                "(Buzzword ohne Informationsgehalt).",
+    "phrase": "KI-typische Phrase umschreiben: spezifische Aussage statt "
+              "Formel.",
+    "multilingual": "Anglizismus/Lehnwort prüfen; ggf. idiomatisch "
+                    "übersetzen.",
+    "authority": "Beleg ergänzen (Quelle, Zahl, Link) oder Anspruch "
+                 "streichen.",
+    "provenance": "Provenance-Marker prüfen: nur echte, verifizierbare "
+                  "Referenzen behalten.",
+    "moral": "Moralisierenden Abschlusssatz streichen oder durch konkretes "
+             "Ergebnis ersetzen.",
+    "list_heavy": "Liste kürzen oder in Fließtext mit Kernaussagen "
+                  "verwandeln.",
+    "mirrored_intro_conclusion": "Schlussabsatz umformulieren — spiegelt nur "
+                                 "die Einleitung.",
+}
+
+FAMILY_RELIABILITY = {
+    "phrase": 0.7,
+    "multilingual": 0.6,
+    "authority": 0.65,
+    "provenance": 0.5,
+    "moral": 0.5,
+    "list_heavy": 0.5,
+    "mirrored_intro_conclusion": 0.5,
+}
+
+
+def _term_findings(text, signal_id, terms, reliability, action):
+    """Locate every occurrence of each term; one receipt per hit."""
+    out = []
+    line_starts = [0]
+    for m in re.finditer(r"\n", text):
+        line_starts.append(m.end())
+
+    def line_of(pos):
+        return bisect_right(line_starts, pos)
+
+    for term in terms:
+        pattern = r"\b" + re.escape(term) + r"\b"
+        for m in re.finditer(pattern, text, re.IGNORECASE):
+            out.append({
+                "signal_id": signal_id,
+                "span": {"start": m.start(), "end": m.end(),
+                         "line": line_of(m.start())},
+                "evidence_quote": text[m.start():m.end()],
+                "reliability": reliability,
+                "suggested_action": action,
+            })
+    return out
+
+
+def build_findings(text, result):
+    """Receipts: one finding per detected signal hit (Issue #119).
+
+    Structural binary signals (moral, list-heavy, mirrored) get one
+    receipt each with a whole-text span; term-based signals get one
+    receipt per occurrence. Register findings (#74) stay detect-only
+    and are not included — they never feed the score.
+    """
+    findings = []
+    signals = result.get("signals", {})
+
+    for tier, words in signals.get("buzzword_tiers", {}).items():
+        conf = BUZZWORD_TIERS.get(tier, {}).get("confidence", 0.6)
+        findings.extend(_term_findings(
+            text, f"buzzword.{tier}", words, conf,
+            FINDING_ACTIONS["buzzword"]))
+
+    for cat, phrases in signals.get("phrase_categories", {}).items():
+        findings.extend(_term_findings(
+            text, f"phrase.{cat}", phrases,
+            FAMILY_RELIABILITY["phrase"], FINDING_ACTIONS["phrase"]))
+
+    for lang, words in signals.get("multilingual", {}).items():
+        findings.extend(_term_findings(
+            text, f"multilingual.{lang}", words,
+            FAMILY_RELIABILITY["multilingual"],
+            FINDING_ACTIONS["multilingual"]))
+
+    auth = signals.get("authority_phrases", [])
+    if auth:
+        findings.extend(_term_findings(
+            text, "authority", auth, FAMILY_RELIABILITY["authority"],
+            FINDING_ACTIONS["authority"]))
+
+    prov = signals.get("provenance", [])
+    if prov:
+        findings.extend(_term_findings(
+            text, "provenance", prov, FAMILY_RELIABILITY["provenance"],
+            FINDING_ACTIONS["provenance"]))
+
+    for flag, key in (("moral_detected", "moral"),
+                      ("list_heavy", "list_heavy"),
+                      ("mirrored_intro_conclusion",
+                       "mirrored_intro_conclusion")):
+        if signals.get(flag):
+            findings.append({
+                "signal_id": key,
+                "span": {"start": 0, "end": len(text), "line": 1},
+                "evidence_quote": text[:80],
+                "reliability": FAMILY_RELIABILITY[key],
+                "suggested_action": FINDING_ACTIONS[key],
+            })
+
+    findings.sort(key=lambda f: f["span"]["start"])
+    return findings
 
 
 def format_report(result: dict) -> str:
@@ -1118,7 +1393,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     use_json = "--json" in sys.argv
-    args = [a for a in sys.argv[1:] if a not in ("--json", "--gates")]
+    findings_only = "--findings" in sys.argv
+    args = [a for a in sys.argv[1:] if a not in ("--json", "--findings", "--gates")]
 
     # Issue #78: anchor-diff mode — protected anchors (numbers, quotes,
     # URLs, DOIs) must survive rewrites; drift is reported per changed
@@ -1217,6 +1493,39 @@ if __name__ == "__main__":
             return args[i + 1]
         return None
 
+    # Issue #120: simple learn input — freetext + optional file is enough.
+    # Unlike --mark-not-slop this imposes no schema: signal_id optional
+    # (default "reviewed"), note itself doubles as the sample context when
+    # no --file is given. See docs/loop-guards/120-learn-input-standard.md.
+    if "--learn" in args:
+        i = args.index("--learn")
+        if i + 1 >= len(args):
+            print("Error: --learn requires a freetext note", file=sys.stderr)
+            sys.exit(2)
+        note = args[i + 1]
+        learn_file = _opt("--file")
+        if learn_file is not None and not os.path.isfile(learn_file):
+            print(f"Error: --file not found: {learn_file}", file=sys.stderr)
+            sys.exit(2)
+        sample_text = None
+        if learn_file:
+            with open(learn_file, encoding="utf-8", errors="replace") as f:
+                sample_text = f.read()
+        store = _opt("--store") or (
+            os.path.join(os.path.dirname(os.path.abspath(learn_file)), "not_slop.jsonl")
+            if learn_file else os.path.join(os.getcwd(), "not_slop.jsonl"))
+        try:
+            entry = learning_store.learn_entry(
+                store, note, signal_id=_opt("--signal"),
+                sample_text=sample_text, added_by=_opt("--by") or "manual")
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(2)
+        src = learn_file or "<note-as-sample>"
+        print(f"Learned: {entry['signal_id']} ({src}, hash {entry['sample_hash']}, "
+              f"store: {store})")
+        sys.exit(0)
+
     if "--mark-not-slop" in args:
         signal_id = _opt("--mark-not-slop")
         mark_file = _opt("--file")
@@ -1245,6 +1554,21 @@ if __name__ == "__main__":
         genre = args[i + 1]
         try:
             genre_profiles.get_profile(genre)
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(2)
+        args = args[:i] + args[i + 2:]
+
+    # Issue #35: explicit domain (--domain changelog|essay|...), fail-loud
+    domain = None
+    if "--domain" in args:
+        i = args.index("--domain")
+        if i + 1 >= len(args):
+            print("Error: --domain requires a name", file=sys.stderr)
+            sys.exit(2)
+        domain = args[i + 1]
+        try:
+            domain_bindings.validate_domain(domain)
         except ValueError as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(2)
@@ -1305,7 +1629,7 @@ if __name__ == "__main__":
               file=sys.stderr)
         text = " ".join(args)
     else:
-        print("Usage: python3 slop_scorer.py [--json] [--genre NAME] (--file PATH | - | \"Text\")",
+        print("Usage: python3 slop_scorer.py [--json] [--genre NAME] [--domain NAME] (--file PATH | - | \"Text\")",
               file=sys.stderr)
         sys.exit(1)
 
@@ -1321,12 +1645,21 @@ if __name__ == "__main__":
         if auto:
             project_cfg = pconf.load_config(auto)
 
-    result = slop_score(text, genre=genre, not_slop_store=not_slop_store,
+    result = slop_score(text, genre=genre, domain=domain,
+                        not_slop_store=not_slop_store,
                         project_config=project_cfg)
 
     # Issue #118: hard gates for binary signals — never a score
     # contribution; auto-run for code/markup input, --gates forces them.
     result["gates"] = gates.run_gates(text, force="--gates" in sys.argv)
+    # Echo the applied project config so runs are reproducible (issue #11).
+    if project_cfg is not None:
+        result["config"] = project_cfg
+
+    if findings_only:
+        # Issue #119: machine-readable receipts only (one JSON array).
+        print(json.dumps(result.get("findings", []), indent=2))
+        sys.exit(0)
 
     if use_json:
         print(json.dumps(result, indent=2))
