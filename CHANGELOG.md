@@ -1,5 +1,78 @@
 # Changelog
 
+## [Unreleased] — 2026-09-17 (#229 P2 — Meta-Regressionstest fuer example_fixes)
+
+Anti-Slop darf selbst keinen Slop saeen. Neuer Test `tests/test_example_fix_meta.py`
+sperrt die Eigenschaft permanent: Jeder `example_fix` in RHETORICAL_PATTERNS muss
+den eigenen Detektor (`find_rhetorical_patterns` + `rhythm_metrics`) fehlerfrei
+passieren — sonst schlaegt CI rot. Meta-Scan vom 17.09. auf dem gehaerteten
+Stand (inkl. PR #225): 0/16 Offender. Der RoboticRhythm-Fall ("It works, scales,
+and ships every time." war selbst eine ForcedTriad) ist ueber PR #225 behoben;
+der im Audit zusaetzlich vermutete RepeatedOpenings-then-Ketten-Fall wurde durch
+den Detektor NICHT bestaetigt (dann-Ketten sind kein Signal) — dokumentiert, ohne
+Change am Fix.
+
+
+## [2.9.1] — 2026-09-09 (#35 — Domain-Trigger-Metadatum je Signal)
+
+Slop-Defaults sind domain-konditional (unslop). Statische Signale ohne
+Domain-Kontext erzeugen systematische False Positives (z.B. "we fixed X" im
+Changelog ist legitime Sprecherrolle, kein Workslop).
+
+- `ontology.json` → neue Top-Level-Section `domainBindings`: optionales
+  Metadatum `triggered_by: domain` je Signal mit `applies_to` (Whitelist,
+  wins) / `restricted_in` (Blacklist) + `rationale`; 5 Pilot-Signale
+  (Workslop, PeerReviewSlop, SecurityReportSlop, NumberedListOveruse,
+  FakeAuthoritySlop), 7 Domains (essay, marketing, ui_copy, changelog,
+  devtools_docs, academic, security_report)
+- Scorer: `--domain NAME` (fail-loud, Exit 2 bei unbekannter Domain);
+  `slop_score(text, domain=...)` zero-t die gemappten Gewichtsdimensionen
+  (`domain_bindings.SIGNAL_WEIGHT_MAP`: Workslop→phrases,
+  NumberedListOveruse→list_heavy, FakeAuthoritySlop→fake_authority);
+  `--json`-Output zeigt `domain`, `domain_gated_signals`,
+  `domain_gated_weight_dims`
+- Classifier: `classify_text(text, domain=...)` filtert gebundene Signale
+  VOR der Noisy-OR-Aggregation (Score reflects domain-conditioned evidence)
+- Default ohne Domain: unverändert (Opt-in, analog #42-Genre — keine
+  Engine-Drift); komponierbar mit `--genre`
+- Tests: `tests/test_domain_bindings.py` (12); SSOT-Register-Eintrag für
+  `domain_bindings.py`; SKILL.md Step 1b
+
+
+## [Unreleased] — #46 Signal-Kollisions-Matrix: DoD-Fixtures + Engine-Enforcement
+
+Die in `ontology.json#/collisionMatrix` (Version 1.0.0) dokumentierten
+Kollisions-Auflösungen waren teilweise noch nicht vom Code erzwungen und
+hatten keine Fixtures (SIGNAL-DoD Punkt 6, testContract der Matrix).
+
+- **COLL-1** — `copula_stats()` (slop_scorer) schließt Substitut-Matches,
+  die einen FakeStrongVerb-Span (`rhetorical_patterns._FAKE_STRONG_VERB`)
+  überlappen, aus dem Nenner aus: „serves as a centralized hub“ zählt nur
+  als FakeStrongVerb, nicht zusätzlich als Copula-Substitut.
+- **COLL-2** — der Em-Dash-Cluster-Zweig (em ≥ 3 und > 0.5/Satz) in
+  `FormattingSlop` (rhetorical_patterns) ist entfernt und die verbleibenden
+  Doctrine-Zweige (short copy, long-draft allowance) auf em/Satz ≤ 0.5
+  gegt: EmDashExcess besitzt Cluster-Vorkommen exklusiv.
+- **COLL-3** — `adverb_stats()`: „genuinely“/„truly“ zählen in explizitem
+  Voice-Kontext (Ich/Empfehlung, Heuristik) nicht in die -ly-Rate
+  (positive-voice-Marker #21); Default bei Ambiguität bleibt Adverb.
+- **COLL-4** — bereits durch `find_term_matches()`-Span-Dedup erzwungen;
+  Fixture sperrt das Verhalten.
+- Neu: `tests/test_collision_matrix.py` mit den vier in der Matrix
+  referenzierten Fixtures; `docs/EVALS.md` um die Zuordnung ergänzt.
+
+
+## [Unreleased] (#11 — projekt-lokale Config, btm #1138)
+
+- `slopkit --config slop.json`: `disabled_signals`, `term_allowlist`,
+  `weight_overrides` als projekt-lokale Konfiguration (deslop.toml-Äquivalent)
+- Allowlist filtert Buzzword-Tiers + Phrase-Kategorien vor der Detektion
+- Disabled Signals werden entfernt und der Score neu aggregiert
+  (Noisy-OR, Eskalation nur bei noch wirksam gewichteten critical/2×high)
+- Strikte Validierung: unbekannte Keys, ungültige Severities,
+  Gewichte außerhalb [0,1] → Exit 2 (fail loud)
+- Neue Tests: `tests/test_project_config.py` (13 Tests)
+
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
