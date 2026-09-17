@@ -1,6 +1,18 @@
 # Changelog
 
-## [unreleased] — 2026-09-11 (#115 — performative_voice + manufactured_stakes + Fact-Gate-Invariante)
+
+
+
+## [unreleased] — feat(#120): Learn-Input-Standard — Freitext + optionaler Pfad reicht
+
+- `learning_store.learn_entry()`: minimaler Learn-Input (Issue #120) —
+  Freitext-Note ist Pflicht, alles andere optional (signal_id-Default
+  `reviewed`, Sample-Hash fallback auf die Note selbst).
+- CLI: `--learn "<freetext>"` am Scorer und `learning_store.py learn` —
+  bewusst schema-frei (Landscape: sloppoke/flamehaven/axonscanner).
+- Doku: `docs/loop-guards/120-learn-input-standard.md` (Standard, Regeln,
+  Akzeptanz).
+- Tests: 6 neue Fälle in `tests/test_learning_store.py`.## [unreleased] — 2026-09-11 (#115 — performative_voice + manufactured_stakes + Fact-Gate-Invariante)
 
 ZeroSlop-Adaption („performed voice" / „manufactured stakes"): zwei neue
 Phrase-Kategorien mit keep_when-Guards, plus die Doktrin „Deslop löscht
