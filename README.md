@@ -4,6 +4,14 @@ A structured, agent-consumable knowledge base about the phenomenon of *AI Slop*.
 
 **Version:** 1.9.0 | **Date:** 2026-08-25 | **License:** CC BY 4.0
 
+## Issue Conventions
+
+Two trackers are active for this project: GitHub (signal/analysis work) and GitLab (burn/pipeline development).
+
+- Issue-Nummern **ohne Präfix = GitHub** (dieses Repo)
+- GitLab-Issues werden **immer als `GL #N`** zitiert (z. B. `GL #5`), GitLab-Merge-Requests als `GL !N`
+- Bei Bedarf: Cross-Link-Zeilen „GitHub-Äquivalent“ / „GitLab-Bezug“ in den jeweiligen Issue-Bodies (vgl. GL #11)
+
 ## Positioning: Detector, not a Rewriter
 
 Market scan (skills.sh, 2026-08, 100 hits for "slop"): nearly the entire market consists of rewrite/humanizer skills. This project deliberately occupies the **detector niche**: it delivers `slop_score` + per-finding evidence (signal_id, span, quote) and leaves the fix decision to the human. The CLI is detect-only by design (`slop score`, `slop classify`, `slop rhetoric`, `slop code`).
@@ -82,6 +90,25 @@ Every text command reads a positional string, `--file PATH`, or stdin (`-`), and
 takes `--json` for machine-readable output.
 
 📖 **Full manual with use cases and tested examples: [docs/USER-GUIDE.md](docs/USER-GUIDE.md)**
+
+## Positioning: Detector, not a Rewriter
+
+This repo detects and scores — it never rewrites (ADR-0001). Every finding is
+`score + evidence`: matched signals, severities, weights, line references.
+Rewriting is deliberately out of scope (Goodhart risk: a rewriter coupled to its
+own detector optimizes the score instead of the text); repair guidance exists as
+documented countermeasures outside the scoring path.
+
+**Multi-domain is the differentiator** — the skills.sh "slop" market (100 hits,
+Aug 2026) is almost entirely rewrite skills, and none covers more than one domain:
+
+| Market skill | Installs | Approach | Domains |
+|---|---|---|---|
+| anti-ui-slop | 467k | rewrite (UI) | UI |
+| story-deslop | 12.4k | rewrite | text |
+| stop-slop | 11.7k | rewrite | text |
+| no-ai-slop | 7.2k | rewrite | text |
+| **AI Slop Ontology (this repo)** | — | **detect-only, score+evidence** | **text + code + UI** |
 
 ## What is AI Slop?
 
