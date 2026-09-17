@@ -56,6 +56,13 @@ Benchmark-Korpus (eval/corpus.jsonl, slop-0101/slop-0504), Beleg-Disziplin
   Boilerplate (Serien slop-0303/0606) — "let me know if you'd like more
   detail", "of course! here's the summary", "based on available
   information", "up to my last training update", "some critics argue", ...
+- `conversational_fillers` (conf 0.55, #110 — Hassid-Liste Punkte 4-8):
+  konversationelle Fuell-Floskeln aus gesprochenen Mustern — "here's the
+  thing", "hope this helps", "to provide a quick update", "^most people"
+  (claus-initial). Hard-Negative-Guards: "hope this helps" feuert nicht in
+  den letzten 100 Zeichen vor einer Grussformel (Support-Mail-Kontext);
+  "most people" feuert nicht bei direkter Quellenangabe ("most people I
+  interviewed"). Detect-only, Kumulativschwelle >=2.
 
 ### Punctuation Anomalies
 - Em-dash rate > 0.5 per sentence
@@ -95,6 +102,7 @@ Regex patterns for: API keys, tokens, passwords, connection strings
 - SQL injection (string concatenation in queries)
 - Command injection (unsanitized shell inputs)
 - Off-by-one errors in AI-generated loops
+- **UI Title Case strings (detect-only)**: `UiSlopStartCase` — ≥3 consecutive Title Case words in UI string literals (labels/buttons/i18n); see `ui-slop-signals.md`
 
 ## Image Signals
 
@@ -145,11 +153,37 @@ Adapted from the "No AI slop" editing skill by Peter Yang
 | Hollow kicker / recap | "In conclusion, …" / mic-drop aphorism | A genuine call to action or next step |
 | Formatting slop | emoji headings, mid-sentence bold, em-dash clusters | Platform's native style |
 | Robotic rhythm | 3+ stacked short sentences | One deliberate burst for emphasis |
+| Decorative separator triad | Slogan-shaped "X \| Y \| Z" or #X #Y #Z of short items | Real breadcrumb, shortcut chain, or table row |
+| Forced triad (erweitert 15.09.) | Auch Nomen-/Verb-Triaden ("verstehen, gestalten, transformieren"), Staccato-Dreier ("Menschen. Prozesse. Technologie."), dt. "X, Y und Z" (alle drei gleiche Flexionsklasse) | Drei wirklich verschiedene, einzeln tragende Punkte |
 
 Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
 `result.rhetorical_patterns` from the classifier's JSON output). The nine
 patterns are mirrored as data in `ontology.json` under
 `signals.text.rhetoricalPatterns`.
+
+## Chat-Paste Artifacts (detect-only)
+
+Six deterministic micro-signals for code/instruction files that betray pasted
+LLM chat output or silently elided content (issue #113). Same schema as the
+micro patterns above: named signal, quoted evidence, `keep_when` guard,
+never scored.
+
+Sources: [mgiovani/stopslop](https://github.com/mgiovani/stopslop)
+(SLOP001/002), scanaislop/aislop, jv-k/desloper.
+
+| Signal | Smells like | Keep when |
+|--------|-------------|----------|
+| elision-comment | `// ... rest of the code remains unchanged` | Explicitly scoped review excerpt with full file elsewhere |
+| chat-preamble | `Certainly! Here's the updated handler:` as line 1 | Documented chat transcripts, chatbot test fixtures |
+| fence-in-code | Indented ``` fences inside source files | Markdown files, docstring example blocks at column 0 |
+| meta-process-comment | `# Phase 2: now we add the handler` | Build-pipeline phase labels (about the artifact, not the generation) |
+| list-label-marker | `- G1: Introduce the product` | Established label-based vocab (spec IDs, gap-analysis BS-I3) |
+| placeholder-credential-shape | `API_KEY = "***"` | Template files (.env.example), placeholder test fixtures |
+
+Run: `python3 scripts/chat_artifacts.py "FILE_TEXT"` (or
+`result.chat_artifacts` from the classifier). Prose elision without a
+code-comment marker is NOT `elision-comment`; credential detection requires
+an assignment shape — bare prose mentions never match.
 
 ## Statistical/ML Methods
 
@@ -157,6 +191,7 @@ patterns are mirrored as data in `ontology.json` under
 2. **Binoculars** (Hans et al. 2024): Zero-shot LLM detection (AUROC ~0.95)
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
+
 
 ### Human Detection Empirics
 
@@ -186,6 +221,7 @@ tool-based detection.
 Sources: [Wikipedia: Signs of AI writing — Your detection ability](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability);
 full research in `research/slop-ontology-gap-2026-08-24/` (deep/03, I33).
 
+*Consequence for this reference: human judgment alone is **not** a valid detection signal — it is the baseline the statistical/ML methods above must beat, and the reason every finding here is phrased as a named, checkable signal rather than an impression.*
 ## Thresholds
 
 | Score | Risk | Action |

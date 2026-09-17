@@ -68,6 +68,11 @@ SIGNAL_SEVERITY = {
     "ExcessiveComments": "low",
 }
 
+# Severity resolution order (issue #55 / SSOT):
+#   1. ontology.json `signalSeverity.tiers` (authoritative, per-signal)
+#   2. legacy module-level SIGNAL_SEVERITY map (fallback for signal IDs
+#      not yet listed in the tiers block)
+#   3. "medium" default
 SEVERITY_WEIGHTS = {"critical": 1.0, "high": 0.7, "medium": 0.4, "low": 0.2}
 
 
@@ -112,7 +117,31 @@ class SlopClassifier:
     def __init__(self, ontology_path: str = "ontology.json"):
         with open(ontology_path) as f:
             self.ontology = json.load(f)
+        self._load_signal_severity()
         self._load_signals()
+
+    def _load_signal_severity(self):
+        """Build per-signal severity + fix-strategy maps from the
+        ontology.json `signalSeverity` block (SSOT, issue #55)."""
+        block = self.ontology.get("signalSeverity", {})
+        self._ontology_severity: dict = {}
+        self._fix_strategy: dict = {}
+        for tier_name, tier in block.get("tiers", {}).items():
+            for sig in tier.get("signals", []):
+                self._ontology_severity[sig] = tier_name
+                self._fix_strategy[sig] = tier.get("fix_strategy_hint_default", "")
+        for sig, strategy in block.get("fix_strategy_overrides", {}).items():
+            self._fix_strategy[sig] = strategy
+
+    def _severity_for(self, signal_id: str) -> str:
+        """Ontology-first severity resolution (SSOT); falls back to the
+        legacy module map, then 'medium'."""
+        return self._ontology_severity.get(signal_id) or _severity_for(signal_id)
+
+    def fix_strategy_for(self, signal_id: str) -> str:
+        """fix_strategy_hint for a signal from the signalSeverity block
+        (delete | rewrite | condense | ...); empty string if unknown."""
+        return self._fix_strategy.get(signal_id, "")
 
     def _load_signals(self):
         """Pre-compile all signal patterns from the ontology."""
@@ -154,8 +183,39 @@ class SlopClassifier:
         # --- Multilingual ---
         self.multilingual = sigs.get("multilingual", {})
 
-    def classify_text(self, text: str) -> ClassificationResult:
-        """Classify a text for AI slop using the full signal database."""
+    def _signal_active_in_domain(self, signal_id: str, domain: str) -> bool:
+        # Issue #35: optional domain binding (triggered_by: domain) from
+        # ontology.json domainBindings. Whitelist (applies_to) wins over
+        # blacklist (restricted_in); unbound signals are domain-agnostic.
+        b = self.ontology.get("domainBindings", {}).get("signals", {}).get(signal_id)
+        if not b or b.get("triggered_by") != "domain":
+            return True
+        applies = b.get("applies_to")
+        if applies is not None:
+            return domain in applies
+        return domain not in b.get("restricted_in", [])
+
+    def _filter_domain(self, result: ClassificationResult, domain) -> ClassificationResult:
+        """Issue #35: drop signals that are not triggered in ``domain``."""
+        if domain is None:
+            return result
+        known = self.ontology.get("domainBindings", {}).get("domains", [])
+        if domain not in known:
+            raise ValueError(
+                f"Unknown domain {domain!r} — known: {', '.join(known)}")
+        result.signals_detected = [
+            s for s in result.signals_detected
+            if self._signal_active_in_domain(s.signal_id, domain)]
+        return result
+
+    def classify_text(self, text: str, domain=None) -> ClassificationResult:
+        """Classify a text for AI slop using the full signal database.
+
+        ``domain`` (issue #35): optional domain context (e.g. changelog,
+        devtools_docs). Signals bound via ``triggered_by: domain`` that do
+        not fire in that domain are dropped from ``signals_detected``;
+        unknown domains fail loud. Default: domain-agnostic behavior.
+        """
         result = ClassificationResult(modality="text")
 
         text_lower = text.lower()
@@ -417,7 +477,11 @@ class SlopClassifier:
         # three medium signals cancel each other down to ~0.29. Escalation for
         # any critical signal or >= 2 high-severity signals still applies.
         for s in result.signals_detected:
-            s.severity = _severity_for(s.signal_id)
+            s.severity = self._severity_for(s.signal_id)
+
+        # Issue #35: drop domain-gated signals BEFORE aggregation so the
+        # noisy-OR score reflects the domain-conditioned evidence set.
+        self._filter_domain(result, domain)
 
         if result.signals_detected:
             no_slop_prob = 1.0
@@ -447,7 +511,7 @@ class SlopClassifier:
             result.severity = "clean"
             result.countermeasures = ["standard_quality_check"]
 
-        return result
+        return self._filter_domain(result, domain)
 
     def classify_code(self, code: str, language: str = "") -> ClassificationResult:
         """Classify code for AI slop patterns."""
@@ -490,7 +554,7 @@ class SlopClassifier:
 
         # Score (noisy-OR, same aggregation as classify_text)
         for s in result.signals_detected:
-            s.severity = _severity_for(s.signal_id)
+            s.severity = self._severity_for(s.signal_id)
         if result.signals_detected:
             no_slop_prob = 1.0
             for s in result.signals_detected:
