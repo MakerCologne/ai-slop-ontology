@@ -171,6 +171,9 @@ def list_heavy(text: str) -> bool:
     return len(lines) > 3 and list_lines / len(lines) > 0.4
 
 
+from short_text_guards import active_metrics, load_short_text_guards
+
+
 def slop_score(
     text: str,
     buzzword_tiers: Optional[dict] = None,
@@ -180,6 +183,10 @@ def slop_score(
     Compute a comprehensive slop score for text.
 
     Returns dict with individual scores and overall score (0-1).
+    Metrics whose input is below the documented minimum length
+    (config/threshold.json: short_text_guards, upstream #52) are skipped:
+    neutral contribution, listed under "skipped", and the remaining
+    weights are re-normalized so short texts stay comparable.
     """
     if buzzword_tiers is None:
         buzzword_tiers = {
@@ -200,32 +207,41 @@ def slop_score(
             "list_heavy": 0.10
         }
 
-    density = information_density(text)
-    rep = repetition_ratio(text)
-    burst = burstiness(text)
+    guards = load_short_text_guards()
+    active, skipped = active_metrics(text, guards)
+
+    density = information_density(text) if active["density"] else 0.0
+    rep = repetition_ratio(text) if active["repetition"] else 0.0
+    burst = burstiness(text) if active["burstiness"] else 0.0
     buzz_count, buzz_hits = buzzword_score(text, buzzword_tiers)
-    punct = punctuation_anomaly_score(text)
+    punct = punctuation_anomaly_score(text) if active["punctuation"] else {
+        "emDashRate": 0.0, "ellipsisRate": 0.0, "exclamationRate": 0.0}
 
     # Normalize to 0-1 (higher = more slop)
     num_sentences = len([s for s in re.split(r'[.!?]+', text) if s.strip()])
-    density_slop = max(0, (0.50 - density) / 0.50)  # below 0.50 is increasingly slop
-    rep_slop = min(1, rep / 0.30)  # above 0.30 is definitely slop
-    # Burstiness is only meaningful with >= 3 sentences; neutral otherwise
-    burst_slop = max(0, (5 - burst) / 5) if num_sentences >= 3 else 0.0
+    density_slop = max(0, (0.50 - density) / 0.50) if active["density"] else 0.0
+    rep_slop = min(1, rep / 0.30) if active["repetition"] else 0.0
+    burst_slop = max(0, (5 - burst) / 5) if active["burstiness"] else 0.0
     buzz_slop = min(1, buzz_count / 6)  # 6+ buzzwords = definite slop
-    punct_slop = min(1, (punct["emDashRate"] + punct["ellipsisRate"] + punct["exclamationRate"]) / 2)
-    moral_slop = 1.0 if trailing_moral(text) else 0.0
-    list_slop = 1.0 if list_heavy(text) else 0.0
+    punct_slop = min(1, (punct["emDashRate"] + punct["ellipsisRate"] + punct["exclamationRate"]) / 2) if active["punctuation"] else 0.0
+    moral_slop = 1.0 if (active["trailing_moral"] and trailing_moral(text)) else 0.0
+    list_slop = 1.0 if (active["list_heavy"] and list_heavy(text)) else 0.0
 
-    overall = (
-        weights["density"] * density_slop +
-        weights["repetition"] * rep_slop +
-        weights["burstiness"] * burst_slop +
-        weights["buzzwords"] * buzz_slop +
-        weights["punctuation"] * punct_slop +
-        weights["trailing_moral"] * moral_slop +
-        weights["list_heavy"] * list_slop
-    )
+    slop_contribs = {
+        "density": density_slop,
+        "repetition": rep_slop,
+        "burstiness": burst_slop,
+        "buzzwords": buzz_slop,
+        "punctuation": punct_slop,
+        "trailing_moral": moral_slop,
+        "list_heavy": list_slop,
+    }
+    # Re-normalize weights over active metrics (skipped ones contribute 0
+    # weight, not 0 score) so short texts stay comparable to long ones.
+    total_active_weight = sum(
+        w for m, w in weights.items() if m not in {s["metric"] for s in skipped}
+    ) or 1.0
+    overall = sum(weights[m] * v for m, v in slop_contribs.items()) / total_active_weight
 
     return {
         "overall": round(min(overall, 1.0), 3),
@@ -244,6 +260,7 @@ def slop_score(
         },
         "buzzwordHits": buzz_hits,
         "punctuationRates": punct,
+        "skipped": skipped,
     }
 
 
