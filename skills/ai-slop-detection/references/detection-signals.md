@@ -144,6 +144,8 @@ Adapted from the "No AI slop" editing skill by Peter Yang
 | Hollow kicker / recap | "In conclusion, …" / mic-drop aphorism | A genuine call to action or next step |
 | Formatting slop | emoji headings, mid-sentence bold, em-dash clusters | Platform's native style |
 | Robotic rhythm | 3+ stacked short sentences | One deliberate burst for emphasis |
+| Decorative separator triad | Slogan-shaped "X \| Y \| Z" or #X #Y #Z of short items | Real breadcrumb, shortcut chain, or table row |
+| Forced triad (erweitert 15.09.) | Auch Nomen-/Verb-Triaden ("verstehen, gestalten, transformieren"), Staccato-Dreier ("Menschen. Prozesse. Technologie."), dt. "X, Y und Z" (alle drei gleiche Flexionsklasse) | Drei wirklich verschiedene, einzeln tragende Punkte |
 
 Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
 `result.rhetorical_patterns` from the classifier's JSON output). The nine
@@ -157,28 +159,25 @@ patterns are mirrored as data in `ontology.json` under
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
 
-### Human Detection (Empirie)
+### Human Detection Empirics (why tool-assisted review)
 
-Humans are unreliable detectors — this is the strongest argument for tool-based
-detection instead of "I can spot AI text myself":
+Humans are notoriously bad at distinguishing LLM text from human writing — the
+strongest argument against "I can spot AI text myself" and for tool-assisted,
+signal-based review instead of gut judgment:
 
-1. **Cheng et al. 2025**: Human ability to distinguish LLM text from human
-   text is **no better than random chance** (crowdsourced evaluation).
-2. **Fiedler 2025** (German theses, DiLA study): Humans recognized **57% of AI
-texts** and **64% of human texts** — barely above chance, with high error
-   rates in both directions.
-3. **Russell 2025** (preprint): Heavy LLM users classified articles correctly
-   **~90% of the time** — but at a **~10% false-positive rate**: 1 in 10
-   "AI" calls is wrong. Non-expert users performed only slightly better than
-chance.
-4. **Language convergence** (Yakura et al. 2024; Geng et al. 2025; Galpin et
-   al. 2025): LLM output measurably influences human speech and writing —
-   human and AI text are becoming **more similar over time**, further eroding
-   the reliability of human judgment.
+- **Cheng et al. 2025** (Advances in Simulation 10(1):66, DOI 10.1186/s41077-025-00396-6):
+  Human ability to distinguish LLM text from human text is **no better than random chance**.
+- **Fiedler & Döpke 2025** (Int. Review of Economics Education 49:100321, DOI 10.1016/j.iree.2025.100321):
+  German theses (DiLA study) — humans recognized only **57 % of AI texts** and **64 % of human texts**.
+- **Russell, Karpinska & Iyyer 2025** (ACL 2025, arXiv:2501.15654): Heavy LLM users reach ~**90 % accuracy** —
+  but that still means **~10 % false positives**; light users are barely above chance (both directions).
+- **Language convergence**: LLM use shapes human writing, shrinking the gap the eye relies on —
+  Yakura et al. 2024 (arXiv:2409.01754, spoken content), Geng et al. 2025 (Findings of ACL 2025),
+  Galpin et al. 2025 (arXiv:2506.21817, semantic/lexical drift in scientific English).
 
-**Consequence:** human judgment alone is neither sensitive nor specific enough;
-statistical/provenance signals must carry the detection decision. Human review
-remains necessary for context, but not as the primary detector.
+Consequence for this reference: human judgment alone is **not** a valid detection signal —
+it is the baseline the statistical/ML methods above must beat, and the reason every finding
+here is phrased as a named, checkable signal rather than an impression.
 
 Source: [Wikipedia: Signs of AI writing — "Your detection ability"](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability)
 

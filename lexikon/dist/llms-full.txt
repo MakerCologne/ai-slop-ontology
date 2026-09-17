@@ -11,6 +11,36 @@ Rhetorisches Muster "This is not X. It's Y." / "The question isn't X, it's Y." /
   - Quelle: https://github.com/hikaman/ai-slop-ontology (Zugriff 2026-08-25)
     Zitat: Binary contrast | **VORHANDEN** | `rhetorical_patterns.py` `_BINARY_CONTRAST` (4 Regexes; covern petergyangs 3 Nennformen)
 
+## Ethnopluralismus
+
+Ideologische Strategie, die Kulturen als gleichwertig UND unverträglich erklärt und daraus getrennte, möglichst homogene Räume als einzige operationale Policy ableitet. Modelliert nicht als Schlagwort, sondern als Strategie (Ziel, Taktik, semantische Tarnung), weil genau die Schlussform — von „Differenz“ auf Trennung — den Slop-Charakter erzeugt: endlose „Differenz“-Prosa ohne operationalisierbaren Gehalt außer Trennung (Detektionszweck, keine politische Wertung über den analytischen Bedarf hinaus).
+
+- Genealogie: Die moderne Form geht auf Alain de Benoist / Nouvelle Droite / GRECE zurück („droit à la différence“, Ethno-Differentialismus), mit Vorläufern im französischen Neonationalismus der 1950/60er; die Identitäre Bewegung ist die Aktivierungsform, in Deutschland über Kubitschek/IBD in AfD-Nähe.
+  - Quelle: https://de.wikipedia.org/wiki/Ethnopluralismus (Zugriff 2026-09-02)
+    Zitat: Der Ethnopluralismus ist eine rechtsextreme Ideologie, die von der Neuen Rechten um Alain de Benoist entwickelt wurde … demnach dürften Kulturen nicht vermischt werden; jede Kultur habe „das Recht auf Differenz“.
+  - Quelle: https://www.bpb.de/themen/rechtsextremismus/dossier-rechtsextremismus/526659/ethnopluralismus/ (Zugriff 2026-09-02)
+    Zitat: Ethnopluralismus bezeichnet eine völkisch-radikalisierte Variante des Rassismus, die nicht auf eine Hierarchie der „Rassen“, sondern auf die strikte Trennung der Ethnien zielt.
+- Strategischer Kern (Taguieff, Rueda, Spektorowski): kein Verzicht auf Exklusion, sondern Rebranding vom biologistischen zu kulturalistischem Rassismus („cultural turn“) — Sprache von Diversität, Antitotalitarismus, Antiimperialismus und Umweltschutz wird gekapert; Taguieff beschreibt die Tarnung suprematistischer Gehalte hinter egalitärem Vokabular.
+  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/94 (Zugriff 2026-09-02)
+    Zitat: Strategischer Kern (Taguieff, Rueda, Spektorowski). Kein Verzicht auf Exklusion, sondern Rebranding: biologistischer Rassismus → kulturalistischer Rassismus („cultural turn"). Sprache von Diversität, Antitotalitarismus, Antiimperialismus, Umweltschutz wird gekapert. Taguieff: Tarnung suprematistischer Gehalte hinter egalitärem Vokabular.
+- Ambiguity-Befund (Journal of Political Ideologies 2023/25): Texte von Benoist, Faye, Eichberg und Lichtmesz zeigen den Cultural Turn bei gleichzeitig fortbestehenden biologistischen Resten — die Doppelbödigkeit ist Design, nicht Nebeneffekt. Malik: Kultur wird zum Synonym für Abstammung, sobald Zugehörigkeit an Herkunftsort und Deszendenz gebunden wird.
+  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/94 (Zugriff 2026-09-02)
+    Zitat: Ambiguity-Befund (Journal of Political Ideologies 2023/25). Texte von Benoist, Faye, Eichberg, Lichtmesz: Cultural Turn ja, Reste biologistischer Argumentation bleiben — die Doppelbödigkeit ist Design.
+- Metapolitik: Gramsci von rechts — kulturelle Hegemonie vor Staat. Deshalb wirkt der Begriff als Slop-Generator: Er produziert endlose „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.
+  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/94 (Zugriff 2026-09-02)
+    Zitat: Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat. Deshalb taugt der Begriff als Slop-Generator — er produziert endlos „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.
+
+## Human-Slop
+
+Menschlich verfasster oder menschlich gerahmter Content, der die Slop-Kriterien erfüllt (Template, Informationsgewinn nahe null, geringe Falsifizierbarkeit, Push-Distribution), ohne KI-Autorschaft. Schwesterklasse zu SyntheticContent; Slop wird als Risikoprofil, nicht als Autorschaftsklasse verstanden (adr/0008). Detect-only bis zur Korpus-Reife (#98).
+
+- Die Slop-Prototypen (Superficial Competence, Asymmetric Effort, Mass Producibility) beschreiben auch menschlichen Output, sobald Sorgfalt/Verifikation fehlen und Distribution Push ist — Grundlage des Epics #89 und der HumanSlop-Kandidatenklasse.
+  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/89 (Zugriff 2026-09-02)
+    Zitat: Befund: Willisons drei Bedingungen und Kommers' Prototypen (Superficial Competence, Asymmetric Effort, Mass Producibility) beschreiben auch menschlichen Output, sobald Sorgfalt/Verifikation fehlen und Distribution Push ist.
+- Der Detector bleibt Detector (adr/0001) und neue Module sind default detect-only (adr/0006) — Human-Slop-Signale dürfen nicht zu einer Gesinnungsnote werden; Hard-Negatives sind Pflicht (adr/0005).
+  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/90 (Zugriff 2026-09-02)
+    Zitat: Score-Gate auf politische Sprache → Detector wird Zensor (Verstoß gegen adr/0001). ... adr/0005: kein Benchmark-Gaming; Hard-Negatives Pflicht.
+
 ## Human-Voice
 
 Counter-Prinzip: Detektion von Slop ist nur "half the job" — das positive Ziel ist eine erkennbare menschliche Stimme. Sechs Soul-Prinzipien (Meinung haben, Rhythmus variieren, Komplexität anerkennen, Ich-Form erlauben, kontrolliertes Chaos, Konkretheit) wirken der sterilen, voiceless-Glättung entgegen, die selbst ein Slop-Signal ist (Over-Sanitization).
@@ -21,6 +51,17 @@ Counter-Prinzip: Detektion von Slop ist nur "half the job" — das positive Ziel
 - Die lokale Ontology hat diese Prinzipien als references/human-voice.md übernommen (Issue #21, Batch G); der 4-Schritt-Prozess des Skills endet mit einem iterativen Self-Audit: "What makes this obviously AI generated?" — Fix remaining tells.
   - Quelle: https://github.com/hikaman/ai-slop-ontology (Zugriff 2026-08-25)
     Zitat: Prozess (4 Schritte): 1. Scan für Patterns → 2. „Rewrite — preserve meaning, match intended tone" → 3. „Add soul (see next section)" → 4. Self-Audit: „What makes this obviously AI generated?" Fix remaining tells.
+
+## Ideological-Slop
+
+Untertyp von Human-Slop: ritualhafte ideologische Prosa, die einen Frame reproduziert, ohne Informationsgewinn zu erzeugen — Totalerklärungen, Kollektivzuweisungen, Erlöser-Schemata, unfalsifizierbare Deutungsschablonen. Abgegrenzt zum Policy-Argument: Dieses nennt Akteur, Instrument und Beleg und ist falsifizierbar. Umsetzung als detect-only Rhetorik-Layer (#92); Ontologie-Klasse in der Extension (#93).
+
+- Option B (detect-only Rhetorik-Layer) ist der kleinste Schritt, der das Phänomen messbar macht, ohne den Detector zum Gesinnungsscanner zu machen; Option A (Ontologie-Klasse mit Score) folgt nur nach Opt-in und Korpus-Reife — Empfehlung des bewerteten Vorschlags in #91/adr/0008.
+  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/91 (Zugriff 2026-09-02)
+    Zitat: B ist der kleinste Schritt, der das Phänomen messbar macht, ohne den Detector zum Gesinnungsscanner zu machen. A ist der Schritt, der das Phänomen denkbar macht — aber nur, wenn #86 und das neue ADR denselben Satz sagen: Slop ist ein Risikoprofil, keine Autorschaftsklasse.
+- Ein ideologischer Frame wirkt als Slop-Generator über Metapolitik: Er produziert endlose Frame-Prosa ohne operationalisierbare Policy außer Trennung — Beispiel Ethnopluralismus (#94).
+  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/94 (Zugriff 2026-09-02)
+    Zitat: Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat. Deshalb taugt der Begriff als Slop-Generator — er produziert endlos „Differenz"-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.
 
 ## Marketing-CTA
 
