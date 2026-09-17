@@ -174,6 +174,5 @@ class CliTests(unittest.TestCase):
             import shutil
             shutil.rmtree(base)
 
-
 if __name__ == "__main__":
     unittest.main()
