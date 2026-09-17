@@ -144,6 +144,13 @@ def mask_performative_stakes(text_lower: str) -> str:
             window = result[m.end():m.end() + _MS_WINDOW]
             if _MS_CONCRETE_RE.search(window):
                 spans.append((m.start(), m.end()))
+    chars = list(result)
+    for start, end in spans:
+        for i in range(start, end):
+            chars[i] = " "
+    return "".join(chars)
+
+
 # --- #110: Hard-Negative-Guards fuer conversational_fillers -------------
 # Zwei Phrasen der Hassid-Liste sind in konkreten menschlichen Kontexten
 # legitim und duerfen einzeln nicht feuern ("Hope this helps" in echten
