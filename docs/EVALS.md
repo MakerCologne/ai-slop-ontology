@@ -147,6 +147,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)- `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)
+- `tests/test_diff_verification.py` — #112 Gamed Verification im Diff-Modus: AssertionDelta/SkippedTest/TrivialAssertion (detect-only, 3/3/2-Fixtures, Findings-Standard #119)
 - `tests/test_docs_examples.py` — Doku-Beispiele stimmen mit Scorer-Verhalten überein (#48)
 - `tests/test_project_config.py` — #11 Projekt-lokale Config (--config: disabled_signals/term_allowlist/weight_overrides, Fail-loud-Validierung, Strukturdimensionen unangetastet)
 - `tests/test_engine_sync.py` — SSOT-Parity Scorer↔ontology.json (ADR-0002)

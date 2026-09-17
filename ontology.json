@@ -3700,6 +3700,27 @@
           "rationale": "Hedged language is genre-required in legal writing."
         }
       ]
+    },
+    "diffVerification": {
+      "description": "Detect-only Gamed-Verification-Signale für Test-Dateien im Diff-Modus (issue #112; Quellen: jayj221/hallucinot, peeramid-labs/sloppoke).",
+      "note": "Detect-only: findings advisory, nie Score-wirksam (ADR-0001/ADR-0006). Implementation: skills/ai-slop-detection/scripts/diff_verification.py; Routing via diff_mode (#10). Findings-Standard #119.",
+      "indicators": [
+        {
+          "id": "AssertionDelta",
+          "description": "Netto-Verlust von Assertions in einer Testdatei im Diff (Assertions entfernt/geschwächt statt Fix geliefert)",
+          "confidence": 0.7
+        },
+        {
+          "id": "SkippedTest",
+          "description": "Im Diff HINZUGEFÜGTE Skip-/xfail-/only-Marker (pytest.mark.skip, @unittest.skip, it.skip, describe.skip, t.skip, xit, .only)",
+          "confidence": 0.75
+        },
+        {
+          "id": "TrivialAssertion",
+          "description": "Immer-wahre Assertions hinzugefügt (assert True, assertEqual(1,1), expect(true).toBe(true), expect(x).toBe(x))",
+          "confidence": 0.8
+        }
+      ]
     }
   },
   "normativeFramings": {
