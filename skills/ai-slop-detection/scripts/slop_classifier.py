@@ -26,6 +26,7 @@ from slop_scorer import (
 )
 from rhetorical_patterns import find_rhetorical_patterns
 from academic_register import find_academic_register_findings
+from chat_artifacts import find_chat_artifacts
 
 
 @dataclass
@@ -57,6 +58,8 @@ class ClassificationResult:
     # nie gescort. Feuern nur, wenn die akademische Absicherung (Zahl,
     # Referenz, Quelle) fehlt — echte Papers bleiben unangetastet.
     academic_register: list = field(default_factory=list)
+    # Detect-only: chat-paste artifacts & elision (issue #113), same schema.
+    chat_artifacts: list = field(default_factory=list)
 
 
 # --- Slop Type Pattern Definitions (extended from ontology.json v1.0.0) ---
@@ -323,6 +326,8 @@ def classify_text(text: str) -> ClassificationResult:
 
     # Detect-only rhetorical patterns (named evidence, no score contribution).
     result.rhetorical_patterns = find_rhetorical_patterns(text)
+    # Detect-only chat-paste artifacts (named evidence, no score contribution).
+    result.chat_artifacts = find_chat_artifacts(text)
 
     # Detect-only academic-register signals (#114, invertierbar, BS-I3).
     result.academic_register = find_academic_register_findings(text)
@@ -358,6 +363,10 @@ def format_report(result: ClassificationResult) -> str:
         lines.append(f"\n🎓 Academic-register findings ({len(result.academic_register)}):")
         for a in result.academic_register:
             lines.append(f"  • {a['id']} ({a['confidence']:.0%}) — {a['evidence'][:100]}")
+    if result.chat_artifacts:
+        lines.append(f"\n📋 Chat-paste artifacts ({len(result.chat_artifacts)}):")
+        for a in result.chat_artifacts:
+            lines.append(f"  • {a['id']} ({a['confidence']:.0%}) — \"{a['evidence']}\"")
 
     if result.countermeasures:
         lines.append(f"\n🛡️ Recommended actions:")
@@ -375,6 +384,7 @@ def to_dict(result: ClassificationResult) -> dict:
         "signals": [{"signal": s.signal_id, "confidence": s.confidence, "evidence": s.evidence} for s in result.signals],
         "rhetorical_patterns": result.rhetorical_patterns,
         "academic_register": result.academic_register,
+        "chat_artifacts": result.chat_artifacts,
         "countermeasures": result.countermeasures,
     }
 
