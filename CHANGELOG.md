@@ -17,6 +17,7 @@
 - docs/de-coverage.md: M18/M33/M65 → GEDECKT; DE-Signal-Zähler 22 → 25
 - scripts/check_ssot.py: DE_LAYER-Pin 16 → 19 Kategorien (C4)
 - tests/test_de_variant_rest.py: Schema/Kollision/Detection/DoD (3/3/2)
+
 ## [2.9.1] — 2026-09-12 (#110 — Konversationelle Floskeln, Hassid-Liste 4–8)
 
 Neue detect-only Phrase-Kategorie `conversational_fillers`
@@ -135,6 +136,14 @@ keine Facts" als Invariante in der Ontology.
   Akzeptanz).
 - Tests: 6 neue Fälle in `tests/test_learning_store.py`.
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
+## [Unreleased] — 2026-09-13 (#77-Rest — DE-Variante-Rest: dritte DE-Phrase-Welle)
+
+- 3 neue de_*-Kategorien (M18 `de_chatbot_leftover`, M33 `de_signposting`,
+  M65 `de_copula_avoidance`), je 6 Phrasen conf 0.6, **Voll-Zweibeleg** je
+  Phrase (Wikipedia-Projektseite + own:corpus de-ev-17..19)
+- docs/de-coverage.md: M18/M33/M65 → GEDECKT; DE-Signal-Zähler 22 → 25
+- scripts/check_ssot.py: DE_LAYER-Pin 16 → 19 Kategorien (C4)
+- tests/test_de_variant_rest.py: Schema/Kollision/Detection/DoD (3/3/2)## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 ## [unreleased] — 2026-09-11 (#114 — Academic-Register-Signale, invertierbar)
 
 Genre-Register `academic` erhält drei **invertierbare** detect-only
