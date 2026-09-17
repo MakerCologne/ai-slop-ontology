@@ -19,6 +19,9 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 
 ### L2 — Control Set
 
+- `eval/human_ideological.jsonl` — Korpus Human/Ideological Slop (#98-Zielstand: 46 positiv / 40 negativ, alle `own:handwritten`, adr/0005: keine fremden Volltexte; positives Merkmal nie allein Phrase — Leak-Check-Feld `features`); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
+- `eval/run_human_ideological.py` — Korpus-Gate #98 (L2): Integrität 40/40 + Segment-Pins + Leak-Check + Precision-Pin ≥ 0.95 der Rhetorik-Gruppe auf Hard-Negatives; Gate 5b in `scripts/verify.sh`
+- `eval/control_set.jsonl` — Golden Control Set: 10 handgeschriebene Texte (5 Slop / 5 Hard Negatives), known-FN-Register (ADR-0003)
 - `eval/human_ideological.jsonl` — Seed-Korpus Human/Ideological Slop (#98-Vorlauf, 40 Einträge, alle `own:handwritten`, adr/0005: keine fremden Volltexte); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
 - `eval/control_set.jsonl` — Golden Control Set: 20 handgeschriebene Texte (10 Slop, davon 6 dokumentierte known_fn / 10 Hard Negatives), known-FN-Register (ADR-0003); P4/#231: +5 CommentSlop-Sequenzen (detect-only via engagement_comment_default) und +5 legitime LinkedIn-Kommentare (FP-Rate 0)
 - `eval/run_control_set.py` — FN/FP-Gate (Threshold 0.40, known_fn-Ausnahmen, RESOLVED-Meldung); läuft bei jedem Issue im Burn
@@ -135,6 +138,8 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_metadata_slop_111.py` — #111 Metadata-Slop-Erweiterung: CommitVelocitySlop (Cadence-Verhalten), PRStructureSlop (anti-slop-Regeln), CommitKeywordSlop (gitorit-Vokabular); FP-Guards per Einzel-Regel-Negativ-Fixtures
 - `tests/test_sample_mine.py` — #12 Sampling-Harness: Mine schlägt nur unbedeckte n-Gramme vor (SSOT-Filter gegen Scorer-Vokabular), Doc-Frequency-Ranking, Kandidaten-Cap, Einmal-Vorkommen wird ignoriert, `generate` ohne Endpoint verweigert sauber; `calibrate.py --sample-mine` druckt Tier-Vorschläge
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
+- `tests/test_human_ideological_runner.py` — #98-Zielstand: Runner-Exit-Code, 40/40 + Segment-Pins, Quellendisziplin, Leak-Check je Positivem
+- `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_conversational_fillers.py` — #110 conversational_fillers (Hassid-Liste): 4 Phrasen, Hard-Negative-Guards (Sign-off-Fenster, Quellenangabe)
 - `tests/test_chat_artifacts.py` — #113 chat-paste artifacts & elision: 6 deterministische Mikro-Signale (Chat-Paste-Artefakte wie Zeitstempel/Lead-Dashes, Elision), Fixtures inkl. Hard Negatives (L1)
 - `tests/test_weight_gain_pin.py` — #106 DoD-Rest: Doku-Pin der Gewichts-Einordnung (SCORE-GOVERNANCE.md + Herkunfts-Kommentar slop_scorer.py nennen den Kalibrierungs-Gewinn der 14-dimensionalen Gewichte gegenüber uniform 1/N; Test bindet diese Zahlen, Muster fp_baseline #80/#85) (L1)
