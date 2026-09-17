@@ -5686,6 +5686,20 @@
       }
     }
   },
+  "signalGates": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-16",
+    "source": "#118 (Gates statt Score für Binärsignale)",
+    "note": "Binärsignale laufen als Gates, nicht als Score-Beitrag. FAIL → harte Markierung mit Evidence, PASS → kein Beitrag. 'Necessary, not sufficient' (nach piyushbhattadforapps/pseo-quality-gate): ein FAIL ist starker Prädiktor, alle PASS garantieren nichts. Implementierung: skills/ai-slop-detection/scripts/gates.py; Ausgabe als 'gates'-Key im Scorer-JSON (kein Score-Anteil, keine fp-guards).",
+    "gates": [
+      "placeholder_credentials",
+      "elision_comments",
+      "lorem_ipsum",
+      "dead_anchor",
+      "placeholder_image",
+      "todo_ship_blocker"
+    ]
+  },
   "collisionMatrix": {
     "version": "1.1.0",
     "lastUpdated": "2026-09-09",

@@ -313,6 +313,17 @@ geometric = Π(d_i ^ w_i) ^ (1 / Σ w_i)   with w_i = max weight in dim_i
 is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
 
+## Hard Gates (Binärsignale, #118)
+
+Einige Signale sind binäre Fakten, keine Score-Beiträge: Platzhalter-Credentials,
+Elision-Comments (`// ... rest of implementation`), Lorem Ipsum, tote Anker
+(`href="#"`), Placeholder-Bild-URLs, Launch-Blocker-TODOs. Diese laufen als
+**Gates statt Score** (Implementierung: `scripts/gates.py`, Ausgabe: `gates`-Key
+im Scorer-JSON): FAIL → harte Markierung mit Evidence, PASS → kein Beitrag —
+keine Kalibrierung, keine fp-guards, score-neutral by construction. Semantik
+„necessary, not sufficient" (nach piyushbhattadforapps/pseo-quality-gate):
+ein FAIL ist ein starker Prädiktor, alle PASS garantieren nichts.
+Auto-Run bei Code/Markup-Input; `--gates` erzwingt die Gates für Prosa.
 ## Domain Scoping (triggered_by: domain)
 
 Issue #35: Slop-Defaults sind domain-konditional (unslop, deep/04). Signale

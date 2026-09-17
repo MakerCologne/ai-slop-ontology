@@ -224,6 +224,14 @@ rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
 Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
 `eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
 
+### Step 2i: Hard Gates — binäre Signale, kein Score-Anteil (#118)
+
+`scripts/gates.py` — Binärsignale (Platzhalter-Credentials, Elision-Comments,
+Lorem Ipsum, Tote Anker `href="#"`, Placeholder-Bild-URLs, Launch-Blocker-TODOs)
+laufen als **Gates statt Score**: FAIL → harte Markierung mit Evidence, PASS →
+kein Beitrag. Läuft automatisch für Code/Markup-Input, `--gates` erzwingt es für
+Prosa. „Necessary, not sufficient“ (nach pseo-quality-gate): ein FAIL ist ein
+starker Prädiktor, alle PASS garantieren nichts. Ausgabe: `gates`-Key im JSON.
 ### Step 2i: Chat-Paste-Artefakte & Elision (detect-only, #113)
 
 `scripts/chat_artifacts.py` — sechs deterministische Mikro-Signale für

@@ -68,6 +68,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 
 ### L1 — Unit-Assertions (tests/)
 
+- `tests/test_gates.py` — #118 Hard Gates (Binärsignale): FAIL/PASS je Gate (placeholder_credentials, elision_comments, lorem_ipsum, dead_anchor, placeholder_image), Auto-Scope Code/Markup, Score-Neutralität (`--gates` ändert slop_score nie), gates-Key im CLI-JSON (L1)
 - `tests/test_conversational_fillers.py` — #110 konversationelle Floskeln (Hassid 4–8): Quick-Update-Meta-Ankündigungen plus bewachte Spezialfälle „most people" (satzinitial, ohne First-Person-Quelle) und „hope this helps" (Positions-Guard vor Grußformel); je Familie 2 positive + 2 Hard-Negative-Fixtures; „quick update on" bewusst ausgeschlossen (FP-Baseline clean-email-01) (L1)
 - `tests/test_issue104_doc_drift.py` — #104 Slice A: Doku<->SSOT-Drift (L1) — Gate-Test für scripts/check_doc_signals.py (D1/D2, beide Richtungen) plus die beiden Issue-Beispiele als Matcher-/Classifier-Fixtures ('it is worth noting' in hedging_qualifiers, Template 'in today's [X]' in opening_formulas; konkrete SSOT-Varianten bleiben matchbar)
 - `tests/test_human_work_seo_extension.py` — #86 Portierung PR#6: Status-/Parent-/Source-Resolution der Work-/SEO-Slop-Extension, FP-Exclusions je Typ, Nicht-Kollaps Human/AI-Generierung, SEOSlop-Generationsneutralität (L1)
