@@ -1,5 +1,8 @@
 # Changelog
 
+
+
+
 ## [unreleased] — feat(#120): Learn-Input-Standard — Freitext + optionaler Pfad reicht
 
 - `learning_store.learn_entry()`: minimaler Learn-Input (Issue #120) —
@@ -9,8 +12,7 @@
   bewusst schema-frei (Landscape: sloppoke/flamehaven/axonscanner).
 - Doku: `docs/loop-guards/120-learn-input-standard.md` (Standard, Regeln,
   Akzeptanz).
-- Tests: 6 neue Fälle in `tests/test_learning_store.py`.
-## [unreleased] — 2026-09-11 (#115 — performative_voice + manufactured_stakes + Fact-Gate-Invariante)
+- Tests: 6 neue Fälle in `tests/test_learning_store.py`.## [unreleased] — 2026-09-11 (#115 — performative_voice + manufactured_stakes + Fact-Gate-Invariante)
 
 ZeroSlop-Adaption („performed voice" / „manufactured stakes"): zwei neue
 Phrase-Kategorien mit keep_when-Guards, plus die Doktrin „Deslop löscht
@@ -33,6 +35,17 @@ keine Facts" als Invariante in der Ontology.
 - 20 neue Tests (`tests/test_performative_stakes.py`), Doku in
   detection-signals.md + EVALS.md + METHODOLOGY.md (M10).
 
+
+## [unreleased] — feat(#120): Learn-Input-Standard — Freitext + optionaler Pfad reicht
+
+- `learning_store.learn_entry()`: minimaler Learn-Input (Issue #120) —
+  Freitext-Note ist Pflicht, alles andere optional (signal_id-Default
+  `reviewed`, Sample-Hash fallback auf die Note selbst).
+- CLI: `--learn "<freetext>"` am Scorer und `learning_store.py learn` —
+  bewusst schema-frei (Landscape: sloppoke/flamehaven/axonscanner).
+- Doku: `docs/loop-guards/120-learn-input-standard.md` (Standard, Regeln,
+  Akzeptanz).
+- Tests: 6 neue Fälle in `tests/test_learning_store.py`.
 ## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 ## [unreleased] — 2026-09-11 (#114 — Academic-Register-Signale, invertierbar)
 
