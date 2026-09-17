@@ -1,162 +1,178 @@
-"""Issue #1138 (GH #11): project-local config (--config slop.json).
+"""Tests for project-local config (issue #11): --config slop.json with
+disabled_signals, term_allowlist, weight_overrides."""
 
-disabled_signals / term_allowlist / weight_overrides — validation,
-composition with defaults, and the CLI surface.
-"""
-
+import io
 import json
 import os
-import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 
-SCRIPTS = os.path.join(os.path.dirname(__file__), "..",
-                       "skills", "ai-slop-detection", "scripts")
-sys.path.insert(0, SCRIPTS)
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SCRIPTS = os.path.join(ROOT, "skills", "ai-slop-detection", "scripts")
+for p in (ROOT, SCRIPTS):
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
-import slop_scorer  # noqa: E402
+from slop_scorer import slop_score  # noqa: E402
+import project_config  # noqa: E402
 
-SLOPPY = ("In today's rapidly evolving landscape, it's worth noting that "
-          "we delve into a rich tapestry of cutting-edge harness signals "
-          "to unlock seamless synergy.")
-
-
-def _write_config(tmpdir, payload):
-    path = os.path.join(tmpdir, "slop.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(payload, f)
-    return path
+SLOP = ("In today's rapidly evolving landscape, our robust, holistic platform "
+        "serves as a centralized hub, highlighting our commitment. It's not a "
+        "tool. It's a movement. In conclusion, we must adapt. We harness the "
+        "power of seamless integration to unlock the full potential. It's a "
+        "testament to our vision.")
 
 
-class TestLoadProjectConfig(unittest.TestCase):
-
+class LoadConfigTests(unittest.TestCase):
     def test_valid_full_config(self):
-        with tempfile.TemporaryDirectory() as d:
-            path = _write_config(d, {
-                "disabled_signals": ["buzzwords"],
-                "term_allowlist": ["harness"],
-                "weight_overrides": {"phrases": 0.10},
-            })
-            cfg = slop_scorer.load_project_config(path)
-        self.assertEqual(cfg["disabled_signals"], ["buzzwords"])
-        self.assertEqual(cfg["term_allowlist"], ["harness"])
-        self.assertEqual(cfg["weight_overrides"], {"phrases": 0.1})
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            json.dump({"disabled_signals": ["buzzwords"],
+                       "term_allowlist": ["harness"],
+                       "weight_overrides": {"phrases": 0.1}}, f)
+            path = f.name
+        try:
+            cfg = project_config.load_config(path)
+            self.assertEqual(cfg["disabled_signals"], ["buzzwords"])
+            self.assertEqual(cfg["term_allowlist"], ["harness"])
+            self.assertEqual(cfg["weight_overrides"], {"phrases": 0.1})
+        finally:
+            os.unlink(path)
 
-    def test_empty_config(self):
-        with tempfile.TemporaryDirectory() as d:
-            path = _write_config(d, {})
-            cfg = slop_scorer.load_project_config(path)
-        self.assertEqual(cfg, {"disabled_signals": [],
-                               "term_allowlist": [],
-                               "weight_overrides": {}})
+    def test_empty_config_defaults(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            f.write("{}")
+            path = f.name
+        try:
+            cfg = project_config.load_config(path)
+            self.assertEqual(cfg, {"disabled_signals": [], "term_allowlist": [],
+                                   "weight_overrides": {}})
+        finally:
+            os.unlink(path)
 
-    def test_unknown_signal_rejected(self):
-        with tempfile.TemporaryDirectory() as d:
-            path = _write_config(d, {"disabled_signals": ["nonsense"]})
-            with self.assertRaises(ValueError):
-                slop_scorer.load_project_config(path)
+    def test_unknown_signal_family_rejected(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            json.dump({"disabled_signals": ["nonexistent"]}, f)
+            path = f.name
+        try:
+            with self.assertRaises(SystemExit):
+                project_config.load_config(path)
+        finally:
+            os.unlink(path)
 
     def test_unknown_key_rejected(self):
-        with tempfile.TemporaryDirectory() as d:
-            path = _write_config(d, {"threshold": 0.5})
-            with self.assertRaises(ValueError):
-                slop_scorer.load_project_config(path)
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            json.dump({"ban_words": []}, f)
+            path = f.name
+        try:
+            with self.assertRaises(SystemExit):
+                project_config.load_config(path)
+        finally:
+            os.unlink(path)
 
     def test_negative_weight_rejected(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            json.dump({"weight_overrides": {"buzzwords": -1}}, f)
+            path = f.name
+        try:
+            with self.assertRaises(SystemExit):
+                project_config.load_config(path)
+        finally:
+            os.unlink(path)
+
+
+class ApplyConfigTests(unittest.TestCase):
+    def test_baseline_scores_slop(self):
+        r = slop_score(SLOP)
+        self.assertGreaterEqual(r["slop_score"], 0.4)
+
+    def test_disabled_buzzwords_zeroes_count(self):
+        r = slop_score(SLOP, project_config={"disabled_signals": ["buzzwords"]})
+        self.assertEqual(r["dimensions"]["buzzword_count"], 0)
+
+    def test_allowlist_reduces_buzzword_count(self):
+        base = slop_score(SLOP)["dimensions"]["buzzword_count"]
+        r = slop_score(SLOP, project_config={
+            "term_allowlist": ["harness", "landscape", "robust", "holistic",
+                               "seamless"]})
+        self.assertLess(r["dimensions"]["buzzword_count"], base)
+
+    def test_weight_override_changes_score(self):
+        # Weight-zeroing alone does NOT remove the strong-evidence escalation
+        # floor (honest design): zero weights plus disabled exemptable
+        # families is what takes a text to 0.0.
+        exemptable = ["buzzwords", "phrases", "multilingual", "provenance",
+                      "trailing_moral", "mirrored", "fake_authority",
+                      "portability"]
+        r = slop_score(SLOP, project_config={
+            "disabled_signals": exemptable,
+            "weight_overrides": {k: 0.0 for k in (
+                "density", "repetition", "burstiness", "punctuation",
+                "list_heavy", "verbosity", "structural", "adverb",
+                "copula")}})
+        self.assertEqual(r["slop_score"], 0.0)
+
+    def test_no_config_unchanged(self):
+        # None config must behave exactly like the pre-#11 default call.
+        self.assertEqual(slop_score(SLOP)["slop_score"],
+                         slop_score(SLOP, project_config=None)["slop_score"])
+
+
+class CliTests(unittest.TestCase):
+    def _run(self, argv, stdin=None):
+        import subprocess
+        proc = subprocess.run(
+            [sys.executable, os.path.join(SCRIPTS, "slop_scorer.py")] + argv,
+            input=stdin, capture_output=True, text=True)
+        return proc.returncode, proc.stdout
+
+    def test_cli_config_flag(self):
         with tempfile.TemporaryDirectory() as d:
-            path = _write_config(d, {"weight_overrides": {"phrases": -1}})
-            with self.assertRaises(ValueError):
-                slop_scorer.load_project_config(path)
+            sample = os.path.join(d, "sample.txt")
+            with open(sample, "w") as f:
+                f.write(SLOP)
+            cfg = os.path.join(d, "cfg.json")
+            with open(cfg, "w") as f:
+                json.dump({"disabled_signals": ["buzzwords"]}, f)
+            _, out = self._run(["--json", "--file", sample, "--config", cfg])
+            data = json.loads(out)
+            self.assertEqual(data["dimensions"]["buzzword_count"], 0)
 
-    def test_non_string_allowlist_rejected(self):
+    def test_cli_config_auto_discovery(self):
         with tempfile.TemporaryDirectory() as d:
-            path = _write_config(d, {"term_allowlist": [42]})
-            with self.assertRaises(ValueError):
-                slop_scorer.load_project_config(path)
+            sample = os.path.join(d, "sample.txt")
+            with open(sample, "w") as f:
+                f.write(SLOP)
+            with open(os.path.join(d, "slop.json"), "w") as f:
+                json.dump({"disabled_signals": ["buzzwords"]}, f)
+            _, out = self._run(["--json", "--file", sample])
+            data = json.loads(out)
+            self.assertEqual(data["dimensions"]["buzzword_count"], 0)
 
+    def test_cli_stdin_no_auto_discovery(self):
+        # Piped text is environment-independent: no config auto-discovery,
+        # regardless of slop.json files lying around the filesystem.
+        code, out = self._run(["--json", "-"], stdin=SLOP)
+        data = json.loads(out)
+        self.assertGreater(data["dimensions"]["buzzword_count"], 0)
 
-class TestConfigScoring(unittest.TestCase):
+    def test_cli_missing_config_file(self):
+        code, _ = self._run(["--json", "-", "--config", "/nope.json"], stdin=SLOP)
+        self.assertNotEqual(code, 0)
 
-    def test_default_unchanged_without_config(self):
-        result = slop_scorer.slop_score(SLOPPY)
-        self.assertNotIn("config", result)
-
-    def test_allowlist_reduces_buzzword_hits(self):
-        base = slop_scorer.slop_score(SLOPPY)
-        cfg = {"disabled_signals": [], "term_allowlist": ["harness"],
-               "weight_overrides": {}}
-        tuned = slop_scorer.slop_score(SLOPPY, config=cfg)
-        self.assertIn("config", tuned)
-        self.assertEqual(tuned["config"]["allowlist_terms"], 1)
-        self.assertLessEqual(
-            tuned["dimensions"]["buzzword_count"],
-            base["dimensions"]["buzzword_count"])
-
-    def test_disabled_signal_zeroes_weight_and_lowers_score(self):
-        # Build a text whose buzzword signal dominates; disabling buzzwords
-        # must not increase the score.
-        text = ("seamless synergy across cutting-edge paradigms, "
-                "a rich tapestry of innovative leveraging.")
-        base = slop_scorer.slop_score(text)
-        cfg = {"disabled_signals": ["buzzwords", "phrases"],
-               "term_allowlist": [], "weight_overrides": {}}
-        tuned = slop_scorer.slop_score(text, config=cfg)
-        self.assertLessEqual(tuned["slop_score"], base["slop_score"])
-        self.assertEqual(tuned["config"]["disabled_signals"],
-                         ["buzzwords", "phrases"])
-
-    def test_weight_override_applied(self):
-        cfg = {"disabled_signals": [], "term_allowlist": [],
-               "weight_overrides": {"buzzwords": 0.0}}
-        tuned = slop_scorer.slop_score(SLOPPY, config=cfg)
-        self.assertEqual(tuned["config"]["weight_overrides"], {"buzzwords": 0.0})
-        # Zero buzzword weight must not raise the score vs. default.
-        base = slop_scorer.slop_score(SLOPPY)
-        self.assertLessEqual(tuned["slop_score"], base["slop_score"])
-
-    def test_config_composes_with_genre(self):
-        cfg = {"disabled_signals": [], "term_allowlist": ["harness"],
-               "weight_overrides": {}}
-        tuned = slop_scorer.slop_score(SLOPPY, genre="academic", config=cfg)
-        self.assertIn("config", tuned)
-        self.assertIn("genre", tuned)
-
-    def test_structural_dimensions_keep_full_text(self):
-        # Allowlist stripping applies to SIGNAL matching only — structural
-        # dims (repetition etc.) still see the full text.
-        cfg = {"disabled_signals": [], "term_allowlist": ["harness"],
-               "weight_overrides": {}}
-        base = slop_scorer.slop_score(SLOPPY)
-        tuned = slop_scorer.slop_score(SLOPPY, config=cfg)
-        self.assertEqual(tuned["dimensions"]["information_density"],
-                         base["dimensions"]["information_density"])
-
-
-class TestConfigCLI(unittest.TestCase):
-
-    def _run(self, cli_args, input_text=None):
-        return subprocess.run(
-            [sys.executable, os.path.join(SCRIPTS, "slop_scorer.py")] + cli_args,
-            capture_output=True, text=True, input=input_text)
-
-    def test_cli_config_json_output(self):
-        with tempfile.TemporaryDirectory() as d:
-            path = _write_config(d, {"disabled_signals": ["buzzwords"],
-                                     "term_allowlist": ["harness"]})
-            proc = self._run(["--json", "--config", path, "-"],
-                             input_text=SLOPPY)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
-        data = json.loads(proc.stdout)
-        self.assertIn("config", data)
-        self.assertEqual(data["config"]["disabled_signals"], ["buzzwords"])
-
-    def test_cli_invalid_config_exits_2(self):
-        with tempfile.TemporaryDirectory() as d:
-            path = _write_config(d, {"disabled_signals": ["bogus"]})
-            proc = self._run(["--config", path, "-"], input_text=SLOPPY)
-        self.assertEqual(proc.returncode, 2)
-        self.assertIn("unknown signal", proc.stderr)
+    def test_auto_discover_walks_up(self):
+        base = tempfile.mkdtemp(prefix="slopcfg-test-")
+        try:
+            with open(os.path.join(base, "slop.json"), "w") as f:
+                f.write("{}")
+            sub = os.path.join(base, "a", "b")
+            os.makedirs(sub)
+            self.assertEqual(project_config.auto_discover(sub),
+                             os.path.join(base, "slop.json"))
+        finally:
+            import shutil
+            shutil.rmtree(base)
 
 
 if __name__ == "__main__":

@@ -734,68 +734,8 @@ DEFAULT_WEIGHTS = {
 }
 
 
-def load_project_config(path: str) -> dict:
-    """Issue #1138 (GH #11): project-local config (slop.json).
-
-    Schema (all keys optional):
-      {
-        "disabled_signals": ["buzzwords", ...],   # signal families to zero-weight
-        "term_allowlist":   ["harness", ...],      # terms stripped before signal
-                                                       # matching (like genre exemptions)
-        "weight_overrides": {"phrases": 0.10, ...} # merged over DEFAULT_WEIGHTS
-      }
-
-    Unknown signal names or config keys raise ValueError (fail loud, not
-    silent no-ops). Structural dimensions (density, repetition, burstiness)
-    cannot be disabled — they are computed on the full text and only their
-    weight can be overridden to 0.0 explicitly.
-    """
-    with open(path, encoding="utf-8") as f:
-        raw = json.load(f)
-    if not isinstance(raw, dict):
-        raise ValueError("config root must be a JSON object")
-    allowed_keys = {"disabled_signals", "term_allowlist", "weight_overrides"}
-    unknown = set(raw) - allowed_keys
-    if unknown:
-        raise ValueError(
-            "unknown config keys: " + ", ".join(sorted(unknown))
-            + " (allowed: " + ", ".join(sorted(allowed_keys)) + ")")
-
-    def _signal_list(name):
-        vals = raw.get(name, [])
-        if not isinstance(vals, list) or not all(isinstance(v, str) for v in vals):
-            raise ValueError(name + " must be a list of strings")
-        bad = [v for v in vals if v not in DEFAULT_WEIGHTS]
-        if bad:
-            raise ValueError(
-                "unknown signal(s) in " + name + ": " + ", ".join(sorted(bad))
-                + " (known: " + ", ".join(sorted(DEFAULT_WEIGHTS)) + ")")
-        return list(vals)
-
-    disabled = _signal_list("disabled_signals")
-    terms = raw.get("term_allowlist", [])
-    if not isinstance(terms, list) or not all(isinstance(t, str) for t in terms):
-        raise ValueError("term_allowlist must be a list of strings")
-    overrides = raw.get("weight_overrides", {})
-    if not isinstance(overrides, dict):
-        raise ValueError("weight_overrides must be an object")
-    bad_w = [k for k in overrides if k not in DEFAULT_WEIGHTS]
-    if bad_w:
-        raise ValueError(
-            "unknown signal(s) in weight_overrides: " + ", ".join(sorted(bad_w)))
-    for k, v in overrides.items():
-        if not isinstance(v, (int, float)) or isinstance(v, bool) or v < 0:
-            raise ValueError(
-                f"weight_overrides[{k!r}] must be a number >= 0 (got {v!r})")
-    return {
-        "disabled_signals": disabled,
-        "term_allowlist": list(terms),
-        "weight_overrides": {k: float(v) for k, v in overrides.items()},
-    }
-
-
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
-              not_slop_store=None, config: Optional[dict] = None) -> dict:
+              not_slop_store=None, project_config: Optional[dict] = None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
     # and zero-width obfuscation of telltale words must not bypass signals.
     text = input_norm.normalize(text)
@@ -809,6 +749,20 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         genre_profile = genre_profiles.get_profile(genre)
     if weights is None:
         weights = dict(DEFAULT_WEIGHTS)
+    # Issue #11: project-local config (slop.json). disabled_signals zeroes
+    # the family weight (exemptable families are additionally excluded via
+    # the exemption mechanic below, killing escalation/floor contributions);
+    # weight_overrides merge over the defaults.
+    allowlist_terms = []
+    if project_config:
+        weights = dict(weights)
+        for fam in project_config.get("disabled_signals", []):
+            weights[fam] = 0.0
+            if fam in ("adverb", "copula", "provenance"):
+                weights[fam] = 0.0  # conditional contributions: weights.get()
+        for k, v in project_config.get("weight_overrides", {}).items():
+            weights[k] = v
+        allowlist_terms = project_config.get("term_allowlist", [])
 
     density = information_density(text)
     rep = repetition_ratio(text)
@@ -827,23 +781,24 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
                    if isinstance(not_slop_store, str) else list(not_slop_store))
         exempted_families = learning_store.exemptions_for(
             entries, learning_store.sample_hash(text))
+    if project_config:
+        # Issue #11: disabled exemptable families behave like reviewed
+        # false positives — no matches, no escalation, no floor.
+        from project_config import _EXEMPTABLE_FAMILIES
+        for fam in project_config.get("disabled_signals", []):
+            if fam in _EXEMPTABLE_FAMILIES:
+                exempted_families.add(fam)
 
     signal_text = fp_guards.strip_quotes(text)
-    # Issue #1138: project-local allowlist — same mechanics as genre
-    # exemptions (#42), but sourced from the project config. Applied before
-    # the genre strip so both compose.
-    if config is not None and config.get("term_allowlist"):
-        signal_text = genre_profiles.strip_exempt_terms(
-            signal_text, config["term_allowlist"])
-    weights = dict(weights)
-    if config is not None:
-        for k, v in config["weight_overrides"].items():
-            weights[k] = v
-        for k in config["disabled_signals"]:
-            weights[k] = 0.0
+    # Issue #11: project term allowlist — same mechanic as genre exempt
+    # terms (#42): strip from signal matching only, structural dimensions
+    # keep the full text.
+    if allowlist_terms:
+        signal_text = genre_profiles.strip_exempt_terms(signal_text, allowlist_terms)
     if genre_profile is not None:
         signal_text = genre_profiles.strip_exempt_terms(
             signal_text, genre_profile["exempt_terms"])
+        weights = dict(weights)
         for k in genre_profile.get("zero_weights", []):
             weights[k] = 0.0
     buzz_count, buzz_hits, buzz_tiers = buzzword_score(signal_text)
@@ -1034,11 +989,6 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         "risk_level": risk,
         "action": action,
         **({"genre": genre} if genre else {}),
-        **({"config": {
-            "disabled_signals": config["disabled_signals"],
-            "allowlist_terms": len(config["term_allowlist"]),
-            "weight_overrides": config["weight_overrides"],
-        }} if config is not None else {}),
         "context": {
             "register_profile": register_ctx,
             "register_findings": register_findings,
@@ -1275,21 +1225,6 @@ if __name__ == "__main__":
               f"(hash {entry['sample_hash']}, store: {store})")
         sys.exit(0)
 
-    # Issue #1138: project-local config (slop.json) — disabled signals,
-    # term allowlist, weight overrides.
-    config = None
-    if "--config" in args:
-        i = args.index("--config")
-        if i + 1 >= len(args):
-            print("Error: --config requires a path", file=sys.stderr)
-            sys.exit(2)
-        try:
-            config = load_project_config(args[i + 1])
-        except (OSError, ValueError, json.JSONDecodeError) as e:
-            print(f"Error: invalid config {args[i + 1]}: {e}", file=sys.stderr)
-            sys.exit(2)
-        args = args[:i] + args[i + 2:]
-
     # Issue #42: explicit genre-register profile (--genre legal|academic|...)
     genre = None
     if "--genre" in args:
@@ -1308,6 +1243,22 @@ if __name__ == "__main__":
     # Issue #29: explicit learning-store path; default: not_slop.jsonl next
     # to the scored file (auto-detected only for --file input).
     not_slop_store = _opt("--not-slop-store")
+
+    # Issue #11: project-local config. Explicit --config PATH, or
+    # auto-discovered slop.json next to/above the scored file.
+    project_cfg = None
+    if "--config" in args:
+        i = args.index("--config")
+        if i + 1 >= len(args):
+            print("Error: --config requires a path", file=sys.stderr)
+            sys.exit(2)
+        cfg_path = args[i + 1]
+        if not os.path.isfile(cfg_path):
+            print(f"Error: no such config file: {cfg_path}", file=sys.stderr)
+            sys.exit(2)
+        import project_config as pconf
+        project_cfg = pconf.load_config(cfg_path)
+        args = args[:i] + args[i + 2:]
 
     # --file PATH: explicit file input (preferred)
     file_path = None
@@ -1354,8 +1305,18 @@ if __name__ == "__main__":
         if os.path.isfile(default_store):
             not_slop_store = default_store
 
+    if project_cfg is None and file_path is not None:
+        import project_config as pconf
+        auto = pconf.auto_discover(os.path.dirname(os.path.abspath(file_path)))
+        if auto:
+            project_cfg = pconf.load_config(auto)
+
     result = slop_score(text, genre=genre, not_slop_store=not_slop_store,
-                        config=config)
+                        project_config=project_cfg)
+
+    # Echo the applied project config so runs are reproducible (issue #11).
+    if project_cfg is not None:
+        result["config"] = project_cfg
 
     if use_json:
         print(json.dumps(result, indent=2))
