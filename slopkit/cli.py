@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from ._engine import get_engine, is_installed_layout, repo_root
+from ._engine import Engine, get_engine, is_installed_layout, repo_root
 
 
 # --------------------------------------------------------------------------- #
@@ -283,6 +283,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--version", action="version", version=f"slopkit {__version__}")
     parser.add_argument("--ontology", help="path to an alternate ontology.json")
+    parser.add_argument("--config", metavar="FILE", default=None,
+                        help="project-local config (JSON): disabled_signals, "
+                             "term_allowlist, weight_overrides (#11)")
     sub = parser.add_subparsers(dest="command", metavar="<command>")
 
     specs = [
@@ -332,7 +335,17 @@ def main(argv=None) -> int:
         return args.func(args, None)
 
     try:
-        eng = get_engine(getattr(args, "ontology", None))
+        if getattr(args, "config", None):
+            from .project_config import ConfigError, load_project_config
+            try:
+                cfg = load_project_config(args.config)
+            except ConfigError as e:
+                print(f"error: {e}", file=sys.stderr)
+                return 2
+            eng = Engine(Path(args.ontology) if getattr(args, "ontology", None) else None,
+                         project_config=cfg)
+        else:
+            eng = get_engine(getattr(args, "ontology", None))
     except FileNotFoundError as e:
         print(f"error: cannot load ontology ({e})", file=sys.stderr)
         return 2

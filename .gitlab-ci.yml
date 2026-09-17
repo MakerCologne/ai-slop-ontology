@@ -1,10 +1,6 @@
 # GitLab CI für ai-slop-ontology (#100).
-# Ersetzt die deaktivierte GitHub-Actions-Workflow (tests.yml) NICHT 1:1,
-# sondern führt scripts/verify.sh aus — das dasselbe Gate-Set in gleicher
-# Reihenfolge abarbeitet (8 Gates + Benchmark-Untergrenzen).
-#
-# Voraussetzungen (siehe verify.sh Gate 0): pytest, pyyaml; hatchling optional
-# (ohne hatchling überspringt test_packaging die Build-Tests, WARNUNG statt FAIL).
+# Shell-Runner (kein Docker): python3 + venv statt python:3.12-slim Image.
+# Führt scripts/verify.sh aus — 8 Gates + Benchmark-Untergrenzen.
 
 stages:
   - verify
@@ -15,9 +11,11 @@ workflow:
 
 verify-gates:
   stage: verify
-  image: python:3.12-slim
   before_script:
-    - python --version
-    - pip install --quiet pytest pyyaml hatchling
+    - python3 --version
+    - python3 -m venv .ci-venv
+    - ./.ci-venv/bin/pip install --quiet --upgrade pip
+    - ./.ci-venv/bin/pip install --quiet pytest pyyaml hatchling
+    - export PATH="$CI_PROJECT_DIR/.ci-venv/bin:$PATH"
   script:
     - bash scripts/verify.sh
