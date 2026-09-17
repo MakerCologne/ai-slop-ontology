@@ -271,6 +271,16 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
 [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
+### Step 2i: Circular Explanations (detect-only, #122)
+
+`scripts/circular_explanations.py` — `CircularExplanation`: tautologische
+Definition im Satz ("The auth module validates authentic user
+authentication."). Regel: definitionales Verb (is/means/validates/…)
++ geteilter Content-Stamm (Prefix ≥ 4) auf beiden Verb-Seiten
++ Praedikat bringt ≤ 3 neue Staemme (≥ 5 Woerter). Konfidenz fest 0.45,
+**detect-only**, nie score-wirksam. Hard Negatives: technische Referenz
+("handles") und echte Definitionen feuern nicht. SSOT-Eintrag:
+ontology.json → signals.text.structural.
 ### Step 2i: LLM-Zweit-Scanner — Layer 2 (advisory, #57)
 
 `scripts/llm_scanner.py` — optionale zweite Meinung eines LLM-Judges

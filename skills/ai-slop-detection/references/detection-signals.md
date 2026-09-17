@@ -208,6 +208,20 @@ Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
 patterns are mirrored as data in `ontology.json` under
 `signals.text.rhetoricalPatterns`.
 
+### Circular Explanation (detect-only, #122)
+
+A tautological definition inside a single sentence: the predicate repeats the
+subject's stems instead of adding information ("The auth module validates
+authentic user authentication."). Fires only with a definitional verb
+(is/means/validates/ensures/…), a shared content stem (prefix ≥ 4 chars) on
+both sides of the verb, and a predicate that adds ≤ 3 new stems; short
+sentences are skipped. Fixed confidence 0.45, never part of the numeric
+score. `keep_when`: technical reference prose ("the auth module handles
+authentication tokens" — no definitional verb) and genuine definitions
+(predicate introduces > 3 new stems) do not fire. Source: PRISM research
+context (bhanvinayer/PRISM), adapted as a prose signal; implementation in
+`scripts/circular_explanations.py`.
+
 ## Statistical/ML Methods
 
 1. **DetectGPT** (Mitchell et al. 2023): Curvature-based probability discrimination
