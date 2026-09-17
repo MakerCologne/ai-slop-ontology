@@ -394,7 +394,11 @@ PHRASE_CATEGORIES = {
             "here's the thing",
             "hope this helps",
             "to provide a quick update",
-            "^most people"
+            "^most people",
+            "just a quick update",
+            "giving you a quick update",
+            "here's a quick update",
+            "wanted to give you a quick update"
         ]
     },
     "generic_phrases": {

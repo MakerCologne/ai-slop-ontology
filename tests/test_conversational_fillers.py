@@ -166,5 +166,31 @@ class TestCumulativeRule(unittest.TestCase):
                 "phrase_categories", {}))
 
 
+class QuickUpdateVariantTests(unittest.TestCase):
+    """#211: zusaetzliche Quick-Update-Varianten (PR #211), gleiche Kategorie."""
+
+    PAIR = ("Just a quick update: the deploy finished. "
+            "Giving you a quick update on the migration status.")
+
+    def test_pair_fires(self):
+        r = slop_scorer.slop_score(self.PAIR)
+        # kumulative Regel: 2 Treffer zaehlen (phrase_match_count >= 2)
+        self.assertGreaterEqual(r["dimensions"]["phrase_match_count"], 2)
+        # Kontroll-Setup: gleiche Aussage ohne Quick-Update-Formeln bleibt drunter
+        ctrl = slop_scorer.slop_score("The deploy finished. The migration status is green.")
+        self.assertLess(ctrl["dimensions"]["phrase_match_count"],
+                        r["dimensions"]["phrase_match_count"])
+
+    def test_variants_are_matched(self):
+        masked = self.PAIR.lower()
+        hits = slop_scorer.find_term_matches(masked, [
+            "just a quick update", "giving you a quick update"])
+        self.assertGreaterEqual(sum(hits.values()), 2)
+
+    def test_single_variant_not_scored(self):
+        r = slop_scorer.slop_score("Here's a quick update on the ticket.")
+        self.assertLess(r["dimensions"]["phrase_match_count"], 2)
+
+
 if __name__ == "__main__":
     unittest.main()
