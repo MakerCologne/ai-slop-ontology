@@ -2540,6 +2540,14 @@
             "example_slop": "Strategie | Umsetzung | Wirkung",
             "example_fix": "Strategie und Umsetzung - und welche Wirkung daraus tatsaechlich entsteht.",
             "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - not a decorative headline triple."
+          },
+          "OpenerAnnouncement": {
+            "label": "Opener announcement",
+            "confidence": 0.45,
+            "description": "Sentences that open by announcing content instead of carrying it: praise openers ('Spannender Punkt.'), 'Ein weiterer Aspekt ist ...', question announcements ('Die spannende Frage ist ...'), and text-initial Ich-approach frames without an in-sentence justification. Frame-based, not a growing word list.",
+            "example_slop": "Spannender Punkt. Ich denke, ein weiterer wichtiger Aspekt ist die Frage, wie viel Prozesswissen verfuegbar ist.",
+            "example_fix": "Wie viel Prozesswissen ist tatsaechlich verfuegbar?",
+            "keep_when": "Genuine stance differentiation: 'Ich denke, dass X, weil Y belegt' carries content and a reason. Mid-text occurrences and ritual formulas stay unflagged."
           }
         }
       }

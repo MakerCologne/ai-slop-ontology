@@ -192,6 +192,22 @@ RHETORICAL_PATTERNS = {
         "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - "
                      "not a decorative headline triple.",
     },
+    "OpenerAnnouncement": {
+        "label": "Opener announcement",
+        "confidence": 0.45,
+        "description": "Sentences that open by announcing content instead of "
+                       "carrying it: praise openers ('Spannender Punkt.'), "
+                       "'Ein weiterer Aspekt ist ...', question announcements "
+                       "('Die spannende Frage ist ...'), and text-initial "
+                       "Ich-approach frames without an in-sentence justification. "
+                       "Frame-based (placeholder mechanics #83/#88), not a growing word list.",
+        "example_slop": "Spannender Punkt. Ich denke, ein weiterer wichtiger Aspekt ist die Frage, wie viel Prozesswissen verfuegbar ist.",
+        "example_fix": "Wie viel Prozesswissen ist tatsaechlich verfuegbar?",
+        "keep_when": "Genuine stance differentiation: 'Ich denke, dass X, weil Y belegt' "
+                     "carries content and a reason - the frame is the point, not a run-up. "
+                     "Mid-text occurrences and ritual formulas (thanks, negotiation "
+                     "statements) stay unflagged.",
+    },
     "RepeatedOpenings": {
         "label": "Repeated sentence openings",
         "confidence": 0.55,
@@ -542,6 +558,32 @@ def find_rhetorical_patterns(text: str):
             items = (m_hash.group(1), m_hash.group(2), m_hash.group(3))
             if len(set(i.lower() for i in items)) == 3:
                 add("DecorativeSeparatorTriad", "" + " ".join("#" + i for i in items))
+
+    # 13c. Opener announcements (Issue #230 / P3) — sentences that announce
+    #      content instead of carrying it. Frame-based, detect-only.
+    #      Tier A: pure praise/announcement frames at sentence start (always).
+    _OPENER_FRAMES = (
+        "spannender punkt", "spanender punkt", "interessanter gedanke",
+        "wichtiger beitrag", "danke fuer diesen beitrag", "danke für diesen beitrag",
+        "du sprichst einen wichtigen punkt an", "das ist ein wichtiger aspekt",
+        "genau das ist entscheidend", "ein weiterer aspekt ist", "ein weiterer punkt waere",
+        "ein weiterer punkt wäre", "ergaenzend dazu", "ergänzend dazu",
+        "die eigentliche frage ist", "die spannende frage ist",
+        "was bedeutet das nun", "doch was heisst konkret", "doch was heißt konkret",
+    )
+    for frame in _OPENER_FRAMES:
+        if lowered.startswith(frame) or ("\n" + frame) in lowered or (". " + frame) in lowered:
+            add("OpenerAnnouncement", frame)
+            break
+    #      Tier B: Ich-approach frames — only at TEXT start and only without an
+    #      in-sentence justification marker (hard negative: 'Ich denke, dass X, weil Y').
+    _ICH_FRAMES = ("ich moechte", "ich möchte", "ich wollte", "ich denke",
+                   "ich finde", "ich glaube")
+    _JUSTIFICATION = re.compile(r"\b(weil|denn|grund|belegt|belegen|nachvollziehbar|gemessen|laut|deshalb|daher)\b")
+    if lowered.startswith(_ICH_FRAMES):
+        first_sent = sents[0].lower() if sents else lowered
+        if not _JUSTIFICATION.search(first_sent):
+            add("OpenerAnnouncement", "text-initial ich-approach: " + first_sent[:60])
 
     # 14. Repeated sentence openings — 3+ sentences starting with the same word.
     opener_counts = {}

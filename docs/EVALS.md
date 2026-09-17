@@ -64,6 +64,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_model_notes.py` — #36 Modell-Dynamik: signalModelDynamics-SSOT-Sektion (schema, evidence-Pflicht M6, Halbwertszeit-Vokabular, Entries referenzieren reale Signale) + per-signal model_notes der Pilot-Signale + loop-guard-Doc-Existenz (L1)
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
 - `tests/test_adverb_rate.py` — Signal #24 Adverb-Rate (Fixtures)
+- `tests/test_opener_announcement.py` — #230 P3 Opener-Announcement (L1, detect-only): Frame-basierte Ankuendigungs-/Praise-Opener (Tier A immer, Tier B Ich-Anlauf nur text-initial ohne in-sentence Begruendung), TP/Hard-Negative-Fixtures inkl. Hard-Negative 'Ich denke, dass X, weil Y'
 - `tests/test_anchor_drift.py` — #78 Anchor-Drift (detect-only, Anker-Diff, Dezimal-Grenzfall)
 - `tests/test_anchor_diff_cli.py` — #78 Anchor-Diff-CLI (--anchor-diff im Diff-Modus)
 - `tests/test_null_edit_contract.py` — #79 Null-Edit-Contract-Gate (93 Hard Negatives clean auf beiden Engines, Null-Edit-Stabilität, Grenzband-Register eval/hardneg_borderline.json)
