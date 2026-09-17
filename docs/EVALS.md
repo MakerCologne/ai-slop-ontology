@@ -114,6 +114,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_structure_metrics.py` — #76 Teil 2: M60 SynonymRotation + M61 IsometricUnits (detect-only, sprachagnostisch, 3/3/2-Fixtures, Schwellen fixture-kalibriert)
 - `tests/test_structure_comparative.py` — #75 Signal 6: M72 ComparativeFraming / Komparativ-Rahmung ("eher X als Y", "nicht X, sondern Y", "weniger X als vielmehr Y", "less about X, more about Y"; detect-only ≤0.5, DoD 3/3/2, Einzeltreffer unmarkiert; EN "not just X but Y" bleibt bei BinaryContrast, #46)
 - `tests/test_ssot_de_layer.py` — FU-17: check_ssot C4 de_*-Phrase-Layer-Pin (16 Kategorien, Evidence-Regel, Namespace-Präfix) mit 4 Manipulationsproben
+- `tests/test_de_variant_rest.py` — #77-Rest: 3 neue de_*-Kategorien (M18 de_chatbot_leftover, M33 de_signposting, M65 de_copula_avoidance; je 6 Phrasen conf 0.6, Voll-Zweibeleg) mit Signal-DoD 3/3/2 je Kategorie (L1)
 - `tests/test_genre_human_texts.py` — #80-Rest: Genre-Menschtexte je Genre ≥6 (own:handwritten), <0.40 auf beiden Engines, fp_baseline-Pin, Quartals-Re-Score-Anbindung (#47)
 - `tests/test_collision_matrix.py` — #46 Signal-Kollisions-Matrix: jede COLL-Auflösung aus `ontology.json#/collisionMatrix` hat ein Fixture, das belegt, dass dasselbe Vorkommen genau einmal zählt (COLL-1 FakeStrongVerb vs. copula rate, COLL-2 EmDashExcess vs. FormattingSlop, COLL-3 Adverb vs. positive-voice, COLL-4 Regex-Span-Dedup)
 - `tests/test_benchmark_runner.py` — L3-Runner selbst + Korpus-Disziplin (Zeilen, Quellen, 60 %-Regel)

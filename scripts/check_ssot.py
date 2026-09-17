@@ -283,6 +283,9 @@ DE_LAYER = {
     "de_closing": 6,
     "de_hedging": 6,
     "de_announcement_cleft": 6,
+    "de_chatbot_leftover": 6,
+    "de_signposting": 6,
+    "de_copula_avoidance": 6,
 }
 
 _DE_WIKI_OK = "/wiki/Wikipedia:Anzeichen"
