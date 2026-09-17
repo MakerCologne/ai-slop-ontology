@@ -224,6 +224,14 @@ rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
 Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
 `eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
 
+### Step 2i: Hard Gates — binäre Signale, kein Score-Anteil (#118)
+
+`scripts/gates.py` — Binärsignale (Platzhalter-Credentials, Elision-Comments,
+Lorem Ipsum, Tote Anker `href="#"`, Placeholder-Bild-URLs, Launch-Blocker-TODOs)
+laufen als **Gates statt Score**: FAIL → harte Markierung mit Evidence, PASS →
+kein Beitrag. Läuft automatisch für Code/Markup-Input, `--gates` erzwingt es für
+Prosa. „Necessary, not sufficient“ (nach pseo-quality-gate): ein FAIL ist ein
+starker Prädiktor, alle PASS garantieren nichts. Ausgabe: `gates`-Key im JSON.
 ### Step 2i: Chat-Paste-Artefakte & Elision (detect-only, #113)
 
 `scripts/chat_artifacts.py` — sechs deterministische Mikro-Signale für
@@ -271,6 +279,16 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
 [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
+### Step 2i: Circular Explanations (detect-only, #122)
+
+`scripts/circular_explanations.py` — `CircularExplanation`: tautologische
+Definition im Satz ("The auth module validates authentic user
+authentication."). Regel: definitionales Verb (is/means/validates/…)
++ geteilter Content-Stamm (Prefix ≥ 4) auf beiden Verb-Seiten
++ Praedikat bringt ≤ 3 neue Staemme (≥ 5 Woerter). Konfidenz fest 0.45,
+**detect-only**, nie score-wirksam. Hard Negatives: technische Referenz
+("handles") und echte Definitionen feuern nicht. SSOT-Eintrag:
+ontology.json → signals.text.structural.
 ### Step 2i: LLM-Zweit-Scanner — Layer 2 (advisory, #57)
 
 `scripts/llm_scanner.py` — optionale zweite Meinung eines LLM-Judges

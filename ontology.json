@@ -2790,6 +2790,228 @@
                 }
               ]
             }
+          },
+          "de_rhetorical_setup": {
+            "confidence": 0.6,
+            "description": "M32 Autoritaets-/rhetorische Einstiegsfloskeln (authority setups, 'die eigentliche Frage'-Familie, disjunkt zu de_authority_floskel)",
+            "items": [
+              "die entscheidende frage lautet",
+              "was uns wirklich beschäftigt ist",
+              "im kern geht es um",
+              "das eigentlich spannende ist",
+              "worum es wirklich geht ist",
+              "am ende bleibt die erkenntnis"
+            ],
+            "evidence": {
+              "die entscheidende frage lautet": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-26) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "was uns wirklich beschäftigt ist": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-26) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "im kern geht es um": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-26) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "das eigentlich spannende ist": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-26) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "worum es wirklich geht ist": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-26) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "am ende bleibt die erkenntnis": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-26) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_aphorism": {
+            "confidence": 0.6,
+            "description": "M56 Aphorismus-Formeln: pseudotiefe Schluss-Sentenzen ohne neue Information",
+            "items": [
+              "denn eines ist klar",
+              "denn eines steht fest",
+              "daraus lässt sich eines lernen",
+              "vielleicht ist es genau das",
+              "vielleicht liegt darin die antwort",
+              "und genau darin liegt die wahrheit"
+            ],
+            "evidence": {
+              "denn eines ist klar": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-27) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "denn eines steht fest": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-27) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "daraus lässt sich eines lernen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-27) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "vielleicht ist es genau das": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-27) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "vielleicht liegt darin die antwort": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-27) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "und genau darin liegt die wahrheit": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-27) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_therapeutic_validation": {
+            "confidence": 0.6,
+            "description": "M72 pseudo-therapeutische Validierung: waermeformelhafte Zuwendung ohne Substanz (konversationell)",
+            "items": [
+              "es ist völlig normal dass",
+              "deine gefühle sind berechtigt",
+              "sei sanft mit dir selbst",
+              "du bist nicht allein damit",
+              "gib dir die zeit die du brauchst",
+              "es ist okay hilfe anzunehmen"
+            ],
+            "evidence": {
+              "es ist völlig normal dass": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-28) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "deine gefühle sind berechtigt": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-28) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "sei sanft mit dir selbst": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-28) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "du bist nicht allein damit": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-28) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "gib dir die zeit die du brauchst": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-28) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "es ist okay hilfe anzunehmen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-28) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
           }
         }
       },
@@ -2824,6 +3046,13 @@
             "id": "BalancedStructure",
             "pattern": "Every section same length regardless of topic importance",
             "confidence": 0.65
+          },
+          {
+            "id": "CircularExplanation",
+            "pattern": "definitional verb + subject/predicate stem overlap",
+            "threshold": "shared >=4-char content stem both sides of is/means/validates/..., predicate adds <=3 new stems, >=5 words",
+            "confidence": 0.45,
+            "note": "Tautological definition (issue #122, PRISM context): 'The auth module validates authentic user authentication.' Detect-only prose signal, implemented in skills/ai-slop-detection/scripts/circular_explanations.py; never score-dominant. Hard negatives: technical reference ('handles') and genuine definitions (>3 new stems) must not fire."
           },
           {
             "id": "ExcessiveHedging",
@@ -5462,6 +5691,20 @@
         "rationale": "Ellipses in ui_copy/changelog are rare and usually stylistic, not evidence of AI generation."
       }
     }
+  },
+  "signalGates": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-16",
+    "source": "#118 (Gates statt Score für Binärsignale)",
+    "note": "Binärsignale laufen als Gates, nicht als Score-Beitrag. FAIL → harte Markierung mit Evidence, PASS → kein Beitrag. 'Necessary, not sufficient' (nach piyushbhattadforapps/pseo-quality-gate): ein FAIL ist starker Prädiktor, alle PASS garantieren nichts. Implementierung: skills/ai-slop-detection/scripts/gates.py; Ausgabe als 'gates'-Key im Scorer-JSON (kein Score-Anteil, keine fp-guards).",
+    "gates": [
+      "placeholder_credentials",
+      "elision_comments",
+      "lorem_ipsum",
+      "dead_anchor",
+      "placeholder_image",
+      "todo_ship_blocker"
+    ]
   },
   "collisionMatrix": {
     "version": "1.1.0",

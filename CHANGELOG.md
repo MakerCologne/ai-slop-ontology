@@ -9,8 +9,38 @@
   DE-Signal-Zaehler 31
 - `tests/test_de_variant_rest3.py` neu (Schema/Belege/Kollisionen/Detektion)
 
+## [Unreleased] — 2026-09-15 (#77-Rest Welle 6 — DE-Variante-Rest: sechste DE-Phrase-Welle)
+
+- 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg
+  Wikipedia-Projektseite + own:corpus de-ev-26..28):
+  - `de_rhetorical_setup` (M32 rhetorische Einstiegsfloskeln, disjunkt zu de_authority_floskel)
+  - `de_aphorism` (M56 Aphorismus-Formeln)
+  - `de_therapeutic_validation` (M72 pseudo-therapeutische Validierung)
+- DE_LAYER-Pin 25 -> 28 Kategorien (C4); de-coverage.md M32/M56/M72 GEDECKT,
+  DE-Signal-Zaehler 34
+- `tests/test_de_variant_rest4.py` neu (Schema/Belege/Kollisionen/Detektion)
+
 # Changelog
 
+## [Unreleased] — #98-Zielstand: Human/Ideological-Korpus 46/40 + Runner-Gate 5b
+
+Der Seed-Stand (PR #132, 24/16) erreicht den Zielstand aus Issue #98: 46
+positive / 40 negative eigene Texte (alle `own:handwritten`, adr/0005 — keine
+fremden Volltexte), die fünf Kern-Segmente (Ritual-Brandmauer, Kollektivframe,
+Purity-Kette, Salvation-Kette, Ethnopluralismus-Rebrand) je ≥ 8, dazu 6
+Bonus-Positive außerhalb der Segmente und 24 neue Hard-Negatives
+(substanzielle AfD-Kritik, Migrations-/Gerichtspolicy mit Belegstruktur,
+BfV-/Plenarprotokoll-Provenance, technische AI-Kritik, Empirie,
+ethnografische Differenz ohne Segregationsforderung, markierte Satire).
+
+Neu: `eval/run_human_ideological.py` (Gate 5b in `scripts/verify.sh` bzw.
+GitLab-CI): Integritäts-Pins (40/40, Segmente, eindeutige IDs,
+Quellendisziplin), Leak-Check (je Positiv ein `structure:`-Merkmal außerhalb
+der Marker-Phrase — keine Trainingsphrase als einziges Positiv-Merkmal) und
+Precision-Pin ≥ 0.95 der Rhetorik-Gruppe (ideologienahe `de_*`-Kategorien
+aus `ontology.json`) auf Hard-Negatives. Erstlauf: 0 FP / 40 Negativen,
+Precision 1.0000. Recall bewusst nachrangig bis #92 (Option B) dedizierte
+Ritual-/Purity-Signale liefert; `polemic_risk` bleibt gesperrt (adr/0008).
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 4 — DE-Variante-Rest: vierte DE-Phrase-Welle)
 
 - 3 neue de_*-Kategorien (M35 `de_fake_dialog`, M59 `de_faux_candid`,

@@ -208,6 +208,20 @@ Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
 patterns are mirrored as data in `ontology.json` under
 `signals.text.rhetoricalPatterns`.
 
+### Circular Explanation (detect-only, #122)
+
+A tautological definition inside a single sentence: the predicate repeats the
+subject's stems instead of adding information ("The auth module validates
+authentic user authentication."). Fires only with a definitional verb
+(is/means/validates/ensures/…), a shared content stem (prefix ≥ 4 chars) on
+both sides of the verb, and a predicate that adds ≤ 3 new stems; short
+sentences are skipped. Fixed confidence 0.45, never part of the numeric
+score. `keep_when`: technical reference prose ("the auth module handles
+authentication tokens" — no definitional verb) and genuine definitions
+(predicate introduces > 3 new stems) do not fire. Source: PRISM research
+context (bhanvinayer/PRISM), adapted as a prose signal; implementation in
+`scripts/circular_explanations.py`.
+
 ## Statistical/ML Methods
 
 1. **DetectGPT** (Mitchell et al. 2023): Curvature-based probability discrimination
@@ -215,6 +229,25 @@ patterns are mirrored as data in `ontology.json` under
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
 
+### Human Detection Empirie (Menschen ≈ Chance-Level)
+
+ML-Detektoren sind das eine — die andere Hälfte der Empirie: **Menschliche Erkennungsleistung ist schlecht.** Das ist das stärkste Argument gegen „ich erkenne KI-Text schon selbst“ und für Tool-Einsatz + Checklisten-Ansatz.
+
+| Studie | Befund |
+|--------|--------|
+| Cheng 2025 | Menschliche Unterscheidung LLM- vs. Menschentext **nicht besser als Zufallsniveau** |
+| Fiedler 2025 (deutsche Abschlussarbeiten) | Erkennungsrate **57 % für KI-Texte**, 64 % für menschliche Texte |
+| Russell 2025 (Preprint) | Schwere LLM-Nutzer: ~**90 % korrekt** — aber bei 10 markierten Seiten ≈ 1 False Positive; Wenig-Nutzer kaum über Zufall |
+
+**Sprach-Konvergenz verschärft das Problem:** Menschliche Sprache wird von LLMs beeinflusst und ähnelt KI-Output zunehmend — nachgewiesen für gesprochene Inhalte/Podcasts (Yakura 2024) sowie weiterführend für Lexik und Semantik/Word-Choice (Geng 2025, Galpin 2025). Grundannahme „Menschentext sieht anders aus“ erodiert über Zeit; lebenslange Signaturen (eigener Stil, Belege, Provenance) werden relativ wichtiger als Oberflächen-Signale.
+
+**Implikationen für dieses Skill:**
+- Selbst-Diagnose („das liest sich menschlich“) ist kein valides Kriterium — Signal-Katalog + Scorer schlagen Intuition.
+- Einzelne Signale sind hinweisend, nicht beweisend; Score-Aggregation + Schwellenentscheidung beachten.
+- Russell-2025-Caveat gilt auch für Tools: ~90 % Genauigkeit ⇒ ~10 % False-Positive-Rate einkalkulieren, kritische Aktionen nie auf einen einzelnen Score stützen.
+
+Quelle (Zugriff): [Wikipedia: Signs of AI writing — Your detection ability](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability); Details Deep-Dive `research/slop-ontology-gap-2026-08-24/deep/03` (I33).
+---
 ### Human detection (Empirie)
 
 Humans are notoriously bad at distinguishing LLM text from human text — the
@@ -280,6 +313,17 @@ geometric = Π(d_i ^ w_i) ^ (1 / Σ w_i)   with w_i = max weight in dim_i
 is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
 
+## Hard Gates (Binärsignale, #118)
+
+Einige Signale sind binäre Fakten, keine Score-Beiträge: Platzhalter-Credentials,
+Elision-Comments (`// ... rest of implementation`), Lorem Ipsum, tote Anker
+(`href="#"`), Placeholder-Bild-URLs, Launch-Blocker-TODOs. Diese laufen als
+**Gates statt Score** (Implementierung: `scripts/gates.py`, Ausgabe: `gates`-Key
+im Scorer-JSON): FAIL → harte Markierung mit Evidence, PASS → kein Beitrag —
+keine Kalibrierung, keine fp-guards, score-neutral by construction. Semantik
+„necessary, not sufficient" (nach piyushbhattadforapps/pseo-quality-gate):
+ein FAIL ist ein starker Prädiktor, alle PASS garantieren nichts.
+Auto-Run bei Code/Markup-Input; `--gates` erzwingt die Gates für Prosa.
 ## Domain Scoping (triggered_by: domain)
 
 Issue #35: Slop-Defaults sind domain-konditional (unslop, deep/04). Signale

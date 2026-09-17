@@ -9,7 +9,8 @@ override file (`slop.json`, the deslop.toml-equivalent) with three keys:
     {
       "disabled_signals": ["portability", "mirrored"],
       "term_allowlist": ["harness", "agents"],
-      "weight_overrides": {"buzzwords": 0.10}
+      "weight_overrides": {"buzzwords": 0.10},
+      "aggregation": "geomean"
     }
 
 Semantics:
@@ -24,6 +25,14 @@ Semantics:
   - weight_overrides: merged over DEFAULT_WEIGHTS (values are floats,
     no re-normalization — the scorer caps at 1.0 and documents that
     weights intentionally sum > 1).
+  - aggregation: "weighted" (default, additive weighted sum) or
+    "geomean" — weighted geometric mean over the dimension
+    contributions (docs/metric/AGGREGATION-GEOMEAN.md, upstream #117;
+    each contribution is floored at epsilon so one clean dimension
+    cannot zero the composite). Also accepts an object
+    {"mode": "geomean", "epsilon": 0.05} with epsilon in (0, 0.5].
+    Escalation floors (provenance, >=2 strong families, multilingual)
+    apply unchanged — they are floors, not aggregation.
 
 Public surface:
     load_config(path) -> dict (validated)
@@ -70,11 +79,12 @@ def load_config(path: str) -> dict:
         raise SystemExit(f"config error: {path} must be a JSON object")
 
     unknown_keys = set(raw) - {"disabled_signals", "term_allowlist",
-                               "weight_overrides"}
+                               "weight_overrides", "aggregation"}
     if unknown_keys:
         raise SystemExit(
             f"config error: {path} unknown keys: {sorted(unknown_keys)} "
-            "(supported: disabled_signals, term_allowlist, weight_overrides)")
+            "(supported: disabled_signals, term_allowlist, weight_overrides, "
+            "aggregation)")
 
     cfg = {"disabled_signals": [], "term_allowlist": [], "weight_overrides": {}}
 
@@ -108,6 +118,32 @@ def load_config(path: str) -> dict:
         if not isinstance(v, (int, float)) or isinstance(v, bool) or v < 0:
             raise SystemExit(f"config error: {path} weight_overrides.{k} must be a number >= 0")
     cfg["weight_overrides"] = dict(wo)
+
+    AGGREGATION_MODES = ("weighted", "geomean")
+    raw_agg = raw.get("aggregation", "weighted")
+    epsilon = 0.05
+    if isinstance(raw_agg, dict):
+        mode = raw_agg.get("mode", "weighted")
+        if "epsilon" in raw_agg:
+            e = raw_agg["epsilon"]
+            if not isinstance(e, (int, float)) or isinstance(e, bool) \
+                    or not (0 < e <= 0.5):
+                raise SystemExit(
+                    f"config error: {path} aggregation.epsilon must be a "
+                    "number in (0, 0.5]")
+            epsilon = float(e)
+        bad_keys = set(raw_agg) - {"mode", "epsilon"}
+        if bad_keys:
+            raise SystemExit(
+                f"config error: {path} aggregation unknown keys: "
+                f"{sorted(bad_keys)} (supported: mode, epsilon)")
+    else:
+        mode = raw_agg
+    if mode not in AGGREGATION_MODES:
+        raise SystemExit(
+            f"config error: {path} aggregation must be one of "
+            f"{AGGREGATION_MODES} (got: {mode!r})")
+    cfg["aggregation"] = {"mode": mode, "epsilon": epsilon}
     return cfg
 
 

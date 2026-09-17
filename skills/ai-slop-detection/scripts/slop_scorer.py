@@ -25,6 +25,7 @@ from typing import Optional
 
 import domain_bindings
 import fp_guards
+import gates
 import genre_profiles
 import input_norm
 import learning_store
@@ -1047,6 +1048,39 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         weights["portability"] * portability_slop
     )
 
+    # Issue #117 (spec docs/metric/AGGREGATION-GEOMEAN.md): optional
+    # weighted-geometric-mean aggregation over the 14 dimension
+    # contributions, selected via slop.json "aggregation": "geomean".
+    # Additive aggregation lets many small contributions hide empty
+    # dimensions and double-punishes repeated hits within one dimension;
+    # the geomean damps both ("one bad dimension can't be hidden behind
+    # good ones"). Each contribution is floored at epsilon (default
+    # 0.05) so a single clean dimension drags the composite down hard
+    # but cannot zero it. Escalation floors below (provenance, >=2
+    # strong families, multilingual) are floors, not aggregation — they
+    # apply unchanged in both modes.
+    agg_mode = "weighted"
+    agg_epsilon = 0.05
+    if project_config and project_config.get("aggregation"):
+        agg = project_config["aggregation"]
+        agg_mode = agg.get("mode", "weighted")
+        agg_epsilon = agg.get("epsilon", 0.05)
+    if agg_mode == "geomean":
+        contribs = {
+            "density": density_slop, "repetition": rep_slop,
+            "burstiness": burst_slop, "buzzwords": buzz_slop,
+            "phrases": phrase_slop, "punctuation": punct_slop,
+            "trailing_moral": moral_slop, "list_heavy": list_slop,
+            "fake_authority": auth_slop, "verbosity": verbose_slop,
+            "multilingual": multi_slop, "mirrored": mirrored_slop,
+            "structural": struct_slop, "portability": portability_slop,
+        }
+        total_w = sum(weights[k] for k in contribs) or 1.0
+        prod = 1.0
+        for k, v in contribs.items():
+            prod *= max(v, agg_epsilon) ** (weights[k] / total_w)
+        overall = prod
+
     # Non-English texts get diluted by the English-only dimensions (buzzwords,
     # phrases, authority claims are all English). If a text hits 3+ multilingual
     # AI markers, that is strong evidence on its own — floor at "Suspicious".
@@ -1138,6 +1172,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         "slop_score": score,
         "risk_level": risk,
         "action": action,
+        **({"aggregation": agg_mode} if agg_mode != "weighted" else {}),
         **({"genre": genre} if genre else {}),
         **({"domain": domain,
             "domain_gated_signals": domain_bindings.gated_signals(domain),
@@ -1360,6 +1395,15 @@ def format_report(result: dict) -> str:
     if signals["authority_phrases"]:
         lines.append(f"\n📢 Authority claims: {', '.join(signals['authority_phrases'])}")
 
+    # Issue #118: hard gates — binary signals, no score contribution.
+    gates_out = result.get("gates")
+    if gates_out and gates_out.get("gates"):
+        lines.append("\n🚧 Hard Gates (binär, kein Score-Anteil):")
+        for g in gates_out["gates"]:
+            mark = "❌ FAIL" if g["status"] == "fail" else "✅ pass"
+            lines.append(f"  {mark} {g['id']}" +
+                         (f" — {g['evidence']}" if g["status"] == "fail" else ""))
+
     # Issue #74: register context — detect-only style card, advisory.
     ctx = result.get("context") or {}
     card = ctx.get("register_profile")
@@ -1384,7 +1428,7 @@ if __name__ == "__main__":
 
     use_json = "--json" in sys.argv
     findings_only = "--findings" in sys.argv
-    args = [a for a in sys.argv[1:] if a not in ("--json", "--findings")]
+    args = [a for a in sys.argv[1:] if a not in ("--json", "--findings", "--gates")]
 
     # Issue #78: anchor-diff mode — protected anchors (numbers, quotes,
     # URLs, DOIs) must survive rewrites; drift is reported per changed
@@ -1639,6 +1683,9 @@ if __name__ == "__main__":
                         not_slop_store=not_slop_store,
                         project_config=project_cfg)
 
+    # Issue #118: hard gates for binary signals — never a score
+    # contribution; auto-run for code/markup input, --gates forces them.
+    result["gates"] = gates.run_gates(text, force="--gates" in sys.argv)
     # Echo the applied project config so runs are reproducible (issue #11).
     if project_cfg is not None:
         result["config"] = project_cfg
