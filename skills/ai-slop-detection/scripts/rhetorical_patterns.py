@@ -120,7 +120,7 @@ RHETORICAL_PATTERNS = {
         "description": "Stacked punchy fragments and repeated sentence shapes — three or "
                        "more very short sentences in a row. Vary shape only when it helps.",
         "example_slop": "It works. It scales. It ships. Every time.",
-        "example_fix": "It works, scales, and ships every time.",
+        "example_fix": "It ships every time.",
         "keep_when": "A short burst used once, deliberately, for genuine emphasis.",
     },
     # --- Wikipedia "Signs of AI writing" additions (issue #7) ---
@@ -180,6 +180,17 @@ RHETORICAL_PATTERNS = {
         "example_slop": "The dashboard is fast, reliable, and scalable.",
         "example_fix": "The dashboard answers the 95th-percentile query in 80 ms.",
         "keep_when": "Three genuinely distinct, individually meaningful items — not one claim stretched to three.",
+    },
+    "DecorativeSeparatorTriad": {
+        "label": "Decorative separator triad",
+        "confidence": 0.5,
+        "description": 'Slogan-shaped "X | Y | Z" (pipes, bullets) or "#X #Y #Z" '
+                       "runs of three short items used as a headline or kicker. Guarded "
+                       "against markdown tables and genuine multi-item lists.",
+        "example_slop": "Strategie | Umsetzung | Wirkung",
+        "example_fix": "Strategie und Umsetzung - und welche Wirkung daraus tatsaechlich entsteht.",
+        "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - "
+                     "not a decorative headline triple.",
     },
     "RepeatedOpenings": {
         "label": "Repeated sentence openings",
@@ -265,6 +276,9 @@ _MID_SENTENCE_BOLD = re.compile(r"[a-z0-9,;]\s+\*\*[^*\n]{1,40}\*\*\s+[a-z]")
 # Forced-triad suffix classes: two or more of the three items must share one.
 _TRIAD_SUFFIXES = (
     "able", "ible", "ful", "less", "ous", "ive", "ing", "ed", "al", "ic", "ly", "y",
+    # German noun/verb classes (Arjan, 15.09.2026): triads of German verbs
+    # ("verstehen, gestalten, transformieren") or nouns share inflection suffixes.
+    "en", "ung", "keit", "ion", "ern",
 )
 
 _CHATBOT_PHRASES = None  # filled from RHETORICAL_PATTERNS["ChatbotLeftover"]["phrases"]
@@ -457,22 +471,71 @@ def find_rhetorical_patterns(text: str):
             add("ImportancePuffery", _snippet(lowered, idx, idx + 80))
             break
 
-    # 13. Forced triad — "X, Y, and Z" of one-word adjectives where at
-    #     least two items share a suffix class; digits or colons before the
-    #     list mark concrete content, not a slogan.
-    for m in re.finditer(r"\b([a-z]+),\s+([a-z]+),\s+and\s+([a-z]+)\b", lowered):
-        items = (m.group(1), m.group(2), m.group(3))
+    # 13. Forced triad — "X, Y, and Z" / "X, Y, und Z" of one-word items where
+    #     at least two share a suffix class; digits before the list mark concrete
+    #     content, not a slogan. Since 15.09.2026 (Arjan): also bare comma triads
+    #     after a colon or at line start (German enumerations often drop the
+    #     conjunction), and staccato single-word triads ("Menschen. Prozesse.
+    #     Technologie.") are reported as ForcedTriad evidence alongside
+    #     RoboticRhythm.
+    for m in re.finditer(r"\b([a-z\u00e0-\u00ff]+),\s+([a-z\u00e0-\u00ff]+)(,?)\s+(?:and|und)\s+([a-z\u00e0-\u00ff]+)\b", lowered):
+        items = (m.group(1), m.group(2), m.group(4))
         if len(set(items)) < 3:
             continue
         prefix = lowered[max(0, m.start() - 30):m.start()]
-        if ":" in prefix or re.search(r"\d", prefix):
+        if re.search(r"\d", prefix):
             continue
         suffix_hits = [
             sum(1 for it in items if it.endswith(sfx)) for sfx in _TRIAD_SUFFIXES
         ]
-        if max(suffix_hits, default=0) >= 2:
+        # Oxford-comma form ("X, Y, and Z"): two shared suffixes suffice.
+        # Comma-less German form ("X, Y und Z") is ordinary prose, so it
+        # needs ALL THREE items in one inflection class before it counts
+        # as a slogan triad (guards "Beratung, Umsetzung und Betrieb").
+        needed = 2 if m.group(3) == "," else 3
+        if max(suffix_hits, default=0) >= needed:
             add("ForcedTriad", "" + ", ".join(items))
             break
+    for m in re.finditer(r"(?:^|:\s+|\n)([a-z\u00e0-\u00ff]+),\s+([a-z\u00e0-\u00ff]+),\s+([a-z\u00e0-\u00ff]+)[.\n]", lowered):
+        items = (m.group(1), m.group(2), m.group(3))
+        if len(set(items)) < 3:
+            continue
+        suffix_hits = [
+            sum(1 for it in items if it.endswith(sfx)) for sfx in _TRIAD_SUFFIXES
+        ]
+        if max(suffix_hits, default=0) >= 3 and not any(re.search(r"\d", it) for it in items):
+            add("ForcedTriad", "" + ", ".join(items))
+            break
+    staccato = re.findall(r"(?<![\w.])([A-Za-z\u00c0-\u00ff]{3,})\.\s+([A-Za-z\u00c0-\u00ff]{3,})\.\s+([A-Za-z\u00c0-\u00ff]{3,})\.", text)
+    for items in staccato:
+        low = tuple(i.lower() for i in items)
+        if len(set(low)) < 3:
+            continue
+        # Three consecutive single-word sentences are distinctive enough that
+        # no shared inflection class is required (Arjan 15.09.2026).
+        if all(2 <= len(i) <= 16 for i in low):
+            add("ForcedTriad", " ".join(i + "." for i in items))
+            break
+
+    # 13b. Decorative separator triad — slogan-shaped "X | Y | Z" or
+    #      "#X #Y #Z" of short items (pipes, bullets, hashtags). Guarded against
+    #      markdown table rows (leading pipe, dashes) and genuine lists that
+    #      carry more than three items or longer phrases.
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("|") or "---" in stripped or stripped.startswith("-"):
+            continue  # table row / separator line / list syntax
+        for m in re.finditer(r"\b([\w\u00c0-\u00ff]{2,18})\s*[|\u2022]\s*([\w\u00c0-\u00ff]{2,18})\s*[|\u2022]\s*([\w\u00c0-\u00ff]{2,18})\b", line):
+            items = (m.group(1), m.group(2), m.group(3))
+            if len(set(i.lower() for i in items)) < 3:
+                continue
+            add("DecorativeSeparatorTriad", "" + " | ".join(items))
+            break
+        m_hash = re.search(r"#(\w+)\s+#(\w+)\s+#(\w+)", line)
+        if m_hash:
+            items = (m_hash.group(1), m_hash.group(2), m_hash.group(3))
+            if len(set(i.lower() for i in items)) == 3:
+                add("DecorativeSeparatorTriad", "" + " ".join("#" + i for i in items))
 
     # 14. Repeated sentence openings — 3+ sentences starting with the same word.
     opener_counts = {}
