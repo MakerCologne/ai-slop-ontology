@@ -63,3 +63,150 @@ def effective_phrase_count(phrase_matches: dict, category_min_hits: dict = None)
         if len(hits) >= minimum:
             total += len(hits)
     return total
+
+
+# --- #115: keep_when-Guards fuer performative_voice + manufactured_stakes
+# Die beiden ZeroSlop-Muster sind in konkreten menschlichen Kontexten
+# legitim: gelebte statt performte Stimme ("nobody tells you this — when
+# I started out I lost $3k") und echte statt dramatisierter Dringlichkeit
+# ("time is running out: the deadline is 15 October"). Guards maskieren
+# die Phrase VOR dem Signal-Matching (gleiche Mechanik wie #110:
+# Maskierung statt Post-Filter auf Counts).
+
+_PV_PHRASES = (
+    "here's the thing nobody tells you",
+    "nobody tells you",
+    "i'm going to be honest with you",
+    "let me be brutally honest",
+    "i don't say this lightly",
+    "unpopular opinion, but",
+    "call me old-fashioned, but",
+)
+
+# First-Person-Erfahrungs-Anker: gelebte Erfahrung im Umkreis der Phrase
+# => kein performtes, sondern echtes Voice-Signal. Der Anker selbst bleibt
+# sichtbar (nur der Phrase-Kopf wird maskiert).
+_PV_EXPERIENCE_ANCHOR_RE = re.compile(
+    r'\bwhen\s+i\b|\bin\s+my\s+(?:own\s+)?(?:experience|case)\b|'
+    r'\bi\s+(?:lost|spent|learned|tried|failed|was|found)\b|'
+    r'\bi(?:\u2019ve|\u2019m| have)\s+(?:seen|learned|made|been)\b',
+    re.I,
+)
+_PV_WINDOW = 120
+
+_MS_PHRASES = (
+    "in today's fast-paced",
+    "the stakes have never been higher",
+    "now more than ever",
+    "at a critical juncture",
+    "time is running out",
+    "don't get left behind",
+    "before it's too late",
+)
+
+# Konkreter Termin/Fakt im Folgefenster => echte Dringlichkeit.
+# Woche-/Monatsnamen mit Datum, "deadline"/"by/until <Zeit>", Ziffern mit
+# Einheit (%, EUR, USD, days, weeks, hours) — Deterministischer Proxy
+# fuer "hinter der Dringlichkeit steht eine Sache".
+_MS_CONCRETE_RE = re.compile(
+    r'\b(?:deadline|due)\b[^\n]{0,40}\b\d|'
+    r'\b(?:by|until|before)\s+(?:\d{1,2}\s+)?'
+    r'(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|'
+    r'january|february|march|april|may|june|july|august|september|'
+    r'october|november|december)\b|'
+    r'\b\d{1,2}[./-]\d{1,2}(?:[./-]\d{2,4})?\b|'
+    r'\b\d+(?:[.,]\d+)?\s?(?:%|eur|usd|euros?|dollars?|days?|weeks?|hours?|minutes?)(?!\w)',
+    re.I,
+)
+_MS_WINDOW = 120
+
+
+def mask_performative_stakes(text_lower: str) -> str:
+    """Mask #115 keep_when occurrences in (already lowercased) signal text.
+
+    performative_voice: phrase masked when a first-person experience
+    anchor sits within +-120 chars (lived voice, not performed voice).
+    manufactured_stakes: phrase masked when a concrete date/deadline/
+    quantity follows within 120 chars (real urgency, not manufactured).
+    Masking keeps positions and overlap logic intact for all other
+    categories.
+    """
+    result = text_lower
+    spans = []
+    for phrase in _PV_PHRASES:
+        for m in re.finditer(re.escape(phrase), result):
+            window = result[max(0, m.start() - _PV_WINDOW):
+                            m.end() + _PV_WINDOW]
+            if _PV_EXPERIENCE_ANCHOR_RE.search(window):
+                spans.append((m.start(), m.end()))
+    for phrase in _MS_PHRASES:
+        for m in re.finditer(re.escape(phrase), result):
+            window = result[m.end():m.end() + _MS_WINDOW]
+            if _MS_CONCRETE_RE.search(window):
+                spans.append((m.start(), m.end()))
+    chars = list(result)
+    for start, end in spans:
+        for i in range(start, end):
+            chars[i] = " "
+    return "".join(chars)
+
+
+# --- #110: Hard-Negative-Guards fuer conversational_fillers -------------
+# Zwei Phrasen der Hassid-Liste sind in konkreten menschlichen Kontexten
+# legitim und duerfen einzeln nicht feuern ("Hope this helps" in echten
+# Support-Mails, "Most people I interviewed ..." mit echter Quelle).
+# Guards maskieren die Phrasen VOR dem Signal-Matching (kein Post-Filter
+# auf Counts — Maskierung haelt Positionen und Ueberlappungs-Logik intakt).
+
+# Grussformeln (EN + DE), die einen Support-/Mail-Kontext anzeigen.
+_SIGNOFF_RE = re.compile(
+    r'\b(?:best regards|kind regards|warm regards|regards|cheers|sincerely|'
+    r'best wishes|many thanks|thanks(?: in advance)?|thank you|'
+    r'mit freundlichen gr(?:u|\u00fc)\u00df(?:en|\b)|viele gr(?:u|\u00fc)\u00dfe|'
+    r'beste gr(?:u|\u00fc)\u00dfe)\b[,.!]?'
+)
+
+# DoD #110: Phrase zaehlt nur, wenn sie NICHT in den letzten 100 Zeichen
+# vor einer Grussformel steht (positionsbasiert, Empfehlung des Issues).
+_SIGNOFF_WINDOW = 100
+
+_HOPE_THIS_HELPS = "hope this helps"
+
+# Direkte Quellenangaben nach "most people" => echte Empirie, kein
+# Pseudo-Quantifikator-Mehrheitsclaim.
+_MOST_PEOPLE_ATTRIBUTION_RE = re.compile(
+    r'\bmost people\b[,.]?\s+(?:i|we)\s+'
+    r'(?:interviewed|surveyed|asked|polled|spoke\s+(?:with|to)|heard\s+from)|'
+    r'\bmost people\s+(?:i|we)\s+know\b|'
+    r'\bmost people\s+(?:in|on)\s+(?:my|our)\s+'
+    r'(?:survey|team|company|street|feed|timeline)\b'
+)
+
+
+def mask_conversation_fillers(text_lower: str) -> str:
+    """Mask #110 hard negatives in (already lowercased) signal text.
+
+    Returns text with guarded occurrences replaced by spaces so that
+    phrase matching (longest-match / overlap suppression in
+    slop_scorer.find_term_matches) never sees them. All other categories
+    and structural metrics are unaffected.
+    """
+    result = text_lower
+    # Collect first, then replace from the end (offsets stay valid).
+    spans = []
+    for m in re.finditer(re.escape(_HOPE_THIS_HELPS), result):
+        # Suppress only when a sign-off starts within the following
+        # _SIGNOFF_WINDOW chars (i.e. the phrase sits in the last 100
+        # chars before the sign-off).
+        window = result[m.end():m.end() + _SIGNOFF_WINDOW]
+        if _SIGNOFF_RE.search(window):
+            spans.append((m.start(), m.end()))
+    for m in _MOST_PEOPLE_ATTRIBUTION_RE.finditer(result):
+        # Mask only the "most people" head, not the attribution itself:
+        # the attribution is the human evidence, the claim head is the
+        # pattern. (Masking the full span would also be correct; keeping
+        # the attribution visible preserves context for other signals.)
+        spans.append((m.start(), m.start() + len("most people")))
+    for start, end in sorted(spans, reverse=True):
+        result = result[:start] + " " * (end - start) + result[end:]
+    return result
