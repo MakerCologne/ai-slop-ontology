@@ -16,13 +16,17 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPTS = os.path.join(ROOT, "skills", "ai-slop-detection", "scripts")
 sys.path.insert(0, SCRIPTS)
+sys.path.insert(0, os.path.join(ROOT, "src"))
 
 import slop_scorer  # noqa: E402
+from threshold_config import load_threshold  # noqa: E402
 
 CONTROL_SET = os.path.join(ROOT, "eval", "control_set.jsonl")
 GATE_SCRIPT = os.path.join(ROOT, "eval", "run_control_set.py")
 SCORER_CLI = os.path.join(SCRIPTS, "slop_scorer.py")
-THRESHOLD = 0.40
+# Single source: config/threshold.json (#157) — tests follow the config so a
+# sweep change moves the gate with it instead of diverging silently.
+THRESHOLD = load_threshold()
 
 
 def load_control_set():

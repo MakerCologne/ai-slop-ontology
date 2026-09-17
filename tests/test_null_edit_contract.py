@@ -22,12 +22,17 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "skills", "ai-slop-detection", "scripts"))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 
+from threshold_config import load_threshold  # noqa: E402
+sys.path.insert(0, os.path.join(ROOT, "src"))
+
 import slop_scorer  # noqa: E402
 from classifier import SlopClassifier  # noqa: E402
 
 CORPUS = os.path.join(ROOT, "eval", "corpus.jsonl")
 BORDERLINE_REGISTER = os.path.join(ROOT, "eval", "hardneg_borderline.json")
-THRESHOLD = 0.40
+# Single source: config/threshold.json (#157) — tests follow the config so a
+# sweep change moves the gate with it instead of diverging silently.
+THRESHOLD = load_threshold()
 
 # Handcrafted fast-clean borderline fixtures (dense human prose, one or two
 # surface slop markers each — human writing, must stay below threshold).

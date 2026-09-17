@@ -56,10 +56,19 @@
 37. **ANU/PNAS (2026), Human detection of AI faces via hyper-typicality** — Menschen auf near-perfect Accuracy trainierbar; Basis für Image-Signal `HyperTypicality`. (Bericht: Gizmodo)
 38. **Deezer Newsroom (20.04.2026 / 11.06.2026)** — 44 % AI-Anteil an Neu-Uploads (~75.000/Tag; 1–3 % der Streams, ~85 % Fraud); öffentlicher AI-Musik-Detektor für Fremdkataloge. https://newsroom-deezer.com/2026/04/ai-generated-tracks-represent-44-of-new-uploaded-music/
 
+## Human Detection Empirics (2026-09-03)
+
+40. **Cheng et al. (2025), Ability of AI detection tools and humans to accurately identify different forms of AI-generated written content** — Advances in Simulation 10(1):66. Menschen ≈ Chance-Level. DOI 10.1186/s41077-025-00396-6
+41. **Fiedler & Döpke (2025), Do humans identify AI-generated text better than machines?** — Int. Review of Economics Education 49:100321. 57 % (AI) / 64 % (Mensch) bei deutschen Abschlussarbeiten. DOI 10.1016/j.iree.2025.100321
+42. **Russell, Karpinska & Iyyer (2025), People who frequently use ChatGPT for writing tasks are accurate and robust detectors of AI-generated text** — ACL 2025, S. 5342–5373. ~90 % Accuracy bei Heavy-Usern ⇒ ~10 % FP; Light-User knapp über Chance. DOI 10.18653/v1/2025.acl-long.267 (arXiv:2501.15654)
+43. **Sprach-Konvergenz (LLM-Einfluss auf menschliche Sprache)** — Yakura et al. 2024 (arXiv:2409.01754, gesprochene Sprache), Geng et al. 2025 (Findings of ACL 2025, DOI 10.18653/v1/2025.findings-acl.987), Galpin et al. 2025 (arXiv:2506.21817, semantisch-lexikalischer Wandel). Basis für „Human detection"-Abschnitt in detection-signals.md.
+
+## v1.2.0 Ergänzungen — Tool-Eval (#71)
+
 ## v1.2.0 (September 2026)
 
-40. **Weber-Wulff et al. (2023), Testing of detection tools for AI-generated text** (International Journal for Educational Integrity 19:26) — 14 kommerzielle Detektoren, alle <80 % Akkuratesse, laufinstabil. Basis für docs/TOOL-EVAL-CHECKLIST.md (#71).
-41. **Liang et al. (2023), GPT detectors are biased against non-native English writers** (Patterns 4(7)) — FP-Bias gegen nicht-muttersprachliche Autoren; Begründung für diverse Hard Negatives.
+44. **Weber-Wulff et al. (2023), Testing of detection tools for AI-generated text** (International Journal for Educational Integrity 19:26) — 14 kommerzielle Detektoren, alle <80 % Akkuratesse, laufinstabil. Basis für docs/TOOL-EVAL-CHECKLIST.md (#71).
+45. **Liang et al. (2023), GPT detectors are biased against non-native English writers** (Patterns 4(7)) — FP-Bias gegen nicht-muttersprachliche Autoren; Begründung für diverse Hard Negatives.
 
 ## Adaptierte Fremdprojekte
 

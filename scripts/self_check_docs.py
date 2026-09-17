@@ -38,9 +38,12 @@ sys.path.insert(0, os.path.join(ROOT, "skills", "ai-slop-detection", "scripts"))
 
 import markup_prepass  # noqa: E402
 from classifier import SlopClassifier  # noqa: E402
+from threshold_config import load_threshold  # noqa: E402  single source (#157)
 
 REGISTER_PATH = os.path.join(ROOT, "eval", "self_check_docs.json")
-THRESHOLD = 0.40
+# Single source: config/threshold.json (#157) — the sweep (GL #6.3) updates
+# that file, never this constant.
+THRESHOLD = load_threshold()
 
 # Where the repository keeps prose. Research dumps and vendored material are
 # not ours to style.
