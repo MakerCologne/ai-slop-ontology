@@ -77,3 +77,59 @@ Die behauptete Wirkung der Gewichts-Kalibrierung („F1 0.47 → 0.89“) misst 
 | `DEFAULT_WEIGHTS` | 1.000 | 0.982 | 0.991 | TP 217 / FP 0 / TN 110 / FN 4 |
 
 Vom neutralen Startpunkt aus findet Coordinate Ascent in keinem der fünf CV-Folds (`--cross-validate 5 --cv-rounds 3`, seed 17) einen verbessernden Zug. **Der gesamte Beitrag der 14-dimensionale Kalibrierung ist auf dem heutigen Korpus genau einen Text.** Der historische F1-Sprung stammte überwiegend aus Threshold/Aggregation (noisy-OR, adr/0002-Regime), nicht aus den Gewichten. Docstring in `slop_scorer.py` und README-Claim wurden entsprechend eingordnet. Regel: bevor Gewichte erneut als Herkunft einer Zahl genannt werden, muss der uniform-Vergleich mitgeliefert werden (Ablations-Pflicht).
+
+### #106 DoD-Nachtrag (2026-09-09): Control Set, Hard Negatives, Mechanismus, Sättigung
+
+**Ablation auch dort, wo der Hauptkorpus gesättigt ist (DoD 1).** Control Set
+(`eval/control_set.jsonl`, 10 Texte inkl. Hard Negatives): **0 Klassifikations-
+Wechsel** zwischen uniform und `DEFAULT_WEIGHTS` — kein versteckter
+Kalibrierungsgewinn. Hard Negatives (93 clean-Korpus-Texte): uniform-Maximum
+0.218, kalibriertes Maximum 0.342 — beide unter Threshold 0.40, aber die
+kalibrierten Gewichte **verbrauchen Headroom** (0.342 liegt 0.058 unter dem
+Gate; uniform 0.182). Die Kalibrierung kauft ihren einen TP mit FP-Näherung.
+
+**Mechanismus statt Rätselraten (DoD 2): beide Erklärungen sind wahr und
+verschränkt.** Unter uniformen Gewichten liegen 216 von 221 Slop-Texten
+**exakt** auf 0.400: die `strong_families >= 2`-Eskalation floort den Score
+auf den Decision-Threshold. Die Binärentscheidung wird für diese Texte von
+der **Gate-Logik, nicht von den Gewichten** getroffen — ein beliebiger
+Gewichtsvektor, der die Precision nicht bricht, klassifiziert identisch.
+Damit ist Erklärung (1) mechanisch belegt. Erklärung (2) steht daneben: der
+Korpus trennt sauber (clean-max 0.342 vs. Gate 0.40), also kann F1 Gewichts-
+unterschiede gar nicht mehr zeigen — Sättigung. Korpuszuwachs, der die
+Unterscheidung wieder möglich macht: Texte mit **genau einer** starken
+Signalfamilie (kein Gate-Floor, Score kommt aus der gewichteten Summe) und
+weitere Grenz-Hard-Negatives nahe 0.40 → Anschluss #47 (Drift-Messung) und
+Hard-Negative-Programm.
+
+**Wo die Kalibrierung wirklich zahlt: Risk-Tiers.** uniform: 0 Korpus-Slop-
+Texte erreichen Tier „Slop“ (>= 0.70); kalibriert: **24**. Der messbare
+Kalibrierungsbeitrag ist die Schwere-Graduierung (Suspicious vs. Slop), nicht
+die Detektion. Der Herkunfts-Kommentar und dieser Abschnitt sagen das jetzt
+explizit; `tests/test_weight_gain_pin.py` pinnt alle Zahlen dieser Sektion an
+ihre Messvorschrift (Muster #80/#85) und schlägt bei Drift an.
+
+**Ablations-Ausgabe in `eval/calibrate.py` (DoD 5):** jeder Lauf druckt
+(ab sofort auch im `--json`-Ergebnis als `gain_vs_uniform`) den gemessenen
+Gewinn gegenüber uniform 1/N: TP/FP/F1-Delta **und** Tier->=0.70-Delta. Ein
+Lauf, der uniform um nichts schlägt, sagt das selber — der Fall „historischer
+Claim, aktuelle Messung trägt ihn nicht“ kann sich nicht wiederholen.
+
+**Was ein Re-Baseline-Zyklus noch leisten kann, wenn die Zielgröße gesättigt
+ist (DoD 4):** Wenn P/R/F1 auf dem Korpus keine Unterschiede mehr zeigen
+(Sättigungs-Indikatoren: 0 Klassifikations-Wechsel uniform-vs-kalibriert,
+F1-Delta < 0.005), verlagert der Zyklus seinen Wert auf die Größen, die
+noch nicht gesättigt sind:
+
+1. **FP-Headroom:** Maximum der Hard-Negative-Scores und Abstand zum Gate —
+   Sättigung hier heißt „0.342 → 0.39“, nicht „F1 1.0“.
+2. **Tier-Verteilung:** Anteil erkannter Slop-Texte >= 0.70 (heute 24/221);
+   Ziel ist Recall *und* Graduierung, nicht nur Binärentscheid.
+3. **Margin-Verteilung:** Median-Score-Abstand der Slop-Texte vom Gate
+   (aktuell flooren 19/221 exakt — jeder Punkt weniger ist echter Fortschritt).
+4. **Grenzfall-Korpuszuwachs:** Texte mit einer einzigen Signalfamilie und
+   neue Hard Negatives — nur sie machen Gewichtsvektoren wieder unterscheid-
+   bar und heben die Sättigung auf.
+
+Regel: Ein Re-Baseline auf gesättigtem Korpus, der nur F1 meldet, gilt als
+nicht durchgeführt.
