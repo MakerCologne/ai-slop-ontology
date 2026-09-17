@@ -446,6 +446,38 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
 - **UI slop signals (visual, detect-only):** `references/ui-slop-signals.md` (#15)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
+- **Praeventive Schreibregeln:** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
+- **Writing Rules (Einstiege, Ich-Bezug, Konnektoren):** `references/writing-rules.md` (#228)
+
+## Prevention (write-side)
+
+Neben der Detektion gibt es ein praeventives Regelwerk, damit typische Muster gar
+nicht erst entstehen. Detection- und Prevention-Seite sind getrennt: Praevention
+ist reine Schreib-/Prompt-Referenz und hat **keinen Score-Einfluss** (ADR-0006,
+detect-only-Disziplin).
+
+- `references/authoring-rules.md` — Dreierstrukturen, kuenstliche Rhythmik,
+  Trenner, Asymmetrie, keine Varianz-Quoten (#225)
+- `references/writing-rules.md` — Einstiegstypen-Katalog (Sachverhalt bis Frage,
+  Auswahl aus Kontext statt Ersetzungstabelle), "Ich" differenziert (keine
+  mechanische Ich->Passiv-Transformation), LinkedIn-Kommentar-Sequenz nicht als
+  Default, Konnektor-Absaetze, Hard Negatives (legitimes "Ich denke, dass X",
+  "Darueber hinaus" im juristischen Genre-Profil) (#228)
+
+**Kondensierter Style-Prompt fuer Erstgenerierung** (aus `writing-rules.md`,
+dort mit Wann-nicht-Gegenprofilen):
+
+```
+Beginne Saetze mit Inhalt, nicht mit der Ankuedigung des Inhalts ("Ich denke,
+dass ..." -> Aussage direkt). Waehle Einstiege aus dem Kontext: Sachverhalt,
+Beobachtung, Konsequenz, konkreter Bezug, Anlass, Empfaengerbezug, Handlung,
+Kontrast, Frage — keine Standardformeln, keine Ersetzungstabelle. "Ich" nur,
+wenn Person oder Haltung relevant sind; nie mechanisch ins Passiv. Kein
+Dreier-Default: Anzahl folgt dem Inhalt. Varianz ja, aber keine Quoten.
+Konnektor-Absaetze nur bei echter Gliederung. Kein Lob-Auftakt ohne
+inhaltlichen Bezug; Lob->Paraphrase->Ergaenzung->Frage nie als Default-Sequenz.
+```
+
 
 - **Editing doctrine (Minimum-Effective-Edit):** `references/editing-doctrine.md` (#30, Teil 1)
 - **Edit self-check (Re-Check-Loop):** `references/edit-self-check.md` (#30, Teil 2)

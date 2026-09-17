@@ -139,6 +139,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
 - `tests/test_review_counterfactual.py` — #122-Rest detect-only Review/Approval-Slop: Counterfactual Test (ankerlose generische Approvals passen auf jeden PR; Anker unterdrücken)
 - `tests/test_metadata_slop_111.py` — #111 Metadata-Slop-Erweiterung: CommitVelocitySlop (Cadence-Verhalten), PRStructureSlop (anti-slop-Regeln), CommitKeywordSlop (gitorit-Vokabular); FP-Guards per Einzel-Regel-Negativ-Fixtures
+- `tests/test_writing_rules_docs.py` — #228 Writing Rules (Einstiege, Ich-Bezug, Konnektoren): Doku-Pin der praeventiven Schreibregeln references/writing-rules.md (L1)
 - `tests/test_sample_mine.py` — #12 Sampling-Harness: Mine schlägt nur unbedeckte n-Gramme vor (SSOT-Filter gegen Scorer-Vokabular), Doc-Frequency-Ranking, Kandidaten-Cap, Einmal-Vorkommen wird ignoriert, `generate` ohne Endpoint verweigert sauber; `calibrate.py --sample-mine` druckt Tier-Vorschläge
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_human_ideological_runner.py` — #98-Zielstand: Runner-Exit-Code, 40/40 + Segment-Pins, Quellendisziplin, Leak-Check je Positivem
