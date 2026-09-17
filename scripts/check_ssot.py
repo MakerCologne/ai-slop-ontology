@@ -79,6 +79,10 @@ SSOT_REGISTER = {
         "ADVERB_MIN_WORDS": ("engine-config", "deviation"),
         "INTENSIFIERS": ("corpus-calibrated", "deviation"),
         "DECISION_THRESHOLD": ("engine-config", "synced"),
+        # #119 findings receipts: UI/output layer, not signal data —
+        # actions & reliability defaults are presentation constants.
+        "FINDING_ACTIONS": ("engine-config", "deviation"),
+        "FAMILY_RELIABILITY": ("engine-config", "deviation"),
         "DEFAULT_WEIGHTS": ("engine-config", "calibration-output"),
     },
     "quantifiers.py": {
@@ -134,6 +138,9 @@ SSOT_REGISTER = {
         "MIN_NUANCE_MARKERS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_FAKE_ANALYSIS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_NUANCE": ("engine-config", "fixture-calibrated"),
+        "COMPARATIVE_FRAMING_PATTERNS": ("closed-list", "deviation"),
+        "MIN_FRAMING_HITS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_FRAMING": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
@@ -153,6 +160,9 @@ SSOT_REGISTER = {
         "MIN_WORDS_DRIFT": ("engine-config", "fixture-calibrated"),
         "MIN_MARKERS_PER_HALF": ("engine-config", "fixture-calibrated"),
         "PUNCT_PER_CHARS": ("engine-config", "deviation"),
+    },
+    "domain_bindings.py": {
+        "SIGNAL_WEIGHT_MAP": ("engine-config", "synced-via-ontology_domainBindings"),
     },
     "discourse_metrics.py": {
         "RANKED_LINE_RE": ("compiled-regex-matcher", "deviation"),
@@ -212,6 +222,13 @@ ALLOWLIST_NOTES = [
     "project page 'Anzeichen fuer KI-generierte Inhalte' + own examples; "
     "no third-party pattern material copied). MIN_* thresholds are "
     "fixture-pinned (tests/test_structure_metrics.py).",
+    "structure_metrics (#75, Signal 6) COMPARATIVE_FRAMING_PATTERNS is a "
+    "self-derived EN/DE contrast-frame inventory (weniger X als vielmehr Y / "
+    "eher X als Y / nicht X, sondern Y / not X but rather Y / less about X, "
+    "more about Y) for the detect-only ComparativeFraming signal (concept "
+    "from issue #75 Signal 6, Komparativ-Rahmung; own regexes and own "
+    "examples; no third-party pattern material copied). MIN_* thresholds "
+    "are fixture-pinned (tests/test_structure_comparative.py).",
     "de_typography (#76) closed lists (DE function words, capitalized "
     "function words, EN month names, brand allowlist) are self-derived "
     "DE gate/matcher inventories after de.wikipedia Anzeichen-fuer-KI-"
