@@ -19,6 +19,7 @@ import os
 import re
 import subprocess
 import sys
+from bisect import bisect_right
 from collections import Counter
 from typing import Optional
 
@@ -326,6 +327,32 @@ PHRASE_CATEGORIES = {
     # den einzigen Beleg von slop-0303-021 traegt (Benchmark-Regression
     # R 0.982 -> 0.977). Nachziehen erst mit Clean-Genre 'menschliche
     # Arbeitsprosa' (FU-13). Beleg-Disziplin wie Batch F.
+    # --- #110 (Hassid-Liste Punkte 4-8): konversationelle Fuell-
+    # Floskeln, die LLMs aus gesprochenen Gespraechsmustern in Schrift-
+    # texte importieren. Detect-only per Default-Kumulativregel (>= 2
+    # Treffer). confidence bewusst unter der 0.75-Single-Hit-Eskalations-
+    # schwelle: zwei der vier Phrasen sind in Support-/Erfahrungsprosa
+    # legitime Formulierungen, die Hard-Negative-Guards (fp_guards,
+    # mask_conversation_fillers) vor dem Matching maskieren:
+    #   - "hope this helps" nicht zaehlen, wenn innerhalb der letzten
+    #     100 Zeichen vor einer Grussformel (Support-Mail-Kontext)
+    #   - "most people" nicht zaehlen bei direkter Quellenangabe
+    #     ("most people I interviewed ...") — Pseudo-Empirie vs. echte
+    #   - "^most people" nur claus-initial (#88-Positionssemantik):
+    #     "Most people ..." als Absatzopener, nicht mid-sentence
+    # Nicht uebernommen aus der Quelle: delve/crucial/robust (Buzzword-
+    # Tiers), "It's not X, it's Y" (Binary-Contrast), Adverb-Abuse.
+    # Pre-2022-Cap prueft nicht: Floskeln sind vor-menschlich alt
+    # (Begruendung im Issue/CHANGELOG), daher bewusst kein Cap.
+    "conversational_fillers": {
+        "confidence": 0.55,
+        "phrases": [
+            "here's the thing",
+            "hope this helps",
+            "to provide a quick update",
+            "^most people"
+        ]
+    },
     "generic_phrases": {
         "confidence": 0.65,
         "min_hits": 3,
@@ -637,6 +664,13 @@ def adverb_stats(text: str) -> dict:
 
 def phrase_category_score(text: str) -> dict:
     text_lower = text.lower()
+    # #110: Hard-Negative-Guards fuer conversational_fillers muessen
+    # VOR dem Matching greifen — unterstuetzungs-/erfahrungsprosa-
+    # Kontexte (Grussformel-Naehe, direkte Quellenangabe) maskieren die
+    # betroffenen Phrasen, statt sie nachtraeglich aus den Counts zu
+    # entfernen (Maskierung = Positions- und Ueberlappungslogik bleibt
+    # fuer alle anderen Kategorien unveraendert).
+    text_lower = fp_guards.mask_conversation_fillers(text_lower)
     term_to_cat = {}
     all_terms = []
     for cat_name, cat_def in PHRASE_CATEGORIES.items():
@@ -736,7 +770,8 @@ DEFAULT_WEIGHTS = {
 
 
 def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] = None,
-              domain: Optional[str] = None, not_slop_store=None) -> dict:
+              domain: Optional[str] = None, not_slop_store=None,
+              project_config: Optional[dict] = None) -> dict:
     # Issue #40: anti-evasion normalization BEFORE all metrics — homoglyph
     # and zero-width obfuscation of telltale words must not bypass signals.
     text = input_norm.normalize(text)
@@ -756,6 +791,20 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     gated_dims = domain_bindings.weight_dims_gated(domain)
     if weights is None:
         weights = dict(DEFAULT_WEIGHTS)
+    # Issue #11: project-local config (slop.json). disabled_signals zeroes
+    # the family weight (exemptable families are additionally excluded via
+    # the exemption mechanic below, killing escalation/floor contributions);
+    # weight_overrides merge over the defaults.
+    allowlist_terms = []
+    if project_config:
+        weights = dict(weights)
+        for fam in project_config.get("disabled_signals", []):
+            weights[fam] = 0.0
+            if fam in ("adverb", "copula", "provenance"):
+                weights[fam] = 0.0  # conditional contributions: weights.get()
+        for k, v in project_config.get("weight_overrides", {}).items():
+            weights[k] = v
+        allowlist_terms = project_config.get("term_allowlist", [])
 
     density = information_density(text)
     rep = repetition_ratio(text)
@@ -774,8 +823,20 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
                    if isinstance(not_slop_store, str) else list(not_slop_store))
         exempted_families = learning_store.exemptions_for(
             entries, learning_store.sample_hash(text))
+    if project_config:
+        # Issue #11: disabled exemptable families behave like reviewed
+        # false positives — no matches, no escalation, no floor.
+        from project_config import _EXEMPTABLE_FAMILIES
+        for fam in project_config.get("disabled_signals", []):
+            if fam in _EXEMPTABLE_FAMILIES:
+                exempted_families.add(fam)
 
     signal_text = fp_guards.strip_quotes(text)
+    # Issue #11: project term allowlist — same mechanic as genre exempt
+    # terms (#42): strip from signal matching only, structural dimensions
+    # keep the full text.
+    if allowlist_terms:
+        signal_text = genre_profiles.strip_exempt_terms(signal_text, allowlist_terms)
     if genre_profile is not None:
         signal_text = genre_profiles.strip_exempt_terms(
             signal_text, genre_profile["exempt_terms"])
@@ -969,7 +1030,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
     register_ctx = register_profile.register_profile(text)
     register_findings = register_profile.find_register_findings(text, genre=genre)
 
-    return {
+    result = {
         "slop_score": score,
         "risk_level": risk,
         "action": action,
@@ -1032,6 +1093,128 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
             "provenance": prov_matches,
         }
     }
+
+    # Issue #119: receipts standard — one finding per signal hit.
+    result["findings"] = build_findings(text, result)
+    return result
+
+
+# --- Issue #119: Findings-Standard mit Receipts -------------------------
+# finding = {signal_id, span, evidence_quote, reliability, suggested_action}
+# Community receipts standard (Slopdar evidence-per-hit, ZeroSlop --explain,
+# hallucinot rule-id + line + quote). Reliability values are heuristic
+# defaults derived from the signal family's calibration tier; spans are
+# character offsets into the scored text plus 1-based line number.
+
+FINDING_ACTIONS = {
+    "buzzword": "Ersetzen durch konkretes Verb/Substantiv oder streichen "
+                "(Buzzword ohne Informationsgehalt).",
+    "phrase": "KI-typische Phrase umschreiben: spezifische Aussage statt "
+              "Formel.",
+    "multilingual": "Anglizismus/Lehnwort prüfen; ggf. idiomatisch "
+                    "übersetzen.",
+    "authority": "Beleg ergänzen (Quelle, Zahl, Link) oder Anspruch "
+                 "streichen.",
+    "provenance": "Provenance-Marker prüfen: nur echte, verifizierbare "
+                  "Referenzen behalten.",
+    "moral": "Moralisierenden Abschlusssatz streichen oder durch konkretes "
+             "Ergebnis ersetzen.",
+    "list_heavy": "Liste kürzen oder in Fließtext mit Kernaussagen "
+                  "verwandeln.",
+    "mirrored_intro_conclusion": "Schlussabsatz umformulieren — spiegelt nur "
+                                 "die Einleitung.",
+}
+
+FAMILY_RELIABILITY = {
+    "phrase": 0.7,
+    "multilingual": 0.6,
+    "authority": 0.65,
+    "provenance": 0.5,
+    "moral": 0.5,
+    "list_heavy": 0.5,
+    "mirrored_intro_conclusion": 0.5,
+}
+
+
+def _term_findings(text, signal_id, terms, reliability, action):
+    """Locate every occurrence of each term; one receipt per hit."""
+    out = []
+    line_starts = [0]
+    for m in re.finditer(r"\n", text):
+        line_starts.append(m.end())
+
+    def line_of(pos):
+        return bisect_right(line_starts, pos)
+
+    for term in terms:
+        pattern = r"\b" + re.escape(term) + r"\b"
+        for m in re.finditer(pattern, text, re.IGNORECASE):
+            out.append({
+                "signal_id": signal_id,
+                "span": {"start": m.start(), "end": m.end(),
+                         "line": line_of(m.start())},
+                "evidence_quote": text[m.start():m.end()],
+                "reliability": reliability,
+                "suggested_action": action,
+            })
+    return out
+
+
+def build_findings(text, result):
+    """Receipts: one finding per detected signal hit (Issue #119).
+
+    Structural binary signals (moral, list-heavy, mirrored) get one
+    receipt each with a whole-text span; term-based signals get one
+    receipt per occurrence. Register findings (#74) stay detect-only
+    and are not included — they never feed the score.
+    """
+    findings = []
+    signals = result.get("signals", {})
+
+    for tier, words in signals.get("buzzword_tiers", {}).items():
+        conf = BUZZWORD_TIERS.get(tier, {}).get("confidence", 0.6)
+        findings.extend(_term_findings(
+            text, f"buzzword.{tier}", words, conf,
+            FINDING_ACTIONS["buzzword"]))
+
+    for cat, phrases in signals.get("phrase_categories", {}).items():
+        findings.extend(_term_findings(
+            text, f"phrase.{cat}", phrases,
+            FAMILY_RELIABILITY["phrase"], FINDING_ACTIONS["phrase"]))
+
+    for lang, words in signals.get("multilingual", {}).items():
+        findings.extend(_term_findings(
+            text, f"multilingual.{lang}", words,
+            FAMILY_RELIABILITY["multilingual"],
+            FINDING_ACTIONS["multilingual"]))
+
+    auth = signals.get("authority_phrases", [])
+    if auth:
+        findings.extend(_term_findings(
+            text, "authority", auth, FAMILY_RELIABILITY["authority"],
+            FINDING_ACTIONS["authority"]))
+
+    prov = signals.get("provenance", [])
+    if prov:
+        findings.extend(_term_findings(
+            text, "provenance", prov, FAMILY_RELIABILITY["provenance"],
+            FINDING_ACTIONS["provenance"]))
+
+    for flag, key in (("moral_detected", "moral"),
+                      ("list_heavy", "list_heavy"),
+                      ("mirrored_intro_conclusion",
+                       "mirrored_intro_conclusion")):
+        if signals.get(flag):
+            findings.append({
+                "signal_id": key,
+                "span": {"start": 0, "end": len(text), "line": 1},
+                "evidence_quote": text[:80],
+                "reliability": FAMILY_RELIABILITY[key],
+                "suggested_action": FINDING_ACTIONS[key],
+            })
+
+    findings.sort(key=lambda f: f["span"]["start"])
+    return findings
 
 
 def format_report(result: dict) -> str:
@@ -1096,7 +1279,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     use_json = "--json" in sys.argv
-    args = [a for a in sys.argv[1:] if a != "--json"]
+    findings_only = "--findings" in sys.argv
+    args = [a for a in sys.argv[1:] if a not in ("--json", "--findings")]
 
     # Issue #78: anchor-diff mode — protected anchors (numbers, quotes,
     # URLs, DOIs) must survive rewrites; drift is reported per changed
@@ -1247,6 +1431,22 @@ if __name__ == "__main__":
     # to the scored file (auto-detected only for --file input).
     not_slop_store = _opt("--not-slop-store")
 
+    # Issue #11: project-local config. Explicit --config PATH, or
+    # auto-discovered slop.json next to/above the scored file.
+    project_cfg = None
+    if "--config" in args:
+        i = args.index("--config")
+        if i + 1 >= len(args):
+            print("Error: --config requires a path", file=sys.stderr)
+            sys.exit(2)
+        cfg_path = args[i + 1]
+        if not os.path.isfile(cfg_path):
+            print(f"Error: no such config file: {cfg_path}", file=sys.stderr)
+            sys.exit(2)
+        import project_config as pconf
+        project_cfg = pconf.load_config(cfg_path)
+        args = args[:i] + args[i + 2:]
+
     # --file PATH: explicit file input (preferred)
     file_path = None
     if "--file" in args:
@@ -1292,8 +1492,24 @@ if __name__ == "__main__":
         if os.path.isfile(default_store):
             not_slop_store = default_store
 
+    if project_cfg is None and file_path is not None:
+        import project_config as pconf
+        auto = pconf.auto_discover(os.path.dirname(os.path.abspath(file_path)))
+        if auto:
+            project_cfg = pconf.load_config(auto)
+
     result = slop_score(text, genre=genre, domain=domain,
-                        not_slop_store=not_slop_store)
+                        not_slop_store=not_slop_store,
+                        project_config=project_cfg)
+
+    # Echo the applied project config so runs are reproducible (issue #11).
+    if project_cfg is not None:
+        result["config"] = project_cfg
+
+    if findings_only:
+        # Issue #119: machine-readable receipts only (one JSON array).
+        print(json.dumps(result.get("findings", []), indent=2))
+        sys.exit(0)
 
     if use_json:
         print(json.dumps(result, indent=2))

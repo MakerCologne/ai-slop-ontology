@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased] — 2026-09-17 (#229 P2 — Meta-Regressionstest fuer example_fixes)
+
+Anti-Slop darf selbst keinen Slop saeen. Neuer Test `tests/test_example_fix_meta.py`
+sperrt die Eigenschaft permanent: Jeder `example_fix` in RHETORICAL_PATTERNS muss
+den eigenen Detektor (`find_rhetorical_patterns` + `rhythm_metrics`) fehlerfrei
+passieren — sonst schlaegt CI rot. Meta-Scan vom 17.09. auf dem gehaerteten
+Stand (inkl. PR #225): 0/16 Offender. Der RoboticRhythm-Fall ("It works, scales,
+and ships every time." war selbst eine ForcedTriad) ist ueber PR #225 behoben;
+der im Audit zusaetzlich vermutete RepeatedOpenings-then-Ketten-Fall wurde durch
+den Detektor NICHT bestaetigt (dann-Ketten sind kein Signal) — dokumentiert, ohne
+Change am Fix.
+
+
 ## [2.9.1] — 2026-09-09 (#35 — Domain-Trigger-Metadatum je Signal)
 
 Slop-Defaults sind domain-konditional (unslop). Statische Signale ohne
