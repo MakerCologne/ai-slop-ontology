@@ -133,7 +133,9 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_paste_artifacts.py` — #113 detect-only-Paste-Artefakte: 6 Mikro-Signale (elision-comment, chat-preamble, fence-in-code, meta-process-comment, list-label-marker, placeholder-credential-shape; kein Score-Einfluss, ADR-0006)
 - `tests/test_gamed_verification.py` — #112 Gamed-Verification-Diff-Signale (detect-only): AssertionDelta, SkippedTest, TrivialAssertion, StubLeftBehind — Fixtures Positiv/Negativ je Signal (Signal-DoD)
 - `tests/test_geometric_aggregation.py` — #117 Geometrische Score-Aggregation: gewichtetes geometrisches Mittel je Dimension als Option neben Noisy-OR (Aequivalenz-/Grenzfaelle, Gewichts-Sensitivitaet) (L1)- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
-- `tests/test_copula_rate.py` — Signal #22 Copula-Rate
+
+- `tests/test_metadata_slop_111.py` — #111 Metadata-Slop-Erweiterung: CommitVelocitySlop (Cadence-Verhalten), PRStructureSlop (anti-slop-Regeln), CommitKeywordSlop (gitorit-Vokabular); FP-Guards per Einzel-Regel-Negativ-Fixtures
+- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)- `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)
 - `tests/test_docs_examples.py` — Doku-Beispiele stimmen mit Scorer-Verhalten überein (#48)
