@@ -2395,7 +2395,7 @@
             "confidence": 0.5,
             "description": "Stacked punchy fragments and repeated sentence shapes — three or more very short sentences in a row. Vary shape only when it helps.",
             "example_slop": "It works. It scales. It ships. Every time.",
-            "example_fix": "It works, scales, and ships every time.",
+            "example_fix": "It ships every time.",
             "keep_when": "A short burst used once, deliberately, for genuine emphasis."
           },
           "ThroatClearing": {
@@ -2465,7 +2465,7 @@
           "ForcedTriad": {
             "label": "Forced triad",
             "confidence": 0.55,
-            "description": "A slogan-shaped 'X, Y, and Z' list of three parallel adjectives ('fast, reliable, and scalable') where a triad is forced for rhythm, not content.",
+            "description": "A slogan-shaped 'X, Y, and Z' list of three parallel items (adjectives, nouns, or verbs; incl. German 'X, Y und Z' and staccato 'X. Y. Z.') where a triad is forced for rhythm, not content.",
             "example_slop": "The dashboard is fast, reliable, and scalable.",
             "example_fix": "The dashboard answers the 95th-percentile query in 80 ms.",
             "keep_when": "Three genuinely distinct, individually meaningful items — not one claim stretched to three."
@@ -2496,6 +2496,14 @@
               "as of my last update",
               "let me know if you have any questions"
             ]
+          },
+          "DecorativeSeparatorTriad": {
+            "label": "Decorative separator triad",
+            "confidence": 0.5,
+            "description": "Slogan-shaped 'X | Y | Z' (pipes, bullets) or '#X #Y #Z' runs of three short items used as a headline or kicker. Guarded against markdown tables and genuine multi-item lists.",
+            "example_slop": "Strategie | Umsetzung | Wirkung",
+            "example_fix": "Strategie und Umsetzung - und welche Wirkung daraus tatsaechlich entsteht.",
+            "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - not a decorative headline triple."
           }
         }
       }
@@ -2625,7 +2633,25 @@
           "description": "Methods that don't exist in the library",
           "confidence": 0.85
         }
-      ]
+      ],
+      "uiSlop": {
+        "description": "UI defaults in generated front-end code and string literals (landing pages).",
+        "detection": "detect-only: each match is a named signal with a quoted line of evidence for a human to check; NOT folded into the numeric slop score",
+        "detectOnly": true,
+        "indicators": [
+          {
+            "id": "UiSlopStartCase",
+            "description": "Three or more consecutive Title Case words in UI string literals (labels, buttons, i18n values) — generated marketing copy in UI chrome",
+            "confidence": 0.5,
+            "regex": "[A-Z][a-z]+ [A-Z][a-z]+ [A-Z][a-z]+",
+            "knownExamples": [
+              "Streamline Your Workflow",
+              "Unlock Your Potential",
+              "Transform Your Business"
+            ]
+          }
+        ]
+      }
     },
     "audio": {
       "description": "Patterns in AI-generated audio/music.",
