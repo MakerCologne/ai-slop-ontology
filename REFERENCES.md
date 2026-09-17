@@ -63,6 +63,13 @@
 42. **Russell, Karpinska & Iyyer (2025), People who frequently use ChatGPT for writing tasks are accurate and robust detectors of AI-generated text** — ACL 2025, S. 5342–5373. ~90 % Accuracy bei Heavy-Usern ⇒ ~10 % FP; Light-User knapp über Chance. DOI 10.18653/v1/2025.acl-long.267 (arXiv:2501.15654)
 43. **Sprach-Konvergenz (LLM-Einfluss auf menschliche Sprache)** — Yakura et al. 2024 (arXiv:2409.01754, gesprochene Sprache), Geng et al. 2025 (Findings of ACL 2025, DOI 10.18653/v1/2025.findings-acl.987), Galpin et al. 2025 (arXiv:2506.21817, semantisch-lexikalischer Wandel). Basis für „Human detection"-Abschnitt in detection-signals.md.
 
+## v1.2.0 Ergänzungen — Tool-Eval (#71)
+
+## v1.2.0 (September 2026)
+
+44. **Weber-Wulff et al. (2023), Testing of detection tools for AI-generated text** (International Journal for Educational Integrity 19:26) — 14 kommerzielle Detektoren, alle <80 % Akkuratesse, laufinstabil. Basis für docs/TOOL-EVAL-CHECKLIST.md (#71).
+45. **Liang et al. (2023), GPT detectors are biased against non-native English writers** (Patterns 4(7)) — FP-Bias gegen nicht-muttersprachliche Autoren; Begründung für diverse Hard Negatives.
+
 ## Adaptierte Fremdprojekte
 
 39. **Yang, "No AI slop" Editing-Skill** ([petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop), MIT) — Prosa-Editor mit ~20 rhetorischen AI-Mustern. Neun struktureller Satz-/Absatz-Muster wurden als detect-only Detektoren in `signals.text.rhetoricalPatterns` und `skills/ai-slop-detection/scripts/rhetorical_patterns.py` übernommen (eigene Regexe/Beispiele, benannte Evidenz statt Score).

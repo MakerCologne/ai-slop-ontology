@@ -1,7 +1,7 @@
 # EVALS.md — Drei-Level-Evals-Architektur
 
 **Status:** konstitutiv (v2.0.0, Issue #68) · **Blaupause:** Hamel Husain, „Your AI Product Needs Evals" (2024) — L1/L2/L3-Pyramide; Methode E6 in `research/slop-ontology-gap-2026-08-24/methoden-fundament.md` §6 (externe Quelle).
-**Verwandt:** docs/METHODOLOGY.md (M1, M5, M8), adr/0003 (Control-Set-Gate), adr/0005 (Benchmark-Disziplin), docs/SCORE-GOVERNANCE.md (#67).
+**Verwandt:** docs/METHODOLOGY.md (M1, M5, M8), adr/0003 (Control-Set-Gate), adr/0005 (Benchmark-Disziplin), docs/SCORE-GOVERNANCE.md (#67), docs/TOOL-EVAL-CHECKLIST.md (#71 — Bewertung Fremd-Tools).
 
 ---
 
