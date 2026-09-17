@@ -205,3 +205,20 @@ geometric = Π(d_i ^ w_i) ^ (1 / Σ w_i)   with w_i = max weight in dim_i
 # within one signal family (#117); complements the collision matrix
 is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
+
+## Domain Scoping (triggered_by: domain)
+
+Issue #35: Slop-Defaults sind domain-konditional (unslop, deep/04). Signale
+mit `triggered_by: "domain"`-Binding im SSOT (`ontology.json` →
+`signalDomains.signals`) feuern nur im passenden Scope:
+
+- `SlopClassifier.classify_text(text, domain="ui_copy")` bzw.
+  `deslop_loop_cli.py --domain ui_copy` filtert gebundene Signale vor dem
+  Scoring aus; jede Filterentscheidung landet auditierbar in `notes`
+  (`domain_filter[<domain>]: skipped <signal>`).
+- Ohne `domain`-Angabe bleiben alle Signale aktiv (rückwärtskompatibel).
+- Pilot-Bindings (5): `ExclamationExcess`, `TrailingMoral`, `ListHeavy`,
+  `ThroatClearing`, `EllipsisExcess` — jeweils mit Begründung
+  (`rationale`) und Domänenliste im SSOT.
+- Vokabular: essay, blog, article, docs, social, marketing_copy, ui_copy,
+  changelog, commit_message, technical_report.

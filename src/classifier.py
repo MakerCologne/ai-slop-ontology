@@ -264,7 +264,16 @@ class SlopClassifier:
         # ontology.json domainBindings. Whitelist (applies_to) wins over
         # blacklist (restricted_in); unbound signals are domain-agnostic.
         b = self.ontology.get("domainBindings", {}).get("signals", {}).get(signal_id)
-        if not b or b.get("triggered_by") != "domain":
+        if b is None:
+            # Alternative binding section signalDomains (#193, issue #35):
+            # triggered_by: domain + domains whitelist (no restricted_in).
+            sd = self.ontology.get("signalDomains", {}).get("signals", {}).get(signal_id)
+            if sd and sd.get("triggered_by") == "domain":
+                doms = sd.get("domains")
+                if doms is not None:
+                    return domain in doms
+            return True
+        if b.get("triggered_by") != "domain":
             return True
         applies = b.get("applies_to")
         if applies is not None:
@@ -275,13 +284,21 @@ class SlopClassifier:
         """Issue #35: drop signals that are not triggered in ``domain``."""
         if domain is None:
             return result
-        known = self.ontology.get("domainBindings", {}).get("domains", [])
+        known = list(self.ontology.get("domainBindings", {}).get("domains", []))
+        known += [d for d in self.ontology.get("signalDomains", {}).get("domains_vocabulary", [])
+                  if d not in known]
         if domain not in known:
             raise ValueError(
                 f"Unknown domain {domain!r} — known: {', '.join(known)}")
-        result.signals_detected = [
-            s for s in result.signals_detected
-            if self._signal_active_in_domain(s.signal_id, domain)]
+        kept, dropped = [], []
+        for s in result.signals_detected:
+            (kept if self._signal_active_in_domain(s.signal_id, domain)
+             else dropped).append(s)
+        # Issue #35 (#193): make the filter decision auditable via notes.
+        for s in dropped:
+            result.notes.append(
+                f"domain_filter[{domain}]: dropped {s.signal_id}")
+        result.signals_detected = kept
         return result
 
     def classify_text(self, text: str, domain=None) -> ClassificationResult:

@@ -108,6 +108,18 @@ neben dem bisherigen Noisy-OR (Default unverändert):
 - Ergänzt BS-I7/#46 (Kollisions-Matrix), ersetzt es nicht.
 - Klassifikations-Eskalierung (critical / ≥2 high → ≥ 0.70) bleibt aktiv.## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
+
+## [Unreleased] — feat(#35): triggered_by:domain — optionale Domain-Bindung je Signal
+
+`ontology.json` erhält einen `signalDomains`-Block (analog `signalSeverity`):
+5 Pilot-Signale (`ExclamationExcess`, `TrailingMoral`, `ListHeavy`,
+`ThroatClearing`, `EllipsisExcess`) mit `triggered_by: "domain"`, Domänenliste
+und `rationale`. `SlopClassifier.classify_text(text, domain=...)` und
+`scripts/deslop_loop_cli.py --domain` überspringen gebundene Signale außerhalb
+des Scopes vor dem Scoring (auditiert über `notes`); ohne `domain`-Angabe
+bleibt das Verhalten unverändert. Tests: `tests/test_domain_trigger.py` (6).
+
+## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 Der Detection-Referenz des Skills
 (`skills/ai-slop-detection/references/detection-signals.md`) war gegenüber
 dem SSOT (`ontology.json`) gedriftet: Sie listete Phrasen, die die Engine
