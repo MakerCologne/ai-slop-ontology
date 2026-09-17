@@ -1,5 +1,44 @@
 # Changelog
 
+## [Unreleased] — 2026-09-17 (#229 P2 — Meta-Regressionstest fuer example_fixes)
+
+Anti-Slop darf selbst keinen Slop saeen. Neuer Test `tests/test_example_fix_meta.py`
+sperrt die Eigenschaft permanent: Jeder `example_fix` in RHETORICAL_PATTERNS muss
+den eigenen Detektor (`find_rhetorical_patterns` + `rhythm_metrics`) fehlerfrei
+passieren — sonst schlaegt CI rot. Meta-Scan vom 17.09. auf dem gehaerteten
+Stand (inkl. PR #225): 0/16 Offender. Der RoboticRhythm-Fall ("It works, scales,
+and ships every time." war selbst eine ForcedTriad) ist ueber PR #225 behoben;
+der im Audit zusaetzlich vermutete RepeatedOpenings-then-Ketten-Fall wurde durch
+den Detektor NICHT bestaetigt (dann-Ketten sind kein Signal) — dokumentiert, ohne
+Change am Fix.
+
+
+## [2.9.1] — 2026-09-09 (#35 — Domain-Trigger-Metadatum je Signal)
+
+Slop-Defaults sind domain-konditional (unslop). Statische Signale ohne
+Domain-Kontext erzeugen systematische False Positives (z.B. "we fixed X" im
+Changelog ist legitime Sprecherrolle, kein Workslop).
+
+- `ontology.json` → neue Top-Level-Section `domainBindings`: optionales
+  Metadatum `triggered_by: domain` je Signal mit `applies_to` (Whitelist,
+  wins) / `restricted_in` (Blacklist) + `rationale`; 5 Pilot-Signale
+  (Workslop, PeerReviewSlop, SecurityReportSlop, NumberedListOveruse,
+  FakeAuthoritySlop), 7 Domains (essay, marketing, ui_copy, changelog,
+  devtools_docs, academic, security_report)
+- Scorer: `--domain NAME` (fail-loud, Exit 2 bei unbekannter Domain);
+  `slop_score(text, domain=...)` zero-t die gemappten Gewichtsdimensionen
+  (`domain_bindings.SIGNAL_WEIGHT_MAP`: Workslop→phrases,
+  NumberedListOveruse→list_heavy, FakeAuthoritySlop→fake_authority);
+  `--json`-Output zeigt `domain`, `domain_gated_signals`,
+  `domain_gated_weight_dims`
+- Classifier: `classify_text(text, domain=...)` filtert gebundene Signale
+  VOR der Noisy-OR-Aggregation (Score reflects domain-conditioned evidence)
+- Default ohne Domain: unverändert (Opt-in, analog #42-Genre — keine
+  Engine-Drift); komponierbar mit `--genre`
+- Tests: `tests/test_domain_bindings.py` (12); SSOT-Register-Eintrag für
+  `domain_bindings.py`; SKILL.md Step 1b
+
+
 ## [Unreleased] — #46 Signal-Kollisions-Matrix: DoD-Fixtures + Engine-Enforcement
 
 Die in `ontology.json#/collisionMatrix` (Version 1.0.0) dokumentierten
