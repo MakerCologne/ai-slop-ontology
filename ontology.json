@@ -947,42 +947,6 @@
               "insiders claim"
             ]
           },
-          "conversational_fillers": {
-            "confidence": 0.55,
-            "description": "NEU #110 (Hassid-Liste Punkte 4-8): konversationelle Fuell-Floskeln — LLMs importieren gesprochene Gespraechsmuster in Schrifttexte. Detect-only per Kumulativregel (>=2 Treffer). Hard-Negative-Guards: 'hope this helps' zaehlt nicht in den letzten 100 Zeichen vor Grussformel (Support-Mail-Kontext); '^most people' nur claus-initial (#88-Positionssemantik) und nicht bei direkter Quellenangabe ('most people I interviewed'). Pre-2022-Cap bewusst nicht gesetzt: Floskeln sind vor-menschlich alt. Nicht uebernommen aus der Quelle: delve/crucial/robust (Buzzword-Tiers), It's not X it's Y (Binary-Contrast), Adverb-Abuse.",
-            "items": [
-              "here's the thing",
-              "hope this helps",
-              "to provide a quick update",
-              "^most people"
-            ],
-            "evidence": {
-              "here's the thing": [
-                {
-                  "source": "own:issue-110",
-                  "note": "Ruben Hassid '12 AI tells' Punkt 4 — Gespraechs-Setup ohne referentielles 'thing', typischer LLM-Absatzopener; Risiko niedrig"
-                }
-              ],
-              "hope this helps": [
-                {
-                  "source": "own:issue-110",
-                  "note": "Hassid Punkt 5 — Chatbot-Sign-off, migriert in Blog/LinkedIn; Risiko HOCH: legitimer Abschluss in echten Support-Mails → positionsbasierter Guard (kein Fire in den letzten 100 Zeichen vor Grussformel)"
-                }
-              ],
-              "to provide a quick update": [
-                {
-                  "source": "own:issue-110",
-                  "note": "Hassid Punkt 6 — Meta-Ankuendigung statt Inhalt ('Just give the update'); Risiko niedrig"
-                }
-              ],
-              "^most people": [
-                {
-                  "source": "own:issue-110",
-                  "note": "Hassid Punkte 7-8 — pseudo-empirische Weasel-Quantifikation als Opener; Risiko mittel; Abgrenzung zu WeaselAttribution: eigene claus-initial-Phrase, Doppelbestrafung durch Laengsten-Match-Overlap-Suppression verhindert; direkte Quellenangabe (most people I interviewed) kein Fire"
-                }
-              ]
-            }
-          },
           "de_calque": {
             "confidence": 0.6,
             "description": "DE-Anglizismus-Calques (M45): wörtlich übersetzte EN-KI-Floskeln statt deutscher Idiomatik",
@@ -2540,6 +2504,22 @@
             "example_slop": "Strategie | Umsetzung | Wirkung",
             "example_fix": "Strategie und Umsetzung - und welche Wirkung daraus tatsaechlich entsteht.",
             "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - not a decorative headline triple."
+          },
+          "OpenerAnnouncement": {
+            "label": "Opener announcement",
+            "confidence": 0.45,
+            "description": "Sentences that open by announcing content instead of carrying it: praise openers ('Spannender Punkt.'), 'Ein weiterer Aspekt ist ...', question announcements ('Die spannende Frage ist ...'), and text-initial Ich-approach frames without an in-sentence justification. Frame-based, not a growing word list.",
+            "example_slop": "Spannender Punkt. Ich denke, ein weiterer wichtiger Aspekt ist die Frage, wie viel Prozesswissen verfuegbar ist.",
+            "example_fix": "Wie viel Prozesswissen ist tatsaechlich verfuegbar?",
+            "keep_when": "Genuine stance differentiation: 'Ich denke, dass X, weil Y belegt' carries content and a reason. Mid-text occurrences and ritual formulas stay unflagged."
+          },
+          "engagement_comment_default": {
+            "label": "Engagement comment default",
+            "confidence": 0.45,
+            "description": "The default LinkedIn comment sequence - praise opener, paraphrase marker ('Sie schreiben/In Ihrem Beitrag', 'you describe/your post'), an announced add-on ('Ein weiterer Aspekt ist ...') and a closing engagement question - with at least 3 of the 4 elements in order. Fires when ONE text walks the whole template, not on any single element.",
+            "example_slop": "Danke für diesen spannenden Beitrag. Sie beschreiben sehr treffend, wie FHUs unter Personalnot leiden. Ein weiterer Aspekt ist die Zulassungsdauer. Wie sehen Sie das?",
+            "example_fix": "Die Zulassungsdauer in Ihrem Beispiel passt nicht zu unseren Zahlen: 14 Monate Standardverfahren, 9 Monate im beschleunigten Verfahren. Wir hadern eher mit den Zusatzanforderungen der Krankenkassen.",
+            "keep_when": "A genuine FAQ conversation, interview or moderation where question and reference to the other side carry real information, not engagement ritual."
           }
         }
       }
@@ -2828,48 +2808,6 @@
           "id": "ConfigBoilerplateSlop",
           "description": "Narrating boilerplate comments in Dockerfile/YAML/Terraform ('# Install dependencies' over an obvious RUN/COPY line)",
           "confidence": 0.6
-        }
-      ]
-    },
-    "paste_artifacts": {
-      "description": "Detect-only micro-signals for chat-paste artifacts and elision markers in code/doc files (issue #113); corpus-backed from the slop-detection landscape (stopslop, scanaislop/aislop, jv-k/deslopper).",
-      "note": "Detect-only: findings are advisory, never part of the numeric text/code slop score (ADR-0001). Implementation: src/paste_artifacts.py.",
-      "indicators": [
-        {
-          "id": "elision-comment",
-          "description": "Elision comments that silently drop code ('// ... rest of the code unchanged'); the elided region is unverifiable",
-          "confidence": 0.9,
-          "keep_when": "Quoted/tutorial excerpts where the elided region is explicitly labeled 'not shown'"
-        },
-        {
-          "id": "chat-preamble",
-          "description": "Assistant conversational preamble pasted into the file ('Certainly! Here's the updated code')",
-          "confidence": 0.9,
-          "keep_when": "Transcript/chat-log files that deliberately document an assistant conversation"
-        },
-        {
-          "id": "fence-in-code",
-          "description": "Stray Markdown fence pairs (```) inside code files",
-          "confidence": 0.7,
-          "keep_when": "Markdown surfaces where fences are the native format (classifier skips them via is_markdown=True)"
-        },
-        {
-          "id": "meta-process-comment",
-          "description": "Comments narrating the generation process ('Phase 2 of the plan', 'the model output', 'per my previous response')",
-          "confidence": 0.7,
-          "keep_when": "A real project phase plan ('Phase 2: v1.1 migration') with concrete milestones"
-        },
-        {
-          "id": "list-label-marker",
-          "description": "Synthetic taxonomy labels glued onto list items ('- G1: ...', '- NG2: ...'); classification residue from agent workflows",
-          "confidence": 0.6,
-          "keep_when": "A spec that genuinely uses the label taxonomy as its subject matter"
-        },
-        {
-          "id": "placeholder-credential-shape",
-          "description": "Template credential placeholders left in shipped files ('your_api_key_here', 'INSERT_TOKEN')",
-          "confidence": 0.85,
-          "keep_when": "Template/example files whose purpose is to be filled in (e.g. .env.example)"
         }
       ]
     }
