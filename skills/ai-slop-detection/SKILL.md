@@ -78,6 +78,48 @@ python3 scripts/slop_scorer.py --file README.md
 - The applied config is echoed in the JSON output under `config` (run reproducibility).
 - Config composes with `--genre` (allowlist and genre exemptions apply together). Fail-loud: an invalid config aborts with exit code 2.
 - Disabled weighted dimensions keep appearing in the report; they just no longer contribute to the score.
+
+
+### Step 1c: Findings with receipts (Issue #119)
+
+```bash
+python3 scripts/slop_scorer.py --findings "TEXT_TO_ANALYZE"
+```
+
+Emits one JSON receipt per detected signal hit — the machine-readable
+findings standard (`finding = {signal_id, span, evidence_quote,
+reliability, suggested_action}`):
+
+- `signal_id`: family + qualifier, e.g. `buzzword.tier1_critical`,
+  `phrase.opening_formulas`, `authority`, `moral`
+- `span`: `{start, end}` (character offsets into the scored text) plus
+  1-based `line`
+- `evidence_quote`: the exact matched text at that span
+- `reliability`: heuristic default from the family's calibration tier
+  (buzzword tier confidence; phrase 0.7; authority 0.65; multilingual 0.6;
+  structural binaries 0.5)
+- `suggested_action`: concrete rewrite guidance per family
+
+Structural binary signals (trailing moral, list-heavy, mirrored
+intro/conclusion) get one whole-text receipt each. Register findings
+(#74) stay detect-only and are excluded. The same `findings` array is
+part of every `--json` output.
+
+### Step 1d: Domain context (--domain, #35)
+
+Slop-Defaults sind domain-konditional (unslop: "If the page is for devtools → ...").
+Signale mit `triggered_by: domain` (SSOT: `ontology.json` → `domainBindings`, 5 Pilot-Signale) feuern nur in ihren Domains:
+
+```bash
+python3 scripts/slop_scorer.py --domain changelog --file CHANGELOG-entry.md
+```
+
+- Whitelist (`applies_to`) schlägt Blacklist (`restricted_in`); Signale ohne Bindung sind domain-agnostisch
+- Gating wirkt auf Scorer-Gewichtsdimensionen (gemappt via `scripts/domain_bindings.py` `SIGNAL_WEIGHT_MAP`, z.B. Workslop→phrases, NumberedListOveruse→list_heavy) und auf Classifier-Findings (`classify_text(text, domain=)` filtert vor der Noisy-OR-Aggregation)
+- Fail-loud: unbekannte Domain → Exit 2; `--json` zeigt `domain`, `domain_gated_signals`, `domain_gated_weight_dims` (Auditierbarkeit)
+- Default ohne `--domain`: unverändertes Verhalten (Opt-in, analog #42-Genre)
+- Domains (v1): `essay`, `marketing`, `ui_copy`, `changelog`, `devtools_docs`, `academic`, `security_report`
+
 ### Step 2: Classify slop type
 
 ```bash
@@ -154,6 +196,19 @@ Konfidenz 0.5 (`tests/test_register_profile.py`).
 rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
 Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
 `eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
+
+### Step 2i: Chat-Paste-Artefakte & Elision (detect-only, #113)
+
+`scripts/chat_artifacts.py` — sechs deterministische Mikro-Signale für
+Code-/Instruktions-/Kommentar-Dateien, die eingefügte LLM-Chat-Ausgabe
+verraten: `elision-comment` („// … rest of code unchanged" — stillschweigend
+gelöschter Code), `chat-preamble` („Certainly! Here's …" als erste Zeile),
+`fence-in-code` (eingerückte Markdown-Fences in Quelldateien),
+`meta-process-comment` (Kommentare erzählen den Generierungsprozess),
+`list-label-marker` (G1/NG2-Gliederungsmarker in Listpunkten/Headern),
+`placeholder-credential-shape` (your-api-key/sk-XXX/changeme als
+gesetzter Wert). Interface wie `micro_patterns.py`: `find_chat_artifacts(text)`
+→ `[{id, confidence, evidence, keep_when}]`, nie score-wirksam.
 
 ### DE-Phrase-Layer (#76/#77, SSOT in ontology.json)
 
