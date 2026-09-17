@@ -94,6 +94,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_findings_receipts.py` — #119 Findings-Standard mit Receipts: Feld-Vollständigkeit ({signal_id, span, evidence_quote, reliability, suggested_action}), Span↔Quote-Konsistenz, Sortierung, Clean-Text-Leerlauf, Mehrzeilen-Line-Nummern, build_findings auf Minimal-Result (L1)
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
+- `tests/test_conversational_fillers.py` — #110 conversational_fillers (Hassid-Liste): 4 Phrasen, Hard-Negative-Guards (Sign-off-Fenster, Quellenangabe)
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
