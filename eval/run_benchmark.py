@@ -28,9 +28,12 @@ import calibrate  # weight calibration (L3) — also the source of the search gr
 import slop_scorer  # skill engine
 import slop_classifier as skill_classifier  # skill type classifier
 from classifier import SlopClassifier  # src engine
+from threshold_config import load_threshold  # single source (#157)
 
 DEFAULT_CORPUS = os.path.join(ROOT, "eval", "corpus.jsonl")
-DEFAULT_THRESHOLD = 0.40
+# Single source: config/threshold.json (#157) — the sweep (GL #6.3) updates
+# that file, never this constant.
+DEFAULT_THRESHOLD = load_threshold()
 
 
 def load_corpus(path: str) -> list:

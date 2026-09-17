@@ -1,5 +1,6 @@
 # Terminierungs-Semantik: Fixpoint ≠ Optimum (#62)
 
+
 **Status:** normativ · **Geltungsbereich:** jeder DESLOP-Loop-Run (`src/deslop_loop.py`, #51) und jede Aussage über Loop-Output · **Quellen:** research/slop-loop-pipeline-2026-08-24/report.md Abschnitt (f) (externes Research, Herleitung ebd. Abschnitt (b)–(e)); Krishna et al., arXiv:2303.13408 (Paraphrase-/Entfernungs-Robustheit)
 
 ## 1. Kernaussage
@@ -46,3 +47,21 @@ Jede Aussage, die aus einem Loop-Run abgeleitet wird, muss den Verdict (`EXIT_OK
 - Audit-Pflicht: `runs/<runId>/result.json` führt Verdict + maßstabsgebundene Garantie-Formel (Konzept #61).
 - L1-Tests der Exit-Checks (13 Tests, deterministische Fake-Detektoren/Fixer) sichern ab, dass E3/E5 nie als `EXIT_OK` durchgehen.
 - Verwandt: #51 (Loop-Runner), #61 (Run-Audit-Format), #58 (Signal-Bestätigung), #59 (Trajectory-Monitoring als Evasions-Gegenmaßnahme).
+
+## 6. Ergänzungen aus der Spec (Zustandsmaschine M7)
+
+Der EXIT-CHECK des Loops (`DETECT→TRIAGE→FIX→VERIFY→EXIT-Check`) ist als Zustandsmaschine M7 mit genau zwei terminalen Zuständen (OUTPUT / ESCALATE) definiert; es gibt keinen dritten Zustand „maxIter erreicht, sieht gut aus → OUTPUT“.
+
+### Warum die Garantie maßstabsgebunden ist
+
+Der Scorer sieht nur die Signale der Ontology v1.x. Paraphrasiertes Slop, das keine getriggerte Signale mehr matcht, ist für den Detektor unsichtbar — nicht verschwunden (Krishna et al., arXiv:2303.13408: Paraphrase-Angriffe umgehen auch trainierte Detektoren mit hoher Rate). Daher:
+
+- Die Ausgabe-Garantie lautet immer relativ: „nach Maßstab der Ontology v1.x, Signalstand <Datum/Commit>“, nie absolut „KI-ferenzfrei“.
+- Ein Score von 0.00 ist ein Messwert des Detektors, keine Eigenschaft des Textes. Plötzliche Perfekt-Scores sind sogar ein Evasions-Signal (#59, Trigger 1).
+- Wer Fixpoint und Optimum gleichsetzt, optimiert den Detektor statt die Qualität (Goodhart, vgl. M9).
+- Output-Zusicherungen ohne Ontology-Stand sind unvergleichbar mit späteren Re-Scores (#47) und nicht reproduzierbar (M6); Score-Threshold allein (ohne Voice-Drift #56, Trajektorie #59, Bestätigung #58) ist kein zulässiges Exit-Kriterium.
+
+### Umsetzung (Review/DoD)
+
+- Review-Checks für Loop-PRs prüfen die Terminal-Zustands-Klassifikation mit (`tests/`-Seite, s. DoD #64).
+- Verwandt: #59 (Trajectory-Guard), #47 (Quartals-Drift), SCORE-GOVERNANCE.md.
