@@ -2009,7 +2009,8 @@
             "pattern": "—",
             "threshold": "> 0.5 per sentence",
             "confidence": 0.85,
-            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged"
+            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged",
+            "model_notes": "Weaker for GPT-5.1+ (em-dashes measurably suppressed); Claude output uses more em-dashes than professional writers (Economist study 07/2026). Weight review quarterly (#47), evidence via sampling loop (#12)."
           },
           {
             "id": "UniformSentenceLength",
@@ -2041,7 +2042,8 @@
             "id": "PerfectGrammarUniformTone",
             "pattern": "Zero grammar errors + identical formality throughout",
             "confidence": 0.55,
-            "note": "Weak signal alone — professional editors also produce this"
+            "note": "Weak signal alone — professional editors also produce this",
+            "model_notes": "Confidence erodes as post-editing humanizer tools spread (unslop et al.); monitor via quarterly re-score (#47)."
           }
         ]
       },
@@ -2053,7 +2055,8 @@
             "char": "—",
             "threshold_per_sentence": 0.5,
             "confidence": 0.85,
-            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster"
+            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster",
+            "model_notes": "Weaker for GPT-5.1+ (suppressed by default); Claude-only deployments: expect higher FP rate in professional-prose genres — apply genre register (#42) before flagging."
           },
           {
             "id": "EllipsisExcess",
@@ -2088,7 +2091,8 @@
             "id": "CurlyQuotes",
             "pattern": "“ ” in plain text",
             "confidence": 0.6,
-            "note": "Smart quotes in raw text/markdown are a typeset-output tell"
+            "note": "Smart quotes in raw text/markdown are a typeset-output tell",
+            "model_notes": "ChatGPT/DeepSeek-only tell (Wikipedia AICURLY); weak-to-zero for Claude/Gemini outputs. Treat as single-model evidence, not cross-model."
           },
           {
             "id": "HyphenatedPairRate",
@@ -2391,7 +2395,7 @@
             "confidence": 0.5,
             "description": "Stacked punchy fragments and repeated sentence shapes — three or more very short sentences in a row. Vary shape only when it helps.",
             "example_slop": "It works. It scales. It ships. Every time.",
-            "example_fix": "It works, scales, and ships every time.",
+            "example_fix": "It ships every time.",
             "keep_when": "A short burst used once, deliberately, for genuine emphasis."
           },
           "ThroatClearing": {
@@ -2455,12 +2459,13 @@
               "unprecedented",
               "ever-evolving landscape",
               "ever-changing landscape"
-            ]
+            ],
+            "model_notes": "Marker vocabulary shifts with model generations: 'blatantly positive' puffery is being replaced by 'subtly positive' variants (Wikipedia AIPUFFERY); markers list needs quarterly refresh (#12/#47)."
           },
           "ForcedTriad": {
             "label": "Forced triad",
             "confidence": 0.55,
-            "description": "A slogan-shaped 'X, Y, and Z' list of three parallel adjectives ('fast, reliable, and scalable') where a triad is forced for rhythm, not content.",
+            "description": "A slogan-shaped 'X, Y, and Z' list of three parallel items (adjectives, nouns, or verbs; incl. German 'X, Y und Z' and staccato 'X. Y. Z.') where a triad is forced for rhythm, not content.",
             "example_slop": "The dashboard is fast, reliable, and scalable.",
             "example_fix": "The dashboard answers the 95th-percentile query in 80 ms.",
             "keep_when": "Three genuinely distinct, individually meaningful items — not one claim stretched to three."
@@ -2491,6 +2496,30 @@
               "as of my last update",
               "let me know if you have any questions"
             ]
+          },
+          "DecorativeSeparatorTriad": {
+            "label": "Decorative separator triad",
+            "confidence": 0.5,
+            "description": "Slogan-shaped 'X | Y | Z' (pipes, bullets) or '#X #Y #Z' runs of three short items used as a headline or kicker. Guarded against markdown tables and genuine multi-item lists.",
+            "example_slop": "Strategie | Umsetzung | Wirkung",
+            "example_fix": "Strategie und Umsetzung - und welche Wirkung daraus tatsaechlich entsteht.",
+            "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - not a decorative headline triple."
+          },
+          "OpenerAnnouncement": {
+            "label": "Opener announcement",
+            "confidence": 0.45,
+            "description": "Sentences that open by announcing content instead of carrying it: praise openers ('Spannender Punkt.'), 'Ein weiterer Aspekt ist ...', question announcements ('Die spannende Frage ist ...'), and text-initial Ich-approach frames without an in-sentence justification. Frame-based, not a growing word list.",
+            "example_slop": "Spannender Punkt. Ich denke, ein weiterer wichtiger Aspekt ist die Frage, wie viel Prozesswissen verfuegbar ist.",
+            "example_fix": "Wie viel Prozesswissen ist tatsaechlich verfuegbar?",
+            "keep_when": "Genuine stance differentiation: 'Ich denke, dass X, weil Y belegt' carries content and a reason. Mid-text occurrences and ritual formulas stay unflagged."
+          },
+          "engagement_comment_default": {
+            "label": "Engagement comment default",
+            "confidence": 0.45,
+            "description": "The default LinkedIn comment sequence - praise opener, paraphrase marker ('Sie schreiben/In Ihrem Beitrag', 'you describe/your post'), an announced add-on ('Ein weiterer Aspekt ist ...') and a closing engagement question - with at least 3 of the 4 elements in order. Fires when ONE text walks the whole template, not on any single element.",
+            "example_slop": "Danke für diesen spannenden Beitrag. Sie beschreiben sehr treffend, wie FHUs unter Personalnot leiden. Ein weiterer Aspekt ist die Zulassungsdauer. Wie sehen Sie das?",
+            "example_fix": "Die Zulassungsdauer in Ihrem Beispiel passt nicht zu unseren Zahlen: 14 Monate Standardverfahren, 9 Monate im beschleunigten Verfahren. Wir hadern eher mit den Zusatzanforderungen der Krankenkassen.",
+            "keep_when": "A genuine FAQ conversation, interview or moderation where question and reference to the other side carry real information, not engagement ritual."
           }
         }
       }
@@ -2620,7 +2649,25 @@
           "description": "Methods that don't exist in the library",
           "confidence": 0.85
         }
-      ]
+      ],
+      "uiSlop": {
+        "description": "UI defaults in generated front-end code and string literals (landing pages).",
+        "detection": "detect-only: each match is a named signal with a quoted line of evidence for a human to check; NOT folded into the numeric slop score",
+        "detectOnly": true,
+        "indicators": [
+          {
+            "id": "UiSlopStartCase",
+            "description": "Three or more consecutive Title Case words in UI string literals (labels, buttons, i18n values) — generated marketing copy in UI chrome",
+            "confidence": 0.5,
+            "regex": "[A-Z][a-z]+ [A-Z][a-z]+ [A-Z][a-z]+",
+            "knownExamples": [
+              "Streamline Your Workflow",
+              "Unlock Your Potential",
+              "Transform Your Business"
+            ]
+          }
+        ]
+      }
     },
     "audio": {
       "description": "Patterns in AI-generated audio/music.",
@@ -4235,14 +4282,12 @@
       "high": {
         "signals": [
           "ExcessiveEmDash",
-          "EmDashExcess",
           "FakeStrongVerb",
           "HollowKickerRecap",
           "ThroatClearing",
           "MirroredIntroConclusion",
           "RepeatedOpenings",
           "ChatbotLeftover",
-          "ExcessiveHedging",
           "BinaryContrast",
           "Workslop",
           "SecurityReportSlop",
@@ -4256,8 +4301,6 @@
           "NumberedListOveruse",
           "BalancedStructure",
           "PerfectGrammarUniformTone",
-          "EllipsisExcess",
-          "ExclamationExcess",
           "BoldFormatting",
           "EmojiInProfessional",
           "TitleCaseHeadings",
@@ -4273,14 +4316,19 @@
           "ImportancePuffery",
           "ForcedTriad",
           "ColonReveal",
-          "ExcessiveComments",
           "GenericErrorHandling",
-          "OverlyVerboseNaming"
+          "OverlyVerboseNaming",
+          "EmDashExcess",
+          "ExcessiveHedging"
         ],
         "fix_strategy_hint_default": "rewrite_or_condense"
       },
       "low": {
-        "signals": [],
+        "signals": [
+          "EllipsisExcess",
+          "ExclamationExcess",
+          "ExcessiveComments"
+        ],
         "fix_strategy_hint_default": "condense"
       }
     },
@@ -4288,11 +4336,59 @@
       "HardcodedSecret": "delete",
       "HallucinatedAPI": "delete",
       "InventedPackage": "delete"
+    },
+    "calibration_note": "Tier-Zuordnung empirisch kalibriert am Hard-Negatives-Korpus (Null-Edit-Contract, eval/corpus.jsonl): EllipsisExcess/ExclamationExcess/ExcessiveComments=low, EmDashExcess/ExcessiveHedging=medium — hand-annotierte 'high/medium'-Tiers dieser 5 Signale erzeugten FPs auf clean-Texten (z.B. hardneg-049: EmDashExcess 0.85 -> 0.595 >= 0.4)."
+  },
+  "signalModelDynamics": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-09",
+    "source": "#36 (Modell-Dynamik: model_notes je Signal & Signal-Halbwertszeiten)",
+    "note": "Signals are model- and generation-dependent; static weights age silently. model_notes is the optional per-signal field documenting known model dependencies ('weaker for GPT-5.1+', 'Claude-only'). Quarterly Empirie-Notiz per signal; evidence comes from the sampling loop (#12), drift detection per #47, score trajectory monitoring per #59.",
+    "rules": {
+      "scope": "model_notes documents weakening/strengthening of a signal across model generations — never a substitute for weight changes (those go through SCORE-GOVERNANCE re-baseline)",
+      "evidence": "every model_note cites its source (study, Wikipedia AIDASH/AICURLY/AIPUFFERY, or quarterly sampling artifact eval/drift/YYYY-Qn.json)",
+      "review": "status_since + model_notes are reviewed together in the quarterly re-baseline cycle (SCORE-GOVERNANCE.md)"
+    },
+    "halfLifeGuidance": {
+      "definition": "Signal-Halbwertszeit = time until the signal's true-positive contribution halves on current-model output, observed on the frozen reference corpus (adr/0005 discipline)",
+      "categories": {
+        "short": "surface typography & vocabulary tells (CurlyQuotes, marker lists like ImportancePuffery): months — refresh vocabulary quarterly",
+        "medium": "structural/rhythm tells (UniformSentenceLength, RepeatedOpenings): 1-2 years — re-score quarterly, deprecate on two failing cycles (#63 lifecycle)",
+        "long": "semantic/provenance tells (FakeAuthoritySlop, hallucinated APIs, missing primary sources): robust across generations — review yearly"
+      },
+      "measurement": "empirically estimated via eval/drift artifacts (P50/P90 contribution shift, #47) — not guessed; a signal with no measurement gets no half-life claim, only 'unmeasured'"
+    },
+    "entries": {
+      "ExcessiveEmDash": {
+        "model_notes": "weaker for GPT-5.1+; Claude above professional baseline",
+        "half_life": "short (surface typography)",
+        "evidence": "Economist study 07/2026; Wikipedia AIDASH"
+      },
+      "EmDashExcess": {
+        "model_notes": "weaker for GPT-5.1+; Claude above professional baseline",
+        "half_life": "short (surface typography)",
+        "evidence": "Economist study 07/2026; Wikipedia AIDASH"
+      },
+      "CurlyQuotes": {
+        "model_notes": "ChatGPT/DeepSeek-only",
+        "half_life": "short (surface typography)",
+        "evidence": "Wikipedia AICURLY"
+      },
+      "ImportancePuffery": {
+        "model_notes": "marker vocabulary generation-shifts ('blatantly' → 'subtly positive')",
+        "half_life": "short (vocabulary list)",
+        "evidence": "Wikipedia AIPUFFERY"
+      },
+      "PerfectGrammarUniformTone": {
+        "model_notes": "erodes as humanizer post-editing spreads",
+        "half_life": "medium (structural)",
+        "evidence": "unmeasured (quarterly #47)"
+      }
     }
   },
   "collisionMatrix": {
-    "version": "1.0.0",
-    "lastUpdated": "2026-09-02",
+    "version": "1.1.0",
+    "lastUpdated": "2026-09-09",
     "source": "#46 (Signal-Kollisions-Matrix / Interferenz)",
     "rule": "Ein Token-Vorkommen zählt maximal in einer Signalklasse (First-Match nach Priorität unten); Doppelbestrafung desselben Vorkommens ist ausgeschlossen. Unterschiedliche Vorkommen desselben Musters dürfen natürlich in beiden Klassen zählen.",
     "resolutions": [
@@ -4338,5 +4434,61 @@
       }
     ],
     "testContract": "Jede Kollisions-Auflösung braucht ein Fixture, das belegt, dass derselbe Beitrag genau einmal zählt (SIGNAL-DoD-Analogie)."
+  },
+  "domainBindings": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-09-09",
+    "source": "#35 (Domain-Trigger-Metadatum je Signal)",
+    "note": "Optionales Metadatum triggered_by je Signal: Slop-Defaults sind domain-konditional (unslop: 'If the page is for devtools → ...'). Ein Signal mit triggered_by=domain wird nur in den gelisteten Domains gewertet (applies_to, Whitelist) bzw. in den gelisteten Domains nicht gewertet (restricted_in, Blacklist). Whitelist schlägt Blacklist (applies_to wins). Signale ohne triggered_by sind domain-agnostisch. Scorer: --domain NAME CLI-Parameter (fail-loud bei unbekannter Domain). 5 Pilot-Signale.",
+    "domains": [
+      "essay",
+      "marketing",
+      "ui_copy",
+      "changelog",
+      "devtools_docs",
+      "academic",
+      "security_report"
+    ],
+    "signals": {
+      "Workslop": {
+        "triggered_by": "domain",
+        "restricted_in": [
+          "changelog",
+          "devtools_docs"
+        ],
+        "rationale": "'We fixed X / at our company we ...' ist in Changelogs und Devtools-Doku die native, legitime Sprecherrolle — kein Slop-Marker."
+      },
+      "PeerReviewSlop": {
+        "triggered_by": "domain",
+        "applies_to": [
+          "academic",
+          "essay"
+        ],
+        "rationale": "Peer-Review-Floskeln ('as noted by the authors') sind nur im akademischen/essayistischen Register Slop-signifikant."
+      },
+      "SecurityReportSlop": {
+        "triggered_by": "domain",
+        "applies_to": [
+          "security_report",
+          "devtools_docs"
+        ],
+        "rationale": "Security-Report-Floskeln sind ohne Security-Kontext (Advisory, Pentest-Report) inhaltsleer; dort dagegen fachlich normal."
+      },
+      "NumberedListOveruse": {
+        "triggered_by": "domain",
+        "restricted_in": [
+          "changelog",
+          "devtools_docs"
+        ],
+        "rationale": "Nummerierte Listen sind in Changelogs und API-Doku das native Format — kein Slop-Indikator."
+      },
+      "FakeAuthoritySlop": {
+        "triggered_by": "domain",
+        "restricted_in": [
+          "changelog"
+        ],
+        "rationale": "Autoritative Rahmensätze ('studies show') in Changelogs sind falsch-positiv-anfällig: Changelog-Sätze referenzieren Tickets/Commits als legitime Autorität."
+      }
+    }
   }
 }
