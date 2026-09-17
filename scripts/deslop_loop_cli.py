@@ -46,15 +46,22 @@ def main():
     ap.add_argument("--epsilon", type=float, default=0.01)
     ap.add_argument("--voice-budget", type=float, default=0.25)
     ap.add_argument("--run-id", default=None)
+    ap.add_argument("--domain", default=None,
+                    help="domain scope, e.g. ui_copy/changelog/essay (issue #35): "
+                         "signals with a triggered_by:domain binding are skipped "
+                         "when the scope does not match")
     args = ap.parse_args()
 
     with open(args.input) as f:
         text = f.read()
 
     fix = load_fix_module(args.fix_module) if args.fix_module else None
+    from src.deslop_loop import default_detector
+    detector = default_detector(domain=args.domain)
     loop = DeslopLoop(
         params=LoopParams(score_threshold=args.threshold, max_iter=args.max_iter,
                           epsilon=args.epsilon, voice_budget=args.voice_budget),
+        detector=detector,
         runs_dir=args.runs_dir, run_id=args.run_id)
     res = loop.run(text, fix=fix)
     print(json.dumps({
