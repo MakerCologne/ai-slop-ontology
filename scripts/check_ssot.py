@@ -54,6 +54,7 @@ SIGNAL_MODULES = [
     "skills/ai-slop-detection/scripts/structure_metrics.py",
     "skills/ai-slop-detection/scripts/register_profile.py",
     "skills/ai-slop-detection/scripts/discourse_metrics.py",
+    "skills/ai-slop-detection/scripts/llm_scanner.py",
 ]
 
 # "source" values:
@@ -78,6 +79,10 @@ SSOT_REGISTER = {
         "ADVERB_MIN_WORDS": ("engine-config", "deviation"),
         "INTENSIFIERS": ("corpus-calibrated", "deviation"),
         "DECISION_THRESHOLD": ("engine-config", "synced"),
+        # #119 findings receipts: UI/output layer, not signal data —
+        # actions & reliability defaults are presentation constants.
+        "FINDING_ACTIONS": ("engine-config", "deviation"),
+        "FAMILY_RELIABILITY": ("engine-config", "deviation"),
         "DEFAULT_WEIGHTS": ("engine-config", "calibration-output"),
     },
     "quantifiers.py": {
@@ -133,6 +138,9 @@ SSOT_REGISTER = {
         "MIN_NUANCE_MARKERS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_FAKE_ANALYSIS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_NUANCE": ("engine-config", "fixture-calibrated"),
+        "COMPARATIVE_FRAMING_PATTERNS": ("closed-list", "deviation"),
+        "MIN_FRAMING_HITS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_FRAMING": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
@@ -153,12 +161,22 @@ SSOT_REGISTER = {
         "MIN_MARKERS_PER_HALF": ("engine-config", "fixture-calibrated"),
         "PUNCT_PER_CHARS": ("engine-config", "deviation"),
     },
+    "domain_bindings.py": {
+        "SIGNAL_WEIGHT_MAP": ("engine-config", "synced-via-ontology_domainBindings"),
+    },
     "discourse_metrics.py": {
         "RANKED_LINE_RE": ("compiled-regex-matcher", "deviation"),
         "CRITERION_MARKERS": ("closed-list", "deviation"),
         "MIN_RANKED_ITEMS": ("engine-config", "fixture-calibrated"),
         "MIN_ENUM_ITEMS": ("engine-config", "fixture-calibrated"),
         "MAX_ENUM_CONFIDENCE": ("engine-config", "deviation"),
+    },
+    "llm_scanner.py": {
+        "PROMPT_VARIANTS": ("closed-list", "deviation"),
+        "MIN_AGREEMENT": ("engine-config", "contract-pinned"),
+        "ADVISORY_MAX_CONFIDENCE": ("engine-config", "contract-pinned"),
+        "UNSICHER_MAX_CONFIDENCE": ("engine-config", "contract-pinned"),
+        "MIN_WORDS_SCAN": ("engine-config", "fixture-calibrated"),
     },
 }
 
@@ -204,6 +222,13 @@ ALLOWLIST_NOTES = [
     "project page 'Anzeichen fuer KI-generierte Inhalte' + own examples; "
     "no third-party pattern material copied). MIN_* thresholds are "
     "fixture-pinned (tests/test_structure_metrics.py).",
+    "structure_metrics (#75, Signal 6) COMPARATIVE_FRAMING_PATTERNS is a "
+    "self-derived EN/DE contrast-frame inventory (weniger X als vielmehr Y / "
+    "eher X als Y / nicht X, sondern Y / not X but rather Y / less about X, "
+    "more about Y) for the detect-only ComparativeFraming signal (concept "
+    "from issue #75 Signal 6, Komparativ-Rahmung; own regexes and own "
+    "examples; no third-party pattern material copied). MIN_* thresholds "
+    "are fixture-pinned (tests/test_structure_comparative.py).",
     "de_typography (#76) closed lists (DE function words, capitalized "
     "function words, EN month names, brand allowlist) are self-derived "
     "DE gate/matcher inventories after de.wikipedia Anzeichen-fuer-KI-"
@@ -225,6 +250,13 @@ ALLOWLIST_NOTES = [
     "fixture-pinned (tests/test_discourse_metrics.py). Short public "
     "quotes in the reference corpus are attributed; no CC BY-SA pattern "
     "material copied.",
+    "llm_scanner (#57) PROMPT_VARIANTS are three self-written rotation "
+    "templates (question form + ordering instruction) for the advisory "
+    "Layer 2 judge; contract constants (MIN_AGREEMENT 0.9, advisory "
+    "confidence caps) are pinned by docs/loop-guards/57-llm-zweit-scanner.md "
+    "and tests/test_llm_scanner.py. The judge is injectable — no model API "
+    "and no network in the module; findings are advisory-only and never "
+    "feed the numeric score.",
 ]
 
 

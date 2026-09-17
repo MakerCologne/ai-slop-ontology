@@ -114,5 +114,68 @@ class CliTests(unittest.TestCase):
         self.assertNotEqual(mark.returncode, 0)
 
 
+
+
+class LearnInputTests(unittest.TestCase):
+    """Issue #120: simple learn input — freitext + optional path is enough."""
+
+    SCORER = os.path.join(SCRIPTS, "slop_scorer.py")
+    STORE_SCRIPT = os.path.join(SCRIPTS, "learning_store.py")
+
+    def test_learn_freetext_only_appends_entry(self):
+        with tempfile.TemporaryDirectory() as td:
+            store = os.path.join(td, "not_slop.jsonl")
+            learning_store.learn_entry(store, "false positive on src/foo.rs")
+            entries = learning_store.load_store(store)
+            self.assertEqual(len(entries), 1)
+            self.assertEqual(entries[0]["signal_id"], "reviewed")
+            self.assertIn("src/foo.rs", entries[0]["note"])
+
+    def test_learn_empty_note_raises(self):
+        with tempfile.TemporaryDirectory() as td:
+            with self.assertRaises(ValueError):
+                learning_store.learn_entry(os.path.join(td, "s.jsonl"), "  ")
+
+    def test_learn_with_file_creates_exemption(self):
+        with tempfile.TemporaryDirectory() as td:
+            doc = os.path.join(td, "text.md")
+            with open(doc, "w", encoding="utf-8") as f:
+                f.write(BUZZ_TEXT)
+            learning_store.learn_entry(
+                os.path.join(td, "not_slop.jsonl"), "genre copy",
+                signal_id="buzzwords", sample_text=BUZZ_TEXT)
+            result = slop_score(
+                BUZZ_TEXT, not_slop_store=os.path.join(td, "not_slop.jsonl"))
+            self.assertIn("buzzwords", result["signals"]["exempted"])
+
+    def test_cli_learn_minimal(self):
+        with tempfile.TemporaryDirectory() as td:
+            store = os.path.join(td, "not_slop.jsonl")
+            run = subprocess.run(
+                [sys.executable, self.SCORER, "--learn",
+                 "false positive on src/foo.rs", "--store", store],
+                capture_output=True, text=True)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            self.assertTrue(os.path.isfile(store))
+
+    def test_cli_learn_requires_note(self):
+        run = subprocess.run(
+            [sys.executable, self.SCORER, "--learn"],
+            capture_output=True, text=True)
+        self.assertNotEqual(run.returncode, 0)
+
+    def test_cli_learn_store_module(self):
+        with tempfile.TemporaryDirectory() as td:
+            doc = os.path.join(td, "text.md")
+            with open(doc, "w", encoding="utf-8") as f:
+                f.write(BUZZ_TEXT)
+            run = subprocess.run(
+                [sys.executable, self.STORE_SCRIPT, "learn", "genre copy",
+                 "--file", doc, "--signal", "buzzwords"],
+                capture_output=True, text=True)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            self.assertTrue(os.path.isfile(os.path.join(td, "not_slop.jsonl")))
+
+
 if __name__ == "__main__":
     unittest.main()
