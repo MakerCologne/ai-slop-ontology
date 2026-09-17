@@ -26,7 +26,18 @@ diskriminative Signal ist die Genre-Migration, nicht die Rezenz.
 wird in `phrase_category_score` integriert (Scorer UND Klassifikator).
 13 neue Tests (tests/test_conversational_fillers.py). Spiegel in
 ontology.json (signals.text.phrases.categories).
-## [Unreleased]
+
+
+## [2.9.2] — 2026-09-12 (#61 Run-Audit-Format)
+
+Jeder Loop-Run mit `--runs-dir` erzeugt jetzt vier Standard-Dateien in
+`runs/<runId>/` (additiv; Legacy-Artefakte bleiben): `scan.md` (initiale
+Detektion mit Evidence), `fixes.md` (Action/Score/Budget je Iteration),
+`trajectory.json` (maschinenlesbare Iterations-Records), `report.md`
+(Verdict, Exit-Check, Guarantee). Akzeptanzkriterium aus #61 erfüllt:
+Ein vergangener Run ist aus den Dateien vollständig rekonstruierbar.
+Loop bleibt rewrite-frei (ADR-0001); Audit-Writer bricht den Loop nie
+(try/except, stderr-Warnung). Tests: `tests/test_run_audit_format_61.py`.## [Unreleased]
 
 ### feat(#57): LLM-Zweit-Scanner — Layer 2 (advisory only)
 

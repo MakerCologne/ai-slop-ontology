@@ -183,6 +183,8 @@ class DeslopLoop:
     def _audit_start(self, text: str) -> Optional[str]:
         if not self.runs_dir:
             return None
+        self._audit_created = datetime.datetime.now().isoformat(
+            timespec="seconds")
         d = os.path.join(self.runs_dir, self.run_id)
         os.makedirs(d, exist_ok=True)
         manifest = {
@@ -295,6 +297,7 @@ class DeslopLoop:
         run_dir = self._audit_start(text)
 
         score_initial, baseline_findings = self.detector(text)
+        self._audit_baseline = baseline_findings
         baseline_ids = {f.signal for f in baseline_findings}
         current, current_score = text, score_initial
 
@@ -449,4 +452,11 @@ class DeslopLoop:
                          iteration_records=records, run_dir=run_dir)
         self._audit_result(run_dir, res,
                            baseline_findings=baseline_findings)
+        try:
+            from src.run_audit import write_run_audit
+            write_run_audit(run_dir, res,
+                            baseline_findings=getattr(self, "_audit_baseline", None),
+                            created=getattr(self, "_audit_created", None))
+        except Exception as exc:  # audit must never break the loop
+            print(f"warn: run_audit writer failed: {exc}", file=sys.stderr)
         return res
