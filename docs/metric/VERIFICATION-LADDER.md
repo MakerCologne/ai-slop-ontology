@@ -1,6 +1,6 @@
 # Metrik-Design: Verification Ladder für „fake-done" (Code-Achse) (#121)
 
-**Status:** spec (nicht aktiviert) · **Verwandt:** #55 (Hard-Gates), adr/0006 (detect-only), Quelle: AI-Labs/axonscanner
+**Status:** implementiert (detect-only) — `src/verification_ladder.py`, Tests `tests/test_verification_ladder.py` (L1) · **Verwandt:** #55 (Hard-Gates), adr/0006 (detect-only), Quelle: AI-Labs/axonscanner
 
 ## Problem
 
@@ -28,3 +28,33 @@ Prinzip: **under-credits, never over-credits** — die Einordnung kann Code unte
 - Die Leiter ist eine **Gesamtmetrik/Report-Zeile** je Modul, kein weiterer Score (adr/0006-konform).
 - `synthetic-risk` qualifiziert als Kandidat für `critical`-Tier (#55 `signalSeverity`) und damit Hard-Gate; Eigenes Signal-Issue mit 3/3/2-Fixtures vor Promotion (SIGNAL-DoD).
 - Code-Achse (`signals.code`) um `verificationLadder`-Metadaten je Indicator erweitern — eigene Changeset, nicht hier.
+
+## Implementierung (2026-09-12)
+
+`src/verification_ladder.py` (detect-only, adr/0006): `analyze_module(source,
+test_sources=None, entry_points=None)` ordnet jede Funktion evidenzbasiert
+einer Sprosse zu:
+
+- **asserted** — ein ausführbares `assert` exercised die Funktion (statisch
+  nachgewiesen). Spez-Ambiguität („nur behauptet") aufgelöst als:
+  Docstring-Claims landen auf `claimed-only`, ausführbare Asserts auf
+  `asserted`.
+- **tested** — Referenz aus einer `test_*`-Funktion der übergebenen
+  Test-Sources.
+- **reachable** — Aufrufpfad von Modul-Level / konventionellen Entry-Namen
+  (`main`, `run`, `cli`, `handler`, `serve`, `start`) / expliziten
+  `entry_points`, transitiv innerhalb der Analyseeinheit.
+- **claimed-only** — Verhaltens-Claim (Docstring oder Existenz) ohne Asserts,
+  Tests, Caller.
+- **stub** — Signatur ohne Implementierung (`pass`, `...`,
+  `NotImplementedError`, nur Docstring).
+- **synthetic-risk** — Random-/Konstant-Rückgabe, wo Name/Docstring eine
+  Berechnung claimen (kritischster Fall;params ungenutzt bei
+  Konstant-Rückgabe). Berichtet als `gates`-Eintrag — Kandidat fürs
+  `critical`-Tier (#55), Promotion nur via eigenem SIGNAL-DoD-Issue.
+
+Under-Credit-Regel umgesetzt: eine Sprosse wird nur mit positiver Evidenz
+angerechnet; Stub schlägt dabei eine Test-Referenz (ein referenzierter Stub
+bleibt Stub). Ausgabe ist eine Report-Zeile je Funktion (`{name, level,
+evidence}`) plus `summary`-Zählung — kein Score, kein Anteil am
+Text/Code-Slop-Score.
