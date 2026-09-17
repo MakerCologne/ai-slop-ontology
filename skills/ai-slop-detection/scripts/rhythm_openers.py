@@ -60,6 +60,26 @@ def _opener_share(sentences: list):
     return (top, count / len(openers))
 
 
+
+# Issue #230 / P3: share of paragraphs opening with an additive connector.
+_PARAGRAPH_CONNECTORS = (
+    "darueber hinaus", "darüber hinaus", "zudem", "ausserdem", "außerdem",
+    "des weiteren", "des weiten", "ein weiterer", "gleichzeitig",
+    "abschliessend", "abschließend", "zusammenfassend", "weiterhin",
+    "zusaetzlich", "zusätzlich", "moreover", "furthermore", "additionally",
+    "in addition", "finally,", "in summary", "overall,",
+)
+
+
+def paragraph_connector_rate(text: str) -> float:
+    """Share of paragraphs (>= 1 line blocks) opening with an additive connector."""
+    paras = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+    if len(paras) < 2:
+        return 0.0
+    hits = sum(1 for para in paras if para.lower().startswith(_PARAGRAPH_CONNECTORS))
+    return hits / len(paras)
+
+
 def rhythm_metrics(text: str) -> dict:
     sentences = [s.strip() for s in tokenizer.split_sentences(text) if s.strip()]
     run = _uniform_length_run(sentences) if sentences else 0
@@ -92,9 +112,20 @@ def rhythm_metrics(text: str) -> dict:
                          "never fire.",
         })
 
+    pcr = paragraph_connector_rate(text)
+    if pcr > 0.5:
+        signals.append({
+            "id": "ParagraphConnectorRate",
+            "confidence": 0.5,
+            "evidence": f"{round(pcr * 100)}% of paragraphs open with an additive connector",
+            "keep_when": "Structured genres (legal, regulatory, academic) where "
+                         "connector-led paragraphs are convention, not AI filler.",
+        })
+
     return {
         "max_uniform_length_run": run,
         "top_opener_share": round(share, 3),
         "self_answered_questions": self_answers,
+        "paragraph_connector_rate": round(pcr, 3),
         "signals": signals,
     }

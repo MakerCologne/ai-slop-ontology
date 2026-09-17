@@ -32,7 +32,7 @@
 | M15 | Emojis vor Überschriften | GEDECKT | markup_anomalies/formatting slop |
 | M16 | Gedankenstrich-Cluster | GEDECKT | EmDashExcess + Em-Dash-Doctrine |
 | M17 | Briefartiger Aufbau (Betreff/Anrede/Grußformel) | NEU (klein) | Kandidat instruction/provenance-Umfeld |
-| M18 | Kollaborativ-Floskeln („Ich hoffe, das hilft") | DE-VARIANTE | chatbot leftovers (EN) → #77 |
+| M18 | Kollaborativ-Floskeln („Ich hoffe, das hilft“) | **GEDECKT (neu, #77-Rest 13.09.)** | **de_chatbot_leftover (Voll-Zweibeleg de-ev-17)** |
 | M19 | Wissensgrenzen-Hinweise („Stand …") | GEDECKT | provenance #20 (Update-Marker) |
 | M20 | Prompt-Ablehnungsreste | GEDECKT | provenance #20 / instruction slop |
 | M21 | Platzhaltertext ([Name einfügen]) | GEDECKT | markup_anomalies/proof_metrics |
@@ -47,9 +47,9 @@
 | M30 | Stilwechsel zwischen Absätzen | DE-VARIANTE | register_drift #81 → DE-Marker |
 | M31 | Ich-Form-Bearbeitungszusammenfassungen | NEU (verhaltensbasiert) | out of scope (Text-Engine) |
 | M32 | Autoritäts-Floskeln („die eigentliche Frage ist") | DE-VARIANTE | rhetorical_setups/authority → #77 |
-| M33 | Signposting/Ankündigungen | DE-VARIANTE | rhetorical_setups → #77 |
+| M33 | Signposting/Ankündigungen | **GEDECKT (neu, #77-Rest 13.09.)** | **de_signposting (Voll-Zweibeleg de-ev-18)** |
 | M34 | Fragment-Überschriften (Einzeiler-Nachspann) | DE-VARIANTE | rhythm/kicker-Signale → DE |
-| M35 | Rhetorische Fragen als Fake-Dialog | DE-VARIANTE | rhetorical_patterns → #77 |
+| M35 | Rhetorische Fragen als Fake-Dialog | **GEDECKT (neu, #77-Rest 13.09.)** | **de_fake_dialog (Voll-Zweibeleg de-ev-20)** |
 | M36 | Universal-Geschichts-Eröffnung („Seit jeher") | **GEDECKT (neu, T2)** | **de_opening (Teil 2)** | |
 | M37 | „In der heutigen X-Welt"-Rahmung | **GEDECKT (neu, T2)** | **de_opening + multilingual.german.buzzwords** | |
 | M38 | Aspirativer Schluss (grenzenlose Möglichkeiten) | **GEDECKT (neu, T2)** | **de_closing (Teil 2)** | |
@@ -73,18 +73,18 @@
 | M56 | Aphorismus-Formeln | NEU | Kandidat phrase DE |
 | M57 | Markdown-Struktur-Artefakte | GEDECKT | markup_anomalies/formatting slop |
 | M58 | Abstrakta-Stapel/Nominalstil | NEU (Teil) | Density-Dimension streift; Kandidat DE |
-| M59 | Forcierte Ich-Lockerheit | DE-VARIANTE | faux-candid (EN, rhetorical) → #77 |
+| M59 | Forcierte Ich-Lockerheit | **GEDECKT (neu, #77-Rest 13.09.)** | **de_faux_candid (Voll-Zweibeleg de-ev-21)** |
 | M60 | Synonym-Rotation für Entitäten | **GEDECKT (neu, T2)** | **structure_metrics.synonym_rotation (detect-only)** | |
 | M61 | Isometrisches Dokument (gleich lange Einheiten) | **GEDECKT (neu, T2)** | **structure_metrics.isometry (detect-only)** | |
 | M62 | Bewertender Schluss-Satz ohne neue Info | NEU | verwandt TrailingMoral |
 | M63 | Modalpartikel-Anomalie | OFFEN (Stub) | naturalness_guard.modal_particle_anomaly = Stub; DE-Inventar folgt (s. #81) |
 | M64 | KI-Marker-Vokabular DE | → #77 | de_ai_vocab (dieser Batch, Teil 2) |
-| M65 | Kopula-Vermeidung („fungiert als") | DE-VARIANTE | copula_rate #22 → DE-Verben |
+| M65 | Kopula-Vermeidung („fungiert als“) | **GEDECKT (neu, #77-Rest 13.09.)** | **de_copula_avoidance (Voll-Zweibeleg de-ev-19)** |
 | M66 | Fake-Analyse-Anhang (Relativsatz ohne Info) | **GEDECKT (neu, #76-Rest)** | **structure_metrics.fake_analysis_appendix (≥2 Treffer, detect-only)** |
 | M67 | Ankündigungs-Spaltsatz („Was mich überraschte …") | **GEDECKT (neu, T2)** | **de_announcement_cleft (Teil 2)** | |
 | M68 | Komparativ-Rahmung („weniger X als vielmehr Y") | NEU | Kandidat phrase DE |
 | M69 | Struktureller Register-Kollaps | DE-VARIANTE | register_drift #81 → DE-Profile |
-| M70 | Falsche Agency abstrakter Subjekte | DE-VARIANTE | micro_patterns FalseAgency → DE-Subjekte/Verben |
+| M70 | Falsche Agency abstrakter Subjekte | **GEDECKT (neu, #77-Rest 13.09.)** | **de_false_agency (Voll-Zweibeleg de-ev-22)** |
 | M71 | Retroaktive Scheinnuance („Genauer gesagt …") | **GEDECKT (neu, #76-Rest)** | **structure_metrics.pseudo_nuance (≥2 Marker, detect-only)** |
 | M72 | Pseudo-therapeutische Validierung | NEU | Konversations-Kontext, Kandidat |
 
@@ -92,7 +92,21 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M7, M18, M26, M30, M32/33 (DE-Teil), M34, M35, M44, M54, M59, M65, M69, M70 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M7, M26, M30, M32, M34, M44, M54, M69 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
+
+
+## Bilanz (#77-Rest Welle 4, 13.09.2026)
+
+- **GEDECKT (neu, Welle 4):** 3 weitere Muster — M35 `de_fake_dialog`, M59 `de_faux_candid`, M70 `de_false_agency` (je 6 Phrasen, conf 0.6, **Voll-Zweibeleg** je Phrase: Wikipedia-Projektseite + own:corpus de-ev-20..22)
+- **DE-Signal-Zähler:** 25 + 3 = **28 DE-Signale gesamt**
+- Fixtures je Kategorie 3/3/2 in tests/test_de_variant_rest2.py; DE_LAYER-Pin auf 22 Kategorien erweitert (C4: 99/132 Phrasen mit ≥ 2 Belegen — neue 18 Phrasen vollständig zweibelegt)
+- Kollisionsfix gegenüber Erstentwurf: "die forschung deutet darauf hin" → "die studienlage deutet darauf hin" (Teilstring-Kollision mit de_authority_floskel #46-Disziplin)
+
+## Bilanz (#77-Rest-Batch, 13.09.2026)
+
+- **GEDECKT (neu, #77-Rest):** 3 weitere Muster — M18 `de_chatbot_leftover`, M33 `de_signposting`, M65 `de_copula_avoidance` (je 6 Phrasen, conf 0.6, **Voll-Zweibeleg** je Phrase: Wikipedia-Projektseite + own:corpus de-ev-17..19)
+- **DE-Signal-Zähler:** 22 + 3 = **25 DE-Signale gesamt**
+- Fixtures je Kategorie 3/3/2 in tests/test_de_variant_rest.py; DE_LAYER-Pin auf 19 Kategorien erweitert (C4: 81/114 Phrasen mit ≥ 2 Belegen — neue 18 Phrasen vollständig zweibelegt)
 
 ## Bilanz (Teil 1)
 
@@ -109,3 +123,42 @@ Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind d
 - **Ziel erreicht:** 63/96 de_*-Phrasen (65,6 %) tragen jetzt **≥ 2 unabhängige Belege** (Pin ≥ 50 %, C4 in scripts/check_ssot.py, Manipulationsprobe in tests/test_de_evidence_densification.py). Zweite Belege: eigene handgeschriebene Belegtexte (`eval/de_evidence_texts.jsonl`, source `own:corpus`, je Kategorie ein Text mit 3–4 wörtlich enthaltenen Phrasen) — eigene Handschrift, keine Kopien aus CC BY-SA-Drittkatalogen (Lizenzregel).
 - **Dokumentierte Abweichung (33 Phrasen, 34,4 %):** Einzelbeleg (Wikipedia-Projektseite oder own:de-observation/en-pendant). Die Rest-Belegung läuft künftig über den C4-Coverage-Pin — Unterschreiten von 50 % failt das SSOT-Gate.
 - **Strukturmetrik-Rest:** M66 (fake_analysis_appendix) und M71 (pseudo_nuance) als detect-only Signale in structure_metrics.py (Konfidenz 0.5, je 3/3/2-Fixtures in tests/test_structure_rest.py). M67 (Ankündigungs-Spaltsatz) bereits als de_announcement_cleft gedeckt — bewusst keine Duplikation (#46).
+
+## 2026-09-17: OpenerAnnouncement + ParagraphConnectorRate (#230 / P3)
+
+- **OpenerAnnouncement** (rhetorical_patterns.py, detect-only, Konfidenz 0.45):
+  Lob-/Ankuendigungs-Frames am Satzanfang ("Spannender Punkt.", "Ein weiterer Aspekt ist ...",
+  "Die spannende Frage ist ...", "Du sprichst einen wichtigen Punkt an") sowie
+  text-initiale Ich-Anlaeufe ("Ich moechte/denke/finde/glaube ...") OHNE
+  Begruendungsmarker im Satz. Frame-basiert (Platzhalter-Mechanik #83/#88), keine
+  wachsende Wortliste. keep_when: echte Haltungsdifferenzierung ("Ich denke, dass X,
+  weil Y belegt"), Ritual-Formeln, Verhandlungs-Ankuendigungen.
+- **ParagraphConnectorRate** (rhythm_openers.py, advisory, nie gescored): Anteil der
+  Absaetze mit additivem Konnektor-Eroeffner (dt./engl.); Signal ab > 50 % und >= 2
+  Absaetzen. keep_when: strukturierte Genres (juristisch, regulatorisch, akademisch),
+  wo Konnektor-Absaetze Konvention sind.
+- Hard Negatives getestet in tests/test_opener_announcement.py (Begruendung im Satz,
+  mid-text-Ich, juristischer Einzel-Konnektor, Kurztext).
+
+## 2026-09-17: Genre-Profil comment/message + LinkedIn-Kommentar-Evals (#231 / P4)
+
+- **Genre-Profile `comment` und `message`** (genre_profiles.py, Opt-in via `--genre`,
+  ADR-0004: kein Auto-Detect): kurze Saetze und Ritual-Formeln (Grussformeln) sind
+  Genres-Konvention, kein Slop — exempt_terms fuer Grussformeln, zero_weights fuer
+  verbosity/list_heavy, decision_threshold 0.50. Lob-Auftakt und Triaden bleiben
+  voll verdächtig (Advisories verweisen auf OpenerAnnouncement /
+  engagement_comment_default / ForcedTriad).
+- **`engagement_comment_default`** (rhetorical_patterns.py, detect-only,
+  Konfidenz 0.45): feuert erst, wenn EIN Text mindestens 3 der 4 Sequenzelemente
+  IN REIHENFOLGE enthaelt (Lob-Anfang -> Paraphrase-Marker -> Ergaenzungs-Ankuendigung
+  -> schliessende Frage). Einzelne Elemente (auch Paraphrase + Frage) feuern nicht.
+  keep_when: echte FAQ-Konversation/Interview/Moderation.
+- **Control-Set-Erweiterung** (eval/control_set.jsonl, 10 -> 20 Texte, ADR-0005
+  eigene Handschrift): 5 CommentSlop-Sequenzen (als known_fn dokumentiert — kurze
+  Kommentare erreichen die Score-Eskalation nicht; Detektion laeuft detect-only,
+  ADR-0006) und 5 legitime LinkedIn-Kommentare als Hard Negatives
+  (differenzierter Widerspruch, echte Detailfrage, inhaltliche Zustimmung mit
+  Ergaenzung, Kritik am Vergleich, technische Gegenanalyse).
+  **FP-Rate auf den 5 legitimen Kommentaren: 0** (kein Signal, Score < 0.08).
+- Tests: tests/test_comment_genre.py (TP >= 1, Hard Negatives >= 2 inkl.
+  Control-Set-Texte, Opt-in ohne Auto-Detect).
