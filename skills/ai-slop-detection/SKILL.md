@@ -77,6 +77,7 @@ python3 scripts/slop_scorer.py --file README.md
 - Auto-discovery runs for `--file` input only; piped stdin stays environment-independent.
 - The applied config is echoed in the JSON output under `config` (run reproducibility).
 - Config composes with `--genre` (allowlist and genre exemptions apply together). Fail-loud: an invalid config aborts with exit code 2.
+- Disabled weighted dimensions keep appearing in the report; they just no longer contribute to the score.
 ### Step 2: Classify slop type
 
 ```bash
