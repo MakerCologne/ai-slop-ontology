@@ -75,6 +75,7 @@ python3 scripts/slop_scorer.py --file README.md
 - `term_allowlist`: terms stripped from signal matching only (same mechanic as genre exempt terms); structural dimensions keep the full text. Only the strong-evidence floors that remain after disabling are honest — allowlisting does not silence everything.
 - `weight_overrides`: merged over DEFAULT_WEIGHTS (no re-normalization; scores cap at 1.0).
 - Auto-discovery runs for `--file` input only; piped stdin stays environment-independent.
+- The applied config is echoed in the JSON output under `config` (run reproducibility).
 
 ### Step 2: Classify slop type
 
