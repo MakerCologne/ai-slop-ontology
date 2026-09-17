@@ -120,7 +120,7 @@ RHETORICAL_PATTERNS = {
         "description": "Stacked punchy fragments and repeated sentence shapes — three or "
                        "more very short sentences in a row. Vary shape only when it helps.",
         "example_slop": "It works. It scales. It ships. Every time.",
-        "example_fix": "It works, scales, and ships every time.",
+        "example_fix": "It ships every time.",
         "keep_when": "A short burst used once, deliberately, for genuine emphasis.",
     },
     # --- Wikipedia "Signs of AI writing" additions (issue #7) ---
@@ -180,6 +180,65 @@ RHETORICAL_PATTERNS = {
         "example_slop": "The dashboard is fast, reliable, and scalable.",
         "example_fix": "The dashboard answers the 95th-percentile query in 80 ms.",
         "keep_when": "Three genuinely distinct, individually meaningful items — not one claim stretched to three.",
+    },
+    "DecorativeSeparatorTriad": {
+        "label": "Decorative separator triad",
+        "confidence": 0.5,
+        "description": 'Slogan-shaped "X | Y | Z" (pipes, bullets) or "#X #Y #Z" '
+                       "runs of three short items used as a headline or kicker. Guarded "
+                       "against markdown tables and genuine multi-item lists.",
+        "example_slop": "Strategie | Umsetzung | Wirkung",
+        "example_fix": "Strategie und Umsetzung - und welche Wirkung daraus tatsaechlich entsteht.",
+        "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - "
+                     "not a decorative headline triple.",
+    },
+    "OpenerAnnouncement": {
+        "label": "Opener announcement",
+        "confidence": 0.45,
+        "description": "Sentences that open by announcing content instead of "
+                       "carrying it: praise openers ('Spannender Punkt.'), "
+                       "'Ein weiterer Aspekt ist ...', question announcements "
+                       "('Die spannende Frage ist ...'), and text-initial "
+                       "Ich-approach frames without an in-sentence justification. "
+                       "Frame-based (placeholder mechanics #83/#88), not a growing word list.",
+        "example_slop": "Spannender Punkt. Ich denke, ein weiterer wichtiger Aspekt ist die Frage, wie viel Prozesswissen verfuegbar ist.",
+        "example_fix": "Wie viel Prozesswissen ist tatsaechlich verfuegbar?",
+        "keep_when": "Genuine stance differentiation: 'Ich denke, dass X, weil Y belegt' "
+                     "carries content and a reason - the frame is the point, not a run-up. "
+                     "Mid-text occurrences and ritual formulas (thanks, negotiation "
+                     "statements) stay unflagged.",
+    },
+    "engagement_comment_default": {
+        "label": "Engagement comment default",
+        "confidence": 0.45,
+        "description": "The default LinkedIn comment sequence — praise opener, "
+                       "paraphrase marker (\"Sie schreiben/In Ihrem Beitrag\", "
+                       "\"you describe/your post\"), an announced add-on "
+                       "(\"Ein weiterer Aspekt ist ...\") and a closing engagement "
+                       "question — with at least 3 of the 4 elements in order. Fires "
+                       "when ONE text walks the whole template, not on any single element.",
+        "example_slop": "Danke für diesen spannenden Beitrag. Sie beschreiben sehr "
+                        "treffend, wie FHUs unter Personalnot leiden. Ein weiterer "
+                        "Aspekt ist die Zulassungsdauer. Wie sehen Sie das?",
+        "example_fix": "Die Zulassungsdauer in Ihrem Beispiel passt nicht zu unseren "
+                        "Zahlen: 14 Monate Standardverfahren, 9 Monate im "
+                        "beschleunigten Verfahren. Wir hadern eher mit den "
+                        "Zusatzanforderungen der Krankenkassen.",
+        "keep_when": "A genuine FAQ conversation, interview or moderation where "
+                     "question and reference to the other side carry real "
+                     "information, not engagement ritual.",
+        "sequence_elements": {
+            "praise": ["danke für diesen", "danke fuer diesen", "spannender beitrag",
+                       "spannender punkt", "toller beitrag", "großartiger beitrag",
+                       "grossartiger beitrag", "wichtiger beitrag", "super beitrag",
+                       "great post", "great read", "love this post", "this resonates"],
+            "paraphrase": ["sie schreiben", "sie beschreiben", "sie erwähnen",
+                           "sie erwaehnen", "in ihrem beitrag", "wie sie sagen",
+                           "you describe", "you mention", "your post", "you write"],
+            "addon": ["ein weiterer aspekt", "ein weiterer punkt", "ein weiterer gedanke",
+                      "ergänzend", "ergaenzend", "hinzu kommt", "ergänzen möchte",
+                      "ergaenzen moechte", "to add", "adding to this", "one more thing"],
+        },
     },
     "RepeatedOpenings": {
         "label": "Repeated sentence openings",
@@ -287,6 +346,9 @@ _MID_SENTENCE_BOLD = re.compile(r"[a-z0-9,;]\s+\*\*[^*\n]{1,40}\*\*\s+[a-z]")
 # Forced-triad suffix classes: two or more of the three items must share one.
 _TRIAD_SUFFIXES = (
     "able", "ible", "ful", "less", "ous", "ive", "ing", "ed", "al", "ic", "ly", "y",
+    # German noun/verb classes (Arjan, 15.09.2026): triads of German verbs
+    # ("verstehen, gestalten, transformieren") or nouns share inflection suffixes.
+    "en", "ung", "keit", "ion", "ern",
 )
 
 _CHATBOT_PHRASES = None  # filled from RHETORICAL_PATTERNS["ChatbotLeftover"]["phrases"]
@@ -436,11 +498,17 @@ def find_rhetorical_patterns(text: str):
         em = text.count("\u2014") + text.count("\u2013")
         word_count = len(text.split())
         sent_count = max(len(_sentences(text)), 1)
-        if em >= 1 and word_count <= 120:
+        # COLL-2 (collisionMatrix, #46): the em-dash-cluster branch
+        # (em >= 3 and em / sent_count > 0.5) was removed — it is a strict
+        # subset of the classifier's EmDashExcess (>0.5 em dashes per
+        # sentence), so every cluster occurrence was double-reported.
+        # EmDashExcess owns cluster detection; FormattingSlop keeps only the
+        # doctrine branches EmDashExcess does not cover (short copy, long-draft
+        # allowance) — gated on em/sentence <= 0.5 so an EmDashExcess-cluster
+        # occurrence is never re-reported here.
+        if em >= 1 and word_count <= 120 and em / sent_count <= 0.5:
             formatting_evidence = f"em dash in short copy: {em} in {word_count} words"
-        elif em >= 3 and em / sent_count > 0.5:
-            formatting_evidence = f"em-dash cluster: {em} dashes in {sent_count} sentences"
-        elif em > 2 and word_count > 120:
+        elif em > 2 and word_count > 120 and em / sent_count <= 0.5:
             formatting_evidence = f"em dashes beyond long-draft allowance: {em} in {word_count} words"
     if formatting_evidence:
         add("FormattingSlop", formatting_evidence)
@@ -479,22 +547,97 @@ def find_rhetorical_patterns(text: str):
             add("ImportancePuffery", _snippet(lowered, idx, idx + 80))
             break
 
-    # 13. Forced triad — "X, Y, and Z" of one-word adjectives where at
-    #     least two items share a suffix class; digits or colons before the
-    #     list mark concrete content, not a slogan.
-    for m in re.finditer(r"\b([a-z]+),\s+([a-z]+),\s+and\s+([a-z]+)\b", lowered):
-        items = (m.group(1), m.group(2), m.group(3))
+    # 13. Forced triad — "X, Y, and Z" / "X, Y, und Z" of one-word items where
+    #     at least two share a suffix class; digits before the list mark concrete
+    #     content, not a slogan. Since 15.09.2026 (Arjan): also bare comma triads
+    #     after a colon or at line start (German enumerations often drop the
+    #     conjunction), and staccato single-word triads ("Menschen. Prozesse.
+    #     Technologie.") are reported as ForcedTriad evidence alongside
+    #     RoboticRhythm.
+    for m in re.finditer(r"\b([a-z\u00e0-\u00ff]+),\s+([a-z\u00e0-\u00ff]+)(,?)\s+(?:and|und)\s+([a-z\u00e0-\u00ff]+)\b", lowered):
+        items = (m.group(1), m.group(2), m.group(4))
         if len(set(items)) < 3:
             continue
         prefix = lowered[max(0, m.start() - 30):m.start()]
-        if ":" in prefix or re.search(r"\d", prefix):
+        if re.search(r"\d", prefix):
             continue
         suffix_hits = [
             sum(1 for it in items if it.endswith(sfx)) for sfx in _TRIAD_SUFFIXES
         ]
-        if max(suffix_hits, default=0) >= 2:
+        # Oxford-comma form ("X, Y, and Z"): two shared suffixes suffice.
+        # Comma-less German form ("X, Y und Z") is ordinary prose, so it
+        # needs ALL THREE items in one inflection class before it counts
+        # as a slogan triad (guards "Beratung, Umsetzung und Betrieb").
+        needed = 2 if m.group(3) == "," else 3
+        if max(suffix_hits, default=0) >= needed:
             add("ForcedTriad", "" + ", ".join(items))
             break
+    for m in re.finditer(r"(?:^|:\s+|\n)([a-z\u00e0-\u00ff]+),\s+([a-z\u00e0-\u00ff]+),\s+([a-z\u00e0-\u00ff]+)[.\n]", lowered):
+        items = (m.group(1), m.group(2), m.group(3))
+        if len(set(items)) < 3:
+            continue
+        suffix_hits = [
+            sum(1 for it in items if it.endswith(sfx)) for sfx in _TRIAD_SUFFIXES
+        ]
+        if max(suffix_hits, default=0) >= 3 and not any(re.search(r"\d", it) for it in items):
+            add("ForcedTriad", "" + ", ".join(items))
+            break
+    staccato = re.findall(r"(?<![\w.])([A-Za-z\u00c0-\u00ff]{3,})\.\s+([A-Za-z\u00c0-\u00ff]{3,})\.\s+([A-Za-z\u00c0-\u00ff]{3,})\.", text)
+    for items in staccato:
+        low = tuple(i.lower() for i in items)
+        if len(set(low)) < 3:
+            continue
+        # Three consecutive single-word sentences are distinctive enough that
+        # no shared inflection class is required (Arjan 15.09.2026).
+        if all(2 <= len(i) <= 16 for i in low):
+            add("ForcedTriad", " ".join(i + "." for i in items))
+            break
+
+    # 13b. Decorative separator triad — slogan-shaped "X | Y | Z" or
+    #      "#X #Y #Z" of short items (pipes, bullets, hashtags). Guarded against
+    #      markdown table rows (leading pipe, dashes) and genuine lists that
+    #      carry more than three items or longer phrases.
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("|") or "---" in stripped or stripped.startswith("-"):
+            continue  # table row / separator line / list syntax
+        for m in re.finditer(r"\b([\w\u00c0-\u00ff]{2,18})\s*[|\u2022]\s*([\w\u00c0-\u00ff]{2,18})\s*[|\u2022]\s*([\w\u00c0-\u00ff]{2,18})\b", line):
+            items = (m.group(1), m.group(2), m.group(3))
+            if len(set(i.lower() for i in items)) < 3:
+                continue
+            add("DecorativeSeparatorTriad", "" + " | ".join(items))
+            break
+        m_hash = re.search(r"#(\w+)\s+#(\w+)\s+#(\w+)", line)
+        if m_hash:
+            items = (m_hash.group(1), m_hash.group(2), m_hash.group(3))
+            if len(set(i.lower() for i in items)) == 3:
+                add("DecorativeSeparatorTriad", "" + " ".join("#" + i for i in items))
+
+    # 13c. Opener announcements (Issue #230 / P3) — sentences that announce
+    #      content instead of carrying it. Frame-based, detect-only.
+    #      Tier A: pure praise/announcement frames at sentence start (always).
+    _OPENER_FRAMES = (
+        "spannender punkt", "spanender punkt", "interessanter gedanke",
+        "wichtiger beitrag", "danke fuer diesen beitrag", "danke für diesen beitrag",
+        "du sprichst einen wichtigen punkt an", "das ist ein wichtiger aspekt",
+        "genau das ist entscheidend", "ein weiterer aspekt ist", "ein weiterer punkt waere",
+        "ein weiterer punkt wäre", "ergaenzend dazu", "ergänzend dazu",
+        "die eigentliche frage ist", "die spannende frage ist",
+        "was bedeutet das nun", "doch was heisst konkret", "doch was heißt konkret",
+    )
+    for frame in _OPENER_FRAMES:
+        if lowered.startswith(frame) or ("\n" + frame) in lowered or (". " + frame) in lowered:
+            add("OpenerAnnouncement", frame)
+            break
+    #      Tier B: Ich-approach frames — only at TEXT start and only without an
+    #      in-sentence justification marker (hard negative: 'Ich denke, dass X, weil Y').
+    _ICH_FRAMES = ("ich moechte", "ich möchte", "ich wollte", "ich denke",
+                   "ich finde", "ich glaube")
+    _JUSTIFICATION = re.compile(r"\b(weil|denn|grund|belegt|belegen|nachvollziehbar|gemessen|laut|deshalb|daher)\b")
+    if lowered.startswith(_ICH_FRAMES):
+        first_sent = sents[0].lower() if sents else lowered
+        if not _JUSTIFICATION.search(first_sent):
+            add("OpenerAnnouncement", "text-initial ich-approach: " + first_sent[:60])
 
     # 14. Repeated sentence openings — 3+ sentences starting with the same word.
     opener_counts = {}
@@ -507,7 +650,52 @@ def find_rhetorical_patterns(text: str):
             add("RepeatedOpenings", f"{len(occurrences)} sentences start with '{opener}'")
             break
 
-    # 15. Chatbot leftovers — assistant-register phrases in running prose.
+    # 15b. Engagement comment default (Issue #231 / P4) — the LinkedIn
+    #      comment template: praise opener -> paraphrase marker -> announced
+    #      add-on -> closing question. Fires when at least 3 of the 4 elements
+    #      appear IN ORDER in a single text. Any single element alone never
+    #      fires (hard negatives: substantive comments may paraphrase AND ask
+    #      a question — two elements are not the template).
+    meta_ecd = RHETORICAL_PATTERNS["engagement_comment_default"]
+    seq = meta_ecd["sequence_elements"]
+    pos = []
+    for elem in ("praise", "paraphrase", "addon"):
+        best = None
+        for term in seq[elem]:
+            idx = lowered.find(term)
+            if idx >= 0 and (best is None or idx < best):
+                best = idx
+        if best is not None:
+            pos.append((best, elem))
+    stripped_end = lowered.rstrip()
+    has_closing_question = (stripped_end.endswith("?") or
+                            "wie sehen sie das" in lowered or
+                            "was ist ihre erfahrung" in lowered or
+                            "was sind ihre erfahrungen" in lowered or
+                            "what are your thoughts" in lowered or
+                            "how do you see this" in lowered or
+                            "what has been your experience" in lowered)
+    if has_closing_question:
+        pos.append((len(lowered), "closing_question"))
+    pos.sort()
+    # Longest increasing subsequence over element order (praise < paraphrase <
+    # addon < question); count elements in template order.
+    order = {"praise": 0, "paraphrase": 1, "addon": 2, "closing_question": 3}
+    best_run = run = 0
+    last = -1
+    for _, elem in pos:
+        if order[elem] > last:
+            run += 1
+            last = order[elem]
+        else:
+            run, last = 1, order[elem]
+        best_run = max(best_run, run)
+    if best_run >= 3:
+        found = [e for _, e in pos]
+        add("engagement_comment_default",
+            "sequence elements in order: " + ", ".join(found))
+
+    # 16. Chatbot leftovers — assistant-register phrases in running prose.
     for phrase in RHETORICAL_PATTERNS["ChatbotLeftover"]["phrases"]:
         idx = lowered.find(phrase)
         if idx >= 0:

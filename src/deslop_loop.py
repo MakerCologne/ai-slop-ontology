@@ -51,10 +51,27 @@ import os
 import re
 from collections import Counter
 from dataclasses import asdict, dataclass, field
+
+try:
+    from src.voice_drift import VoiceDriftParams, evaluate as voice_drift_evaluate
+except ImportError:  # direct module import without package context
+    from voice_drift import VoiceDriftParams, evaluate as voice_drift_evaluate  # noqa: E402
 from typing import Callable, Optional
 
 Detector = Callable[[str], "tuple[float, list[Finding]]"]
 Fixer = Callable[[str, list["Finding"]], Optional[str]]
+
+# RPN-style fix order (issue #55, FMEA IEC 60812): critical → high →
+# medium → low; within a tier by confidence descending.
+SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+
+
+def rpn_fix_order(findings: "list[Finding]") -> "list[Finding]":
+    """Order confirmed findings for the fix callback: severity tier first,
+    then confidence descending (RPN-Logik: kritische zuerst)."""
+    return sorted(findings,
+                  key=lambda f: (SEVERITY_ORDER.get(f.severity, 9),
+                                 -f.confidence))
 
 _TOKEN_RE = re.compile(r"\b\w+\b")
 
@@ -67,6 +84,13 @@ class Finding:
     confidence: float
     evidence: str
     severity: str = "medium"
+    fix_strategy: str = ""  # fix_strategy_hint from signalSeverity block (#55)
+
+
+def ordered_findings_text(findings: "list[Finding]") -> str:
+    """Stable debug representation: fix order first, then alphabetical
+    signal name as tie-break (deterministic output for audit records)."""
+    return ", ".join(f.signal for f in rpn_fix_order(findings)) or "-"
 
 
 @dataclass
@@ -76,6 +100,7 @@ class LoopParams:
     epsilon: float = 0.01
     voice_budget: float = 0.25
     confirm_confidence: float = 0.9
+    voice_drift: VoiceDriftParams = field(default_factory=VoiceDriftParams)
 
 
 @dataclass
@@ -106,7 +131,8 @@ def default_detector(ontology_path: str = "ontology.json") -> Detector:
         res = clf.classify_text(text)
         findings = [
             Finding(signal=m.signal_id, confidence=m.confidence,
-                    evidence=m.evidence, severity=m.severity)
+                    evidence=m.evidence, severity=m.severity,
+                    fix_strategy=clf.fix_strategy_for(m.signal_id))
             for m in res.signals_detected
         ]
         return res.overall_slop_score, findings
@@ -164,7 +190,8 @@ class DeslopLoop:
         with open(os.path.join(run_dir, "iterations.jsonl"), "a") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
-    def _audit_result(self, run_dir, res: LoopResult, manifest_extra=None):
+    def _audit_result(self, run_dir, res: LoopResult, manifest_extra=None,
+                      baseline_findings=None):
         if not run_dir:
             return
         payload = {
@@ -180,6 +207,74 @@ class DeslopLoop:
             payload.update(manifest_extra)
         with open(os.path.join(run_dir, "result.json"), "w") as f:
             json.dump(payload, f, indent=2, ensure_ascii=False)
+        self._write_standard_files(run_dir, res, baseline_findings or [])
+
+    # -- run-audit standard (#61): scan.md / fixes.md / trajectory.json /
+    #    report.md — acceptance: a past run is fully reconstructible from
+    #    the files alone (which signal, which fix, which score per iter).
+    def _write_standard_files(self, run_dir, res: LoopResult,
+                              baseline_findings) -> None:
+        # scan.md — baseline detection snapshot
+        lines = ["# Baseline Scan", "",
+                 f"- run_id: {self.run_id}",
+                 f"- score_initial: {res.score_initial:.3f}", ""]
+        if baseline_findings:
+            lines += ["| signal | severity | confidence |", "|---|---|---|"]
+            for f in sorted(baseline_findings,
+                            key=lambda x: (-x.confidence, x.signal)):
+                lines.append(
+                    f"| {f.signal} | {f.severity} | {f.confidence:.2f} |")
+        else:
+            lines.append("_no baseline findings recorded_")
+        with open(os.path.join(run_dir, "scan.md"), "w") as fh:
+            fh.write("\n".join(lines) + "\n")
+
+        # fixes.md — per-iteration fix protocol
+        lines = ["# Fix Protocol", "", f"run_id: {self.run_id}", "",
+                 "| iter | action | confirmed signals | budget | "
+                 "score_before → score_after |", "|---|---|---|---|---|"]
+        for rec in res.iteration_records:
+            lines.append(
+                f"| {rec['iter']} | {rec['action']} | "
+                f"{', '.join(rec['confirmed']) or '-'} | "
+                f"{rec['budget_used']} | "
+                f"{rec['score_before']:.3f} → {rec['score_after']:.3f} |")
+        with open(os.path.join(run_dir, "fixes.md"), "w") as fh:
+            fh.write("\n".join(lines) + "\n")
+
+        # trajectory.json — machine-readable score path
+        trajectory = [{
+            "iter": rec["iter"],
+            "action": rec["action"],
+            "score_before": rec["score_before"],
+            "score_after": rec["score_after"],
+            "budget_used": rec["budget_used"],
+            "confirmed": rec["confirmed"],
+        } for rec in res.iteration_records]
+        with open(os.path.join(run_dir, "trajectory.json"), "w") as fh:
+            json.dump({"run_id": self.run_id, "iterations": trajectory},
+                      fh, indent=2, ensure_ascii=False)
+
+        # report.md — human-readable end-of-run summary
+        lines = [
+            "# Run Report", "",
+            f"- run_id: {self.run_id}",
+            f"- verdict: {res.verdict} ({res.exit_check})",
+            f"- iterations: {res.iterations}",
+            f"- score: {res.score_initial:.3f} → {res.score_final:.3f}",
+            f"- open signals: {', '.join(res.open_signals) or '-'}",
+            "",
+            "## Guarantee", "",
+            res.guarantee or "-", "",
+            "## Reconstruction", "",
+            "- Baseline scan: `scan.md`",
+            "- Per-iteration fixes: `fixes.md`",
+            "- Score path: `trajectory.json`",
+            "- Machine-readable result: `result.json`",
+            "- Run metadata: `manifest.json`",
+        ]
+        with open(os.path.join(run_dir, "report.md"), "w") as fh:
+            fh.write("\n".join(lines) + "\n")
 
     # -- main loop -----------------------------------------------------
     def run(self, text: str, fix: Optional[Fixer] = None) -> LoopResult:
@@ -247,7 +342,7 @@ class DeslopLoop:
                 self._audit_iter(run_dir, records[-1])
                 break
 
-            candidate = fix(current, confirmed)
+            candidate = fix(current, rpn_fix_order(confirmed))
             if candidate is None:
                 verdict, exit_check = "EXIT_ESCALATE", "NO_CANDIDATE"
                 guarantee = ("human review required — fix callback returned "
@@ -262,15 +357,19 @@ class DeslopLoop:
                 self._audit_iter(run_dir, records[-1])
                 break
 
-            # ---- VOICE BUDGET (guardrail before verify) ----
+            # ---- VOICE BUDGET (per-step) + VOICE DRIFT (#56, cumulative vs draft_0) ----
             budget = token_change_rate(current, candidate)
-            if budget > p.voice_budget:
+            vd = voice_drift_evaluate(text, candidate, p.voice_drift)
+            vd_violation = vd.verdict in ("budget", "regression")
+            if budget > p.voice_budget or vd_violation:
                 records.append({"iter": it, "score_before": top_score,
                                 "score_after": current_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
-                                "action": "rejected_budget",
-                                "budget_used": round(budget, 4)})
+                                "action": ("rejected_budget" if budget > p.voice_budget
+                                           else f"rejected_voice_drift_{vd.verdict}"),
+                                "budget_used": round(budget, 4),
+                                "voice_drift": asdict(vd)})
                 self._audit_iter(run_dir, records[-1])
                 continue
 
@@ -320,5 +419,6 @@ class DeslopLoop:
                          text=current, guarantee=guarantee,
                          open_signals=open_signals,
                          iteration_records=records, run_dir=run_dir)
-        self._audit_result(run_dir, res)
+        self._audit_result(run_dir, res,
+                           baseline_findings=baseline_findings)
         return res

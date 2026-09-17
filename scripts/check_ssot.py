@@ -78,6 +78,10 @@ SSOT_REGISTER = {
         "ADVERB_MIN_WORDS": ("engine-config", "deviation"),
         "INTENSIFIERS": ("corpus-calibrated", "deviation"),
         "DECISION_THRESHOLD": ("engine-config", "synced"),
+        # #119 findings receipts: UI/output layer, not signal data —
+        # actions & reliability defaults are presentation constants.
+        "FINDING_ACTIONS": ("engine-config", "deviation"),
+        "FAMILY_RELIABILITY": ("engine-config", "deviation"),
         "DEFAULT_WEIGHTS": ("engine-config", "calibration-output"),
     },
     "quantifiers.py": {
@@ -155,6 +159,9 @@ SSOT_REGISTER = {
         "MIN_WORDS_DRIFT": ("engine-config", "fixture-calibrated"),
         "MIN_MARKERS_PER_HALF": ("engine-config", "fixture-calibrated"),
         "PUNCT_PER_CHARS": ("engine-config", "deviation"),
+    },
+    "domain_bindings.py": {
+        "SIGNAL_WEIGHT_MAP": ("engine-config", "synced-via-ontology_domainBindings"),
     },
     "discourse_metrics.py": {
         "RANKED_LINE_RE": ("compiled-regex-matcher", "deviation"),
