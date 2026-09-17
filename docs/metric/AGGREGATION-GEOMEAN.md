@@ -24,6 +24,6 @@ slop_score = prod_d (1 - w_d * risk_d) ^ alpha_d     mit sum(alpha_d) = 1
 
 ## Aktivierungspfad (Governance)
 
-1. Spec-PR (dieser) → 2. Referenz-Implementierung als Alternativ-Aggregation hinter Flag → 3. Messung auf `eval/corpus.jsonl` **mit uniform-Vergleich** (Ablations-Pflicht, #106) → 4. Freigabe via SCORE-GOVERNANCE (Change-Protokoll, Re-Baseline).
+1. Spec-PR (erledigt) → 2. Referenz-Implementierung als Alternativ-Aggregation hinter Flag (erledigt: slop.json `"aggregation": "geomean"` im Projekt-Scorer, Tests `tests/test_aggregation_geomean.py`; Default bleibt `weighted`, `scoringFormula` in `ontology.json` unverändert) → 3. Messung auf `eval/corpus.jsonl` **mit uniform-Vergleich** (Ablations-Pflicht, #106) → 4. Freigabe via SCORE-GOVERNANCE (Change-Protokoll, Re-Baseline).
 
 Keine Änderung an `scoringFormula` in diesem PR.
