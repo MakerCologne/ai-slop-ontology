@@ -36,7 +36,7 @@ python3 -c "import json; json.load(open('ontology.json')); print('  ontology.jso
 python3 -c "import yaml; yaml.safe_load(open('ai_slop_ontology.yaml')); print('  yaml ok')"; check $?
 
 step "3 Gates"
-for s in check_consistency check_ssot check_doc_signals check_methodology check_signal_dod check_signal_reliability; do
+for s in check_consistency check_ssot check_doc_signals check_methodology check_signal_dod check_model_dynamics check_signal_reliability; do
   printf '  --- %s\n' "$s"; python3 "scripts/$s.py"; check $?
 done
 printf '  --- fp_baseline --check\n'; python3 scripts/fp_baseline.py --check; check $?
