@@ -20,7 +20,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 ### L2 — Control Set
 
 - `eval/human_ideological.jsonl` — Seed-Korpus Human/Ideological Slop (#98-Vorlauf, 40 Einträge, alle `own:handwritten`, adr/0005: keine fremden Volltexte); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
-- `eval/control_set.jsonl` — Golden Control Set: 10 handgeschriebene Texte (5 Slop / 5 Hard Negatives), known-FN-Register (ADR-0003)
+- `eval/control_set.jsonl` — Golden Control Set: 20 handgeschriebene Texte (10 Slop, davon 6 dokumentierte known_fn / 10 Hard Negatives), known-FN-Register (ADR-0003); P4/#231: +5 CommentSlop-Sequenzen (detect-only via engagement_comment_default) und +5 legitime LinkedIn-Kommentare (FP-Rate 0)
 - `eval/run_control_set.py` — FN/FP-Gate (Threshold 0.40, known_fn-Ausnahmen, RESOLVED-Meldung); läuft bei jedem Issue im Burn
 
 ### L3 — Quartals-Re-Score / Kalibrierung
@@ -84,6 +84,9 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_domain_bindings.py` — #35 Domain-Trigger: SSOT-Sanity von `domainBindings` (≥5 Pilot-Signale, whitelist XOR blacklist, deklarierte Domains), Accessor-Semantik (Whitelist schlägt Blacklist, Default domain-agnostisch), Scorer-Integration (`--domain` zero-t gemappte Gewichtsdimensionen, JSON-Audit-Felder, Exit 2 bei unbekannter Domain), Classifier-Integration (Filter vor Noisy-OR-Aggregation, fail-loud)
 - `tests/test_de_evidence_densification.py` — #76-Rest RI-2-FU: Evidence-Verdichtung (≥2 unabhängige Belege für ≥50% der de_*-Phrasen; L1) mit own:corpus-Belegtexten `eval/de_evidence_texts.jsonl` (L1-Belegtextdatei, eigene Handschrift) und C4-Coverage-Pin (Manipulationsprobe)
 - `tests/test_structure_rest.py` — #76-Rest: M66 Fake-Analyse-Anhang + M71 Scheinnuance (detect-only ≤0.5, DoD 3/3/2); M67 bewusst nicht dupliziert (schon de_announcement_cleft)
+- `tests/test_example_fix_meta.py` — #229 / P2 Meta-Regressionstest: jeder `example_fix` aus RHETORICAL_PATTERNS muss den eigenen Detektor (rhetorical_patterns + rhythm_metrics) ohne Befund passieren — Anti-Slop darf keine neuen Templates säen (L1)
+- `tests/test_opener_announcement.py` — #230 / P3: OpenerAnnouncement (Lob-/Ankuendigungs-Frames, text-initiale Ich-Anlaeufe ohne Begruendung) und ParagraphConnectorRate (advisory, nie gescored) — je ≥1 TP + ≥2 Hard Negatives (L1)
+- `tests/test_comment_genre.py` — #231 / P4: Genre-Profile comment/message (Opt-in via `--genre`, ADR-0004 kein Auto-Detect), engagement_comment_default (detect-only ≤0.5, Sequenz Lob→Paraphrase→Ergänzung→Frage, ≥3/4 in Reihenfolge) und FP-Rate-0-Nachweis für die 5 legitimen Kommentar-Hard-Negatives aus dem erweiterten Control-Set (L1/L2)
 - `tests/test_discourse_metrics.py` — #72 L4: explorative Diskurs-Signale rank_without_criterion & identical_enumeration (conf ≤0.35, `exploratory: True`, DoD 3/3/2) gegen versionierten L4-Referenzkorpus `eval/discourse_ref.jsonl` (Artefakt-Typen deep/10 + deep/06, Kontrollartefakte inklusive)
 - `tests/test_de_typography.py` — #76 DE-Typografie M46/M47/M48/M49 (detect-only, DE-Sprachgate, je 3/3/2 Fixtures; Mapping: docs/de-coverage.md)
 - `tests/test_de_vocab_layer.py` — #77 DE-KI-Marker-Vokabular (4 DE-Phrase-Kategorien in ontology.json, Belegpflicht je Phrase, Kollisionsfreiheit, EN-Corpus-Sicherheit)

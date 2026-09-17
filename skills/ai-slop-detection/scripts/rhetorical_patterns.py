@@ -208,6 +208,38 @@ RHETORICAL_PATTERNS = {
                      "Mid-text occurrences and ritual formulas (thanks, negotiation "
                      "statements) stay unflagged.",
     },
+    "engagement_comment_default": {
+        "label": "Engagement comment default",
+        "confidence": 0.45,
+        "description": "The default LinkedIn comment sequence — praise opener, "
+                       "paraphrase marker (\"Sie schreiben/In Ihrem Beitrag\", "
+                       "\"you describe/your post\"), an announced add-on "
+                       "(\"Ein weiterer Aspekt ist ...\") and a closing engagement "
+                       "question — with at least 3 of the 4 elements in order. Fires "
+                       "when ONE text walks the whole template, not on any single element.",
+        "example_slop": "Danke für diesen spannenden Beitrag. Sie beschreiben sehr "
+                        "treffend, wie FHUs unter Personalnot leiden. Ein weiterer "
+                        "Aspekt ist die Zulassungsdauer. Wie sehen Sie das?",
+        "example_fix": "Die Zulassungsdauer in Ihrem Beispiel passt nicht zu unseren "
+                        "Zahlen: 14 Monate Standardverfahren, 9 Monate im "
+                        "beschleunigten Verfahren. Wir hadern eher mit den "
+                        "Zusatzanforderungen der Krankenkassen.",
+        "keep_when": "A genuine FAQ conversation, interview or moderation where "
+                     "question and reference to the other side carry real "
+                     "information, not engagement ritual.",
+        "sequence_elements": {
+            "praise": ["danke für diesen", "danke fuer diesen", "spannender beitrag",
+                       "spannender punkt", "toller beitrag", "großartiger beitrag",
+                       "grossartiger beitrag", "wichtiger beitrag", "super beitrag",
+                       "great post", "great read", "love this post", "this resonates"],
+            "paraphrase": ["sie schreiben", "sie beschreiben", "sie erwähnen",
+                           "sie erwaehnen", "in ihrem beitrag", "wie sie sagen",
+                           "you describe", "you mention", "your post", "you write"],
+            "addon": ["ein weiterer aspekt", "ein weiterer punkt", "ein weiterer gedanke",
+                      "ergänzend", "ergaenzend", "hinzu kommt", "ergänzen möchte",
+                      "ergaenzen moechte", "to add", "adding to this", "one more thing"],
+        },
+    },
     "RepeatedOpenings": {
         "label": "Repeated sentence openings",
         "confidence": 0.55,
@@ -444,17 +476,11 @@ def find_rhetorical_patterns(text: str):
         em = text.count("\u2014") + text.count("\u2013")
         word_count = len(text.split())
         sent_count = max(len(_sentences(text)), 1)
-        # COLL-2 (collisionMatrix, #46): the em-dash-cluster branch
-        # (em >= 3 and em / sent_count > 0.5) was removed — it is a strict
-        # subset of the classifier's EmDashExcess (>0.5 em dashes per
-        # sentence), so every cluster occurrence was double-reported.
-        # EmDashExcess owns cluster detection; FormattingSlop keeps only the
-        # doctrine branches EmDashExcess does not cover (short copy, long-draft
-        # allowance) — gated on em/sentence <= 0.5 so an EmDashExcess-cluster
-        # occurrence is never re-reported here.
-        if em >= 1 and word_count <= 120 and em / sent_count <= 0.5:
+        if em >= 1 and word_count <= 120:
             formatting_evidence = f"em dash in short copy: {em} in {word_count} words"
-        elif em > 2 and word_count > 120 and em / sent_count <= 0.5:
+        elif em >= 3 and em / sent_count > 0.5:
+            formatting_evidence = f"em-dash cluster: {em} dashes in {sent_count} sentences"
+        elif em > 2 and word_count > 120:
             formatting_evidence = f"em dashes beyond long-draft allowance: {em} in {word_count} words"
     if formatting_evidence:
         add("FormattingSlop", formatting_evidence)
@@ -596,7 +622,52 @@ def find_rhetorical_patterns(text: str):
             add("RepeatedOpenings", f"{len(occurrences)} sentences start with '{opener}'")
             break
 
-    # 15. Chatbot leftovers — assistant-register phrases in running prose.
+    # 15b. Engagement comment default (Issue #231 / P4) — the LinkedIn
+    #      comment template: praise opener -> paraphrase marker -> announced
+    #      add-on -> closing question. Fires when at least 3 of the 4 elements
+    #      appear IN ORDER in a single text. Any single element alone never
+    #      fires (hard negatives: substantive comments may paraphrase AND ask
+    #      a question — two elements are not the template).
+    meta_ecd = RHETORICAL_PATTERNS["engagement_comment_default"]
+    seq = meta_ecd["sequence_elements"]
+    pos = []
+    for elem in ("praise", "paraphrase", "addon"):
+        best = None
+        for term in seq[elem]:
+            idx = lowered.find(term)
+            if idx >= 0 and (best is None or idx < best):
+                best = idx
+        if best is not None:
+            pos.append((best, elem))
+    stripped_end = lowered.rstrip()
+    has_closing_question = (stripped_end.endswith("?") or
+                            "wie sehen sie das" in lowered or
+                            "was ist ihre erfahrung" in lowered or
+                            "was sind ihre erfahrungen" in lowered or
+                            "what are your thoughts" in lowered or
+                            "how do you see this" in lowered or
+                            "what has been your experience" in lowered)
+    if has_closing_question:
+        pos.append((len(lowered), "closing_question"))
+    pos.sort()
+    # Longest increasing subsequence over element order (praise < paraphrase <
+    # addon < question); count elements in template order.
+    order = {"praise": 0, "paraphrase": 1, "addon": 2, "closing_question": 3}
+    best_run = run = 0
+    last = -1
+    for _, elem in pos:
+        if order[elem] > last:
+            run += 1
+            last = order[elem]
+        else:
+            run, last = 1, order[elem]
+        best_run = max(best_run, run)
+    if best_run >= 3:
+        found = [e for _, e in pos]
+        add("engagement_comment_default",
+            "sequence elements in order: " + ", ".join(found))
+
+    # 16. Chatbot leftovers — assistant-register phrases in running prose.
     for phrase in RHETORICAL_PATTERNS["ChatbotLeftover"]["phrases"]:
         idx = lowered.find(phrase)
         if idx >= 0:
