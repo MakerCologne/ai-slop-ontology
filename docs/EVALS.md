@@ -100,7 +100,8 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_conversational_fillers.py` — #110 conversational_fillers (Hassid-Liste): 4 Phrasen, Hard-Negative-Guards (Sign-off-Fenster, Quellenangabe)
 - `tests/test_chat_artifacts.py` — #113 chat-paste artifacts & elision: 6 deterministische Mikro-Signale (Chat-Paste-Artefakte wie Zeitstempel/Lead-Dashes, Elision), Fixtures inkl. Hard Negatives (L1)
 - `tests/test_weight_gain_pin.py` — #106 DoD-Rest: Doku-Pin der Gewichts-Einordnung (SCORE-GOVERNANCE.md + Herkunfts-Kommentar slop_scorer.py nennen den Kalibrierungs-Gewinn der 14-dimensionalen Gewichte gegenüber uniform 1/N; Test bindet diese Zahlen, Muster fp_baseline #80/#85) (L1)
-- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
+
+- `tests/test_paste_artifacts.py` — #113 detect-only-Paste-Artefakte: 6 Mikro-Signale (elision-comment, chat-preamble, fence-in-code, meta-process-comment, list-label-marker, placeholder-credential-shape; kein Score-Einfluss, ADR-0006)- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)
