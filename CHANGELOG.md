@@ -2,7 +2,6 @@
 
 ## [Unreleased] — 2026-09-17 (#229 P2 — Meta-Regressionstest fuer example_fixes)
 
-
 ## [unreleased] — 2026-09-11 (#114 — Academic-Register-Signale, invertierbar)
 
 Genre-Register `academic` erhält drei **invertierbare** detect-only
@@ -45,7 +44,6 @@ EVALS.md-Zuordnung L1.
 - Tests: `tests/test_confirm.py` (13 Tests: Resample-Determinismus,
   alle 4 Pfade einzeln, FP-Metrik, Loop-Integration mit und ohne Gate).
 
-## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 Anti-Slop darf selbst keinen Slop saeen. Neuer Test `tests/test_example_fix_meta.py`
 sperrt die Eigenschaft permanent: Jeder `example_fix` in RHETORICAL_PATTERNS muss
 den eigenen Detektor (`find_rhetorical_patterns` + `rhythm_metrics`) fehlerfrei
@@ -163,7 +161,6 @@ und `rationale`. `SlopClassifier.classify_text(text, domain=...)` und
 des Scopes vor dem Scoring (auditiert über `notes`); ohne `domain`-Angabe
 bleibt das Verhalten unverändert. Tests: `tests/test_domain_trigger.py` (6).
 
-## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 Der Detection-Referenz des Skills
 (`skills/ai-slop-detection/references/detection-signals.md`) war gegenüber
 dem SSOT (`ontology.json`) gedriftet: Sie listete Phrasen, die die Engine
