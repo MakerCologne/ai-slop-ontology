@@ -947,6 +947,120 @@
               "insiders claim"
             ]
           },
+          "performative_voice": {
+            "confidence": 0.55,
+            "description": "NEU #115 (ZeroSlop 'performed voice'): Inszenierung von Persönlichkeit als Formel — LLMs imitieren Meinungsstärke, statt Meinung zu haben. Kumulativregel >= 2 Treffer. keep_when (echte Meinung): Phrase zaehlt nicht, wenn im +-120-Zeichen-Fenster ein First-Person-Erfahrungs-Anker steht ('when I ...', 'in my experience', 'I lost/spent/learned/tried/failed') — das ist gelebte, nicht performte Stimme. Verwandt, aber getrennt von conversational_fillers (#110): dort Gespraechs-Floskeln, hier Identitaets-Theater.",
+            "items": [
+              "here's the thing nobody tells you",
+              "nobody tells you",
+              "i'm going to be honest with you",
+              "let me be brutally honest",
+              "i don't say this lightly",
+              "unpopular opinion, but",
+              "call me old-fashioned, but"
+            ],
+            "evidence": {
+              "here's the thing nobody tells you": [
+                {
+                  "source": "own:issue-115",
+                  "note": "ZeroSlop Muster 'performed voice' — Geheimnis-Setup als Persoenlichkeits-Claim ohne referentiellen Gehalt; Risiko niedrig (sehr spezifische Phrase)"
+                }
+              ],
+              "nobody tells you": [
+                {
+                  "source": "own:issue-115",
+                  "note": "ZeroSlop Kernmuster; Risiko HOCH: echte Erfahrungsprosa nutzt es mit folgendem Fakt → First-Person-Erfahrungs-Anker-Guard (fp_guards.mask_performative_stakes)"
+                }
+              ],
+              "i'm going to be honest with you": [
+                {
+                  "source": "own:issue-115",
+                  "note": "angekuendigte Ehrlichkeit statt Ehrlichkeit; Risiko mittel, Rueckgrat ist die Kumulativregel"
+                }
+              ],
+              "let me be brutally honest": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Intensiv-Steigerung; Risiko mittel"
+                }
+              ],
+              "i don't say this lightly": [
+                {
+                  "source": "own:issue-115",
+                  "note": "vor-behauptete Schwere statt belegter Schwere; Risiko niedrig"
+                }
+              ],
+              "unpopular opinion, but": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Social-Media-Eroeffnungsformel; Risiko HOCH: menschliche Hot-Take-Kultur → nur mit 'but'-Anschluss + Kumulativregel"
+                }
+              ],
+              "call me old-fashioned, but": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Rollen-Overnahme als Opener; Risiko niedrig; konservative Kolumnenprosa bleibt unter Kumulativregel"
+                }
+              ]
+            }
+          },
+          "manufactured_stakes": {
+            "confidence": 0.6,
+            "description": "NEU #115 (ZeroSlop 'manufactured stakes'): Dringlichkeit ohne Sache — dramatisierte Relevanz statt benanntem Termindruck. Kumulativregel >= 2 Treffer. keep_when (echte Dringlichkeit): Phrase zaehlt nicht, wenn innerhalb der naechsten 120 Zeichen ein konkreter Termin/Fakt steht ('by Friday', 'until 30 September', 'deadline', Ziffern mit Einheit) — dann ist die Dringlichkeit real. Fact-Gate-Kopplung: 'Deslop loescht keine Facts' (deslopInvariants, #115) — Score trifft die Inszenierung, nie den Fakt.",
+            "items": [
+              "in today's fast-paced",
+              "the stakes have never been higher",
+              "now more than ever",
+              "at a critical juncture",
+              "time is running out",
+              "don't get left behind",
+              "before it's too late"
+            ],
+            "evidence": {
+              "in today's fast-paced": [
+                {
+                  "source": "own:issue-115",
+                  "note": "ZeroSlop Beispiel 'In today's fast-paced ...' — Beschleunigungs-Claim ohne Referenzobjekt; konsistent mit opening_formulas, aber eigene Dringlichkeits-Semantik"
+                }
+              ],
+              "the stakes have never been higher": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Superlativ-Stakes ohne Zahl; Risiko niedrig"
+                }
+              ],
+              "now more than ever": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Risiko HOCH: menschliche politische Rede nutzt die Phrase seit Jahrzehnten → feuert nur kumulativ (>= 2 Treffer pro Kategorie)"
+                }
+              ],
+              "at a critical juncture": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Geopolitik-Floskel; Risiko niedrig"
+                }
+              ],
+              "time is running out": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Countdown ohne Datum → Termin-Guard (fp_guards): konkreter Termin im Folgfenster maskiert"
+                }
+              ],
+              "don't get left behind": [
+                {
+                  "source": "own:issue-115",
+                  "note": "Marketing-Angst-Appell; Risiko niedrig"
+                }
+              ],
+              "before it's too late": [
+                {
+                  "source": "own:issue-115",
+                  "note": "unbestimmte Frist → Termin-Guard wie (5)"
+                }
+              ]
+            }
+          },
           "de_calque": {
             "confidence": 0.6,
             "description": "DE-Anglizismus-Calques (M45): wörtlich übersetzte EN-KI-Floskeln statt deutscher Idiomatik",
@@ -1999,6 +2113,18 @@
               ]
             }
           },
+          "conversational_fillers": {
+            "confidence": 0.7,
+            "description": "Conversational fillers (issue #110, Hassid list 4-8): spoken-conversation patterns migrated into written content; 'hope this helps' and 'most people' carry hard-negative guards (sign-off position / first-person source) implemented in slop_scorer.apply_conversational_guards; 'here's the thing' remains in listicle_tells (one term, one category); bare 'quick update on' deliberately excluded (natural work-email phrasing, FP baseline clean-email-01)",
+            "items": [
+              "to provide a quick update",
+              "just a quick update",
+              "giving you a quick update",
+              "here's a quick update",
+              "wanted to give you a quick update",
+              "most people (guarded: sentence-initial, no first-person source)"
+            ]
+          },
           "de_chatbot_leftover": {
             "confidence": 0.6,
             "description": "M18 Chatbot-Restfloskeln: kooperative Gespraechsreste aus Assistenten-Kontext im Fliesstext",
@@ -2221,131 +2347,227 @@
               ]
             }
           },
-          "performative_voice": {
-            "confidence": 0.55,
-            "description": "NEU #115 (ZeroSlop 'performed voice'): Inszenierung von Persönlichkeit als Formel — LLMs imitieren Meinungsstärke, statt Meinung zu haben. Kumulativregel >= 2 Treffer. keep_when (echte Meinung): Phrase zaehlt nicht, wenn im +-120-Zeichen-Fenster ein First-Person-Erfahrungs-Anker steht ('when I ...', 'in my experience', 'I lost/spent/learned/tried/failed') — das ist gelebte, nicht performte Stimme. Verwandt, aber getrennt von conversational_fillers (#110): dort Gespraechs-Floskeln, hier Identitaets-Theater.",
-            "items": [
-              "here's the thing nobody tells you",
-              "nobody tells you",
-              "i'm going to be honest with you",
-              "let me be brutally honest",
-              "i don't say this lightly",
-              "unpopular opinion, but",
-              "call me old-fashioned, but"
-            ],
-            "evidence": {
-              "here's the thing nobody tells you": [
-                {
-                  "source": "own:issue-115",
-                  "note": "ZeroSlop Muster 'performed voice' — Geheimnis-Setup als Persoenlichkeits-Claim ohne referentiellen Gehalt; Risiko niedrig (sehr spezifische Phrase)"
-                }
-              ],
-              "nobody tells you": [
-                {
-                  "source": "own:issue-115",
-                  "note": "ZeroSlop Kernmuster; Risiko HOCH: echte Erfahrungsprosa nutzt es mit folgendem Fakt → First-Person-Erfahrungs-Anker-Guard (fp_guards.mask_performative_stakes)"
-                }
-              ],
-              "i'm going to be honest with you": [
-                {
-                  "source": "own:issue-115",
-                  "note": "angekuendigte Ehrlichkeit statt Ehrlichkeit; Risiko mittel, Rueckgrat ist die Kumulativregel"
-                }
-              ],
-              "let me be brutally honest": [
-                {
-                  "source": "own:issue-115",
-                  "note": "Intensiv-Steigerung; Risiko mittel"
-                }
-              ],
-              "i don't say this lightly": [
-                {
-                  "source": "own:issue-115",
-                  "note": "vor-behauptete Schwere statt belegter Schwere; Risiko niedrig"
-                }
-              ],
-              "unpopular opinion, but": [
-                {
-                  "source": "own:issue-115",
-                  "note": "Social-Media-Eroeffnungsformel; Risiko HOCH: menschliche Hot-Take-Kultur → nur mit 'but'-Anschluss + Kumulativregel"
-                }
-              ],
-              "call me old-fashioned, but": [
-                {
-                  "source": "own:issue-115",
-                  "note": "Rollen-Overnahme als Opener; Risiko niedrig; konservative Kolumnenprosa bleibt unter Kumulativregel"
-                }
-              ]
-            }
-          },
-          "manufactured_stakes": {
+          "de_fake_dialog": {
             "confidence": 0.6,
-            "description": "NEU #115 (ZeroSlop 'manufactured stakes'): Dringlichkeit ohne Sache — dramatisierte Relevanz statt benanntem Termindruck. Kumulativregel >= 2 Treffer. keep_when (echte Dringlichkeit): Phrase zaehlt nicht, wenn innerhalb der naechsten 120 Zeichen ein konkreter Termin/Fakt steht ('by Friday', 'until 30 September', 'deadline', Ziffern mit Einheit) — dann ist die Dringlichkeit real. Fact-Gate-Kopplung: 'Deslop loescht keine Facts' (deslopInvariants, #115) — Score trifft die Inszenierung, nie den Fakt.",
+            "description": "M35 Rhetorische Fragen als Fake-Dialog: simulierte Leser-Gespraeche statt Inhalt",
             "items": [
-              "in today's fast-paced",
-              "the stakes have never been higher",
-              "now more than ever",
-              "at a critical juncture",
-              "time is running out",
-              "don't get left behind",
-              "before it's too late"
+              "haben sie sich schon einmal gefragt",
+              "warum ist das so wichtig",
+              "was bedeutet das für sie",
+              "die antwort ist einfach",
+              "wie sieht das in der praxis aus",
+              "was hat das mit ihnen zu tun"
             ],
             "evidence": {
-              "in today's fast-paced": [
+              "haben sie sich schon einmal gefragt": [
                 {
-                  "source": "own:issue-115",
-                  "note": "ZeroSlop Beispiel 'In today's fast-paced ...' — Beschleunigungs-Claim ohne Referenzobjekt; konsistent mit opening_formulas, aber eigene Dringlichkeits-Semantik"
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
-              "the stakes have never been higher": [
+              "warum ist das so wichtig": [
                 {
-                  "source": "own:issue-115",
-                  "note": "Superlativ-Stakes ohne Zahl; Risiko niedrig"
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
-              "now more than ever": [
+              "was bedeutet das für sie": [
                 {
-                  "source": "own:issue-115",
-                  "note": "Risiko HOCH: menschliche politische Rede nutzt die Phrase seit Jahrzehnten → feuert nur kumulativ (>= 2 Treffer pro Kategorie)"
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
-              "at a critical juncture": [
+              "die antwort ist einfach": [
                 {
-                  "source": "own:issue-115",
-                  "note": "Geopolitik-Floskel; Risiko niedrig"
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
-              "time is running out": [
+              "wie sieht das in der praxis aus": [
                 {
-                  "source": "own:issue-115",
-                  "note": "Countdown ohne Datum → Termin-Guard (fp_guards): konkreter Termin im Folgfenster maskiert"
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
-              "don't get left behind": [
+              "was hat das mit ihnen zu tun": [
                 {
-                  "source": "own:issue-115",
-                  "note": "Marketing-Angst-Appell; Risiko niedrig"
-                }
-              ],
-              "before it's too late": [
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
                 {
-                  "source": "own:issue-115",
-                  "note": "unbestimmte Frist → Termin-Guard wie (5)"
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-20) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
           },
-          "conversational_fillers": {
-            "confidence": 0.7,
-            "description": "Conversational fillers (issue #110, Hassid list 4-8): spoken-conversation patterns migrated into written content; 'hope this helps' and 'most people' carry hard-negative guards (sign-off position / first-person source) implemented in slop_scorer.apply_conversational_guards; 'here's the thing' remains in listicle_tells (one term, one category); bare 'quick update on' deliberately excluded (natural work-email phrasing, FP baseline clean-email-01)",
+          "de_faux_candid": {
+            "confidence": 0.6,
+            "description": "M59 Forcierte Ich-Lockerheit: inszenierte Ehrlichkeits- und Vorgriffsfloskeln",
             "items": [
-              "to provide a quick update",
-              "just a quick update",
-              "giving you a quick update",
-              "here's a quick update",
-              "wanted to give you a quick update",
-              "most people (guarded: sentence-initial, no first-person source)"
-            ]
+              "um ehrlich zu sein",
+              "ganz ehrlich gesagt",
+              "ich muss zugeben",
+              "wenn ich ehrlich bin",
+              "um es kurz zu machen",
+              "um es vorwegzunehmen"
+            ],
+            "evidence": {
+              "um ehrlich zu sein": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ganz ehrlich gesagt": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "ich muss zugeben": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "wenn ich ehrlich bin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "um es kurz zu machen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "um es vorwegzunehmen": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-21) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
+          },
+          "de_false_agency": {
+            "confidence": 0.6,
+            "description": "M70 Falsche Agency abstrakter Subjekte: Zahlen/Geschichte/Forschung als handelnde Akteure",
+            "items": [
+              "die geschichte lehrt uns",
+              "die zahlen sprechen eine eigene sprache",
+              "die statistik zeigt ein klares bild",
+              "die studienlage deutet darauf hin",
+              "die technologie verändert die art",
+              "die entwicklung zeigt deutlich"
+            ],
+            "evidence": {
+              "die geschichte lehrt uns": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die zahlen sprechen eine eigene sprache": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die statistik zeigt ein klares bild": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die studienlage deutet darauf hin": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die technologie verändert die art": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ],
+              "die entwicklung zeigt deutlich": [
+                {
+                  "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
+                  "note": "Konzept im Artikel dokumentiert"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-22) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
+                }
+              ]
+            }
           }
         }
       },
@@ -3414,6 +3636,19 @@
       "severity": "critical|high|medium|low|clean",
       "countermeasures": [
         "string"
+      ]
+    }
+  },
+  "deslopInvariants": {
+    "description": "NEU #115: Invarianten fuer Deslop-/Repair-Eingriffe. Ein Verstoss ist ein Bug, kein Tuning-Parameter. Verwandt mit #30 (Edit-Modus), aber als Prinzip formuliert, nicht als Feature.",
+    "factGate": {
+      "statement": "Deslop löscht keine Facts: Zahlen, Claims und benannte Referenzen des Drafts muessen die Edition ueberleben. Slop-Entfernung darf Formulierung, Dramatisierung und Inszenierung tilgen — nie eine Behauptung.",
+      "scope": "alle Deslop-/Rewrite-/Repair-Pfade (Skill-Modus, Edit-Modus #30, Best-of-N #60)",
+      "enforcement": "Human-Review-Gate vor Uebergabe + diff_mode-Fact-Diff (Zahlen/Claims vor/nach) als deterministischer Check",
+      "related": [
+        "#30",
+        "#60",
+        "#115"
       ]
     }
   },
@@ -4785,68 +5020,6 @@
     },
     "calibration_note": "Tier-Zuordnung empirisch kalibriert am Hard-Negatives-Korpus (Null-Edit-Contract, eval/corpus.jsonl): EllipsisExcess/ExclamationExcess/ExcessiveComments=low, EmDashExcess/ExcessiveHedging=medium — hand-annotierte 'high/medium'-Tiers dieser 5 Signale erzeugten FPs auf clean-Texten (z.B. hardneg-049: EmDashExcess 0.85 -> 0.595 >= 0.4)."
   },
-  "collisionMatrix": {
-    "version": "1.1.0",
-    "lastUpdated": "2026-09-09",
-    "source": "#46 (Signal-Kollisions-Matrix / Interferenz)",
-    "rule": "Ein Token-Vorkommen zählt maximal in einer Signalklasse (First-Match nach Priorität unten); Doppelbestrafung desselben Vorkommens ist ausgeschlossen. Unterschiedliche Vorkommen desselben Musters dürfen natürlich in beiden Klassen zählen.",
-    "resolutions": [
-      {
-        "id": "COLL-1",
-        "pair": [
-          "copula_rate (de_phrases/'serves as')",
-          "FakeStrongVerb"
-        ],
-        "token": "'serves as'",
-        "resolution": "FakeStrongVerb gewinnt — Vorkommen zählt nur als FakeStrongVerb, copula_rate ignoriert dasselbe Vorkommen",
-        "test_fixture": "tests/test_collision_matrix.py::test_serves_as_single_count"
-      },
-      {
-        "id": "COLL-2",
-        "pair": [
-          "punctuation_anomaly_score (EmDashExcess)",
-          "FormattingSlop"
-        ],
-        "token": "'—'",
-        "resolution": "EmDashExcess gewinnt für das Zeichenvorkommen; FormattingSlop zählt Em-Dash-Vorkommen nicht mit (weitere FormattingSlop-Trigger unberührt)",
-        "test_fixture": "tests/test_collision_matrix.py::test_emdash_single_count"
-      },
-      {
-        "id": "COLL-3",
-        "pair": [
-          "adverb_killlist (#24)",
-          "positive_voice_markers 'genuinely/truly' (#21)"
-        ],
-        "token": "'genuinely','truly'",
-        "resolution": "Kontext-Regel: als Hedge/Intensifier → Adverb-Signal gewinnt; als positive-voice-Marker (Empfehlungs-/Erfahrungskontext) → Voice-Signal gewinnt. Default bei Ambiguität: Adverb-Signal, Voice-Kontext muss per Heuristik (Satz mit Ich/Empfehlung) explizit sein",
-        "test_fixture": "tests/test_collision_matrix.py::test_adverb_voice_context"
-      },
-      {
-        "id": "COLL-4",
-        "pair": [
-          "#25 Regex-Targets",
-          "#18 Regex-Targets"
-        ],
-        "token": "überlappende Regex-Alternativen",
-        "resolution": "Regex-Targets werden dedupliziert: ein Match-Span zählt einmal; Merge-Regel dokumentiert in Signal-Definition (overlap: documented, precedence: neuere Issue-Nummer gewinnt)",
-        "test_fixture": "tests/test_collision_matrix.py::test_regex_span_dedup"
-      }
-    ],
-    "testContract": "Jede Kollisions-Auflösung braucht ein Fixture, das belegt, dass derselbe Beitrag genau einmal zählt (SIGNAL-DoD-Analogie)."
-  },
-  "deslopInvariants": {
-    "description": "NEU #115: Invarianten fuer Deslop-/Repair-Eingriffe. Ein Verstoss ist ein Bug, kein Tuning-Parameter. Verwandt mit #30 (Edit-Modus), aber als Prinzip formuliert, nicht als Feature.",
-    "factGate": {
-      "statement": "Deslop löscht keine Facts: Zahlen, Claims und benannte Referenzen des Drafts muessen die Edition ueberleben. Slop-Entfernung darf Formulierung, Dramatisierung und Inszenierung tilgen — nie eine Behauptung.",
-      "scope": "alle Deslop-/Rewrite-/Repair-Pfade (Skill-Modus, Edit-Modus #30, Best-of-N #60)",
-      "enforcement": "Human-Review-Gate vor Uebergabe + diff_mode-Fact-Diff (Zahlen/Claims vor/nach) als deterministischer Check",
-      "related": [
-        "#30",
-        "#60",
-        "#115"
-      ]
-    }
-  },
   "signalModelDynamics": {
     "version": "1.0.0",
     "lastUpdated": "2026-09-09",
@@ -5040,6 +5213,55 @@
         "rationale": "Ellipses in ui_copy/changelog are rare and usually stylistic, not evidence of AI generation."
       }
     }
+  },
+  "collisionMatrix": {
+    "version": "1.1.0",
+    "lastUpdated": "2026-09-09",
+    "source": "#46 (Signal-Kollisions-Matrix / Interferenz)",
+    "rule": "Ein Token-Vorkommen zählt maximal in einer Signalklasse (First-Match nach Priorität unten); Doppelbestrafung desselben Vorkommens ist ausgeschlossen. Unterschiedliche Vorkommen desselben Musters dürfen natürlich in beiden Klassen zählen.",
+    "resolutions": [
+      {
+        "id": "COLL-1",
+        "pair": [
+          "copula_rate (de_phrases/'serves as')",
+          "FakeStrongVerb"
+        ],
+        "token": "'serves as'",
+        "resolution": "FakeStrongVerb gewinnt — Vorkommen zählt nur als FakeStrongVerb, copula_rate ignoriert dasselbe Vorkommen",
+        "test_fixture": "tests/test_collision_matrix.py::test_serves_as_single_count"
+      },
+      {
+        "id": "COLL-2",
+        "pair": [
+          "punctuation_anomaly_score (EmDashExcess)",
+          "FormattingSlop"
+        ],
+        "token": "'—'",
+        "resolution": "EmDashExcess gewinnt für das Zeichenvorkommen; FormattingSlop zählt Em-Dash-Vorkommen nicht mit (weitere FormattingSlop-Trigger unberührt)",
+        "test_fixture": "tests/test_collision_matrix.py::test_emdash_single_count"
+      },
+      {
+        "id": "COLL-3",
+        "pair": [
+          "adverb_killlist (#24)",
+          "positive_voice_markers 'genuinely/truly' (#21)"
+        ],
+        "token": "'genuinely','truly'",
+        "resolution": "Kontext-Regel: als Hedge/Intensifier → Adverb-Signal gewinnt; als positive-voice-Marker (Empfehlungs-/Erfahrungskontext) → Voice-Signal gewinnt. Default bei Ambiguität: Adverb-Signal, Voice-Kontext muss per Heuristik (Satz mit Ich/Empfehlung) explizit sein",
+        "test_fixture": "tests/test_collision_matrix.py::test_adverb_voice_context"
+      },
+      {
+        "id": "COLL-4",
+        "pair": [
+          "#25 Regex-Targets",
+          "#18 Regex-Targets"
+        ],
+        "token": "überlappende Regex-Alternativen",
+        "resolution": "Regex-Targets werden dedupliziert: ein Match-Span zählt einmal; Merge-Regel dokumentiert in Signal-Definition (overlap: documented, precedence: neuere Issue-Nummer gewinnt)",
+        "test_fixture": "tests/test_collision_matrix.py::test_regex_span_dedup"
+      }
+    ],
+    "testContract": "Jede Kollisions-Auflösung braucht ein Fixture, das belegt, dass derselbe Beitrag genau einmal zählt (SIGNAL-DoD-Analogie)."
   },
   "domainBindings": {
     "version": "1.0.0",

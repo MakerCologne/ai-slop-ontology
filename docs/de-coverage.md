@@ -49,7 +49,7 @@
 | M32 | Autoritäts-Floskeln („die eigentliche Frage ist") | DE-VARIANTE | rhetorical_setups/authority → #77 |
 | M33 | Signposting/Ankündigungen | **GEDECKT (neu, #77-Rest 13.09.)** | **de_signposting (Voll-Zweibeleg de-ev-18)** |
 | M34 | Fragment-Überschriften (Einzeiler-Nachspann) | DE-VARIANTE | rhythm/kicker-Signale → DE |
-| M35 | Rhetorische Fragen als Fake-Dialog | DE-VARIANTE | rhetorical_patterns → #77 |
+| M35 | Rhetorische Fragen als Fake-Dialog | **GEDECKT (neu, #77-Rest 13.09.)** | **de_fake_dialog (Voll-Zweibeleg de-ev-20)** |
 | M36 | Universal-Geschichts-Eröffnung („Seit jeher") | **GEDECKT (neu, T2)** | **de_opening (Teil 2)** | |
 | M37 | „In der heutigen X-Welt"-Rahmung | **GEDECKT (neu, T2)** | **de_opening + multilingual.german.buzzwords** | |
 | M38 | Aspirativer Schluss (grenzenlose Möglichkeiten) | **GEDECKT (neu, T2)** | **de_closing (Teil 2)** | |
@@ -73,7 +73,7 @@
 | M56 | Aphorismus-Formeln | NEU | Kandidat phrase DE |
 | M57 | Markdown-Struktur-Artefakte | GEDECKT | markup_anomalies/formatting slop |
 | M58 | Abstrakta-Stapel/Nominalstil | NEU (Teil) | Density-Dimension streift; Kandidat DE |
-| M59 | Forcierte Ich-Lockerheit | DE-VARIANTE | faux-candid (EN, rhetorical) → #77 |
+| M59 | Forcierte Ich-Lockerheit | **GEDECKT (neu, #77-Rest 13.09.)** | **de_faux_candid (Voll-Zweibeleg de-ev-21)** |
 | M60 | Synonym-Rotation für Entitäten | **GEDECKT (neu, T2)** | **structure_metrics.synonym_rotation (detect-only)** | |
 | M61 | Isometrisches Dokument (gleich lange Einheiten) | **GEDECKT (neu, T2)** | **structure_metrics.isometry (detect-only)** | |
 | M62 | Bewertender Schluss-Satz ohne neue Info | NEU | verwandt TrailingMoral |
@@ -84,7 +84,7 @@
 | M67 | Ankündigungs-Spaltsatz („Was mich überraschte …") | **GEDECKT (neu, T2)** | **de_announcement_cleft (Teil 2)** | |
 | M68 | Komparativ-Rahmung („weniger X als vielmehr Y") | NEU | Kandidat phrase DE |
 | M69 | Struktureller Register-Kollaps | DE-VARIANTE | register_drift #81 → DE-Profile |
-| M70 | Falsche Agency abstrakter Subjekte | DE-VARIANTE | micro_patterns FalseAgency → DE-Subjekte/Verben |
+| M70 | Falsche Agency abstrakter Subjekte | **GEDECKT (neu, #77-Rest 13.09.)** | **de_false_agency (Voll-Zweibeleg de-ev-22)** |
 | M71 | Retroaktive Scheinnuance („Genauer gesagt …") | **GEDECKT (neu, #76-Rest)** | **structure_metrics.pseudo_nuance (≥2 Marker, detect-only)** |
 | M72 | Pseudo-therapeutische Validierung | NEU | Konversations-Kontext, Kandidat |
 
@@ -92,7 +92,15 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M7, M26, M30, M32/33 ist M33 seit 13.09. gedeckt, M34, M35, M44, M54, M59, M69, M70 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M7, M26, M30, M32, M34, M44, M54, M69 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
+
+
+## Bilanz (#77-Rest Welle 4, 13.09.2026)
+
+- **GEDECKT (neu, Welle 4):** 3 weitere Muster — M35 `de_fake_dialog`, M59 `de_faux_candid`, M70 `de_false_agency` (je 6 Phrasen, conf 0.6, **Voll-Zweibeleg** je Phrase: Wikipedia-Projektseite + own:corpus de-ev-20..22)
+- **DE-Signal-Zähler:** 25 + 3 = **28 DE-Signale gesamt**
+- Fixtures je Kategorie 3/3/2 in tests/test_de_variant_rest2.py; DE_LAYER-Pin auf 22 Kategorien erweitert (C4: 99/132 Phrasen mit ≥ 2 Belegen — neue 18 Phrasen vollständig zweibelegt)
+- Kollisionsfix gegenüber Erstentwurf: "die forschung deutet darauf hin" → "die studienlage deutet darauf hin" (Teilstring-Kollision mit de_authority_floskel #46-Disziplin)
 
 ## Bilanz (#77-Rest-Batch, 13.09.2026)
 

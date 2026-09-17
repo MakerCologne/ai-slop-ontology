@@ -1,5 +1,23 @@
 # Changelog
 
+## [Unreleased] — 2026-09-13 (#77-Rest Welle 4 — DE-Variante-Rest: vierte DE-Phrase-Welle)
+
+- 3 neue de_*-Kategorien (M35 `de_fake_dialog`, M59 `de_faux_candid`,
+  M70 `de_false_agency`), je 6 Phrasen conf 0.6, **Voll-Zweibeleg** je
+  Phrase (Wikipedia-Projektseite + own:corpus de-ev-20..22)
+- docs/de-coverage.md: M35/M59/M70 → GEDECKT; DE-Signal-Zähler 25 → 28
+- scripts/check_ssot.py: DE_LAYER-Pin 19 → 22 Kategorien (C4)
+- tests/test_de_variant_rest2.py: Schema/Kollision/Detection/DoD (3/3/2)
+
+## [Unreleased] — 2026-09-13 (#77-Rest — DE-Variante-Rest: dritte DE-Phrase-Welle)
+
+- 3 neue de_*-Kategorien (M18 `de_chatbot_leftover`, M33 `de_signposting`,
+  M65 `de_copula_avoidance`), je 6 Phrasen conf 0.6, **Voll-Zweibeleg** je
+  Phrase (Wikipedia-Projektseite + own:corpus de-ev-17..19)
+- docs/de-coverage.md: M18/M33/M65 → GEDECKT; DE-Signal-Zähler 22 → 25
+- scripts/check_ssot.py: DE_LAYER-Pin 16 → 19 Kategorien (C4)
+- tests/test_de_variant_rest.py: Schema/Kollision/Detection/DoD (3/3/2)
+
 ## [2.9.1] — 2026-09-12 (#110 — Konversationelle Floskeln, Hassid-Liste 4–8)
 
 Neue detect-only Phrase-Kategorie `conversational_fillers`
@@ -117,8 +135,7 @@ keine Facts" als Invariante in der Ontology.
 - Doku: `docs/loop-guards/120-learn-input-standard.md` (Standard, Regeln,
   Akzeptanz).
 - Tests: 6 neue Fälle in `tests/test_learning_store.py`.
-
-
+## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 ## [Unreleased] — 2026-09-13 (#77-Rest — DE-Variante-Rest: dritte DE-Phrase-Welle)
 
 - 3 neue de_*-Kategorien (M18 `de_chatbot_leftover`, M33 `de_signposting`,

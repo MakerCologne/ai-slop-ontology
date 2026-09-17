@@ -95,6 +95,10 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_phrase_matchability.py` — #83 Phrase-Matchbarkeit: struktureller Wächter, dass keine Phrase im SSOT unmatchbar ist (jede Phrase gegen ihre eigene Instanziierung), Platzhalter-Semantik [X]=Nominalphrase / [N]=Zahl mit Gegenproben, Pattern-Parity über src/scorer, skill/slop_scorer und skill/genre_profiles
 - `tests/test_project_config.py` — #11 Projekt-lokale Config: Validierung (unbekannte Familien/Keys, Gewichts-Bereich), Score-Integration (disabled_signals senkt Score, Allowlist senkt Buzzword-Count, Weight-Override), CLI --config (gültig + Fehlerfall)
 - `tests/test_packaging.py` — #82 Packaging-Contract: Deklarationstest (jeder zur Laufzeit geladene Pfad ist Wheel-Inhalt, ohne Build/Netz) + Build-Test (Wheel bauen, entpacken, Engine und CLI ausserhalb des Checkouts ausführen; benchmark/selfcheck brechen mit Meldung statt Traceback ab)
+- `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when, modal_particle_anomaly Stub für #76)
+- `tests/test_register_profile.py` — #74 Register-Profile v2: Stilkarte (9 Felder, JSON) + register_drift_intern (Hälften-Distanz, detect-only ≤0.5, #42-Genre-Exemptions, Kollisionsdisziplin zu #81 register_drift), Scorer-Kontext-Ausgabe ohne Score-Einfluss
+- `tests/test_de_variant_rest.py` — #77-Rest: M18/M33/M65 als de_chatbot_leftover/de_signposting/de_copula_avoidance (Voll-Zweibeleg de-ev-17..19, DoD 3/3/2)
+- `tests/test_de_variant_rest2.py` — #77-Rest Welle 4: M35/M59/M70 als de_fake_dialog/de_faux_candid/de_false_agency (Voll-Zweibeleg de-ev-20..22, DoD 3/3/2)
 - `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, genre-keep_when, modal_particle_anomaly Stub für #76)
 - `tests/test_voice_drift.py` — #56 Voice-Drift-Guardrail: kumulatives Voice-Budget vs Draft_0 (β=25%), Burstiness-/TTR-Non-Regression (Floor draft_0×0.9), Loop-Integration (rejected_voice_drift_*, Audit-Payload, L1)
 
