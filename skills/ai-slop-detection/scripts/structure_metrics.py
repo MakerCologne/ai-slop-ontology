@@ -25,6 +25,7 @@ Public surface:
     synonym_rotation(text) -> finding | None
     isometry(text) -> finding | None
     find_structure_findings(text) -> list[finding]
+    comparative_framing(text) -> finding | None   (#75, Signal 6)
 """
 
 import math
@@ -130,9 +131,54 @@ def isometry(text: str):
     }
 
 
+# --- M72: Komparativ-Rahmung (#75, Signal 6) -------------------------------
+# Kontrastframes als Beschreibungsersatz: statt Eigenschaften zu nennen,
+# wird die Aussage in ein "nicht X, sondern Y" / "eher X als Y" / "less
+# about X, more about Y"-Geruest gestellt (sprachagnostisch DE+EN).
+COMPARATIVE_FRAMING_PATTERNS = [
+    # DE: "weniger X als vielmehr Y"
+    re.compile(r"\bweniger\s+\S+(?:\s+\S+){0,3}?\s+als\s+vielmehr\b", re.I),
+    # DE: "eher X als Y" (Adverb + bis zu 4 Woerter + als; "eher morgen"
+    # ohne als matcht nicht)
+    re.compile(r"\beher\s+\S+(?:\s+\S+){0,3}?\s+als\b"),
+    # DE: "nicht X, sondern Y" (bis zum Komma max. 30 Zeichen ohne
+    # Satzzeichen)
+    re.compile(r"\bnicht\s+\S+[^,.;]{0,30}?\s*,\s*sondern\b", re.I),
+    # EN: "less about X and more about Y" / "less about X than about Y"
+    re.compile(r"\bless\s+about\s+\S+[^,.;]{0,30}?\s+(?:and\s+(?:more|less)|more|than)\s+about\b", re.I),
+]
+
+MIN_FRAMING_HITS = 2              # Einzeltreffer = normale Kontrastierung
+MIN_WORDS_FRAMING = 25            # kurze Texte: keine Aussagekraft
+
+
+def comparative_framing(text: str):
+    """M72: >= 2 Kontrastframes ("eher X als Y", "nicht X, sondern Y",
+    "less about X, more about Y") als Beschreibungsersatz. Einzeltreffer
+    bleibt unmarkiert — normale Kontrastierung (DoD-Grenzfall in
+    tests/test_structure_comparative.py)."""
+    if len(text.split()) < MIN_WORDS_FRAMING:
+        return None
+    hits = [m.group(0) for p in COMPARATIVE_FRAMING_PATTERNS
+            for m in p.finditer(text)]
+    if len(hits) < MIN_FRAMING_HITS:
+        return None
+    return {
+        "id": "ComparativeFraming",
+        "confidence": 0.5,
+        "evidence": (f"{len(hits)} Kontrastframes als Beschreibungsersatz "
+                     f"(z.B. {hits[0].strip()[:60]}…), sprachagnostisch "
+                     f"DE+EN"),
+        "keep_when": ("echte Vergleiche mit konkreten Groessen (Zahlen,"
+                      "Masse, Namen) zaehlen nicht; Einzeltreffer bleibt "
+                      "unmarkiert; nur advisory werten"),
+    }
+
+
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
-                        fake_analysis_appendix(text), pseudo_nuance(text))
+                        fake_analysis_appendix(text), pseudo_nuance(text),
+                        comparative_framing(text))
             if f]
 
 
