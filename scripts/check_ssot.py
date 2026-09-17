@@ -292,6 +292,9 @@ DE_LAYER = {
     "de_dichotomy_close": 6,
     "de_quote_fabrication": 6,
     "de_register_shift": 6,
+    "de_rhetorical_setup": 6,
+    "de_aphorism": 6,
+    "de_therapeutic_validation": 6,
 }
 
 _DE_WIKI_OK = "/wiki/Wikipedia:Anzeichen"

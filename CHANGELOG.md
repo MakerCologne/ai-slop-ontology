@@ -9,6 +9,17 @@
   DE-Signal-Zaehler 31
 - `tests/test_de_variant_rest3.py` neu (Schema/Belege/Kollisionen/Detektion)
 
+## [Unreleased] — 2026-09-15 (#77-Rest Welle 6 — DE-Variante-Rest: sechste DE-Phrase-Welle)
+
+- 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg
+  Wikipedia-Projektseite + own:corpus de-ev-26..28):
+  - `de_rhetorical_setup` (M32 rhetorische Einstiegsfloskeln, disjunkt zu de_authority_floskel)
+  - `de_aphorism` (M56 Aphorismus-Formeln)
+  - `de_therapeutic_validation` (M72 pseudo-therapeutische Validierung)
+- DE_LAYER-Pin 25 -> 28 Kategorien (C4); de-coverage.md M32/M56/M72 GEDECKT,
+  DE-Signal-Zaehler 34
+- `tests/test_de_variant_rest4.py` neu (Schema/Belege/Kollisionen/Detektion)
+
 # Changelog
 
 ## [Unreleased] — #98-Zielstand: Human/Ideological-Korpus 46/40 + Runner-Gate 5b
