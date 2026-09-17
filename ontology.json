@@ -2357,7 +2357,8 @@
             "pattern": "—",
             "threshold": "> 0.5 per sentence",
             "confidence": 0.85,
-            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged"
+            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged",
+            "model_notes": "Weaker for GPT-5.1+ (em-dashes measurably suppressed); Claude output uses more em-dashes than professional writers (Economist study 07/2026). Weight review quarterly (#47), evidence via sampling loop (#12)."
           },
           {
             "id": "UniformSentenceLength",
@@ -2389,7 +2390,8 @@
             "id": "PerfectGrammarUniformTone",
             "pattern": "Zero grammar errors + identical formality throughout",
             "confidence": 0.55,
-            "note": "Weak signal alone — professional editors also produce this"
+            "note": "Weak signal alone — professional editors also produce this",
+            "model_notes": "Confidence erodes as post-editing humanizer tools spread (unslop et al.); monitor via quarterly re-score (#47)."
           }
         ]
       },
@@ -2401,7 +2403,8 @@
             "char": "—",
             "threshold_per_sentence": 0.5,
             "confidence": 0.85,
-            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster"
+            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster",
+            "model_notes": "Weaker for GPT-5.1+ (suppressed by default); Claude-only deployments: expect higher FP rate in professional-prose genres — apply genre register (#42) before flagging."
           },
           {
             "id": "EllipsisExcess",
@@ -2436,7 +2439,8 @@
             "id": "CurlyQuotes",
             "pattern": "“ ” in plain text",
             "confidence": 0.6,
-            "note": "Smart quotes in raw text/markdown are a typeset-output tell"
+            "note": "Smart quotes in raw text/markdown are a typeset-output tell",
+            "model_notes": "ChatGPT/DeepSeek-only tell (Wikipedia AICURLY); weak-to-zero for Claude/Gemini outputs. Treat as single-model evidence, not cross-model."
           },
           {
             "id": "HyphenatedPairRate",
@@ -2739,7 +2743,7 @@
             "confidence": 0.5,
             "description": "Stacked punchy fragments and repeated sentence shapes — three or more very short sentences in a row. Vary shape only when it helps.",
             "example_slop": "It works. It scales. It ships. Every time.",
-            "example_fix": "It works, scales, and ships every time.",
+            "example_fix": "It ships every time.",
             "keep_when": "A short burst used once, deliberately, for genuine emphasis."
           },
           "ThroatClearing": {
@@ -2809,7 +2813,7 @@
           "ForcedTriad": {
             "label": "Forced triad",
             "confidence": 0.55,
-            "description": "A slogan-shaped 'X, Y, and Z' list of three parallel adjectives ('fast, reliable, and scalable') where a triad is forced for rhythm, not content.",
+            "description": "A slogan-shaped 'X, Y, and Z' list of three parallel items (adjectives, nouns, or verbs; incl. German 'X, Y und Z' and staccato 'X. Y. Z.') where a triad is forced for rhythm, not content.",
             "example_slop": "The dashboard is fast, reliable, and scalable.",
             "example_fix": "The dashboard answers the 95th-percentile query in 80 ms.",
             "keep_when": "Three genuinely distinct, individually meaningful items — not one claim stretched to three."
@@ -3149,7 +3153,7 @@
       }
     },
     "metadata": {
-      "description": "Detect-only slop signals on metadata/config/data surfaces (commit messages, PR bodies, JSON data fields, config boilerplate); issue #45.",
+      "description": "Detect-only slop signals on metadata/config/data surfaces (commit messages, PR bodies, JSON data fields, config boilerplate); issue #45. Issue #111 extension: behavioral commit-velocity, PR-structure and commit-keyword signals (blind-spot A7/BS-I6).",
       "note": "Detect-only: findings are advisory, never part of the numeric text/code slop score (ADR-0001). Implementation: src/metadata_slop.py.",
       "indicators": [
         {
@@ -3166,6 +3170,21 @@
           "id": "ConfigBoilerplateSlop",
           "description": "Narrating boilerplate comments in Dockerfile/YAML/Terraform ('# Install dependencies' over an obvious RUN/COPY line)",
           "confidence": 0.6
+        },
+        {
+          "id": "CommitVelocitySlop",
+          "description": "Behavioral commit signals (Cadence-calibrated): >100 additions/min sustained, <60s inter-commit burst clusters, >90% add/delete ratio with volume, unnaturally consistent ratios; fires only when >=2 independent rules hit (FP guard)",
+          "confidence": 0.75
+        },
+        {
+          "id": "PRStructureSlop",
+          "description": "PR-structure rules (anti-slop-calibrated): >=2 emoji in title, blocked marketing term, code references with no relation to the actual diff, oversized keyword-laden message; >=2 rules must fire",
+          "confidence": 0.75
+        },
+        {
+          "id": "CommitKeywordSlop",
+          "description": "Commit-message vocabulary/structure (gitorit-calibrated): agent gerund/marketing keywords combined with >200-char length or bullet-gerund list structure",
+          "confidence": 0.7
         }
       ]
     },
@@ -4709,14 +4728,12 @@
       "high": {
         "signals": [
           "ExcessiveEmDash",
-          "EmDashExcess",
           "FakeStrongVerb",
           "HollowKickerRecap",
           "ThroatClearing",
           "MirroredIntroConclusion",
           "RepeatedOpenings",
           "ChatbotLeftover",
-          "ExcessiveHedging",
           "BinaryContrast",
           "Workslop",
           "SecurityReportSlop",
@@ -4730,8 +4747,6 @@
           "NumberedListOveruse",
           "BalancedStructure",
           "PerfectGrammarUniformTone",
-          "EllipsisExcess",
-          "ExclamationExcess",
           "BoldFormatting",
           "EmojiInProfessional",
           "TitleCaseHeadings",
@@ -4747,14 +4762,19 @@
           "ImportancePuffery",
           "ForcedTriad",
           "ColonReveal",
-          "ExcessiveComments",
           "GenericErrorHandling",
-          "OverlyVerboseNaming"
+          "OverlyVerboseNaming",
+          "EmDashExcess",
+          "ExcessiveHedging"
         ],
         "fix_strategy_hint_default": "rewrite_or_condense"
       },
       "low": {
-        "signals": [],
+        "signals": [
+          "EllipsisExcess",
+          "ExclamationExcess",
+          "ExcessiveComments"
+        ],
         "fix_strategy_hint_default": "condense"
       }
     },
@@ -4766,8 +4786,8 @@
     "calibration_note": "Tier-Zuordnung empirisch kalibriert am Hard-Negatives-Korpus (Null-Edit-Contract, eval/corpus.jsonl): EllipsisExcess/ExclamationExcess/ExcessiveComments=low, EmDashExcess/ExcessiveHedging=medium — hand-annotierte 'high/medium'-Tiers dieser 5 Signale erzeugten FPs auf clean-Texten (z.B. hardneg-049: EmDashExcess 0.85 -> 0.595 >= 0.4)."
   },
   "collisionMatrix": {
-    "version": "1.0.0",
-    "lastUpdated": "2026-09-02",
+    "version": "1.1.0",
+    "lastUpdated": "2026-09-09",
     "source": "#46 (Signal-Kollisions-Matrix / Interferenz)",
     "rule": "Ein Token-Vorkommen zählt maximal in einer Signalklasse (First-Match nach Priorität unten); Doppelbestrafung desselben Vorkommens ist ausgeschlossen. Unterschiedliche Vorkommen desselben Musters dürfen natürlich in beiden Klassen zählen.",
     "resolutions": [
