@@ -8,7 +8,7 @@ Jedes neue Signal (und jede Signal-Änderung) **muss** alle 8 Punkte der Checkli
 |---|------|---------|-------|
 | 1 | **Test-Oracle:** exakte Matcherspezifikation + ≥1 Positiv-/Negativ-Fixture + Akzeptanzschwelle *vor* Implementierung | `check_signal_dod.py` (Test-Datei-Existenz, FAIL) + Review (Fixtures, Schwelle) | auto + Review |
 | 2 | **FP-Abwägung:** keep_when/Genre-Register/Quote-Exemption-Denke dokumentiert — auch wenn Ergebnis „kein Guard nötig" | `check_signal_dod.py` (keep_when-Heuristik, WARN) + Review | auto + Review |
-| 3 | **SSOT-Eintrag:** Signal-Leben in ontology.json (inkl. severity/Konfidenz, künftig model_notes + `status` nach #63-Lebenszyklus) — nicht nur im Code | `check_signal_dod.py` (SKILL.md-Referenz, WARN) + `check_consistency.py` (Parity) | auto + Review |
+| 3 | **SSOT-Eintrag:** Signal-Leben in ontology.json (inkl. severity/Konfidenz, model_notes (#36) + `status` nach #63-Lebenszyklus) — nicht nur im Code | `check_signal_dod.py` (SKILL.md-Referenz, WARN) + `check_consistency.py` (Parity) | auto + Review |
 | 4 | **Quellenbeleg:** mind. 1 verifizierte Primärquelle mit Link (+ arXiv-Nummer wo applicable) | Review (Pflichtfeld im Template #66) | Review |
 | 5 | **Benchmark-Referenz:** FP-/FN-Messung auf dem Hard-Negative-Korpus (#41) als PR-Gate | `eval/run_benchmark.py`-Zahlen im PR | auto (Benchmark) |
 | 6 | **Kollisions-Check:** Abgleich gegen Signal-Kollisions-Matrix (#46) — zählt jedes Vorkommen nur einmal? | Review (Kollisions-Matrix) + `check_consistency.py` | Review |
