@@ -38,7 +38,7 @@ Jede Score-/Gewichtsänderung braucht im PR einen **Non-Regression-Beweis** auf:
 ## Re-Baseline-Kalender
 
 - **Rhythmus:** quartalsweise (Q-Ende) — Messvorschrift #47 (Drift gegen eingefrorenen Referenzkorpus), Kalibrierungs-Loop #12.
-- **Umfang je Zyklus:** Re-Score des kompletten Korpus (L3, s. docs/EVALS.md #68), Drift-Bericht je Signal (Halbwertszeiten #36), Gewichte neu aus Korpus-Statistik ableiten ( SpamAssassin-Analogie: mass-check → rescore), Threshold-Review, Signal-`status`-Übergänge prüfen (#63-Lebenszyklus: ≥2 überlebte Zyklen → stable; Rückfälle → deprecated).
+- **Umfang je Zyklus:** Re-Score des kompletten Korpus (L3, s. docs/EVALS.md #68), Drift-Bericht je Signal (Halbwertszeiten #36), Gewichte neu aus Korpus-Statistik ableiten ( SpamAssassin-Analogie: mass-check → rescore), Threshold-Review, Signal-`status`-Übergänge prüfen (#63-Lebenszyklus: ≥2 überlebte Zyklen → stable; Rückfälle → deprecated) inkl. `signalReliability`-Refresh (#116: reliability/status/last_verified je Signal).
 - **Außerplanmäßige Re-Baseline:** bei neuem Hard-Negative-Genre, Modellgenerations-Wechsel oder Trajektorien-Anomalie (#59) — jeweils mit begründetem Ticket.
 - **Dokumentation:** Ergebnis je Zyklus im CHANGELOG (eigener Abschnitt „Re-Baseline QX/YYYY").
 

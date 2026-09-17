@@ -29,7 +29,7 @@ Jedes Prinzip: Beschreibung · Anker-Issues · Durchsetzungsmechanismus.
 ### M4 — Feedback-/Learning-Loops
 **Beschreibung:** Statische Listen altern. Jede Detektionskomponente bekommt einen Lernpfad: not-slop-Feedback-Store, Sampling-Mining, Quartals-Re-Score, Drift-Messung, Score-Trajectory-Monitoring.
 **Anker-Issues:** #12, #29, #36, #47, #59, #60, #61
-**Durchsetzung:** Learning-Store (`--learn`, #29, mit Escalations-Schutz) + Re-Baseline-Kalender in SCORE-GOVERNANCE.md (#67) + Signal-`status`-Feld (Lebenszyklus, Abschnitt 2).
+**Durchsetzung:** Learning-Store (`--learn`, #29, mit Escalations-Schutz) + Re-Baseline-Kalender in SCORE-GOVERNANCE.md (#67) + Signal-`status`-Feld (Lebenszyklus, Abschnitt 2) + `signalReliability`-Register (#116: reliability/status/last_verified je Signal, Gate `scripts/check_signal_reliability.py`, docs/loop-guards/116-reliability-status.md).
 
 ### M5 — Empirie/Benchmark vor Ausbau (Sequencing)
 **Beschreibung:** Erst Fundament (Benchmark, Tokenizer, SSOT), dann Expansion (Sprachen, Signale, Medien). „Buzzword-Listen auf kaputtem Metrik-Fundament wären wertlos" (#53).
@@ -117,4 +117,4 @@ Jeder Signal-Eintrag in `ontology.json → signals` bekommt ein Pflichtfeld:
 
 Alle in diesem Dokument referenzierten Issues (`#N`) müssen in dieser Liste stehen — geprüft von `scripts/check_methodology.py`:
 
-#1, #7, #11, #12, #17, #18, #19, #20, #21, #22, #23, #24, #25, #26, #28, #29, #30, #31, #34, #36, #37, #39, #40, #41, #42, #43, #46, #47, #49, #50, #51, #52, #53, #54, #55, #56, #57, #58, #59, #60, #61, #62, #63, #64, #65, #66, #67, #68
+#1, #7, #11, #12, #17, #18, #19, #20, #21, #22, #23, #24, #25, #26, #28, #29, #30, #31, #34, #36, #37, #39, #40, #41, #42, #43, #46, #47, #49, #50, #51, #52, #53, #54, #55, #56, #57, #58, #59, #60, #61, #62, #63, #64, #65, #66, #67, #68, #116
