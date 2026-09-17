@@ -271,6 +271,22 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
 [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
+### Step 2i: LLM-Zweit-Scanner — Layer 2 (advisory, #57)
+
+`scripts/llm_scanner.py` — optionale zweite Meinung eines LLM-Judges
+gegen die deterministische Schicht (Swiss-Cheese: MT-Bench-Bias,
+arXiv:2306.05685; intrinsische Selbstkorrektur verschlechtert Ergebnisse
+ohne externes Feedback, arXiv:2310.01798). Der Judge ist **injizierbar**
+(`judge: prompt -> str`, JSON-Liste mit `signal_id` + `evidence_quote`),
+es gibt keine Modell-API und kein Netzwerk im Modul selbst. Pro Scan
+laeuft **genau ein Pass**: jede von ≥ 3 rotierten Prompt-Varianten wird
+mit vorwärts und rückwärts sortierter Signal-Liste gefahren
+(Position-Swap). Befunde müssen aus dem Text zitieren (erfundene Zitate
+werden verworfen); ein Befund mit < 90 % Reproduktionsrate wird auf
+`stability: "unsicher"` downgegradet statt zu feuern. Layer-2-Befunde
+sind **advisory** (`is_fix_trigger: False`, Konfidenz ≤ 0.5/0.35) und
+gehen nie in den numerischen Score ein; komplett unlesbare Judge-Antworten
+ergeben `status: "inconclusive"` statt eines Fehlers.
 ### Step 2d: Check UI slop on generated pages (detect-only)
 
 For screenshots of generated landing pages, run the `image` tool with the prompt extension from `references/ui-slop-signals.md`. For front-end source, flag `UiSlopStartCase` (≥3 consecutive Title Case words in UI string literals) and CSS defaults (indigo/purple gradients, glassmorphism, `border-radius: 9999px`). Report each hit with quoted evidence; do not fold into the numeric score.
