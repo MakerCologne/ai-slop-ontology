@@ -1,5 +1,124 @@
 # Changelog
 
+## [2.9.1] — 2026-09-12 (#110 — Konversationelle Floskeln, Hassid-Liste 4–8)
+
+Neue detect-only Phrase-Kategorie `conversational_fillers`
+(gesprochenen Gesprächs-Muster, die in Schrifttexte migrieren) mit
+zwei hart bewachten Spezialfällen:
+
+- **Quick-Update-Floskeln** („to provide a quick update“ u.a.):
+  Update-Ankündigung statt Inhalt, kumulative Schwelle >= 2 Treffer wie
+  jede Kategorie.
+- **„most people“** ( guarded): nur satzinitial gezählt und nur ohne
+  First-Person-Quelle („Most people I interviewed…“ feuert nicht) —
+  Pseudo-Empirie ist das Signal, nicht die Quantifikation selbst.
+- **„hope this helps“**-Familie: positionsbasierter Hard-Negative-Guard
+  — ein Treffer in den letzten 100 Zeichen vor einer Grußformel
+  (echte Support-Mail/Forenantwort) wird aus allen Kategorien entfernt.
+  „here's the thing" bleibt bewusst in listicle_tells (ein Term, eine
+  Kategorie; Überlappung in #110 dokumentiert).
+
+Pre-2022-Doktrin bewusst nicht angewandt: die Floskeln sind vormenschlich
+(älter als LLMs), ein zeitlicher Cap trennt nicht Mensch von KI — das
+diskriminative Signal ist die Genre-Migration, nicht die Rezenz.
+
+`apply_conversational_guards` in slop_scorer implementiert (a)+(b) und
+wird in `phrase_category_score` integriert (Scorer UND Klassifikator).
+13 neue Tests (tests/test_conversational_fillers.py). Spiegel in
+ontology.json (signals.text.phrases.categories).
+
+
+## [2.9.2] — 2026-09-12 (#61 Run-Audit-Format)
+
+Jeder Loop-Run mit `--runs-dir` erzeugt jetzt vier Standard-Dateien in
+`runs/<runId>/` (additiv; Legacy-Artefakte bleiben): `scan.md` (initiale
+Detektion mit Evidence), `fixes.md` (Action/Score/Budget je Iteration),
+`trajectory.json` (maschinenlesbare Iterations-Records), `report.md`
+(Verdict, Exit-Check, Guarantee). Akzeptanzkriterium aus #61 erfüllt:
+Ein vergangener Run ist aus den Dateien vollständig rekonstruierbar.
+Loop bleibt rewrite-frei (ADR-0001); Audit-Writer bricht den Loop nie
+(try/except, stderr-Warnung). Tests: `tests/test_run_audit_format_61.py`.## [Unreleased]
+
+### feat(#57): LLM-Zweit-Scanner — Layer 2 (advisory only)
+
+Umsetzung des Vertrags aus `docs/loop-guards/57-llm-zweit-scanner.md`:
+`scripts/llm_scanner.py` mit injizierbarem Judge (`judge: prompt -> str`,
+JSON-Antworten mit `signal_id` + `evidence_quote`) — keine Modell-API, kein
+Netzwerk im Modul, Tests mit Fake-Judges. Pro Scan genau ein Pass:
+≥3 rotierte Prompt-Varianten × Vorwärts/Rückwärts-Reihenfolge der Signale
+(Position-Swap gegen MT-Bench-Positionsbias, arXiv:2306.05685); keine
+Selbstkorrektur-Runden ohne externes Feedback (arXiv:2310.01798).
+Befunde müssen wortgleich aus dem Text zitieren (erfundene Zitate werden
+verworfen); Reproduktionsrate < 0.9 → Downgrade auf `stability: "unsicher"`
+mit niedrigerer Konfidenz statt Fix-Trigger. Layer-2-Befunde sind advisory
+(`is_fix_trigger: False`, Konfidenz ≤ 0.5/0.35) und gehen nie in den
+numerischen Score ein; unlesbare Judge-Antworten → `status: "inconclusive"`
+statt Crash. 13 neue Tests (DoD 3/3/2 + Bias-Akzeptanz auf Control-Set +
+Score-Disziplin); SSOT-Register + ALLOWLIST-Notiz, SKILL.md Step 2i,
+EVALS.md-Mapping.
+## [unreleased] — feat(#60): Best-of-N Fix-Strategien (Auswahl-Harness)
+
+Neu `fixer/strategies.py`: parallele Fix-Varianten pro Iteration statt
+sequenzieller Einzelkandidaten-Kaskade. N injizierte Strategien
+(delete/rewrite/restructure, Standard-Fixer-Signatur) laufen parallel;
+Auswahl per verifiziertem Detektor-Score, Tie-Break innerhalb
+`selection_epsilon` auf kleinsten Edit (Voice-Ähnlichkeit, anti-
+Verbositäts-/Struktur-Bias, Minimum-Effective-Edit #30; Verifier-Auswahl
+nach Cobbe et al., arXiv:2110.14168). Voice-Budget-Guardrail (#56) greift
+vor der Verifikation; kein Kandidat im Budget → `None` (kein stiller
+Pass). `BestOfNFixer` kapselt die Strategien als einen Fix-Callback für
+`DeslopLoop.run` — ADR-0001 unangetastet (Repo besitzt keine
+Rewrite-Logik). Receipt je Auswahl (`BestOfNResult`) als Audit-Trail
+(#61-Manier). Doku: `docs/loop-guards/60-best-of-n-fix.md`. Tests:
+`tests/test_fixer_strategies.py` (7).
+
+
+
+## [unreleased] — feat(#120): Learn-Input-Standard — Freitext + optionaler Pfad reicht
+
+- `learning_store.learn_entry()`: minimaler Learn-Input (Issue #120) —
+  Freitext-Note ist Pflicht, alles andere optional (signal_id-Default
+  `reviewed`, Sample-Hash fallback auf die Note selbst).
+- CLI: `--learn "<freetext>"` am Scorer und `learning_store.py learn` —
+  bewusst schema-frei (Landscape: sloppoke/flamehaven/axonscanner).
+- Doku: `docs/loop-guards/120-learn-input-standard.md` (Standard, Regeln,
+  Akzeptanz).
+- Tests: 6 neue Fälle in `tests/test_learning_store.py`.## [unreleased] — 2026-09-11 (#115 — performative_voice + manufactured_stakes + Fact-Gate-Invariante)
+
+ZeroSlop-Adaption („performed voice" / „manufactured stakes"): zwei neue
+Phrase-Kategorien mit keep_when-Guards, plus die Doktrin „Deslop löscht
+keine Facts" als Invariante in der Ontology.
+
+- `performative_voice` (conf 0.55): Persönlichkeits-Theater — „here's the
+  thing nobody tells you", „nobody tells you", „let me be brutally honest",
+  „unpopular opinion, but", ... Guard: kein Fire bei First-Person-
+  Erfahrungs-Anker im ±120-Zeichen-Fenster (gelebte statt performte
+  Stimme).
+- `manufactured_stakes` (conf 0.6): Dringlichkeit ohne Sache — „in today's
+  fast-paced", „the stakes have never been higher", „now more than ever",
+  ... Guard: kein Fire bei konkretem Termin/Fakt im 120-Zeichen-
+  Folgfenster (echte statt dramatisierte Dringlichkeit).
+- `fp_guards.mask_performative_stakes` maskiert VOR dem Matching
+  (gleiche Mechanik wie #110-Entwurf: Maskierung statt Post-Filter).
+- `ontology.json → deslopInvariants.factGate`: Zahlen/Claims/Referenzen
+  müssen die Edition überleben; verwandt #30, als Prinzip formuliert.
+  Konsistenzliste M10 erweitert (check_methodology).
+- 20 neue Tests (`tests/test_performative_stakes.py`), Doku in
+  detection-signals.md + EVALS.md + METHODOLOGY.md (M10).
+
+
+## [unreleased] — feat(#120): Learn-Input-Standard — Freitext + optionaler Pfad reicht
+
+- `learning_store.learn_entry()`: minimaler Learn-Input (Issue #120) —
+  Freitext-Note ist Pflicht, alles andere optional (signal_id-Default
+  `reviewed`, Sample-Hash fallback auf die Note selbst).
+- CLI: `--learn "<freetext>"` am Scorer und `learning_store.py learn` —
+  bewusst schema-frei (Landscape: sloppoke/flamehaven/axonscanner).
+- Doku: `docs/loop-guards/120-learn-input-standard.md` (Standard, Regeln,
+  Akzeptanz).
+- Tests: 6 neue Fälle in `tests/test_learning_store.py`.
+
+
 ## [Unreleased] — 2026-09-13 (#77-Rest — DE-Variante-Rest: dritte DE-Phrase-Welle)
 
 - 3 neue de_*-Kategorien (M18 `de_chatbot_leftover`, M33 `de_signposting`,
@@ -7,9 +126,163 @@
   Phrase (Wikipedia-Projektseite + own:corpus de-ev-17..19)
 - docs/de-coverage.md: M18/M33/M65 → GEDECKT; DE-Signal-Zähler 22 → 25
 - scripts/check_ssot.py: DE_LAYER-Pin 16 → 19 Kategorien (C4)
-- tests/test_de_variant_rest.py: Schema/Kollision/Detection/DoD (3/3/2)
+- tests/test_de_variant_rest.py: Schema/Kollision/Detection/DoD (3/3/2)## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
+## [unreleased] — 2026-09-11 (#114 — Academic-Register-Signale, invertierbar)
 
-## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
+Genre-Register `academic` erhält drei **invertierbare** detect-only
+Signale (BS-I3, COLING-2025-Evidenz arXiv:2412.11385, Regelquellen
+cbsteh/anti-ai-writing): `EpistemicMismatch` (starkes epistemisches Verb
++ Hedge im selben Satz), `UnquantifiedScopeClaim` (Vollständigkeitsanspruch
+ohne n=/Anzahl/Zeitraum im selben Satz), `VagueAttribution` („the
+literature suggests“ ohne Zitatmarker im ±120-Zeichen-Fenster). Inversion:
+mit akademischer Absicherung feuern sie nicht — echte Papers bleiben
+unangetastet (Register-Guard), slopige Texte feuern (Slop-Signal).
+Nie score-wirksam (ADR-0001). Neues Modul
+`skills/ai-slop-detection/scripts/academic_register.py`, Wiring in
+`slop_classifier.py` (Report + JSON), Doku in SKILL.md +
+detection-signals.md, 13 neue Tests (je Signal 2 Positive + Hard-Negatives),
+EVALS.md-Zuordnung L1.
+
+## [Unreleased] — 2026-09-17 (#229 P2 — Meta-Regressionstest fuer example_fixes)
+
+### #58: Signal-Bestätigung — ≥ 2 unabhängige Nachweise vor jedem Fix (ConfirmGate)
+
+- `src/confirm.py` (neu): `ConfirmGate` als injizierbares Bestätigungstor
+  fuer den Deslop-Loop. Ein Finding zaehlt erst ab 2 unabhaengigen
+  Nachweisen — Pfad A: deterministisch + LLM-Zweitcheck (injizierbarer
+  Callback, #57-Anbindung), Pfad B: deterministisch + Resample
+  (deterministische Perturbationen: Whitespace, Interpunktion, Case;
+  kein RNG — audit-reproduzierbar), Pfad C (legacy-kompatibel):
+  confidence >= 0.9 oder Stabilitaet ueber zwei aufeinanderfolgende
+  DETECT-Runs.
+- `src/deslop_loop.py`: TRIAGE nutzt jetzt das injizierbare Gate
+  (`DeslopLoop(..., confirm=gate)`); ohne Gate bleibt das bisherige
+  Inline-Kriterium unangetastet. Audit-Records (`iterations.jsonl`)
+  fuehren nun ein `evidence`-Feld je bestaetigtem Signal (Spec-DoD).
+- `fp_fix_rate()`-Metrik (Spec-Akzeptanz): verhinderte Einzel-Nachweis-
+  Fixe / alle Findings — Rohstoff fuer den Vor/Nach-Vergleich auf dem
+  Benchmark-Korpus.
+- `docs/loop-guards/58-signal-bestätigung.md`: Status spec →
+  implementiert, Umsetzungsanker ergaenzt.
+- Tests: `tests/test_confirm.py` (13 Tests: Resample-Determinismus,
+  alle 4 Pfade einzeln, FP-Metrik, Loop-Integration mit und ohne Gate).
+
+Anti-Slop darf selbst keinen Slop saeen. Neuer Test `tests/test_example_fix_meta.py`
+sperrt die Eigenschaft permanent: Jeder `example_fix` in RHETORICAL_PATTERNS muss
+den eigenen Detektor (`find_rhetorical_patterns` + `rhythm_metrics`) fehlerfrei
+passieren — sonst schlaegt CI rot. Meta-Scan vom 17.09. auf dem gehaerteten
+Stand (inkl. PR #225): 0/16 Offender. Der RoboticRhythm-Fall ("It works, scales,
+and ships every time." war selbst eine ForcedTriad) ist ueber PR #225 behoben;
+der im Audit zusaetzlich vermutete RepeatedOpenings-then-Ketten-Fall wurde durch
+den Detektor NICHT bestaetigt (dann-Ketten sind kein Signal) — dokumentiert, ohne
+Change am Fix.
+
+
+## [2.9.1] — 2026-09-09 (#35 — Domain-Trigger-Metadatum je Signal)
+
+Slop-Defaults sind domain-konditional (unslop). Statische Signale ohne
+Domain-Kontext erzeugen systematische False Positives (z.B. "we fixed X" im
+Changelog ist legitime Sprecherrolle, kein Workslop).
+
+- `ontology.json` → neue Top-Level-Section `domainBindings`: optionales
+  Metadatum `triggered_by: domain` je Signal mit `applies_to` (Whitelist,
+  wins) / `restricted_in` (Blacklist) + `rationale`; 5 Pilot-Signale
+  (Workslop, PeerReviewSlop, SecurityReportSlop, NumberedListOveruse,
+  FakeAuthoritySlop), 7 Domains (essay, marketing, ui_copy, changelog,
+  devtools_docs, academic, security_report)
+- Scorer: `--domain NAME` (fail-loud, Exit 2 bei unbekannter Domain);
+  `slop_score(text, domain=...)` zero-t die gemappten Gewichtsdimensionen
+  (`domain_bindings.SIGNAL_WEIGHT_MAP`: Workslop→phrases,
+  NumberedListOveruse→list_heavy, FakeAuthoritySlop→fake_authority);
+  `--json`-Output zeigt `domain`, `domain_gated_signals`,
+  `domain_gated_weight_dims`
+- Classifier: `classify_text(text, domain=...)` filtert gebundene Signale
+  VOR der Noisy-OR-Aggregation (Score reflects domain-conditioned evidence)
+- Default ohne Domain: unverändert (Opt-in, analog #42-Genre — keine
+  Engine-Drift); komponierbar mit `--genre`
+- Tests: `tests/test_domain_bindings.py` (12); SSOT-Register-Eintrag für
+  `domain_bindings.py`; SKILL.md Step 1b
+
+
+## [Unreleased] — #46 Signal-Kollisions-Matrix: DoD-Fixtures + Engine-Enforcement
+
+Die in `ontology.json#/collisionMatrix` (Version 1.0.0) dokumentierten
+Kollisions-Auflösungen waren teilweise noch nicht vom Code erzwungen und
+hatten keine Fixtures (SIGNAL-DoD Punkt 6, testContract der Matrix).
+
+- **COLL-1** — `copula_stats()` (slop_scorer) schließt Substitut-Matches,
+  die einen FakeStrongVerb-Span (`rhetorical_patterns._FAKE_STRONG_VERB`)
+  überlappen, aus dem Nenner aus: „serves as a centralized hub“ zählt nur
+  als FakeStrongVerb, nicht zusätzlich als Copula-Substitut.
+- **COLL-2** — der Em-Dash-Cluster-Zweig (em ≥ 3 und > 0.5/Satz) in
+  `FormattingSlop` (rhetorical_patterns) ist entfernt und die verbleibenden
+  Doctrine-Zweige (short copy, long-draft allowance) auf em/Satz ≤ 0.5
+  gegt: EmDashExcess besitzt Cluster-Vorkommen exklusiv.
+- **COLL-3** — `adverb_stats()`: „genuinely“/„truly“ zählen in explizitem
+  Voice-Kontext (Ich/Empfehlung, Heuristik) nicht in die -ly-Rate
+  (positive-voice-Marker #21); Default bei Ambiguität bleibt Adverb.
+- **COLL-4** — bereits durch `find_term_matches()`-Span-Dedup erzwungen;
+  Fixture sperrt das Verhalten.
+- Neu: `tests/test_collision_matrix.py` mit den vier in der Matrix
+  referenzierten Fixtures; `docs/EVALS.md` um die Zuordnung ergänzt.
+
+
+## [Unreleased] (#11 — projekt-lokale Config, btm #1138)
+
+- `slopkit --config slop.json`: `disabled_signals`, `term_allowlist`,
+  `weight_overrides` als projekt-lokale Konfiguration (deslop.toml-Äquivalent)
+- Allowlist filtert Buzzword-Tiers + Phrase-Kategorien vor der Detektion
+- Disabled Signals werden entfernt und der Score neu aggregiert
+  (Noisy-OR, Eskalation nur bei noch wirksam gewichteten critical/2×high)
+- Strikte Validierung: unbekannte Keys, ungültige Severities,
+  Gewichte außerhalb [0,1] → Exit 2 (fail loud)
+- Neue Tests: `tests/test_project_config.py` (13 Tests)
+
+
+## [Unreleased]
+
+### feat(#75, Signal 6): ComparativeFraming / Komparativ-Rahmung (detect-only)
+
+Sechstes Struktur-Signal aus #75: Kontrastframes als Beschreibungsersatz
+("weniger X als vielmehr Y", "eher X als Y", "nicht X, sondern Y",
+"less about X, (and) more about Y" / "less about X than about Y").
+
+- `structure_metrics.comparative_framing` (M72): >=2 Treffer ab 25 Woertern,
+  Einzeltreffer bleibt unmarkiert (DoD 3/3/2-Fixtures in
+  `tests/test_structure_comparative.py`), Konfidenz 0.5, detect-only —
+  nie im numerischen Slop-Score.
+- SSOT: `rhetoricalPatterns.patterns.ComparativeFraming` (total 319 → 320,
+  detect_only 15 → 16), Catalog-Parity in `rhetorical_patterns.py`.
+- Kollisionsdisziplin (#46): EN "not just X but Y" bleibt exklusiv bei
+  BinaryContrast; ComparativeFraming deckt die DE-Frames + "less about …
+  more about …" ab.
+
+
+## [Unreleased] — feat(#117): Geometrische Score-Aggregation (Option, ergänzt Noisy-OR)
+
+`SlopClassifier(aggregation="geometric")` als zweite Aggregations-Option
+neben dem bisherigen Noisy-OR (Default unverändert):
+
+- **Dimensionen** (`_signal_dimension`): Signalfamilien — lexical, phrase,
+  punctuation, structure, multilingual, typepattern, code.
+- Innerhalb einer Dimension: Noisy-OR (Evidenz akkumuliert weiter).
+- Über Dimensionen: **gewichtetes geometrisches Mittel**
+  `Π(d_i^w_i)^(1/Σw_i)` mit `w_i` = max. Severity-Gewicht der Dimension
+  (nach flamehaven01/AI-SLOP-Detector): „one bad dimension can't be hidden
+  behind good ones"; Vielfach-Treffer in einer Familie werden gedämpft.
+- Ergänzt BS-I7/#46 (Kollisions-Matrix), ersetzt es nicht.
+- Klassifikations-Eskalierung (critical / ≥2 high → ≥ 0.70) bleibt aktiv.## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
+
+
+## [Unreleased] — feat(#35): triggered_by:domain — optionale Domain-Bindung je Signal
+
+`ontology.json` erhält einen `signalDomains`-Block (analog `signalSeverity`):
+5 Pilot-Signale (`ExclamationExcess`, `TrailingMoral`, `ListHeavy`,
+`ThroatClearing`, `EllipsisExcess`) mit `triggered_by: "domain"`, Domänenliste
+und `rationale`. `SlopClassifier.classify_text(text, domain=...)` und
+`scripts/deslop_loop_cli.py --domain` überspringen gebundene Signale außerhalb
+des Scopes vor dem Scoring (auditiert über `notes`); ohne `domain`-Angabe
+bleibt das Verhalten unverändert. Tests: `tests/test_domain_trigger.py` (6).
 
 Der Detection-Referenz des Skills
 (`skills/ai-slop-detection/references/detection-signals.md`) war gegenüber
