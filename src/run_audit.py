@@ -26,7 +26,7 @@ def _evidence_lines(findings):
         ev = (getattr(f, "evidence", None) or "").strip()
         if ev:
             ev = ev.replace("\n", " ")[:160]
-            lines.append(f"| `{f.signal}` | {getattr(f, 'confidence', '?'):.2f} | "
+            lines.append(f"| {f.signal} | {getattr(f, 'confidence', '?'):.2f} | "
                          f"{getattr(f, 'severity', '?')} | {ev} |")
     return lines
 
@@ -36,7 +36,7 @@ def _fix_table(records):
     for rec in records:
         rows.append(
             f"| {rec.get('iter')} | {rec.get('action', '?')} | "
-            f"{rec.get('score_before', '?')} → {rec.get('score_after', '?')} | "
+            f"{float(rec.get('score_before', 0)):.3f} → {float(rec.get('score_after', 0)):.3f} | "
             f"{rec.get('budget_used', 0.0)} | "
             f"{', '.join(rec.get('confirmed', []) or ['-'])} |")
     return rows
@@ -57,7 +57,8 @@ def write_run_audit(run_dir, res, baseline_findings=None, created=None):
     with open(os.path.join(run_dir, "scan.md"), "w") as f:
         f.write(f"# Scan — run `{res.run_dir and os.path.basename(res.run_dir)}`\n\n"
                 f"Created: {created}\n\n"
-                f"- Initial slop score: **{res.score_initial:.4f}**\n"
+                f"- Initial slop score: **{res.score_initial:.3f}**\n"
+                f"- score_initial: {res.score_initial:.3f}\n"
                 f"- Detected signals (iteration 1): "
                 f"{', '.join(sorted({s for r in records for s in r.get('findings', [])}) or ['-'])}\n\n")
         if baseline_findings:
@@ -81,6 +82,7 @@ def write_run_audit(run_dir, res, baseline_findings=None, created=None):
     # ---- trajectory.json: machine-readable records ----
     with open(os.path.join(run_dir, "trajectory.json"), "w") as f:
         json.dump({
+            "run_id": getattr(res, "run_id", None) or os.path.basename(run_dir),
             "run_dir": run_dir,
             "created": created,
             "score_initial": res.score_initial,
@@ -92,8 +94,9 @@ def write_run_audit(run_dir, res, baseline_findings=None, created=None):
     with open(os.path.join(run_dir, "report.md"), "w") as f:
         f.write(f"# Run Report — `{os.path.basename(run_dir)}`\n\n"
                 f"- Verdict: **{res.verdict}** (exit check: {res.exit_check})\n"
+                f"- verdict: {res.verdict}\n"
                 f"- Iterations: {res.iterations}\n"
-                f"- Score: {res.score_initial:.4f} → {res.score_final:.4f}\n"
+                f"- Score: {res.score_initial:.3f} → {res.score_final:.3f}\n"
                 f"- Open signals: {', '.join(res.open_signals or ['-'])}\n\n"
                 f"## Guarantee\n\n{res.guarantee}\n\n"
                 f"## Reconstruction\n\n"
