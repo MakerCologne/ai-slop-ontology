@@ -22,6 +22,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `eval/human_ideological.jsonl` — Seed-Korpus Human/Ideological Slop (#98-Vorlauf, 40 Einträge, alle `own:handwritten`, adr/0005: keine fremden Volltexte); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
 - `eval/control_set.jsonl` — Golden Control Set: 10 handgeschriebene Texte (5 Slop / 5 Hard Negatives), known-FN-Register (ADR-0003)
 - `eval/run_control_set.py` — FN/FP-Gate (Threshold 0.40, known_fn-Ausnahmen, RESOLVED-Meldung); läuft bei jedem Issue im Burn
+- `eval/prevention_genres.jsonl` + `eval/run_prevention_eval.py` + `eval/JUDGE-prevention.md` — L2-Prevention-Contract-Eval (#232): 7 Gattungen × 3 Varianten gegen den write-side-Vertrag aus `writing-rules.md` (#228); deterministische Kriterien C1–C7, Judge-Rubrik mit Error-Taxonomie, Erstmessung 2026-09-17, L3-Re-Score im Re-Baseline-Zyklus (Drift-Grenze ±30 % je Kriterium)
 
 ### L3 — Quartals-Re-Score / Kalibrierung
 
