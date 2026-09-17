@@ -177,6 +177,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_governance_doc.py` — #67 Governance-Pflichtabschnitte (Meta)
 - `tests/test_input_norm.py` — #40 Input-Normalisierung/Evasion
 - `tests/test_project_config.py` — #11 Projekt-lokale Config (disabled_signals/term_allowlist/weight_overrides, Auto-Discovery)
+- `tests/test_aggregation_geomean.py` — #117 Aggregations-Modus (slop.json `aggregation: geomean`): Config-Validierung, Geomean < additiv bei einseitigem Signal, Epsilon-Untergrenze, Floor-Erhalt
 - `tests/test_instruction_slop.py` — Signal Instruction-Slop
 - `tests/test_intensifier_fix.py` — FU-1 Intensifier-Fix
 - `tests/test_domain_trigger.py` — #35 Domain-Bindung: triggered_by:domain-Signale feuern nur im passenden Scope, ungebundene Signale und No-Arg-Pfad unverändert (L1, TP+Scope-Negativ+SSOT-Pin)
