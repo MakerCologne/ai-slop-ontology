@@ -11,8 +11,9 @@
 3. `signals.text.phrases.categories.*.items[]` → 1 je Phrase
 4. `signals.text.typePatterns.types.*` → 1 je Typ
 5. `signals.text.rhetoricalPatterns.patterns.*` → 1 je Pattern (detect-only, im Feld `detect_only` separat ausgewiesen)
+6. `signals.<medium>.<family>` mit `detectOnly: true` → Indikatoren zählen zusätzlich ins Feld `detect_only`
 
-Aktueller Stand (2026-09-02, Commit-Stand dieses PRs): **total 319** (text 294, image 10, video 5, code 6, audio 4), davon **15 detect-only** (rhetoricalPatterns).
+Aktueller Stand (2026-09-05, Commit-Stand dieses PRs): **total 320** (text 294, image 10, video 5, code 7, audio 4), davon **16 detect-only** (15 rhetoricalPatterns + 1 `code.uiSlop`).
 
 ## Register-Disziplin
 
@@ -24,7 +25,7 @@ Aktueller Stand (2026-09-02, Commit-Stand dieses PRs): **total 319** (text 294, 
 
 ```
 $ python scripts/count_signals.py
-{"by_channel": {"text": 294, "image": 10, "video": 5, "code": 6, "audio": 4, "multilingual": 0}, "detect_only": 15, "total": 319}
+{"by_channel": {"text": 294, "image": 10, "video": 5, "code": 7, "audio": 4, "multilingual": 0}, "detect_only": 16, "total": 320}
 ```
 
 (Der Lauf oben ist aus der Zählregel in Node verifiziert; der Python-Lauf erfolgt im GitLab-CI — im Burn-Container existiert kein Python.)

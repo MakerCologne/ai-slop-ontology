@@ -94,6 +94,7 @@ Regex patterns for: API keys, tokens, passwords, connection strings
 - SQL injection (string concatenation in queries)
 - Command injection (unsanitized shell inputs)
 - Off-by-one errors in AI-generated loops
+- **UI Title Case strings (detect-only)**: `UiSlopStartCase` — ≥3 consecutive Title Case words in UI string literals (labels/buttons/i18n); see `ui-slop-signals.md`
 
 ## Image Signals
 
@@ -144,6 +145,10 @@ Adapted from the "No AI slop" editing skill by Peter Yang
 | Hollow kicker / recap | "In conclusion, …" / mic-drop aphorism | A genuine call to action or next step |
 | Formatting slop | emoji headings, mid-sentence bold, em-dash clusters | Platform's native style |
 | Robotic rhythm | 3+ stacked short sentences | One deliberate burst for emphasis |
+| Decorative separator triad | Slogan-shaped "X \| Y \| Z" or #X #Y #Z of short items | Real breadcrumb, shortcut chain, or table row |
+| Opener announcement (17.09., #230) | Praise-/Ankuendigungs-Frames am Satzanfang ('Spannender Punkt.', 'Ein weiterer Aspekt ist ...', text-initiales 'Ich denke' ohne Begrundung) | Echte Haltungsdifferenzierung mit Begrundung; Ritual-Formeln |
+| Engagement comment default (17.09., #231) | LinkedIn-Kommentar-Default-Sequenz: Lob-Auftakt -> Paraphrase-Marker ('Sie schreiben', 'In Ihrem Beitrag', 'you describe') -> angekuendigte Ergaenzung -> abschliessende Engagement-Frage; feuert erst ab 3 von 4 Elementen IN REIHENFOLGE in EINEM Text | Echte FAQ-Konversation, Interview oder Moderation, in der Frage und Bezug genuine Information tragen |
+| Forced triad (erweitert 15.09.) | Auch Nomen-/Verb-Triaden ("verstehen, gestalten, transformieren"), Staccato-Dreier ("Menschen. Prozesse. Technologie."), dt. "X, Y und Z" (alle drei gleiche Flexionsklasse) | Drei wirklich verschiedene, einzeln tragende Punkte |
 
 Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
 `result.rhetorical_patterns` from the classifier's JSON output). The nine
@@ -156,6 +161,28 @@ patterns are mirrored as data in `ontology.json` under
 2. **Binoculars** (Hans et al. 2024): Zero-shot LLM detection (AUROC ~0.95)
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
+
+### Human Detection Empirics (why tool-assisted review)
+
+Humans are notoriously bad at distinguishing LLM text from human writing — the
+strongest argument against "I can spot AI text myself" and for tool-assisted,
+signal-based review instead of gut judgment:
+
+- **Cheng et al. 2025** (Advances in Simulation 10(1):66, DOI 10.1186/s41077-025-00396-6):
+  Human ability to distinguish LLM text from human text is **no better than random chance**.
+- **Fiedler & Döpke 2025** (Int. Review of Economics Education 49:100321, DOI 10.1016/j.iree.2025.100321):
+  German theses (DiLA study) — humans recognized only **57 % of AI texts** and **64 % of human texts**.
+- **Russell, Karpinska & Iyyer 2025** (ACL 2025, arXiv:2501.15654): Heavy LLM users reach ~**90 % accuracy** —
+  but that still means **~10 % false positives**; light users are barely above chance (both directions).
+- **Language convergence**: LLM use shapes human writing, shrinking the gap the eye relies on —
+  Yakura et al. 2024 (arXiv:2409.01754, spoken content), Geng et al. 2025 (Findings of ACL 2025),
+  Galpin et al. 2025 (arXiv:2506.21817, semantic/lexical drift in scientific English).
+
+Consequence for this reference: human judgment alone is **not** a valid detection signal —
+it is the baseline the statistical/ML methods above must beat, and the reason every finding
+here is phrased as a named, checkable signal rather than an impression.
+
+Source: [Wikipedia: Signs of AI writing — "Your detection ability"](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability)
 
 ## Thresholds
 
@@ -171,7 +198,11 @@ patterns are mirrored as data in `ontology.json` under
 
 ```
 weights = {critical: 1.0, high: 0.7, medium: 0.4, low: 0.2}
-slop_score = min(1.0, sum(weights[s.severity] * s.confidence) / max(1, n))
+noisy_or = 1 - Π(1 - weights[s.severity] * s.confidence)        # default
+d_i     = 1 - Π_(s ∈ dim_i)(1 - weights[s.severity] * s.confidence)
+geometric = Π(d_i ^ w_i) ^ (1 / Σ w_i)   with w_i = max weight in dim_i
+# aggregation="geometric": dimension-grouped, damps double punishment
+# within one signal family (#117); complements the collision matrix
 is_slop = (slop_score >= 0.4) OR (any critical) OR (≥ 2 high severity)
 ```
 
