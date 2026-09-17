@@ -91,7 +91,22 @@ Sechstes Struktur-Signal aus #75: Kontrastframes als Beschreibungsersatz
 - Kollisionsdisziplin (#46): EN "not just X but Y" bleibt exklusiv bei
   BinaryContrast; ComparativeFraming deckt die DE-Frames + "less about …
   more about …" ab.
-## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
+
+
+## [Unreleased] — feat(#117): Geometrische Score-Aggregation (Option, ergänzt Noisy-OR)
+
+`SlopClassifier(aggregation="geometric")` als zweite Aggregations-Option
+neben dem bisherigen Noisy-OR (Default unverändert):
+
+- **Dimensionen** (`_signal_dimension`): Signalfamilien — lexical, phrase,
+  punctuation, structure, multilingual, typepattern, code.
+- Innerhalb einer Dimension: Noisy-OR (Evidenz akkumuliert weiter).
+- Über Dimensionen: **gewichtetes geometrisches Mittel**
+  `Π(d_i^w_i)^(1/Σw_i)` mit `w_i` = max. Severity-Gewicht der Dimension
+  (nach flamehaven01/AI-SLOP-Detector): „one bad dimension can't be hidden
+  behind good ones"; Vielfach-Treffer in einer Familie werden gedämpft.
+- Ergänzt BS-I7/#46 (Kollisions-Matrix), ersetzt es nicht.
+- Klassifikations-Eskalierung (critical / ≥2 high → ≥ 0.70) bleibt aktiv.## [2.9.0] — 2026-08-29 (#104 Slice A — Doku<->SSOT-Gate, zwei gemappte Lücken)
 
 Der Detection-Referenz des Skills
 (`skills/ai-slop-detection/references/detection-signals.md`) war gegenüber
