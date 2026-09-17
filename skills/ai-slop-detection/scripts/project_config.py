@@ -1,118 +1,129 @@
 #!/usr/bin/env python3
-"""Project-local configuration for the AI-slop skill scorer (issue #11).
+"""Project-local config for the slop scorer (issue #11).
 
-Signal weights are global, but terminology is not: \"harness\" is a
-legitimate ML term in an ML repo and pure buzzword filler everywhere else.
-A project config file lets a team tune the scorer to its own vocabulary
-without forking the ontology:
-
-.. code-block:: json
+Teams work in different domains: "harness" is a legitimate term in an ML
+repo, "key" in a crypto codebase, "agents" in an LLM tool. Signal weights
+are global by default; this module gives each project a local, versioned
+override file (`slop.json`, the deslop.toml-equivalent) with three keys:
 
     {
-      "disabled_signals": ["portability"],
-      "term_allowlist": ["harness", "robust"],
-      "weight_overrides": {"buzzwords": 0.05}
+      "disabled_signals": ["portability", "mirrored"],
+      "term_allowlist": ["harness", "agents"],
+      "weight_overrides": {"buzzwords": 0.10}
     }
 
-Applied via ``python3 slop_scorer.py --config slop.json ...``:
+Semantics:
+  - disabled_signals: signal family ids (see SIGNAL_FAMILIES). Families with
+    an exemption mechanic (buzzwords, phrases, multilingual, provenance,
+    trailing_moral, mirrored, fake_authority, portability) are excluded
+    entirely — including escalation/floor contributions. Purely weighted
+    dimensions (density, repetition, ...) get weight 0.
+  - term_allowlist: terms removed from the signal-matching text before
+    buzzword/phrase/multilingual/authority matching (structural dimensions
+    keep the full text) — same mechanic as genre exempt terms (#42).
+  - weight_overrides: merged over DEFAULT_WEIGHTS (values are floats,
+    no re-normalization — the scorer caps at 1.0 and documents that
+    weights intentionally sum > 1).
 
-- ``disabled_signals`` — weight names set to 0. Structural dimensions are
-  still computed (the report stays complete), they just stop contributing
-  to the score. Provenance floors and >= 2-family escalation keep their
-  strength: escalation families are corroborating evidence, not weights.
-- ``term_allowlist`` — terms removed from SIGNAL matching before the
-  metrics (buzzwords / phrases / authority / multilingual), analogous to
-  the #42 genre ``exempt_terms`` and the #23 quote exemption. Structural
-  dimensions (density, repetition, burstiness) keep the full text.
-- ``weight_overrides`` — per-signal weight values in [0, 1].
-
-Fail-loud policy: unknown signal names, wrong types or out-of-range values
-raise ``ConfigError`` at load time — a typo in the config must not
-silently no-op. (``slop_score(weights=...)`` already existed as the API
-surface; this module is the config/CLI layer on top, deslop.toml-style.)
+Public surface:
+    load_config(path) -> dict (validated)
+    apply_config(slop_score_kwargs, config) -> None (in-place)
+    SIGNAL_FAMILIES: valid disabled_signals ids
 """
 
 import json
 import os
+import sys
 
-VALID_KEYS = ("disabled_signals", "term_allowlist", "weight_overrides")
+# Signal families that can be disabled. Weighted-dimension ids map 1:1 to
+# DEFAULT_WEIGHTS keys; adverb/copula/provenance are the conditional
+# contribution families from slop_score().
+_SIGNAL_FAMILIES = [
+    "density", "repetition", "burstiness", "buzzwords", "phrases",
+    "punctuation", "trailing_moral", "list_heavy", "fake_authority",
+    "verbosity", "multilingual", "mirrored", "structural", "portability",
+    # conditional contributions (weights.get(...) in slop_score)
+    "adverb", "copula", "provenance",
+]
+
+# Families whose exclusion is implemented via the learning-store exemption
+# mechanic (empty matches -> no escalation, no floor).
+_EXEMPTABLE_FAMILIES = {
+    "buzzwords", "phrases", "multilingual", "provenance", "trailing_moral",
+    "mirrored", "fake_authority", "portability",
+}
+
+DEFAULT_CONFIG_NAME = "slop.json"
+
+# Exposed for validation and docs/tests.
+SIGNAL_FAMILIES = tuple(sorted(_SIGNAL_FAMILIES))
 
 
-class ConfigError(ValueError):
-    """Raised for malformed config files — message is user-facing."""
-
-
-def load_config(path, valid_signals) -> dict:
-    """Load and validate a project config JSON file.
-
-    ``valid_signals``: iterable of signal/weight names accepted by the
-    scorer (DEFAULT_WEIGHTS keys). Used to validate disabled_signals and
-    weight_overrides keys so typos fail loudly.
-    """
-    if not os.path.isfile(path):
-        raise ConfigError(f"config file not found: {path}")
-    try:
-        with open(path, encoding="utf-8") as f:
+def load_config(path: str) -> dict:
+    """Load and validate a project config file. Returns {}-shaped dict."""
+    with open(path, encoding="utf-8") as f:
+        try:
             raw = json.load(f)
-    except json.JSONDecodeError as e:
-        raise ConfigError(f"config file is not valid JSON: {path} ({e})")
+        except json.JSONDecodeError as e:
+            raise SystemExit(f"config error: {path} is not valid JSON: {e}")
     if not isinstance(raw, dict):
-        raise ConfigError("config root must be a JSON object")
+        raise SystemExit(f"config error: {path} must be a JSON object")
 
-    unknown_keys = [k for k in raw if k not in VALID_KEYS]
+    unknown_keys = set(raw) - {"disabled_signals", "term_allowlist",
+                               "weight_overrides"}
     if unknown_keys:
-        raise ConfigError(
-            "unknown config keys: " + ", ".join(sorted(unknown_keys))
-            + f" (valid: {', '.join(VALID_KEYS)})")
+        raise SystemExit(
+            f"config error: {path} unknown keys: {sorted(unknown_keys)} "
+            "(supported: disabled_signals, term_allowlist, weight_overrides)")
 
-    valid = set(valid_signals)
     cfg = {"disabled_signals": [], "term_allowlist": [], "weight_overrides": {}}
 
-    if "disabled_signals" in raw:
-        v = raw["disabled_signals"]
-        if not isinstance(v, list) or not all(isinstance(s, str) for s in v):
-            raise ConfigError("disabled_signals must be a list of strings")
-        bad = [s for s in v if s not in valid]
-        if bad:
-            raise ConfigError(
-                "unknown signals in disabled_signals: " + ", ".join(sorted(bad))
-                + f" (valid: {', '.join(sorted(valid))})")
-        cfg["disabled_signals"] = list(v)
+    ds = raw.get("disabled_signals", [])
+    if not isinstance(ds, list) or not all(isinstance(s, str) for s in ds):
+        raise SystemExit(f"config error: {path} disabled_signals must be a list of strings")
+    bad = [s for s in ds if s not in _SIGNAL_FAMILIES]
+    if bad:
+        raise SystemExit(
+            f"config error: {path} unknown signal families: {bad} "
+            f"(valid: {', '.join(SIGNAL_FAMILIES)})")
+    cfg["disabled_signals"] = list(ds)
 
-    if "term_allowlist" in raw:
-        v = raw["term_allowlist"]
-        if not isinstance(v, list) or not all(
-                isinstance(t, str) and t.strip() for t in v):
-            raise ConfigError(
-                "term_allowlist must be a list of non-empty strings")
-        cfg["term_allowlist"] = list(v)
+    ta = raw.get("term_allowlist", [])
+    if not isinstance(ta, list) or not all(isinstance(t, str) for t in ta):
+        raise SystemExit(f"config error: {path} term_allowlist must be a list of strings")
+    if any(not t.strip() for t in ta):
+        raise SystemExit(f"config error: {path} term_allowlist entries must be non-empty")
+    cfg["term_allowlist"] = list(ta)
 
-    if "weight_overrides" in raw:
-        v = raw["weight_overrides"]
-        if not isinstance(v, dict):
-            raise ConfigError("weight_overrides must be an object")
-        for k, w in v.items():
-            if k not in valid:
-                raise ConfigError(
-                    f"unknown signal in weight_overrides: {k} "
-                    f"(valid: {', '.join(sorted(valid))})")
-            if not isinstance(w, (int, float)) or not 0 <= w <= 1:
-                raise ConfigError(
-                    f"weight_overrides[{k}] must be a number in [0, 1], got {w!r}")
-        cfg["weight_overrides"] = dict(v)
-
+    wo = raw.get("weight_overrides", {})
+    if not isinstance(wo, dict):
+        raise SystemExit(f"config error: {path} weight_overrides must be an object")
+    from slop_scorer import DEFAULT_WEIGHTS
+    bad_w = [k for k in wo if k not in DEFAULT_WEIGHTS]
+    if bad_w:
+        raise SystemExit(
+            f"config error: {path} unknown weight keys: {bad_w} "
+            f"(valid: {', '.join(sorted(DEFAULT_WEIGHTS))})")
+    for k, v in wo.items():
+        if not isinstance(v, (int, float)) or isinstance(v, bool) or v < 0:
+            raise SystemExit(f"config error: {path} weight_overrides.{k} must be a number >= 0")
+    cfg["weight_overrides"] = dict(wo)
     return cfg
 
 
-def merge_weights(config: dict, base_weights: dict) -> dict:
-    """Apply disabled_signals + weight_overrides to a copy of base weights.
+def auto_discover(directory: str) -> str:
+    """Find a slop.json in/above a directory (like .git / package.json).
 
-    disabled_signals wins over weight_overrides — an explicitly disabled
-    signal stays at 0.
+    Returns the path or "" when none exists. Explicit --config wins;
+    auto-discovery only runs for --file input so piped text stays
+    environment-independent.
     """
-    merged = dict(base_weights)
-    for k, w in config.get("weight_overrides", {}).items():
-        merged[k] = w
-    for k in config.get("disabled_signals", []):
-        merged[k] = 0.0
-    return merged
+    d = os.path.abspath(directory)
+    while True:
+        candidate = os.path.join(d, DEFAULT_CONFIG_NAME)
+        if os.path.isfile(candidate):
+            return candidate
+        parent = os.path.dirname(d)
+        if parent == d:
+            return ""
+        d = parent
