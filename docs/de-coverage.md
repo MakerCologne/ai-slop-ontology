@@ -109,3 +109,19 @@ Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind d
 - **Ziel erreicht:** 63/96 de_*-Phrasen (65,6 %) tragen jetzt **≥ 2 unabhängige Belege** (Pin ≥ 50 %, C4 in scripts/check_ssot.py, Manipulationsprobe in tests/test_de_evidence_densification.py). Zweite Belege: eigene handgeschriebene Belegtexte (`eval/de_evidence_texts.jsonl`, source `own:corpus`, je Kategorie ein Text mit 3–4 wörtlich enthaltenen Phrasen) — eigene Handschrift, keine Kopien aus CC BY-SA-Drittkatalogen (Lizenzregel).
 - **Dokumentierte Abweichung (33 Phrasen, 34,4 %):** Einzelbeleg (Wikipedia-Projektseite oder own:de-observation/en-pendant). Die Rest-Belegung läuft künftig über den C4-Coverage-Pin — Unterschreiten von 50 % failt das SSOT-Gate.
 - **Strukturmetrik-Rest:** M66 (fake_analysis_appendix) und M71 (pseudo_nuance) als detect-only Signale in structure_metrics.py (Konfidenz 0.5, je 3/3/2-Fixtures in tests/test_structure_rest.py). M67 (Ankündigungs-Spaltsatz) bereits als de_announcement_cleft gedeckt — bewusst keine Duplikation (#46).
+
+## 2026-09-17: OpenerAnnouncement + ParagraphConnectorRate (#230 / P3)
+
+- **OpenerAnnouncement** (rhetorical_patterns.py, detect-only, Konfidenz 0.45):
+  Lob-/Ankuendigungs-Frames am Satzanfang ("Spannender Punkt.", "Ein weiterer Aspekt ist ...",
+  "Die spannende Frage ist ...", "Du sprichst einen wichtigen Punkt an") sowie
+  text-initiale Ich-Anlaeufe ("Ich moechte/denke/finde/glaube ...") OHNE
+  Begruendungsmarker im Satz. Frame-basiert (Platzhalter-Mechanik #83/#88), keine
+  wachsende Wortliste. keep_when: echte Haltungsdifferenzierung ("Ich denke, dass X,
+  weil Y belegt"), Ritual-Formeln, Verhandlungs-Ankuendigungen.
+- **ParagraphConnectorRate** (rhythm_openers.py, advisory, nie gescored): Anteil der
+  Absaetze mit additivem Konnektor-Eroeffner (dt./engl.); Signal ab > 50 % und >= 2
+  Absaetzen. keep_when: strukturierte Genres (juristisch, regulatorisch, akademisch),
+  wo Konnektor-Absaetze Konvention sind.
+- Hard Negatives getestet in tests/test_opener_announcement.py (Begruendung im Satz,
+  mid-text-Ich, juristischer Einzel-Konnektor, Kurztext).

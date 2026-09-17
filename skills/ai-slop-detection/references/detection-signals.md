@@ -145,6 +145,7 @@ Adapted from the "No AI slop" editing skill by Peter Yang
 | Formatting slop | emoji headings, mid-sentence bold, em-dash clusters | Platform's native style |
 | Robotic rhythm | 3+ stacked short sentences | One deliberate burst for emphasis |
 | Decorative separator triad | Slogan-shaped "X \| Y \| Z" or #X #Y #Z of short items | Real breadcrumb, shortcut chain, or table row |
+| Opener announcement (17.09., #230) | Praise-/Ankuendigungs-Frames am Satzanfang ('Spannender Punkt.', 'Ein weiterer Aspekt ist ...', text-initiales 'Ich denke' ohne Begrundung) | Echte Haltungsdifferenzierung mit Begrundung; Ritual-Formeln |
 | Forced triad (erweitert 15.09.) | Auch Nomen-/Verb-Triaden ("verstehen, gestalten, transformieren"), Staccato-Dreier ("Menschen. Prozesse. Technologie."), dt. "X, Y und Z" (alle drei gleiche Flexionsklasse) | Drei wirklich verschiedene, einzeln tragende Punkte |
 
 Run: `python3 scripts/rhetorical_patterns.py "TEXT"` (or read
