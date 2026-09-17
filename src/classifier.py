@@ -154,8 +154,39 @@ class SlopClassifier:
         # --- Multilingual ---
         self.multilingual = sigs.get("multilingual", {})
 
-    def classify_text(self, text: str) -> ClassificationResult:
-        """Classify a text for AI slop using the full signal database."""
+    def _signal_active_in_domain(self, signal_id: str, domain: str) -> bool:
+        # Issue #35: optional domain binding (triggered_by: domain) from
+        # ontology.json domainBindings. Whitelist (applies_to) wins over
+        # blacklist (restricted_in); unbound signals are domain-agnostic.
+        b = self.ontology.get("domainBindings", {}).get("signals", {}).get(signal_id)
+        if not b or b.get("triggered_by") != "domain":
+            return True
+        applies = b.get("applies_to")
+        if applies is not None:
+            return domain in applies
+        return domain not in b.get("restricted_in", [])
+
+    def _filter_domain(self, result: ClassificationResult, domain) -> ClassificationResult:
+        """Issue #35: drop signals that are not triggered in ``domain``."""
+        if domain is None:
+            return result
+        known = self.ontology.get("domainBindings", {}).get("domains", [])
+        if domain not in known:
+            raise ValueError(
+                f"Unknown domain {domain!r} — known: {', '.join(known)}")
+        result.signals_detected = [
+            s for s in result.signals_detected
+            if self._signal_active_in_domain(s.signal_id, domain)]
+        return result
+
+    def classify_text(self, text: str, domain=None) -> ClassificationResult:
+        """Classify a text for AI slop using the full signal database.
+
+        ``domain`` (issue #35): optional domain context (e.g. changelog,
+        devtools_docs). Signals bound via ``triggered_by: domain`` that do
+        not fire in that domain are dropped from ``signals_detected``;
+        unknown domains fail loud. Default: domain-agnostic behavior.
+        """
         result = ClassificationResult(modality="text")
 
         text_lower = text.lower()
@@ -419,6 +450,10 @@ class SlopClassifier:
         for s in result.signals_detected:
             s.severity = _severity_for(s.signal_id)
 
+        # Issue #35: drop domain-gated signals BEFORE aggregation so the
+        # noisy-OR score reflects the domain-conditioned evidence set.
+        self._filter_domain(result, domain)
+
         if result.signals_detected:
             no_slop_prob = 1.0
             for s in result.signals_detected:
@@ -447,7 +482,7 @@ class SlopClassifier:
             result.severity = "clean"
             result.countermeasures = ["standard_quality_check"]
 
-        return result
+        return self._filter_domain(result, domain)
 
     def classify_code(self, code: str, language: str = "") -> ClassificationResult:
         """Classify code for AI slop patterns."""
