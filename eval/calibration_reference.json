@@ -1,0 +1,4156 @@
+{
+  "schema": 1,
+  "generated_from": "eval/corpus.jsonl",
+  "engine": "skills/ai-slop-detection/scripts/slop_scorer.py",
+  "thresholds": {
+    "score_percentile_shift": 0.05,
+    "signal_rate_shift": 0.1
+  },
+  "note": "Frozen reference for the quarterly calibration re-score (issue #47). Messvorschrift: docs/calibration-drift.md. alerts = weight-review trigger, NOT auto-tuning.",
+  "labels": {
+    "clean": {
+      "distribution": {
+        "n": 110,
+        "percentiles": {
+          "10": 0.037,
+          "50": 0.084,
+          "90": 0.258
+        }
+      },
+      "signal_hit_rates": {
+        "effective": 0.009,
+        "harness": 0.009
+      }
+    },
+    "slop": {
+      "distribution": {
+        "n": 221,
+        "percentiles": {
+          "10": 0.4,
+          "50": 0.599,
+          "90": 0.713
+        }
+      },
+      "signal_hit_rates": {
+        "a beacon of": 0.005,
+        "a testament to": 0.136,
+        "actionable insights": 0.005,
+        "assistant_signoff:based on available information": 0.041,
+        "assistant_signoff:certainly! let me expand": 0.063,
+        "assistant_signoff:experts believe": 0.068,
+        "assistant_signoff:fosters collaboration": 0.041,
+        "assistant_signoff:here's what you need to know": 0.036,
+        "assistant_signoff:i hope this helps": 0.036,
+        "assistant_signoff:in order to proceed": 0.059,
+        "assistant_signoff:it is believed that": 0.023,
+        "assistant_signoff:it's not just a dashboard": 0.081,
+        "assistant_signoff:let me know if you have any questions": 0.027,
+        "assistant_signoff:let me know if you'd like more detail": 0.09,
+        "assistant_signoff:of course! here's the summary": 0.072,
+        "assistant_signoff:seamless integrations": 0.045,
+        "assistant_signoff:some critics argue": 0.09,
+        "assistant_signoff:some might say we moved too fast": 0.041,
+        "assistant_signoff:the listing cites coverage in": 0.068,
+        "assistant_signoff:to be clear": 0.036,
+        "assistant_signoff:topics range from": 0.054,
+        "assistant_signoff:up to my last training update": 0.027,
+        "at its core": 0.018,
+        "at the end of the day": 0.032,
+        "closing_formulas:embrace the future": 0.009,
+        "closing_formulas:in conclusion,": 0.009,
+        "closing_formulas:the bottom line is": 0.036,
+        "closing_formulas:the journey doesn't end here": 0.005,
+        "closing_formulas:the possibilities are endless": 0.009,
+        "comprehensive": 0.009,
+        "cornerstone": 0.005,
+        "cultivating": 0.005,
+        "cutting-edge": 0.009,
+        "delve": 0.005,
+        "dynamic": 0.005,
+        "ecosystem": 0.199,
+        "elevate": 0.005,
+        "emphasis_crutches:full stop": 0.018,
+        "emphasis_crutches:let that sink in": 0.023,
+        "emphasis_crutches:make no mistake": 0.032,
+        "forward-thinking": 0.005,
+        "fostering": 0.014,
+        "game-changer": 0.009,
+        "generic_phrases:going forward": 0.054,
+        "generic_phrases:in other words": 0.054,
+        "generic_phrases:the bad news is": 0.032,
+        "generic_phrases:the good news is": 0.027,
+        "generic_transitions:additionally": 0.086,
+        "generic_transitions:at the end of the day": 0.032,
+        "generic_transitions:furthermore": 0.014,
+        "generic_transitions:in this blog post, we've": 0.005,
+        "generic_transitions:moreover": 0.005,
+        "generic_transitions:when all is said and done": 0.005,
+        "groundbreaking": 0.032,
+        "hedging_qualifiers:importantly": 0.041,
+        "hedging_qualifiers:it's crucial to understand": 0.009,
+        "hedging_qualifiers:it's important to note": 0.014,
+        "hedging_qualifiers:it's important to remember": 0.009,
+        "hedging_qualifiers:it's no secret that": 0.009,
+        "hedging_qualifiers:it's worth noting": 0.036,
+        "hedging_qualifiers:needless to say": 0.005,
+        "holistic": 0.014,
+        "in the grand scheme of things": 0.005,
+        "in today's rapidly evolving": 0.036,
+        "innovation": 0.154,
+        "it's crucial to understand": 0.009,
+        "it's important to remember": 0.009,
+        "it's worth noting that": 0.036,
+        "landscape": 0.036,
+        "let's dive in": 0.027,
+        "leverage": 0.005,
+        "listicle_tells:but wait, there's more": 0.005,
+        "listicle_tells:fun fact:": 0.005,
+        "listicle_tells:here's the kicker": 0.005,
+        "listicle_tells:here's the thing": 0.014,
+        "listicle_tells:key takeaway:": 0.005,
+        "listicle_tells:let's dive into": 0.041,
+        "listicle_tells:let's explore": 0.005,
+        "listicle_tells:pro tip:": 0.005,
+        "listicle_tells:the long answer is": 0.032,
+        "listicle_tells:the short answer is": 0.005,
+        "marketing_cta:99.9% uptime": 0.032,
+        "marketing_cta:all in one place": 0.072,
+        "marketing_cta:book a demo": 0.036,
+        "marketing_cta:final thoughts:": 0.036,
+        "marketing_cta:here's the catch": 0.027,
+        "marketing_cta:key takeaways from this post": 0.023,
+        "marketing_cta:loved by developers": 0.054,
+        "marketing_cta:ready to get started": 0.018,
+        "marketing_cta:start your free trial today": 0.054,
+        "marketing_cta:the future of work is collaborative": 0.032,
+        "marketing_cta:the short answer is yes": 0.027,
+        "marketing_cta:think about it this way": 0.036,
+        "marketing_cta:this is where things get interesting": 0.05,
+        "marketing_cta:this raises an important question": 0.05,
+        "marketing_cta:to put it simply": 0.041,
+        "marketing_cta:trusted by startups and enterprises alike": 0.054,
+        "marketing_cta:trusted by thousands of teams worldwide": 0.036,
+        "marketing_cta:what does this mean for your team": 0.045,
+        "meta_commentary:as we'll see later": 0.018,
+        "meta_commentary:without further ado": 0.045,
+        "metaphor_abuse:a delicate balance": 0.009,
+        "metaphor_abuse:a double-edged sword": 0.036,
+        "metaphor_abuse:navigating the landscape": 0.009,
+        "metaphor_abuse:paints a vivid picture": 0.009,
+        "metaphor_abuse:rich tapestry": 0.009,
+        "metaphor_abuse:serves as a testament": 0.014,
+        "metaphor_abuse:the cornerstone of": 0.005,
+        "meticulous": 0.059,
+        "mission-critical": 0.005,
+        "multifaceted": 0.014,
+        "navigating the landscape": 0.009,
+        "nestled": 0.032,
+        "opening_formulas:have you ever wondered": 0.005,
+        "opening_formulas:in the age of": 0.027,
+        "opening_formulas:in today's rapidly evolving landscape": 0.032,
+        "opening_formulas:whether you're a seasoned": 0.009,
+        "optimize": 0.005,
+        "paints a vivid picture": 0.009,
+        "paradigm shift": 0.005,
+        "paramount": 0.009,
+        "pivotal": 0.167,
+        "punchy_insight:a feature, not a bug": 0.027,
+        "punchy_insight:another post for another time": 0.027,
+        "punchy_insight:because it was necessary": 0.023,
+        "punchy_insight:can we talk about what actually happened": 0.036,
+        "punchy_insight:here's the problem though": 0.059,
+        "punchy_insight:here's what i find interesting": 0.032,
+        "punchy_insight:here's why that matters": 0.059,
+        "punchy_insight:hint: start with the boring part": 0.027,
+        "punchy_insight:i want to explore what went wrong": 0.027,
+        "punchy_insight:i'll say it again": 0.023,
+        "punchy_insight:i'm going to be honest with you": 0.018,
+        "punchy_insight:in today's market": 0.041,
+        "punchy_insight:it feels like a shortcut": 0.023,
+        "punchy_insight:it's not just a tool, it's a mirror": 0.018,
+        "punchy_insight:let me be clear about one thing": 0.036,
+        "punchy_insight:let me walk you through": 0.032,
+        "punchy_insight:let's be honest about the timeline": 0.018,
+        "punchy_insight:mistakes were made along the way": 0.032,
+        "punchy_insight:one might be tempted to": 0.032,
+        "punchy_insight:slop creeps in one rewrite at a time": 0.027,
+        "punchy_insight:solving the wrong problem": 0.027,
+        "punchy_insight:that's the tradeoff": 0.023,
+        "punchy_insight:the answer isn't more tools": 0.018,
+        "punchy_insight:the conversation moves toward practical tradeoffs": 0.045,
+        "punchy_insight:the decision was reached": 0.041,
+        "punchy_insight:the deepest problem": 0.032,
+        "punchy_insight:the implications are significant": 0.027,
+        "punchy_insight:the part everyone misses": 0.041,
+        "punchy_insight:the real challenge is not what you think": 0.045,
+        "punchy_insight:the reality is that most": 0.018,
+        "punchy_insight:the uncomfortable truth": 0.023,
+        "punchy_insight:the window is closing": 0.032,
+        "punchy_insight:this is genuinely hard to get right": 0.032,
+        "punchy_insight:this matters because": 0.045,
+        "punchy_insight:what most people get wrong": 0.036,
+        "punchy_insight:you could argue the cost is too high": 0.027,
+        "realm": 0.005,
+        "report_hedging:a pivotal moment": 0.167,
+        "report_hedging:as you can see": 0.041,
+        "report_hedging:here's what nobody tells you": 0.041,
+        "report_hedging:in this article, we will": 0.032,
+        "report_hedging:industry reports suggest": 0.127,
+        "report_hedging:it is important to note": 0.113,
+        "report_hedging:many argue the opposite": 0.027,
+        "report_hedging:plays a vital role": 0.032,
+        "report_hedging:serves as a centralized hub": 0.054,
+        "report_hedging:stands as a testament to": 0.136,
+        "report_hedging:studies show": 0.032,
+        "report_hedging:the agent reviews the draft": 0.059,
+        "report_hedging:the best part:": 0.036,
+        "report_hedging:the key point is": 0.059,
+        "report_hedging:the launch marks": 0.041,
+        "report_hedging:the redesign underscores": 0.054,
+        "report_hedging:the release solidifies its position": 0.063,
+        "report_hedging:the tool suggests fixes": 0.059,
+        "report_hedging:the update underscores": 0.023,
+        "report_hedging:this changes everything": 0.054,
+        "rhetorical_setups:plot twist:": 0.045,
+        "rich tapestry": 0.009,
+        "robust": 0.014,
+        "seamless": 0.05,
+        "serves as a testament": 0.014,
+        "stakeholder": 0.005,
+        "state-of-the-art": 0.005,
+        "sweet spot": 0.005,
+        "synergy": 0.009,
+        "the intersection of": 0.063,
+        "the power of": 0.005,
+        "the realm of": 0.005,
+        "transformative": 0.005,
+        "unlock": 0.063,
+        "vague_declaratives:the stakes are high": 0.027,
+        "weasel_attribution:experts agree": 0.041,
+        "weasel_attribution:widely regarded as": 0.05,
+        "whether you're a seasoned": 0.009,
+        "wiki_promo:boasts a vibrant": 0.081,
+        "wiki_promo:commitment to excellence": 0.032,
+        "wiki_promo:continues to thrive": 0.09,
+        "wiki_promo:curated compilation": 0.095,
+        "wiki_promo:diverse array": 0.095,
+        "wiki_promo:exciting times lie ahead": 0.036,
+        "wiki_promo:garnered international attention": 0.036,
+        "wiki_promo:garnered recognition": 0.072,
+        "wiki_promo:in meaningful ways": 0.09,
+        "wiki_promo:nestled within the breathtaking valley": 0.014,
+        "wiki_promo:plays a crucial role": 0.077,
+        "wiki_promo:setting the stage for": 0.072,
+        "wiki_promo:the founder maintains a low profile": 0.027,
+        "wiki_promo:the future looks bright": 0.059,
+        "wiki_promo:the intricate interplay of": 0.104,
+        "wiki_promo:the region is renowned for its natural beauty": 0.027,
+        "wiki_promo:this groundbreaking study exemplifies": 0.032,
+        "wiki_promo:vibrant programming": 0.072
+      }
+    }
+  },
+  "fixtures": {
+    "clean-blog-01": {
+      "slop_score": 0.074,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "a48a225c903aba5bc1d588fc9c10908fb31857f6d6f12b328314104b424bf2de"
+    },
+    "clean-blog-02": {
+      "slop_score": 0.033,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "77a47d34589902af8876858fad726bbec9c0f53dc10f963110feef64261e0e6e"
+    },
+    "clean-de-01": {
+      "slop_score": 0.22,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "6060d9a3791afb7715c720099227fed8d3115d3747421eed767090d971136726"
+    },
+    "clean-de-02": {
+      "slop_score": 0.037,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "c3c126312b4d1589987e618640297ad711872e0fb5931b896293b7b1833e8e38"
+    },
+    "clean-email-01": {
+      "slop_score": 0.059,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "81410e7cd59b59273e9fbba9ef11f99378b44ec192cf786d69aebcdefccd15fd"
+    },
+    "clean-es-01": {
+      "slop_score": 0.053,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "e366401f5f98434267d4d8b96094334ca20ee84484d5f1d380058ba41f616b7a"
+    },
+    "clean-essay-01": {
+      "slop_score": 0.071,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "d083775e3048ecc3cf96938fee4e8fd294584ce6791119321a022b48a2e05bd6"
+    },
+    "clean-fr-01": {
+      "slop_score": 0.242,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "82302f75806f456ff2f633937f11293e9dda9a9a949ec776d8e92a0b6f6c5179"
+    },
+    "clean-hi-01": {
+      "slop_score": 0.147,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "22a6a54f20e78e7c87bb2a4fc83758767ebbd56bd8fb5f4b2361678497c5dbe3"
+    },
+    "clean-history-01": {
+      "slop_score": 0.246,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "06886da1ec43649c7155c6a9269732b33e3c7284b8dc93894abe05e27d7a5b8e"
+    },
+    "clean-legal-01": {
+      "slop_score": 0.075,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "3ef3222afe71c2b9cd79ea6db681b33e44277b52c138e17dc9ac50ec722a1389"
+    },
+    "clean-news-01": {
+      "slop_score": 0.137,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "8462027de5f0bcf8354037c3b10086a5319604b8898dac352f5696fd2d64f77e"
+    },
+    "clean-news-02": {
+      "slop_score": 0.086,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "7f42abcf9c5076782a4d84849ee97734600c8a88fb651f16c26ed7e6a3a6cdd9"
+    },
+    "clean-qa-01": {
+      "slop_score": 0.102,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "2b2193c9266e4e59f79b0db948469a9218595a9a0dedc8b0bf5565c9898db3d7"
+    },
+    "clean-recipe-01": {
+      "slop_score": 0.147,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "bcc0315d696e1aff42884ab0a9a5636f0c9148638d2c61dad0955cc0056648de"
+    },
+    "clean-review-01": {
+      "slop_score": 0.126,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "f75af88ca22476ef532384fa1e91728730c8f47592d6259974ee2b212fc4da39"
+    },
+    "clean-science-01": {
+      "slop_score": 0.068,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "a26dac707178ba0c2a6dca2c77c4d6cac30ca435ded2a1616248b960f4706192"
+    },
+    "clean-science-02": {
+      "slop_score": 0.031,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "1cbf4ef8d20be86cca0b7c9fc7733fedf45fa850ee4c6acba3db7a5c68c4d70b"
+    },
+    "clean-sports-01": {
+      "slop_score": 0.127,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "3bb2abd708c5544ec03f66629eae3b7d07cb369608f50513abbf51eb39763c20"
+    },
+    "clean-tech-01": {
+      "slop_score": 0.087,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "dc54b36595ec112279ca1b6c06323a83e9172e01249003593e28ed7ef54b24ad"
+    },
+    "clean-tech-02": {
+      "slop_score": 0.043,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "01360ef756d23de8259afccef8999ab858599da2c6e24ed87e8c6741675abb54"
+    },
+    "clean-tech-14": {
+      "slop_score": 0.08,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "7948a557bee6ba4331e66e49b43fd49fbc8915c344c7adc155b2a1835ba80e26"
+    },
+    "clean-ur-01": {
+      "slop_score": 0.08,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "85ca33af1dcf3aed523a393d86a1f7d7c57499ca3162a2f1788a099cab7b5583"
+    },
+    "clean-vi-01": {
+      "slop_score": 0.049,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "cf93c2557a0abc5ac1de705da0b83d54655707762449c799527e3243150854f6"
+    },
+    "hard-clean-aiassisted-01": {
+      "slop_score": 0.081,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "6fa9e6a7172cd602dd7dee027b3c48a18ce625042a708208669c9cc4384206fb"
+    },
+    "hard-slop-subtle-01": {
+      "slop_score": 0.254,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "52986c5cb3823abe5cbd47195f41a9127c83bd012b82bbd72d22b11cd906111c"
+    },
+    "hard-slop-subtle-02": {
+      "slop_score": 0.296,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "4ceb32832474e81dfbc2a4608fcf9edbef08e5dac224af891ee533cc0ce705e8"
+    },
+    "hardneg-001": {
+      "slop_score": 0.072,
+      "signals": [
+        "effective"
+      ],
+      "label": "clean",
+      "text_sha256": "ca3d00e980dbc44b67abd1f4d1404445d54c501f8b3102dfaa5ce18983f1e0e5"
+    },
+    "hardneg-002": {
+      "slop_score": 0.088,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "3ac705c989c6ea56465d69bd8a4c66616370a86d432dc46495cbea6e28b23721"
+    },
+    "hardneg-003": {
+      "slop_score": 0.074,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "46e611799c7750e54ecfe9066c3f780203f956acc7648702911edcf633b9d6e6"
+    },
+    "hardneg-004": {
+      "slop_score": 0.072,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "f0ddca1159fe88bd31772ed8c6ce5a206f20ea9c17f3c5628080b42062760cc0"
+    },
+    "hardneg-005": {
+      "slop_score": 0.14,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "e2e80612787b1a89ee24c373c1d315df9eb4c2ed8b5e8c42c577662d7abd70f0"
+    },
+    "hardneg-006": {
+      "slop_score": 0.06,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "833e7dba4f3911bff01f9bd486c4b8a214c71aa4f3599bb526d7b2dee8b007d2"
+    },
+    "hardneg-007": {
+      "slop_score": 0.037,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "0f86893f57cbd2cbfdb4c5339f4e354ecc908ceb3040792d093ac9210d168bd3"
+    },
+    "hardneg-008": {
+      "slop_score": 0.315,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "a8d42d7a0a7aaf8082a5120b52748cb9365c858b1b1321bd38359dfae4b42919"
+    },
+    "hardneg-009": {
+      "slop_score": 0.062,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "460e45f2576c9ae0d4814a68de027bbe111fec2b329ac90f40750ed73e9e2809"
+    },
+    "hardneg-010": {
+      "slop_score": 0.045,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "742f59b356fad74f0546fd7c4d8d05857a52965cac137cb83669c0c09c552a9e"
+    },
+    "hardneg-011": {
+      "slop_score": 0.028,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "a2c3a574696be82d76b60025a323dfac22f4d49d43b84d44faca06561965201c"
+    },
+    "hardneg-012": {
+      "slop_score": 0.034,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "1703d73b04157d14332cab3492dcbcf9387ce01db545615df2513474ded6c73d"
+    },
+    "hardneg-013": {
+      "slop_score": 0.09,
+      "signals": [
+        "harness"
+      ],
+      "label": "clean",
+      "text_sha256": "9f84f3b655bec577a4dda50d4b6df4dfc90d3e564aa8918bb427dfa87ba893ac"
+    },
+    "hardneg-014": {
+      "slop_score": 0.028,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "58ca1b8e18aede90f1e17e29b82e69a2275caf52ae0928ea05c48d0f5a8f81d7"
+    },
+    "hardneg-015": {
+      "slop_score": 0.046,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "5ccf48575f3e3021074d62117d793258f2f9904f154af26f37264cf35d2b74ed"
+    },
+    "hardneg-016": {
+      "slop_score": 0.09,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "78223580bd38f7f9954deb13b5069d60b0bac7451d772b2dd6e233a7181edca8"
+    },
+    "hardneg-017": {
+      "slop_score": 0.044,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "eea1fe80327e82f082c1c37a217adc5a9038e74d76efc09d6ae4f97bd8e32c18"
+    },
+    "hardneg-018": {
+      "slop_score": 0.06,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "daffeb7ec494d71d46b495134371365de2d2d2e4183102a6b1d2a36ee9757e45"
+    },
+    "hardneg-019": {
+      "slop_score": 0.104,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "d24ebb4113912f0f4f81b6fadac42f7b6530daebbb8c5f938eab845717fb06b5"
+    },
+    "hardneg-020": {
+      "slop_score": 0.073,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "0ca8cb34f0b0d2ddf9b7d1f0174f601324b19c85ca1579e080c1e1bf3f632561"
+    },
+    "hardneg-021": {
+      "slop_score": 0.158,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "001c39c56137902cdefe773b07c2f96387f02de0f882e1a1fd76fd0a09b4e786"
+    },
+    "hardneg-022": {
+      "slop_score": 0.026,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "7674ea0798595de2a648dd9a56d9952f6f6f6c66e43878e160a0f06d82508eba"
+    },
+    "hardneg-023": {
+      "slop_score": 0.031,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "61a5b7f85392909ffad6b4e4d5541316c5a46ad2a566472c1641bfce2f4dfbc0"
+    },
+    "hardneg-024": {
+      "slop_score": 0.138,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "bbd477b73a45227e0733a196940b632dd2b7442ac926c209546491ec597b57d7"
+    },
+    "hardneg-025": {
+      "slop_score": 0.08,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "b23f829641d1820ed22e3fb679b1416a57a23e4a7d741e422cdb754f13f1c057"
+    },
+    "hardneg-026": {
+      "slop_score": 0.148,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "10b38f45a514061819705b0fd9ba734490d46d2ce2921dc7c841f6d577947455"
+    },
+    "hardneg-027": {
+      "slop_score": 0.03,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "3744ed8fb14cc529271a57d88bac312dd54196b592209186f1c62e661660e64e"
+    },
+    "hardneg-028": {
+      "slop_score": 0.112,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "f916baad467240c0611aba8175a337cb4042aa51032fe4271526d12e00c4c20d"
+    },
+    "hardneg-029": {
+      "slop_score": 0.079,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "0c1c23532f8138867090dcba0d6cf62eb7208e6e30ee239413b13d4e83421c4f"
+    },
+    "hardneg-030": {
+      "slop_score": 0.024,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "7dec7daf8281f1c0e4d309dd071c7bee27d9208a7640667c98603b668630da44"
+    },
+    "hardneg-031": {
+      "slop_score": 0.084,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "82e1694b17ebd19a34ac19cc3a7b8cc0c0ea6d424c1b1797d5e6e473a6e8ad6c"
+    },
+    "hardneg-032": {
+      "slop_score": 0.073,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "ef3cd9cb0a4c4514e6b9df95dfd77da881635890d2c7ba25618813e46c52f592"
+    },
+    "hardneg-033": {
+      "slop_score": 0.075,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "ad370c754e322cadee2287392ca18b7676c413adea5c3633b0e3cb1d9506e7ec"
+    },
+    "hardneg-034": {
+      "slop_score": 0.044,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "af65d38b4c1c8c1dc1951d8baa61ed47d5d1a8add88a064fbdeefc374fb4087e"
+    },
+    "hardneg-035": {
+      "slop_score": 0.11,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "21370730566949b16bf8d84455ed340315fe48b848541d2aea5a4dc53115814a"
+    },
+    "hardneg-036": {
+      "slop_score": 0.342,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "d5b40f006da7bba72a35fa0f3acf98c933c66ffe41fad2e19291899cce13d73a"
+    },
+    "hardneg-037": {
+      "slop_score": 0.063,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "dd4527f2e3a864eca4852dda944c7e05cc29de9cc4141dbb5bcc813014be3bdf"
+    },
+    "hardneg-038": {
+      "slop_score": 0.23,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "581b5076560a45c0f04876728454f2e4907c6bd2f831eec9c7d738cbc271420f"
+    },
+    "hardneg-039": {
+      "slop_score": 0.164,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "0d7a026ee593d2221a0d82359fa37fd15ffd88dec544b882a25b4e0a1d4542e5"
+    },
+    "hardneg-040": {
+      "slop_score": 0.062,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "925e5209b1fddae32aad0a04603f2bebe6f98e6515a68ee241fc22b028f6614d"
+    },
+    "hardneg-041": {
+      "slop_score": 0.086,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "60b3b468e59f3e057e0bcee9a7dee5b8ef9d6f89ce78c3c40046ff94a3bfb046"
+    },
+    "hardneg-042": {
+      "slop_score": 0.077,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "1e75e9a35afbf9764a534383e1aa73ca0d8337d2c2a89d00dad7edc1fec5769c"
+    },
+    "hardneg-043": {
+      "slop_score": 0.282,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "f1bb407e74fa0127a0365e7989662da82ae123b39b8d8a75b24d2c59130df7ce"
+    },
+    "hardneg-044": {
+      "slop_score": 0.11,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "7b9d4ebea42e51ee6792c00bbf24436d0b424387f4b114cdcc5da2c67baf3250"
+    },
+    "hardneg-045": {
+      "slop_score": 0.075,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "51411a309f35ab6ced50306c26d42eca12e1516a9217508cd973c251dd9a092d"
+    },
+    "hardneg-046": {
+      "slop_score": 0.089,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "cc455f0e12f25e5eeb7a13443a47df0b05006b8a683733a257c35a3d92e93b19"
+    },
+    "hardneg-047": {
+      "slop_score": 0.037,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "8e0e7c2102c716e4f2b9f8300500fac1d387991801d5e7980f2cf556bf811388"
+    },
+    "hardneg-048": {
+      "slop_score": 0.023,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "3e54b7a5365c4012cdd063e2099d0e066a630146770453f9614b77464762b37a"
+    },
+    "hardneg-049": {
+      "slop_score": 0.323,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "d6151bbf2b67ca3884f4183daa3aa6572ea136243e0d6d08cccaf4691b609976"
+    },
+    "hardneg-050": {
+      "slop_score": 0.049,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "80f6567e577feb2f270b4db28def216dc10922c22d4e25ce3efb625b685a36b5"
+    },
+    "hardneg-051": {
+      "slop_score": 0.062,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "696cc39d7f81bbd93db9149b59d18c3aa995d2c488365afbad1263a3d3035a43"
+    },
+    "hardneg-052": {
+      "slop_score": 0.06,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "bd07bbdd0004db43b181b5456617440007d5568365ab23964e8ead2856fe402c"
+    },
+    "hardneg-053": {
+      "slop_score": 0.093,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "3ef48abdf5591ab6d59a4a2093004a07e86def30547e57bac619aef9e6b95bfe"
+    },
+    "hardneg-054": {
+      "slop_score": 0.323,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "8ba276826a8be58b57941ee22775ba0fb142b69fe7f39c1bbe1005869e57e7a4"
+    },
+    "hardneg-055": {
+      "slop_score": 0.154,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "6c7c82ce0db5de77068e0b34499a914bd82e01d3259fc0824bbdd11123e373e1"
+    },
+    "hardneg-056": {
+      "slop_score": 0.14,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "beca118fd8e5cfc6b66d9561c8af99861663cf3e07a185c0456568ade5ecb650"
+    },
+    "hardneg-057": {
+      "slop_score": 0.289,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "fbd47832af178d8b161d49eb7fd7f973463fcfae747ca79d9cc96c493bed12f8"
+    },
+    "hardneg-058": {
+      "slop_score": 0.14,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "68d9b4ef9b293c9e0c9b50648e686e70b056bde67e5f0d09b2557ab0d384b697"
+    },
+    "hardneg-059": {
+      "slop_score": 0.158,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "2735c46d39cb1bf1d1d09765e6520b061fea012810b4c1d79a2810c2edd2fce4"
+    },
+    "hardneg-060": {
+      "slop_score": 0.112,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "c1870cc404e5411acc4c346596d3a092a1d687cde60d96d2fbece38f31382f95"
+    },
+    "hardneg-061": {
+      "slop_score": 0.286,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "5e98e746d92101a5fceb211116f22856ea03c2f82e1d78438e3b4fc054806374"
+    },
+    "hardneg-062": {
+      "slop_score": 0.303,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "0c86755f4eff4e4a065b144e9e20a52b5ff3832eb15de6fc98f8063b4490a2ea"
+    },
+    "hardneg-063": {
+      "slop_score": 0.159,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "f197bfa59612d4850857082f2277ee44cf52ee2d9635b61a297e0cbb631c6c34"
+    },
+    "hardneg-064": {
+      "slop_score": 0.258,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "c143f806449d1b84d727aa591b51144f192f137b940d4b6895b8d628c732e398"
+    },
+    "hardneg-065": {
+      "slop_score": 0.075,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "2cff49b436bccd68e7f18e43726a6d1208a5a6845671c80dd7e497352b1d3fa7"
+    },
+    "hardneg-066": {
+      "slop_score": 0.324,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "26ed3e2082d8d6f3801cf43b0b417fc83514dd755fd9ab8f04438f582dd7d46a"
+    },
+    "hardneg-067": {
+      "slop_score": 0.059,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "85ff9b736d6a8b2babd1171f7ac64b0474f110136a2e540136f59008cc66ed0e"
+    },
+    "hardneg-068": {
+      "slop_score": 0.067,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "e0bd850f199934cf2af380aae3c26584287a1baca0f02491e599c0e73a6f4465"
+    },
+    "hardneg-069": {
+      "slop_score": 0.093,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "ca86e3a4933ff5568b5786e829ddb7a5cea5ba13702036755cdb8b2a80245a17"
+    },
+    "human-code-01": {
+      "slop_score": 0.135,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "6f46b16a6c86984ea843e3f08130fb904ead2afd398a1e6705a5ed5502a9329e"
+    },
+    "human-code-02": {
+      "slop_score": 0.116,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "5437c5d0770d0ba6ea69b92337cf59ab79cb226ffa5d381b6b8fe5db14351354"
+    },
+    "human-code-03": {
+      "slop_score": 0.046,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "4b004923c0023730ea07e3a0169971f2bc715fdc44b542428358572cb8c4d658"
+    },
+    "human-code-04": {
+      "slop_score": 0.065,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "a0b4336ddab1bf58d7e2ec4957df33587e26c49765c0ddce7633b69663878f94"
+    },
+    "human-code-05": {
+      "slop_score": 0.281,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "7a7c83ed60ceddb5b87c89e2c489afb2b57e0b26682b1d77a65f9ccf99548067"
+    },
+    "human-generic-01": {
+      "slop_score": 0.239,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "b97fcbc163f7b4c5bd5757fdba260b90f0061995463369171f779271e443c5b6"
+    },
+    "human-generic-02": {
+      "slop_score": 0.268,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "df6e18285855bc5b07e2e008f2419e8efad4deab8b707cf56fb2d21950dbff28"
+    },
+    "human-generic-03": {
+      "slop_score": 0.091,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "b4b2a4a028c05454ca34c1edb631d7d99bf8ddce8640e9a43e91f33deea0dedb"
+    },
+    "human-generic-04": {
+      "slop_score": 0.122,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "e574b513d86988ec6fea639a844f4cdc66f33a9f6069c3dc96ebd86be46f31e3"
+    },
+    "human-generic-05": {
+      "slop_score": 0.096,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "2bed66139d523fcda22bbbb74348110852c7ddfe3d4c7e631a05454a3b6882f4"
+    },
+    "human-news-01": {
+      "slop_score": 0.081,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "c8720d473656312246d569f4f12026450bae20c21321304d19c8f2cfd9f17711"
+    },
+    "human-news-02": {
+      "slop_score": 0.1,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "d45f151b80f73541f1cafcc6eec5b31835746ded1ac3e0230c427ec27b30e11c"
+    },
+    "human-nonfiction-01": {
+      "slop_score": 0.069,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "1ee7a541e2a5375b8ba7f474b51a37f5a63fff5552ea85333d333c580f377730"
+    },
+    "human-nonfiction-02": {
+      "slop_score": 0.079,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "f54848b836240ef32d8299dcb9030ad9d4cf40c297271fe32454a258781c45c6"
+    },
+    "human-nonfiction-03": {
+      "slop_score": 0.103,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "8c223b7e3cc4c292c23faca6fd3f4ac2a53c4614016b59af346f63b066fc754d"
+    },
+    "human-nonfiction-04": {
+      "slop_score": 0.133,
+      "signals": [],
+      "label": "clean",
+      "text_sha256": "bd87e6ce18e86489a0fd9d8d0ba151420f7519e4359a332265b7e0fda2f9b8a2"
+    },
+    "slop-0101-001": {
+      "slop_score": 0.531,
+      "signals": [
+        "hedging_qualifiers:it's worth noting",
+        "it's worth noting that",
+        "punchy_insight:here's what i find interesting",
+        "punchy_insight:that's the tradeoff",
+        "punchy_insight:the implications are significant",
+        "punchy_insight:this matters because",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "06680b1f7d6c84b4983bb19434809eba4e0a7cdc3c7371a0fac58f9d33801c79"
+    },
+    "slop-0101-002": {
+      "slop_score": 0.619,
+      "signals": [
+        "emphasis_crutches:make no mistake",
+        "listicle_tells:here's the thing",
+        "punchy_insight:because it was necessary",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:in today's market",
+        "punchy_insight:let me walk you through",
+        "punchy_insight:the conversation moves toward practical tradeoffs",
+        "punchy_insight:the decision was reached",
+        "punchy_insight:the implications are significant",
+        "punchy_insight:the window is closing",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "16296b9595f8afe93caf8edce58b8556dd9496cfe75fd4b80cdce12368d2efbf"
+    },
+    "slop-0101-003": {
+      "slop_score": 0.579,
+      "signals": [
+        "at its core",
+        "punchy_insight:can we talk about what actually happened",
+        "punchy_insight:here's what i find interesting",
+        "punchy_insight:that's the tradeoff",
+        "punchy_insight:the decision was reached",
+        "punchy_insight:the deepest problem"
+      ],
+      "label": "slop",
+      "text_sha256": "95ef33d823fdaf49922f41078705e9160a1f090cad311aea3a0df5cc7cf0b7e7"
+    },
+    "slop-0101-004": {
+      "slop_score": 0.616,
+      "signals": [
+        "emphasis_crutches:let that sink in",
+        "hedging_qualifiers:it's worth noting",
+        "it's worth noting that",
+        "punchy_insight:a feature, not a bug",
+        "punchy_insight:hint: start with the boring part",
+        "punchy_insight:i want to explore what went wrong",
+        "punchy_insight:i'll say it again",
+        "punchy_insight:i'm going to be honest with you",
+        "punchy_insight:it feels like a shortcut",
+        "punchy_insight:the deepest problem",
+        "punchy_insight:the real challenge is not what you think",
+        "punchy_insight:the uncomfortable truth"
+      ],
+      "label": "slop",
+      "text_sha256": "cc2af6cc5e88efe852a415a444f577f78fa602d0a274f99d13345c2fb6d19c9f"
+    },
+    "slop-0101-005": {
+      "slop_score": 0.599,
+      "signals": [
+        "punchy_insight:can we talk about what actually happened",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:i'll say it again",
+        "punchy_insight:in today's market",
+        "punchy_insight:solving the wrong problem",
+        "punchy_insight:the conversation moves toward practical tradeoffs"
+      ],
+      "label": "slop",
+      "text_sha256": "1bfb299eb03a693d07fc4e0d1847a023be311bed1b11e914eaa18e9436a0fb71"
+    },
+    "slop-0101-006": {
+      "slop_score": 0.661,
+      "signals": [
+        "at the end of the day",
+        "generic_transitions:at the end of the day",
+        "punchy_insight:a feature, not a bug",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:the implications are significant",
+        "punchy_insight:this matters because",
+        "vague_declaratives:the stakes are high"
+      ],
+      "label": "slop",
+      "text_sha256": "04cc7d2bb373e7e2fdaf0ddf5d7196bfe2fd2be64712906fb003b9be25b95461"
+    },
+    "slop-0101-007": {
+      "slop_score": 0.541,
+      "signals": [
+        "punchy_insight:another post for another time",
+        "punchy_insight:because it was necessary",
+        "punchy_insight:can we talk about what actually happened",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:let me be clear about one thing",
+        "punchy_insight:solving the wrong problem",
+        "punchy_insight:that's the tradeoff",
+        "punchy_insight:the conversation moves toward practical tradeoffs"
+      ],
+      "label": "slop",
+      "text_sha256": "955612568b71a8b4d443e983e45481612557e3e4c2322113929209bb026c5ffc"
+    },
+    "slop-0101-008": {
+      "slop_score": 0.58,
+      "signals": [
+        "meta_commentary:as we'll see later",
+        "punchy_insight:a feature, not a bug",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:i'm going to be honest with you",
+        "punchy_insight:in today's market",
+        "punchy_insight:it feels like a shortcut",
+        "punchy_insight:let me be clear about one thing",
+        "punchy_insight:the real challenge is not what you think",
+        "punchy_insight:this matters because"
+      ],
+      "label": "slop",
+      "text_sha256": "7fdcffd53e4f6373501906c0dce8371bf639e733b5f6e3f9d9b27445e7f89083"
+    },
+    "slop-0101-009": {
+      "slop_score": 0.606,
+      "signals": [
+        "listicle_tells:here's the thing",
+        "meta_commentary:as we'll see later",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:i'm going to be honest with you",
+        "punchy_insight:the real challenge is not what you think",
+        "punchy_insight:the uncomfortable truth"
+      ],
+      "label": "slop",
+      "text_sha256": "ea77a6ddf9cca084b69f2c18764f1ff4b3cef973a8629fe161bdda2a085fb806"
+    },
+    "slop-0101-010": {
+      "slop_score": 0.593,
+      "signals": [
+        "punchy_insight:another post for another time",
+        "punchy_insight:because it was necessary",
+        "punchy_insight:i'm going to be honest with you",
+        "punchy_insight:let me be clear about one thing",
+        "punchy_insight:mistakes were made along the way",
+        "punchy_insight:solving the wrong problem",
+        "punchy_insight:the conversation moves toward practical tradeoffs",
+        "punchy_insight:this is genuinely hard to get right",
+        "vague_declaratives:the stakes are high"
+      ],
+      "label": "slop",
+      "text_sha256": "603fdda36c4e946a941b04ce5fa6c3143d77c443ed83ae5ae34d80aece9860b0"
+    },
+    "slop-0101-011": {
+      "slop_score": 0.495,
+      "signals": [
+        "emphasis_crutches:make no mistake",
+        "meta_commentary:as we'll see later",
+        "punchy_insight:a feature, not a bug",
+        "punchy_insight:another post for another time",
+        "punchy_insight:hint: start with the boring part",
+        "punchy_insight:let me walk you through",
+        "punchy_insight:solving the wrong problem",
+        "punchy_insight:that's the tradeoff",
+        "punchy_insight:the window is closing",
+        "punchy_insight:this matters because",
+        "vague_declaratives:the stakes are high"
+      ],
+      "label": "slop",
+      "text_sha256": "2fd0990efb62527fdf5ebeae217f8014078bb75ffce1b58531f9c094bd9e2070"
+    },
+    "slop-0101-012": {
+      "slop_score": 0.606,
+      "signals": [
+        "emphasis_crutches:let that sink in",
+        "emphasis_crutches:make no mistake",
+        "punchy_insight:in today's market",
+        "punchy_insight:let me be clear about one thing",
+        "punchy_insight:the answer isn't more tools",
+        "punchy_insight:the conversation moves toward practical tradeoffs",
+        "punchy_insight:the decision was reached",
+        "punchy_insight:the window is closing",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "61a8388ed608687570401955bc42cd98cabd4231835ce934b852dbbe317c6190"
+    },
+    "slop-0101-013": {
+      "slop_score": 0.622,
+      "signals": [
+        "emphasis_crutches:let that sink in",
+        "hedging_qualifiers:it's worth noting",
+        "it's worth noting that",
+        "punchy_insight:because it was necessary",
+        "punchy_insight:here's what i find interesting",
+        "punchy_insight:it feels like a shortcut",
+        "punchy_insight:let me be clear about one thing",
+        "punchy_insight:let me walk you through",
+        "punchy_insight:the decision was reached"
+      ],
+      "label": "slop",
+      "text_sha256": "a98083d7b85cdceb01870517ab0f4a1a8a23cdf976523d7f22098f2942928a47"
+    },
+    "slop-0101-014": {
+      "slop_score": 0.622,
+      "signals": [
+        "emphasis_crutches:let that sink in",
+        "emphasis_crutches:make no mistake",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:i want to explore what went wrong",
+        "punchy_insight:mistakes were made along the way",
+        "punchy_insight:the conversation moves toward practical tradeoffs",
+        "punchy_insight:the real challenge is not what you think",
+        "punchy_insight:the window is closing",
+        "punchy_insight:this matters because"
+      ],
+      "label": "slop",
+      "text_sha256": "0a8f27725f1b8e02a7b61129c432681b59c64593e73deb2c7c20477c58b02396"
+    },
+    "slop-0101-015": {
+      "slop_score": 0.607,
+      "signals": [
+        "punchy_insight:can we talk about what actually happened",
+        "punchy_insight:i'll say it again",
+        "punchy_insight:let me walk you through",
+        "punchy_insight:the decision was reached",
+        "punchy_insight:the implications are significant",
+        "punchy_insight:this matters because",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "64cc1b3809183ededee66b0814f653b74274a0059622f74257644991f5d6435d"
+    },
+    "slop-0101-016": {
+      "slop_score": 0.628,
+      "signals": [
+        "emphasis_crutches:full stop",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:in today's market",
+        "punchy_insight:mistakes were made along the way",
+        "punchy_insight:the reality is that most",
+        "vague_declaratives:the stakes are high"
+      ],
+      "label": "slop",
+      "text_sha256": "a376cb7ceb81ede1e3bff8a0f2d4e375be59169ed2b822e7157d4eb0634ca4a0"
+    },
+    "slop-0101-017": {
+      "slop_score": 0.631,
+      "signals": [
+        "punchy_insight:can we talk about what actually happened",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:mistakes were made along the way",
+        "punchy_insight:slop creeps in one rewrite at a time",
+        "punchy_insight:the answer isn't more tools",
+        "punchy_insight:the deepest problem",
+        "punchy_insight:this is genuinely hard to get right"
+      ],
+      "label": "slop",
+      "text_sha256": "ce06bf509f4ce2dd1d3cb0e12e7c395da80e06b4af4a260b3bb796c1045137f4"
+    },
+    "slop-0101-018": {
+      "slop_score": 0.597,
+      "signals": [
+        "emphasis_crutches:let that sink in",
+        "punchy_insight:another post for another time",
+        "punchy_insight:slop creeps in one rewrite at a time",
+        "punchy_insight:the conversation moves toward practical tradeoffs",
+        "punchy_insight:the decision was reached",
+        "punchy_insight:the real challenge is not what you think",
+        "punchy_insight:the reality is that most",
+        "punchy_insight:the uncomfortable truth",
+        "vague_declaratives:the stakes are high"
+      ],
+      "label": "slop",
+      "text_sha256": "94c85a5e9aad40a31beacfaf434a4d0541a3f146e9573313315b9282ab5343c7"
+    },
+    "slop-0101-019": {
+      "slop_score": 0.713,
+      "signals": [
+        "at its core",
+        "at the end of the day",
+        "generic_transitions:at the end of the day",
+        "hedging_qualifiers:it's worth noting",
+        "it's worth noting that",
+        "punchy_insight:can we talk about what actually happened",
+        "punchy_insight:i'll say it again",
+        "punchy_insight:in today's market",
+        "punchy_insight:this matters because",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "7ca8a426b8d873b946aff570ad0f716784bb423cde031a5681d704b16b8282d7"
+    },
+    "slop-0101-020": {
+      "slop_score": 0.641,
+      "signals": [
+        "at the end of the day",
+        "emphasis_crutches:make no mistake",
+        "generic_transitions:at the end of the day",
+        "punchy_insight:another post for another time",
+        "punchy_insight:i want to explore what went wrong",
+        "punchy_insight:slop creeps in one rewrite at a time",
+        "punchy_insight:solving the wrong problem",
+        "punchy_insight:the deepest problem",
+        "punchy_insight:the window is closing",
+        "vague_declaratives:the stakes are high"
+      ],
+      "label": "slop",
+      "text_sha256": "1b19e9a5088a58a2202defc6cfff17b526e5e4047726c8c4c8b30bd2f7596952"
+    },
+    "slop-0101-021": {
+      "slop_score": 0.647,
+      "signals": [
+        "emphasis_crutches:make no mistake",
+        "hedging_qualifiers:it's worth noting",
+        "it's worth noting that",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:i want to explore what went wrong",
+        "punchy_insight:let me walk you through",
+        "punchy_insight:the answer isn't more tools",
+        "punchy_insight:the real challenge is not what you think",
+        "punchy_insight:the window is closing",
+        "punchy_insight:this matters because"
+      ],
+      "label": "slop",
+      "text_sha256": "1148d1291c2b066aa49666a841f679c89cda986087535d548235ca46f09164c0"
+    },
+    "slop-0101-022": {
+      "slop_score": 0.632,
+      "signals": [
+        "punchy_insight:here's why that matters",
+        "punchy_insight:i want to explore what went wrong",
+        "punchy_insight:mistakes were made along the way",
+        "punchy_insight:the decision was reached",
+        "punchy_insight:the implications are significant",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "f5a700da273b7d907236ffefe25d4569703b0828b2502e5f7fb910ad69474973"
+    },
+    "slop-0101-023": {
+      "slop_score": 0.573,
+      "signals": [
+        "emphasis_crutches:full stop",
+        "punchy_insight:a feature, not a bug",
+        "punchy_insight:another post for another time",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's what i find interesting",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:hint: start with the boring part",
+        "punchy_insight:the deepest problem",
+        "punchy_insight:this matters because"
+      ],
+      "label": "slop",
+      "text_sha256": "3c725c5ad8262452be076237bf87a965c18ba120641b8884a910be4108ff71e8"
+    },
+    "slop-0101-024": {
+      "slop_score": 0.625,
+      "signals": [
+        "punchy_insight:can we talk about what actually happened",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:in today's market",
+        "punchy_insight:slop creeps in one rewrite at a time",
+        "punchy_insight:the deepest problem",
+        "punchy_insight:this is genuinely hard to get right",
+        "punchy_insight:this matters because",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "6a11b4270300c7494fc1a212397723fdf0006a1a4e7f22a9f85c15d8f8634b64"
+    },
+    "slop-0101-025": {
+      "slop_score": 0.612,
+      "signals": [
+        "emphasis_crutches:make no mistake",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:the decision was reached",
+        "punchy_insight:the uncomfortable truth",
+        "punchy_insight:the window is closing",
+        "punchy_insight:this is genuinely hard to get right",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "f6d66cf8c674cc12c016c14e0a0e8358e7a360578786f64c6c5b86130ff7413c"
+    },
+    "slop-0101-026": {
+      "slop_score": 0.63,
+      "signals": [
+        "punchy_insight:here's the problem though",
+        "punchy_insight:slop creeps in one rewrite at a time",
+        "punchy_insight:the deepest problem",
+        "punchy_insight:the implications are significant",
+        "punchy_insight:the real challenge is not what you think",
+        "punchy_insight:this is genuinely hard to get right"
+      ],
+      "label": "slop",
+      "text_sha256": "23a9f817b9b7e50790d3c35c7da3ac11fbb9599a86fe5f9233d43cd665626702"
+    },
+    "slop-0101-027": {
+      "slop_score": 0.591,
+      "signals": [
+        "emphasis_crutches:full stop",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:hint: start with the boring part",
+        "punchy_insight:in today's market",
+        "punchy_insight:let me be clear about one thing",
+        "punchy_insight:let me walk you through",
+        "punchy_insight:the conversation moves toward practical tradeoffs",
+        "punchy_insight:the decision was reached",
+        "punchy_insight:the uncomfortable truth"
+      ],
+      "label": "slop",
+      "text_sha256": "679d671b32337451459b5eb2a23a9d4f127f1c4f428f60c713ebf00bcb0d534a"
+    },
+    "slop-0101-028": {
+      "slop_score": 0.645,
+      "signals": [
+        "at the end of the day",
+        "generic_transitions:at the end of the day",
+        "punchy_insight:hint: start with the boring part",
+        "punchy_insight:it feels like a shortcut",
+        "punchy_insight:let me walk you through",
+        "punchy_insight:mistakes were made along the way",
+        "punchy_insight:slop creeps in one rewrite at a time",
+        "punchy_insight:solving the wrong problem",
+        "punchy_insight:the conversation moves toward practical tradeoffs",
+        "punchy_insight:the real challenge is not what you think",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "2b77202e445efa2e905d479c34ce53bc408e785a56db3326c185e1b8cd31737f"
+    },
+    "slop-0101-029": {
+      "slop_score": 0.592,
+      "signals": [
+        "meta_commentary:as we'll see later",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's what i find interesting",
+        "punchy_insight:hint: start with the boring part",
+        "punchy_insight:it feels like a shortcut",
+        "punchy_insight:let me be clear about one thing",
+        "punchy_insight:the real challenge is not what you think",
+        "punchy_insight:the reality is that most",
+        "rhetorical_setups:plot twist:"
+      ],
+      "label": "slop",
+      "text_sha256": "5c10538e69ee59959dc5285c3c27dafc8b4eb672c8bd44c5c0a9d33118890986"
+    },
+    "slop-0101-030": {
+      "slop_score": 0.745,
+      "signals": [
+        "at its core",
+        "at the end of the day",
+        "generic_transitions:at the end of the day",
+        "listicle_tells:here's the thing",
+        "punchy_insight:here's the problem though",
+        "punchy_insight:here's what i find interesting",
+        "punchy_insight:let me be clear about one thing",
+        "punchy_insight:mistakes were made along the way",
+        "punchy_insight:the real challenge is not what you think"
+      ],
+      "label": "slop",
+      "text_sha256": "27f2c5bd796fdc63d34b188f91cc590f885815c508d7373ff99ea9ac2c49885b"
+    },
+    "slop-0101-031": {
+      "slop_score": 0.503,
+      "signals": [
+        "emphasis_crutches:full stop",
+        "punchy_insight:a feature, not a bug",
+        "punchy_insight:can we talk about what actually happened",
+        "punchy_insight:here's why that matters",
+        "punchy_insight:i'll say it again",
+        "punchy_insight:in today's market",
+        "punchy_insight:that's the tradeoff",
+        "punchy_insight:this is genuinely hard to get right"
+      ],
+      "label": "slop",
+      "text_sha256": "faa70af5bde7b7f47930bc72348c7626996800a07f8ecdcd693892b9be42dc5f"
+    },
+    "slop-0101-032": {
+      "slop_score": 0.642,
+      "signals": [
+        "at its core",
+        "punchy_insight:because it was necessary",
+        "punchy_insight:here's what i find interesting",
+        "punchy_insight:i want to explore what went wrong",
+        "punchy_insight:the answer isn't more tools",
+        "punchy_insight:the conversation moves toward practical tradeoffs",
+        "punchy_insight:the reality is that most",
+        "punchy_insight:this is genuinely hard to get right"
+      ],
+      "label": "slop",
+      "text_sha256": "f69b38bea3d8b8b9cf87d33b682bd3abe53d4cf63d3450d0530deeddf545d11b"
+    },
+    "slop-0202-001": {
+      "slop_score": 0.645,
+      "signals": [
+        "generic_phrases:going forward",
+        "in today's rapidly evolving",
+        "landscape",
+        "opening_formulas:in today's rapidly evolving landscape",
+        "report_hedging:studies show",
+        "report_hedging:the update underscores",
+        "report_hedging:this changes everything",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "085ac939c0a4e4fa1c54a21e7a242f4f917fbdc41babc2142b5902f75d30048f"
+    },
+    "slop-0202-002": {
+      "slop_score": 0.686,
+      "signals": [
+        "a testament to",
+        "let's dive in",
+        "punchy_insight:the part everyone misses",
+        "punchy_insight:what most people get wrong",
+        "report_hedging:as you can see",
+        "report_hedging:it is important to note",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:stands as a testament to",
+        "report_hedging:studies show",
+        "report_hedging:the key point is"
+      ],
+      "label": "slop",
+      "text_sha256": "2db1db69671c6584b5c1f20f5c192cf689f175bbdbfc41c2850613cf15a9ec07"
+    },
+    "slop-0202-003": {
+      "slop_score": 0.646,
+      "signals": [
+        "ecosystem",
+        "generic_phrases:in other words",
+        "in today's rapidly evolving",
+        "landscape",
+        "opening_formulas:in today's rapidly evolving landscape",
+        "punchy_insight:the part everyone misses",
+        "report_hedging:as you can see",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:industry reports suggest"
+      ],
+      "label": "slop",
+      "text_sha256": "21670a5b9aff9044d13fb52ec11792285186723226fdd6b535a1398311a1fc07"
+    },
+    "slop-0202-004": {
+      "slop_score": 0.755,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "generic_phrases:going forward",
+        "generic_phrases:in other words",
+        "let's dive in",
+        "report_hedging:as you can see",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:many argue the opposite",
+        "report_hedging:stands as a testament to",
+        "report_hedging:the release solidifies its position",
+        "report_hedging:this changes everything",
+        "weasel_attribution:experts agree",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "0b24bf73e69a59310db3dc0154f182a88a207594c46da9fe5efad1ecb9385d71"
+    },
+    "slop-0202-005": {
+      "slop_score": 0.679,
+      "signals": [
+        "generic_phrases:going forward",
+        "pivotal",
+        "punchy_insight:the part everyone misses",
+        "report_hedging:a pivotal moment",
+        "report_hedging:in this article, we will",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:the launch marks",
+        "report_hedging:the release solidifies its position"
+      ],
+      "label": "slop",
+      "text_sha256": "d6795b9bc654d477f813757a8a59e22a8164791b78a12c3ad1a6e8dbe9868d2a"
+    },
+    "slop-0202-006": {
+      "slop_score": 0.679,
+      "signals": [
+        "a testament to",
+        "punchy_insight:what most people get wrong",
+        "report_hedging:many argue the opposite",
+        "report_hedging:stands as a testament to",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the best part:",
+        "report_hedging:the key point is",
+        "report_hedging:the release solidifies its position",
+        "report_hedging:the tool suggests fixes",
+        "report_hedging:this changes everything"
+      ],
+      "label": "slop",
+      "text_sha256": "d3d96773e663407d72b9f7b3cd830256f2c0ac38b4a253beed12400db420073e"
+    },
+    "slop-0202-007": {
+      "slop_score": 0.671,
+      "signals": [
+        "a testament to",
+        "opening_formulas:in the age of",
+        "punchy_insight:the part everyone misses",
+        "report_hedging:as you can see",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:in this article, we will",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:stands as a testament to",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the tool suggests fixes"
+      ],
+      "label": "slop",
+      "text_sha256": "cc8d113ea6e0207bda4be0899a400435037455594f168526185e0969ec11d60b"
+    },
+    "slop-0202-008": {
+      "slop_score": 0.635,
+      "signals": [
+        "a testament to",
+        "generic_phrases:in other words",
+        "opening_formulas:in the age of",
+        "punchy_insight:what most people get wrong",
+        "report_hedging:it is important to note",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:stands as a testament to",
+        "report_hedging:studies show",
+        "report_hedging:the update underscores"
+      ],
+      "label": "slop",
+      "text_sha256": "ca9b7d2b3f9397dbfcd1b350cef19d7c3eaec84720cefb6ac4abf64db05ffcc3"
+    },
+    "slop-0202-009": {
+      "slop_score": 0.636,
+      "signals": [
+        "generic_phrases:in other words",
+        "punchy_insight:the part everyone misses",
+        "punchy_insight:what most people get wrong",
+        "report_hedging:industry reports suggest",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:the key point is"
+      ],
+      "label": "slop",
+      "text_sha256": "9649d426f93e2afab323434e2c0894d2ef5a7c2a122ecc741bba2b6f5334afa4"
+    },
+    "slop-0202-010": {
+      "slop_score": 0.58,
+      "signals": [
+        "ecosystem",
+        "generic_phrases:going forward",
+        "report_hedging:it is important to note",
+        "report_hedging:studies show",
+        "report_hedging:the release solidifies its position",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "e59cfecf59bd5731325a3dd281d982069a8f53a9db9949d5d7ab6db79b2f3990"
+    },
+    "slop-0202-011": {
+      "slop_score": 0.712,
+      "signals": [
+        "in today's rapidly evolving",
+        "landscape",
+        "opening_formulas:in today's rapidly evolving landscape",
+        "punchy_insight:the part everyone misses",
+        "report_hedging:in this article, we will",
+        "report_hedging:it is important to note",
+        "report_hedging:plays a vital role",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the key point is",
+        "report_hedging:the release solidifies its position",
+        "report_hedging:the tool suggests fixes",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "3e9e6f9029205740904061dfb7c59d7542bd0dafc3d084b566bf554309bcbecc"
+    },
+    "slop-0202-012": {
+      "slop_score": 0.738,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "generic_phrases:in other words",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:it is important to note",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:stands as a testament to",
+        "report_hedging:the launch marks",
+        "report_hedging:the release solidifies its position"
+      ],
+      "label": "slop",
+      "text_sha256": "682748148a4b6becb41b638269ca24d490a1a082da8f1f29966bb43781308848"
+    },
+    "slop-0202-013": {
+      "slop_score": 0.73,
+      "signals": [
+        "a testament to",
+        "in today's rapidly evolving",
+        "landscape",
+        "opening_formulas:in today's rapidly evolving landscape",
+        "report_hedging:as you can see",
+        "report_hedging:plays a vital role",
+        "report_hedging:stands as a testament to",
+        "report_hedging:the release solidifies its position",
+        "weasel_attribution:experts agree"
+      ],
+      "label": "slop",
+      "text_sha256": "a164017b122c6f000f321bb8e9a07db38b279742addf388098f90e6bd9daa18a"
+    },
+    "slop-0202-014": {
+      "slop_score": 0.665,
+      "signals": [
+        "generic_phrases:in other words",
+        "report_hedging:plays a vital role",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the key point is",
+        "report_hedging:the release solidifies its position",
+        "report_hedging:the tool suggests fixes",
+        "report_hedging:the update underscores",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "ef4a9ad877f46c8b358a9476c3afe180dafeb3d45fab9984a6876b5e7d574280"
+    },
+    "slop-0202-015": {
+      "slop_score": 0.642,
+      "signals": [
+        "generic_phrases:going forward",
+        "generic_phrases:in other words",
+        "punchy_insight:what most people get wrong",
+        "report_hedging:industry reports suggest",
+        "report_hedging:many argue the opposite",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the release solidifies its position",
+        "report_hedging:the tool suggests fixes",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "1296853f74c0c0687eda043040a2df0ad2135f52a2d8b15afe644ee31f2a5f35"
+    },
+    "slop-0202-016": {
+      "slop_score": 0.636,
+      "signals": [
+        "opening_formulas:in the age of",
+        "report_hedging:as you can see",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:industry reports suggest",
+        "report_hedging:many argue the opposite",
+        "report_hedging:plays a vital role",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the tool suggests fixes",
+        "report_hedging:the update underscores",
+        "report_hedging:this changes everything",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "9c4c20b68c03e1233699d500cde7f326a3a854edcb0c709b46694f042ded69b3"
+    },
+    "slop-0202-017": {
+      "slop_score": 0.752,
+      "signals": [
+        "a testament to",
+        "pivotal",
+        "punchy_insight:the part everyone misses",
+        "report_hedging:a pivotal moment",
+        "report_hedging:as you can see",
+        "report_hedging:many argue the opposite",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:stands as a testament to",
+        "report_hedging:the launch marks",
+        "report_hedging:the release solidifies its position"
+      ],
+      "label": "slop",
+      "text_sha256": "39b6dd4a37d2445fb60e86682e4c54e3f06989f57f47672da9ff4ed19f1fdf37"
+    },
+    "slop-0202-018": {
+      "slop_score": 0.661,
+      "signals": [
+        "ecosystem",
+        "punchy_insight:the part everyone misses",
+        "punchy_insight:what most people get wrong",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:studies show",
+        "report_hedging:the best part:",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "3bb9c9e23ee2599d1dae4a9f7b07083f5bc110b0f0290f38fa264b5a31c934b9"
+    },
+    "slop-0202-019": {
+      "slop_score": 0.612,
+      "signals": [
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:in this article, we will",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "report_hedging:plays a vital role",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the launch marks",
+        "report_hedging:the tool suggests fixes"
+      ],
+      "label": "slop",
+      "text_sha256": "897566c6aebe41ffce64ad362d41240d8670fa36a19868a40c02be875e9f66f5"
+    },
+    "slop-0202-020": {
+      "slop_score": 0.645,
+      "signals": [
+        "generic_phrases:going forward",
+        "let's dive in",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:industry reports suggest",
+        "report_hedging:the key point is",
+        "report_hedging:the update underscores",
+        "report_hedging:this changes everything",
+        "weasel_attribution:experts agree"
+      ],
+      "label": "slop",
+      "text_sha256": "5cd7107c6dcf3fc6194dbf7eb1347cd9a1bd20dbee6d657f53c4ee2071578351"
+    },
+    "slop-0202-021": {
+      "slop_score": 0.647,
+      "signals": [
+        "generic_phrases:going forward",
+        "opening_formulas:in the age of",
+        "punchy_insight:what most people get wrong",
+        "report_hedging:industry reports suggest",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the tool suggests fixes",
+        "report_hedging:this changes everything",
+        "weasel_attribution:experts agree",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "11dcc56b38d1a526d6d198a43e98f75077dbff4562db696eb40c1b6bafc3a4c7"
+    },
+    "slop-0202-022": {
+      "slop_score": 0.462,
+      "signals": [
+        "generic_phrases:going forward",
+        "generic_phrases:in other words",
+        "punchy_insight:what most people get wrong",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:this changes everything",
+        "weasel_attribution:experts agree"
+      ],
+      "label": "slop",
+      "text_sha256": "e4359dcefa084f9ead96b86faaf6e3e6eaddf7a7809c725741d7d4eb6cecd60e"
+    },
+    "slop-0202-023": {
+      "slop_score": 0.75,
+      "signals": [
+        "in today's rapidly evolving",
+        "landscape",
+        "opening_formulas:in today's rapidly evolving landscape",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "report_hedging:serves as a centralized hub",
+        "report_hedging:the best part:",
+        "report_hedging:the key point is",
+        "report_hedging:the launch marks",
+        "report_hedging:the release solidifies its position"
+      ],
+      "label": "slop",
+      "text_sha256": "94a73b4b72da58518cc6889fac268dbf2d497073e0bd3191a997cd24f3ce4c83"
+    },
+    "slop-0202-024": {
+      "slop_score": 0.82,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "in today's rapidly evolving",
+        "landscape",
+        "let's dive in",
+        "opening_formulas:in the age of",
+        "opening_formulas:in today's rapidly evolving landscape",
+        "report_hedging:in this article, we will",
+        "report_hedging:stands as a testament to",
+        "report_hedging:studies show",
+        "report_hedging:the key point is",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "fe462e541e55e16257fc1fc15ee9dff7a0f3285cac351ac6eb363e1fe2d06a81"
+    },
+    "slop-0202-025": {
+      "slop_score": 0.693,
+      "signals": [
+        "generic_phrases:going forward",
+        "generic_phrases:in other words",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:as you can see",
+        "report_hedging:here's what nobody tells you",
+        "report_hedging:the best part:",
+        "report_hedging:the launch marks",
+        "weasel_attribution:experts agree"
+      ],
+      "label": "slop",
+      "text_sha256": "51872fadf119cf88571b247202117674eac9022a5ac2246ab69a3e9263976196"
+    },
+    "slop-0202-026": {
+      "slop_score": 0.635,
+      "signals": [
+        "a testament to",
+        "generic_phrases:going forward",
+        "generic_phrases:in other words",
+        "report_hedging:stands as a testament to",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the best part:",
+        "report_hedging:the key point is",
+        "report_hedging:the tool suggests fixes"
+      ],
+      "label": "slop",
+      "text_sha256": "55d97be82f979dacbf90b378eac13178a37157782f760e1b0384eab7cd6f4a35"
+    },
+    "slop-0202-027": {
+      "slop_score": 0.695,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "report_hedging:in this article, we will",
+        "report_hedging:industry reports suggest",
+        "report_hedging:plays a vital role",
+        "report_hedging:stands as a testament to",
+        "report_hedging:this changes everything",
+        "weasel_attribution:experts agree"
+      ],
+      "label": "slop",
+      "text_sha256": "cde86c81e8098ffd5237ee3b2cb1d496ec8b1fbc84e34eafa00ad481a7b791ab"
+    },
+    "slop-0202-028": {
+      "slop_score": 0.731,
+      "signals": [
+        "ecosystem",
+        "pivotal",
+        "punchy_insight:the part everyone misses",
+        "report_hedging:a pivotal moment",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the best part:",
+        "report_hedging:the key point is",
+        "report_hedging:the launch marks",
+        "report_hedging:the tool suggests fixes",
+        "report_hedging:this changes everything",
+        "weasel_attribution:experts agree",
+        "weasel_attribution:widely regarded as"
+      ],
+      "label": "slop",
+      "text_sha256": "3c61381a5cfede9630e4f350424c29871be7aec8e372eee2b4c63ea6a3f31e3c"
+    },
+    "slop-0202-029": {
+      "slop_score": 0.778,
+      "signals": [
+        "generic_phrases:going forward",
+        "in today's rapidly evolving",
+        "landscape",
+        "opening_formulas:in today's rapidly evolving landscape",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the best part:",
+        "report_hedging:the key point is",
+        "report_hedging:the launch marks",
+        "report_hedging:the release solidifies its position",
+        "report_hedging:the tool suggests fixes",
+        "weasel_attribution:experts agree"
+      ],
+      "label": "slop",
+      "text_sha256": "15ce29be086dd84b9f6ee8ad515af313f546abd702d9ef5cea15d5db55976ff8"
+    },
+    "slop-0202-030": {
+      "slop_score": 0.744,
+      "signals": [
+        "ecosystem",
+        "generic_phrases:going forward",
+        "opening_formulas:in the age of",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:the key point is",
+        "report_hedging:the launch marks",
+        "report_hedging:the release solidifies its position",
+        "report_hedging:this changes everything"
+      ],
+      "label": "slop",
+      "text_sha256": "7bc6cf28234de72957fecf17e462598c5e60730c8d1f5a2e1ff7acfc1a618d13"
+    },
+    "slop-0202-031": {
+      "slop_score": 0.616,
+      "signals": [
+        "generic_phrases:in other words",
+        "report_hedging:it is important to note",
+        "report_hedging:plays a vital role",
+        "report_hedging:studies show",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the best part:",
+        "report_hedging:the key point is",
+        "report_hedging:the release solidifies its position",
+        "report_hedging:the tool suggests fixes",
+        "report_hedging:this changes everything"
+      ],
+      "label": "slop",
+      "text_sha256": "16def1738aec29c76ee4c57274320c54fe2abb901c5dc140ce0da7468888de59"
+    },
+    "slop-0202-032": {
+      "slop_score": 0.724,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "generic_phrases:in other words",
+        "let's dive in",
+        "report_hedging:as you can see",
+        "report_hedging:it is important to note",
+        "report_hedging:many argue the opposite",
+        "report_hedging:stands as a testament to",
+        "report_hedging:the agent reviews the draft",
+        "report_hedging:the tool suggests fixes",
+        "report_hedging:this changes everything"
+      ],
+      "label": "slop",
+      "text_sha256": "22f98d00046de891481fc4b9eaed87619e5bbfaee8e5e43c6c7e884bfb62f920"
+    },
+    "slop-0303-001": {
+      "slop_score": 0.6,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "assistant_signoff:it is believed that",
+        "assistant_signoff:let me know if you have any questions",
+        "assistant_signoff:to be clear",
+        "wiki_promo:exciting times lie ahead",
+        "wiki_promo:garnered international attention",
+        "wiki_promo:the founder maintains a low profile",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "49d6aaf8864476016be04a6a4e4ba8afa345ef0ac528580e54e1a2c46bc22d66"
+    },
+    "slop-0303-002": {
+      "slop_score": 0.537,
+      "signals": [
+        "assistant_signoff:here's what you need to know",
+        "assistant_signoff:i hope this helps",
+        "assistant_signoff:some might say we moved too fast",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:the region is renowned for its natural beauty"
+      ],
+      "label": "slop",
+      "text_sha256": "f602f1ba114594eb269c2fc30b75c52b982a8a799e315dc2450b9e4466931f41"
+    },
+    "slop-0303-003": {
+      "slop_score": 0.532,
+      "signals": [
+        "assistant_signoff:here's what you need to know",
+        "assistant_signoff:i hope this helps",
+        "assistant_signoff:to be clear",
+        "listicle_tells:let's dive into",
+        "meta_commentary:without further ado",
+        "punchy_insight:let's be honest about the timeline",
+        "punchy_insight:you could argue the cost is too high"
+      ],
+      "label": "slop",
+      "text_sha256": "7f4c73e29132d08d647bee63bf8d43e3202850e70a398fe442ae3c54574a0038"
+    },
+    "slop-0303-004": {
+      "slop_score": 0.525,
+      "signals": [
+        "assistant_signoff:it is believed that",
+        "meta_commentary:without further ado",
+        "punchy_insight:one might be tempted to",
+        "punchy_insight:you could argue the cost is too high",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered international attention",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "f5e324a16bb1c9d0075163fbcf9d088e1d3094f78c5cc11dc1863b66eeb78ca7"
+    },
+    "slop-0303-005": {
+      "slop_score": 0.565,
+      "signals": [
+        "assistant_signoff:i hope this helps",
+        "assistant_signoff:to be clear",
+        "generic_transitions:additionally",
+        "groundbreaking",
+        "listicle_tells:let's dive into",
+        "punchy_insight:you could argue the cost is too high",
+        "wiki_promo:commitment to excellence",
+        "wiki_promo:the intricate interplay of",
+        "wiki_promo:this groundbreaking study exemplifies"
+      ],
+      "label": "slop",
+      "text_sha256": "6312b5f68548c9176839856209401bb90888b5991ec3284fd04aac62f069af97"
+    },
+    "slop-0303-006": {
+      "slop_score": 0.561,
+      "signals": [
+        "assistant_signoff:let me know if you have any questions",
+        "assistant_signoff:to be clear",
+        "nestled",
+        "punchy_insight:you could argue the cost is too high",
+        "wiki_promo:exciting times lie ahead",
+        "wiki_promo:nestled within the breathtaking valley"
+      ],
+      "label": "slop",
+      "text_sha256": "bbe5d88acc18b4f2a13c5d39f0c409e31b3232d15692c57ec57a3c63b9f3b70c"
+    },
+    "slop-0303-007": {
+      "slop_score": 0.68,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "groundbreaking",
+        "nestled",
+        "wiki_promo:commitment to excellence",
+        "wiki_promo:exciting times lie ahead",
+        "wiki_promo:the founder maintains a low profile",
+        "wiki_promo:this groundbreaking study exemplifies"
+      ],
+      "label": "slop",
+      "text_sha256": "4ad56be6a404aa585aa7841c223e3bce74f69130be1bc9a2f620cba8c3e2ac79"
+    },
+    "slop-0303-008": {
+      "slop_score": 0.508,
+      "signals": [
+        "assistant_signoff:here's what you need to know",
+        "listicle_tells:let's dive into",
+        "meta_commentary:without further ado",
+        "punchy_insight:it's not just a tool, it's a mirror",
+        "punchy_insight:let's be honest about the timeline",
+        "punchy_insight:one might be tempted to",
+        "punchy_insight:you could argue the cost is too high",
+        "wiki_promo:boasts a vibrant"
+      ],
+      "label": "slop",
+      "text_sha256": "4d331819a74bf06caf8121d97547177dc23639ab7d03af94482f5d33b2a7abd4"
+    },
+    "slop-0303-009": {
+      "slop_score": 0.518,
+      "signals": [
+        "assistant_signoff:i hope this helps",
+        "assistant_signoff:let me know if you have any questions",
+        "assistant_signoff:some might say we moved too fast",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:the region is renowned for its natural beauty"
+      ],
+      "label": "slop",
+      "text_sha256": "455e08fac4fcabcef303179a0a0be4ff6889f411362b4e086a5cf61240b55019"
+    },
+    "slop-0303-010": {
+      "slop_score": 0.464,
+      "signals": [
+        "assistant_signoff:let me know if you have any questions",
+        "punchy_insight:one might be tempted to",
+        "wiki_promo:garnered international attention",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "98d616772eda7268f2571fc3068af314585b7a291421f18c2da6317f01f007a3"
+    },
+    "slop-0303-011": {
+      "slop_score": 0.473,
+      "signals": [
+        "assistant_signoff:here's what you need to know",
+        "listicle_tells:let's dive into",
+        "nestled",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:garnered international attention"
+      ],
+      "label": "slop",
+      "text_sha256": "b6106bb50f5ee33d7a081d553e883e2e4c661323bc23479500e9fa72b5d149b8"
+    },
+    "slop-0303-012": {
+      "slop_score": 0.4,
+      "signals": [
+        "generic_transitions:additionally",
+        "wiki_promo:exciting times lie ahead",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "8dfd789c2824728510b1bb3e1755480f60bcb35143f7d8d7ccab2bca49de43d3"
+    },
+    "slop-0303-013": {
+      "slop_score": 0.617,
+      "signals": [
+        "assistant_signoff:here's what you need to know",
+        "assistant_signoff:up to my last training update",
+        "nestled",
+        "punchy_insight:one might be tempted to",
+        "wiki_promo:exciting times lie ahead",
+        "wiki_promo:nestled within the breathtaking valley",
+        "wiki_promo:the region is renowned for its natural beauty"
+      ],
+      "label": "slop",
+      "text_sha256": "7dbf96be18c1d92670613bad145761effedee64255f3453b70f41430e66a18f2"
+    },
+    "slop-0303-014": {
+      "slop_score": 0.608,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "assistant_signoff:here's what you need to know",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:exciting times lie ahead"
+      ],
+      "label": "slop",
+      "text_sha256": "50b9e947d622021479e880406676f8559209ff25ed7d0415dbd8cbc3908ce263"
+    },
+    "slop-0303-015": {
+      "slop_score": 0.585,
+      "signals": [
+        "assistant_signoff:some might say we moved too fast",
+        "assistant_signoff:to be clear",
+        "groundbreaking",
+        "meta_commentary:without further ado",
+        "nestled",
+        "punchy_insight:it's not just a tool, it's a mirror",
+        "wiki_promo:commitment to excellence",
+        "wiki_promo:this groundbreaking study exemplifies"
+      ],
+      "label": "slop",
+      "text_sha256": "fd3cb81c1d1ebe5c4af8216b86fdac284548e62ea2df698ca0ac2834e4fe0fc0"
+    },
+    "slop-0303-016": {
+      "slop_score": 0.614,
+      "signals": [
+        "assistant_signoff:i hope this helps",
+        "assistant_signoff:it is believed that",
+        "assistant_signoff:some might say we moved too fast",
+        "generic_transitions:additionally",
+        "meta_commentary:without further ado",
+        "punchy_insight:one might be tempted to",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered international attention",
+        "wiki_promo:the founder maintains a low profile",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "db5e29f38421e663f0455d0969d16ffe86a90ca1d3fa2a6727badd2acb685de7"
+    },
+    "slop-0303-017": {
+      "slop_score": 0.452,
+      "signals": [
+        "assistant_signoff:i hope this helps",
+        "groundbreaking",
+        "wiki_promo:commitment to excellence",
+        "wiki_promo:this groundbreaking study exemplifies"
+      ],
+      "label": "slop",
+      "text_sha256": "0b3e924061fdf5de6d7e7116ff12d7374f2adc2fc0af3cada254055a61a943a0"
+    },
+    "slop-0303-018": {
+      "slop_score": 0.628,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "assistant_signoff:up to my last training update",
+        "groundbreaking",
+        "punchy_insight:it's not just a tool, it's a mirror",
+        "punchy_insight:one might be tempted to",
+        "wiki_promo:commitment to excellence",
+        "wiki_promo:garnered international attention",
+        "wiki_promo:this groundbreaking study exemplifies"
+      ],
+      "label": "slop",
+      "text_sha256": "8a71823c2c8ec328f722b857c75a1fdee61bd7264eade34848e3b6db9ee5b189"
+    },
+    "slop-0303-019": {
+      "slop_score": 0.51,
+      "signals": [
+        "assistant_signoff:i hope this helps",
+        "assistant_signoff:some might say we moved too fast",
+        "generic_transitions:additionally",
+        "meta_commentary:without further ado",
+        "wiki_promo:diverse array",
+        "wiki_promo:the intricate interplay of",
+        "wiki_promo:the region is renowned for its natural beauty"
+      ],
+      "label": "slop",
+      "text_sha256": "31009e08b751a48dc1799e4e6560074656213278d7f3098aef47723b8ccaad34"
+    },
+    "slop-0303-020": {
+      "slop_score": 0.558,
+      "signals": [
+        "assistant_signoff:some might say we moved too fast",
+        "assistant_signoff:to be clear",
+        "generic_transitions:additionally",
+        "nestled",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:nestled within the breathtaking valley",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "01d7363e68fd151af9d2369111abfd567e96dad4070d25eab7b623d519bfd9cb"
+    },
+    "slop-0303-021": {
+      "slop_score": 0.4,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "assistant_signoff:to be clear",
+        "generic_transitions:additionally",
+        "punchy_insight:it's not just a tool, it's a mirror",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "82831d5a6c04f0fa79118aa1fe90b6ed2cc4dc84abbf982ef198f69b2704eb01"
+    },
+    "slop-0303-022": {
+      "slop_score": 0.571,
+      "signals": [
+        "assistant_signoff:it is believed that",
+        "assistant_signoff:some might say we moved too fast",
+        "assistant_signoff:up to my last training update",
+        "meta_commentary:without further ado",
+        "punchy_insight:you could argue the cost is too high",
+        "wiki_promo:garnered international attention",
+        "wiki_promo:the founder maintains a low profile"
+      ],
+      "label": "slop",
+      "text_sha256": "70d18c889e5aaceb3956c849f0120ab80f6e664456f9681f63167a078fc2954d"
+    },
+    "slop-0303-023": {
+      "slop_score": 0.541,
+      "signals": [
+        "generic_transitions:additionally",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:the founder maintains a low profile",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "60959264079f8162e4daa53f2bb0288adb3c52eaca48ebc9cb7e8b0a0ecd82de"
+    },
+    "slop-0303-024": {
+      "slop_score": 0.688,
+      "signals": [
+        "assistant_signoff:some might say we moved too fast",
+        "assistant_signoff:up to my last training update",
+        "groundbreaking",
+        "listicle_tells:let's dive into",
+        "nestled",
+        "wiki_promo:commitment to excellence",
+        "wiki_promo:the future looks bright",
+        "wiki_promo:this groundbreaking study exemplifies"
+      ],
+      "label": "slop",
+      "text_sha256": "d8f898300fb70dbab23d9dd33da63bdf1bf2c518bf5856e3ff566291beeb0ade"
+    },
+    "slop-0303-025": {
+      "slop_score": 0.4,
+      "signals": [
+        "meta_commentary:without further ado",
+        "punchy_insight:let's be honest about the timeline",
+        "wiki_promo:diverse array",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "34c23f2ddf59278d388c2a5f154d02b8e7d2072a1e032038b0efa917c49065f6"
+    },
+    "slop-0303-026": {
+      "slop_score": 0.445,
+      "signals": [
+        "assistant_signoff:let me know if you have any questions",
+        "assistant_signoff:some might say we moved too fast",
+        "listicle_tells:let's dive into",
+        "meta_commentary:without further ado",
+        "punchy_insight:one might be tempted to",
+        "wiki_promo:continues to thrive"
+      ],
+      "label": "slop",
+      "text_sha256": "5c859e122eaa85d0b2e3c1ef340e6b161daae235c541cf034322f0d945b6fa3c"
+    },
+    "slop-0303-027": {
+      "slop_score": 0.43,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "punchy_insight:let's be honest about the timeline",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:exciting times lie ahead"
+      ],
+      "label": "slop",
+      "text_sha256": "419b0d2e51f063469c8c1991de848ef0bd0ad573159332006041871c0c2e990e"
+    },
+    "slop-0303-028": {
+      "slop_score": 0.583,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "assistant_signoff:here's what you need to know",
+        "assistant_signoff:i hope this helps",
+        "assistant_signoff:up to my last training update",
+        "generic_transitions:additionally",
+        "meta_commentary:without further ado",
+        "wiki_promo:the intricate interplay of",
+        "wiki_promo:the region is renowned for its natural beauty"
+      ],
+      "label": "slop",
+      "text_sha256": "d89d66b700f51e5bb150e71e66fd797e2fd4a6123f6b40e0dde977a3d6d8dfc8"
+    },
+    "slop-0303-029": {
+      "slop_score": 0.421,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:the founder maintains a low profile"
+      ],
+      "label": "slop",
+      "text_sha256": "cb5c490a43372abb19f3d751a48a7426acec993e27a4431c57f65cae1c43a964"
+    },
+    "slop-0303-030": {
+      "slop_score": 0.584,
+      "signals": [
+        "assistant_signoff:based on available information",
+        "assistant_signoff:to be clear",
+        "generic_transitions:additionally",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:garnered international attention",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "efe899f15113bdeb12c09c2d4e97a0609622b21beaff96cb2b39d0d862479615"
+    },
+    "slop-0303-031": {
+      "slop_score": 0.593,
+      "signals": [
+        "assistant_signoff:it is believed that",
+        "assistant_signoff:up to my last training update",
+        "generic_transitions:additionally",
+        "wiki_promo:exciting times lie ahead",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "99d9b6474768f02a411be3b91917e906c93f00f646e3657b8f7ce7643c5a0aff"
+    },
+    "slop-0303-032": {
+      "slop_score": 0.523,
+      "signals": [
+        "assistant_signoff:here's what you need to know",
+        "assistant_signoff:let me know if you have any questions",
+        "groundbreaking",
+        "listicle_tells:let's dive into",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:commitment to excellence",
+        "wiki_promo:the region is renowned for its natural beauty",
+        "wiki_promo:this groundbreaking study exemplifies"
+      ],
+      "label": "slop",
+      "text_sha256": "ff63f1f3e34bbf91848d27d0b7111a8d8b2c56196632c224ed22ae32737e8646"
+    },
+    "slop-0403-001": {
+      "slop_score": 0.686,
+      "signals": [
+        "ecosystem",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "802f544e55b761d0233db4c97de36aabb1952c9d1143e92f25dcd485dde807f5"
+    },
+    "slop-0403-002": {
+      "slop_score": 0.4,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "meticulous",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation"
+      ],
+      "label": "slop",
+      "text_sha256": "535c31f4a6886fb0d605b22f30bce0184632a6baa7e9b8b29155fff0be5a8434"
+    },
+    "slop-0403-003": {
+      "slop_score": 0.756,
+      "signals": [
+        "a testament to",
+        "innovation",
+        "meticulous",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "36c5fde0752f9eb7141fbea1f98866644601d5b2a28daeee44dd10797de3d08f"
+    },
+    "slop-0403-004": {
+      "slop_score": 0.796,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "innovation",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "1847737e731a4e993078e162eba1de8135894cea704c9dc04eb768cc9f4aad53"
+    },
+    "slop-0403-005": {
+      "slop_score": 0.611,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "meticulous",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "de68403fb097109e49dffc84aef43a3184205807628948cf4ddd3b6417a66645"
+    },
+    "slop-0403-006": {
+      "slop_score": 0.589,
+      "signals": [
+        "ecosystem",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "c72cbc2e10c479e3fd644753a6d153ca72e3e92bed713f95b6b8ac5e6299046a"
+    },
+    "slop-0403-007": {
+      "slop_score": 0.607,
+      "signals": [
+        "ecosystem",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "7c33a21afe18a398193c11a312fc629898f1dc4e867a5c30fe2de36c1fa5d1c1"
+    },
+    "slop-0403-008": {
+      "slop_score": 0.761,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "meticulous",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:diverse array",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "5a4d200185a0c80e4ce5ef27873493209c499ba5f7851060e2dda7ee86931f3a"
+    },
+    "slop-0403-009": {
+      "slop_score": 0.799,
+      "signals": [
+        "a testament to",
+        "innovation",
+        "meticulous",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "c739e97d44b9e396ef2cb82b16e3c3b2b5631839a9dedd43f3597d43e68026a2"
+    },
+    "slop-0403-010": {
+      "slop_score": 0.566,
+      "signals": [
+        "a testament to",
+        "innovation",
+        "meticulous",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array"
+      ],
+      "label": "slop",
+      "text_sha256": "bff4313dbf4a43465fa87db91e46d6b558ea25e6107f3a1805ed64ee6da75b59"
+    },
+    "slop-0403-011": {
+      "slop_score": 0.631,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "5eb7bd3351ea9d6212d7ab4b98fad65d0e4b3c5559fe308311b4097814d2504e"
+    },
+    "slop-0403-012": {
+      "slop_score": 0.679,
+      "signals": [
+        "ecosystem",
+        "innovation",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "wiki_promo:curated compilation",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "a1e8034a5f3b3af0e8d895e5199f9aa0a814a2c67d7581365c5d7508b3b334bd"
+    },
+    "slop-0403-013": {
+      "slop_score": 0.625,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:diverse array",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "525424256b0e70627dd93e2625630c9f98ef470d4a8d142c96209f3f5263e65f"
+    },
+    "slop-0403-014": {
+      "slop_score": 0.473,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "meticulous",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:diverse array",
+        "wiki_promo:in meaningful ways"
+      ],
+      "label": "slop",
+      "text_sha256": "e217d67ab1112bd9c731a0d7daa4822ba216736e20dc444a4dd52ba97cae4885"
+    },
+    "slop-0403-015": {
+      "slop_score": 0.691,
+      "signals": [
+        "a testament to",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "0cbe318f44dde3a541a71b642e3968ac54ad0ef8ebc0dd0f678d867e1e826c90"
+    },
+    "slop-0403-016": {
+      "slop_score": 0.672,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "b10bc52a065641092d42cfb722c11f9215be29bb90fc8aa67cee72bebdd66a41"
+    },
+    "slop-0403-017": {
+      "slop_score": 0.541,
+      "signals": [
+        "ecosystem",
+        "innovation",
+        "meticulous",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "wiki_promo:diverse array",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "69799f76e5a792f6460acf4d693266552a125b88cea6c48f721d1b820146a1b1"
+    },
+    "slop-0403-018": {
+      "slop_score": 0.641,
+      "signals": [
+        "ecosystem",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "87dc50d0c1df6d4a1af5b92dabc8e7309e4202d95d2c9d21ef4ea99a0306ab58"
+    },
+    "slop-0403-019": {
+      "slop_score": 0.758,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "innovation",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "c99be47fd89358de6c973241736f3db48052e0e40ca6f15e0889cb95676b4422"
+    },
+    "slop-0403-020": {
+      "slop_score": 0.72,
+      "signals": [
+        "innovation",
+        "meticulous",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "31b3230c5f2732756036dbb0220a860904738b7297e11141aabc97229cee4603"
+    },
+    "slop-0403-021": {
+      "slop_score": 0.491,
+      "signals": [
+        "ecosystem",
+        "meticulous",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "4ade5c87a72650b8711c1da5901a4fd4ec78e7d64089f63a17af19c20fa7c904"
+    },
+    "slop-0403-022": {
+      "slop_score": 0.551,
+      "signals": [
+        "ecosystem",
+        "innovation",
+        "meticulous",
+        "wiki_promo:curated compilation",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "51ec79f34004a9c3194696c76fdaf50008a90d2634f08edd3194addb4fc3d672"
+    },
+    "slop-0403-023": {
+      "slop_score": 0.689,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:plays a crucial role",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "94e77bac8b8d1c9b331552d1caa234312433ecabf1f6ba7c6f23b6a8e74c0b0b"
+    },
+    "slop-0403-024": {
+      "slop_score": 0.771,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "innovation",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "295f69c93bbe89a59985e17c76e6619a01c3d0dde0d5347c1104110ab41bcca6"
+    },
+    "slop-0403-025": {
+      "slop_score": 0.649,
+      "signals": [
+        "ecosystem",
+        "innovation",
+        "wiki_promo:curated compilation",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "f3c27b6c4a12da59acf1f98b0000f527e6a69a1cdd73df48413399b34a262cda"
+    },
+    "slop-0403-026": {
+      "slop_score": 0.669,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "9921f02088c13535b7cbdb5e9611d3c1b0e6209379d60d7732a195024fec2781"
+    },
+    "slop-0403-027": {
+      "slop_score": 0.536,
+      "signals": [
+        "ecosystem",
+        "wiki_promo:diverse array",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "1065bb73163b8e4367e5b30cda13df5609688437b9cab2b0f20cb74bbe6e40e9"
+    },
+    "slop-0403-028": {
+      "slop_score": 0.713,
+      "signals": [
+        "a testament to",
+        "ecosystem",
+        "innovation",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:curated compilation",
+        "wiki_promo:in meaningful ways"
+      ],
+      "label": "slop",
+      "text_sha256": "5e8377276c84d3135853e73f41dcc2d1b0e68a5434db419807fe33a27e840c06"
+    },
+    "slop-0403-029": {
+      "slop_score": 0.684,
+      "signals": [
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "wiki_promo:curated compilation",
+        "wiki_promo:garnered recognition",
+        "wiki_promo:in meaningful ways",
+        "wiki_promo:setting the stage for",
+        "wiki_promo:vibrant programming"
+      ],
+      "label": "slop",
+      "text_sha256": "ffe5765e6cfc6349567f3895c55a50ad9e33d0521f304997f30d65fbcf613a86"
+    },
+    "slop-0403-030": {
+      "slop_score": 0.4,
+      "signals": [
+        "ecosystem",
+        "meticulous",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "wiki_promo:curated compilation"
+      ],
+      "label": "slop",
+      "text_sha256": "33f46708db75ee494164efa6ce0216037b49e46fd9cf935aca4964027ee63b1c"
+    },
+    "slop-0403-031": {
+      "slop_score": 0.653,
+      "signals": [
+        "ecosystem",
+        "innovation",
+        "meticulous",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "wiki_promo:curated compilation",
+        "wiki_promo:diverse array",
+        "wiki_promo:plays a crucial role"
+      ],
+      "label": "slop",
+      "text_sha256": "6e785248f3a53301c96188c15c5dd7152fed1508049aea452a55c833221ca731"
+    },
+    "slop-0403-032": {
+      "slop_score": 0.724,
+      "signals": [
+        "a testament to",
+        "innovation",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:stands as a testament to",
+        "wiki_promo:diverse array",
+        "wiki_promo:in meaningful ways"
+      ],
+      "label": "slop",
+      "text_sha256": "a9628aa88dae848c84aac20d081976c94f739cc70dc5df77ff1185b11d227df0"
+    },
+    "slop-0504-001": {
+      "slop_score": 0.569,
+      "signals": [
+        "hedging_qualifiers:importantly",
+        "marketing_cta:book a demo",
+        "marketing_cta:here's the catch",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:the short answer is yes",
+        "marketing_cta:this is where things get interesting",
+        "marketing_cta:to put it simply",
+        "marketing_cta:what does this mean for your team"
+      ],
+      "label": "slop",
+      "text_sha256": "50aec47d6585d3402144497b805b926d697764c63f5d444c1250cb072517e87c"
+    },
+    "slop-0504-002": {
+      "slop_score": 0.493,
+      "signals": [
+        "hedging_qualifiers:importantly",
+        "marketing_cta:loved by developers",
+        "marketing_cta:this is where things get interesting",
+        "marketing_cta:to put it simply",
+        "metaphor_abuse:a double-edged sword",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "2f8d7fafea567c637cd684e232b95278a43eefac2700037fe7730346ffdbcb2b"
+    },
+    "slop-0504-003": {
+      "slop_score": 0.694,
+      "signals": [
+        "ecosystem",
+        "listicle_tells:the long answer is",
+        "marketing_cta:final thoughts:",
+        "marketing_cta:the future of work is collaborative",
+        "marketing_cta:think about it this way",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:to put it simply",
+        "marketing_cta:what does this mean for your team",
+        "metaphor_abuse:a double-edged sword",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "226f172a10ef0a8743457970ab5e3cc8006639f6bb771051a1b1e688e174c389"
+    },
+    "slop-0504-004": {
+      "slop_score": 0.602,
+      "signals": [
+        "marketing_cta:book a demo",
+        "marketing_cta:loved by developers",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "marketing_cta:what does this mean for your team",
+        "metaphor_abuse:a double-edged sword",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "27c4a65189984ae245c5701be77d354e612924a5a8409e58e199a78c1e259463"
+    },
+    "slop-0504-005": {
+      "slop_score": 0.474,
+      "signals": [
+        "generic_phrases:the bad news is",
+        "listicle_tells:the long answer is",
+        "marketing_cta:book a demo",
+        "marketing_cta:start your free trial today",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "dadedac28a3fec17b5b81ab6ef337df6911c7b38271bbe411a87c2a5be11970c"
+    },
+    "slop-0504-006": {
+      "slop_score": 0.667,
+      "signals": [
+        "ecosystem",
+        "generic_phrases:the good news is",
+        "hedging_qualifiers:importantly",
+        "listicle_tells:the long answer is",
+        "marketing_cta:final thoughts:",
+        "marketing_cta:loved by developers",
+        "marketing_cta:ready to get started",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "marketing_cta:trusted by thousands of teams worldwide",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "46690c0e2c338194d6a158fba9ea96358b53066d11e58927b9bc8145fb722690"
+    },
+    "slop-0504-007": {
+      "slop_score": 0.587,
+      "signals": [
+        "closing_formulas:the bottom line is",
+        "marketing_cta:book a demo",
+        "marketing_cta:loved by developers",
+        "marketing_cta:the short answer is yes",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "4ac8a506d97be3c762600085883bb4310a1bd31f918007cab0893dea56f398a3"
+    },
+    "slop-0504-008": {
+      "slop_score": 0.57,
+      "signals": [
+        "closing_formulas:the bottom line is",
+        "hedging_qualifiers:importantly",
+        "listicle_tells:the long answer is",
+        "marketing_cta:loved by developers",
+        "marketing_cta:to put it simply",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "marketing_cta:trusted by thousands of teams worldwide",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "68e505b1ba1e7c4cd1d1c1c3140439e928899a5cb21d8561b94ffd045e60a3c2"
+    },
+    "slop-0504-009": {
+      "slop_score": 0.58,
+      "signals": [
+        "marketing_cta:loved by developers",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:the future of work is collaborative",
+        "marketing_cta:this is where things get interesting",
+        "metaphor_abuse:a double-edged sword"
+      ],
+      "label": "slop",
+      "text_sha256": "69352d505856d9e4d25062d5ef06a587506d9346fc83cf637e4cec7ba3ca6f24"
+    },
+    "slop-0504-010": {
+      "slop_score": 0.646,
+      "signals": [
+        "ecosystem",
+        "marketing_cta:final thoughts:",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:trusted by thousands of teams worldwide",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "8b42aee604a897143158c00128fc52947c586265693619d274eb52a935464d78"
+    },
+    "slop-0504-011": {
+      "slop_score": 0.646,
+      "signals": [
+        "closing_formulas:the bottom line is",
+        "ecosystem",
+        "marketing_cta:final thoughts:",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:to put it simply",
+        "marketing_cta:what does this mean for your team",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "0f3aba6b3d8e49df18222169f4b1690935996f041b6c3a535ded64ff96725de0"
+    },
+    "slop-0504-012": {
+      "slop_score": 0.544,
+      "signals": [
+        "generic_phrases:the bad news is",
+        "hedging_qualifiers:importantly",
+        "marketing_cta:book a demo",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:the short answer is yes",
+        "marketing_cta:trusted by thousands of teams worldwide"
+      ],
+      "label": "slop",
+      "text_sha256": "18fed6ade9e73b0f5d1ad8e810f2dbcc5a035e090c3413fdaa7b77ba75d622f2"
+    },
+    "slop-0504-013": {
+      "slop_score": 0.417,
+      "signals": [
+        "generic_phrases:the bad news is",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "marketing_cta:what does this mean for your team"
+      ],
+      "label": "slop",
+      "text_sha256": "d4ac3b477e1eeb15358c879cef6dc05aa164789166c38b5e687fca8b5145822c"
+    },
+    "slop-0504-014": {
+      "slop_score": 0.667,
+      "signals": [
+        "closing_formulas:the bottom line is",
+        "ecosystem",
+        "marketing_cta:final thoughts:",
+        "marketing_cta:here's the catch",
+        "marketing_cta:loved by developers",
+        "marketing_cta:ready to get started",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:the short answer is yes",
+        "marketing_cta:trusted by thousands of teams worldwide"
+      ],
+      "label": "slop",
+      "text_sha256": "78d92ad6b7a9ccf27c4daf428a2b7724e9b8b2e9e3cc3f6f75ccbedda77d8270"
+    },
+    "slop-0504-015": {
+      "slop_score": 0.566,
+      "signals": [
+        "listicle_tells:the long answer is",
+        "marketing_cta:99.9% uptime",
+        "marketing_cta:book a demo",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:this is where things get interesting",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "metaphor_abuse:a double-edged sword",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "c774108f910d545fb671d3715ff9fb4f7ed7d2c3d39ce84e48a1afe1879b4607"
+    },
+    "slop-0504-016": {
+      "slop_score": 0.583,
+      "signals": [
+        "generic_phrases:the bad news is",
+        "generic_phrases:the good news is",
+        "marketing_cta:here's the catch",
+        "marketing_cta:key takeaways from this post",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:think about it this way",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "marketing_cta:what does this mean for your team",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "cb332c44f1982dcf3e80536670485449e7958572fe28399962df6136a3a36737"
+    },
+    "slop-0504-017": {
+      "slop_score": 0.555,
+      "signals": [
+        "ecosystem",
+        "marketing_cta:book a demo",
+        "marketing_cta:final thoughts:",
+        "marketing_cta:here's the catch",
+        "marketing_cta:loved by developers",
+        "marketing_cta:think about it this way",
+        "marketing_cta:this is where things get interesting"
+      ],
+      "label": "slop",
+      "text_sha256": "960a9d874b73717c7b9d8411b20554f4a4cc02ba3d78155081f1f48e02d4fa52"
+    },
+    "slop-0504-018": {
+      "slop_score": 0.605,
+      "signals": [
+        "marketing_cta:start your free trial today",
+        "marketing_cta:this is where things get interesting",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "730c34ae18dfdc059794e84359f9538d4855bbf24aaaa282f4dae42806c411f2"
+    },
+    "slop-0504-019": {
+      "slop_score": 0.473,
+      "signals": [
+        "generic_phrases:the good news is",
+        "marketing_cta:loved by developers",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:to put it simply"
+      ],
+      "label": "slop",
+      "text_sha256": "36a21e7d3ddbef4a9f7eaecc2ad6a2bb8d498ca23e6ba3961b5319398179289f"
+    },
+    "slop-0504-020": {
+      "slop_score": 0.597,
+      "signals": [
+        "hedging_qualifiers:importantly",
+        "marketing_cta:key takeaways from this post",
+        "marketing_cta:think about it this way",
+        "marketing_cta:this is where things get interesting",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:trusted by thousands of teams worldwide",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "679d819bc7c40de96f909c6950f9b1c76ae182e44409cd4445aa66383650a45a"
+    },
+    "slop-0504-021": {
+      "slop_score": 0.531,
+      "signals": [
+        "generic_phrases:the bad news is",
+        "marketing_cta:99.9% uptime",
+        "marketing_cta:key takeaways from this post",
+        "marketing_cta:the future of work is collaborative",
+        "marketing_cta:think about it this way",
+        "marketing_cta:this is where things get interesting",
+        "marketing_cta:this raises an important question"
+      ],
+      "label": "slop",
+      "text_sha256": "30c7d0de27901f073ae8c73d147a7173be72021ec587b6d01b4b1b70aa79e9c7"
+    },
+    "slop-0504-022": {
+      "slop_score": 0.636,
+      "signals": [
+        "generic_phrases:the good news is",
+        "hedging_qualifiers:importantly",
+        "marketing_cta:book a demo",
+        "marketing_cta:the future of work is collaborative",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:what does this mean for your team",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "fcb17d0aa3e6d43f8841a4631e788833fb09346312a523d4ca98c15f4ac506b8"
+    },
+    "slop-0504-023": {
+      "slop_score": 0.608,
+      "signals": [
+        "closing_formulas:the bottom line is",
+        "marketing_cta:99.9% uptime",
+        "marketing_cta:the future of work is collaborative",
+        "marketing_cta:think about it this way",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "marketing_cta:trusted by thousands of teams worldwide",
+        "the intersection of",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "7f460ddf2197018252fe55133fd53ef392932bd2b58dead3247783f63107721e"
+    },
+    "slop-0504-024": {
+      "slop_score": 0.558,
+      "signals": [
+        "marketing_cta:key takeaways from this post",
+        "marketing_cta:loved by developers",
+        "marketing_cta:the future of work is collaborative",
+        "marketing_cta:what does this mean for your team"
+      ],
+      "label": "slop",
+      "text_sha256": "ce38fd0ca8dcf4296ceb6b1742dc622a571b44254dfe4b527d00922f4d6adef5"
+    },
+    "slop-0504-025": {
+      "slop_score": 0.595,
+      "signals": [
+        "listicle_tells:the long answer is",
+        "marketing_cta:ready to get started",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:this is where things get interesting",
+        "marketing_cta:to put it simply",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "metaphor_abuse:a double-edged sword",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "859a43847f77e27f0de0d200313a7eb77ddd77e453d14b972832206289da88b4"
+    },
+    "slop-0504-026": {
+      "slop_score": 0.564,
+      "signals": [
+        "generic_phrases:the bad news is",
+        "marketing_cta:99.9% uptime",
+        "marketing_cta:the short answer is yes",
+        "marketing_cta:what does this mean for your team",
+        "the intersection of",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "a9f2352eb0382fa8e78a80b5f6c5c9d278163ec71c9e78b301ce0cf6a6ef451e"
+    },
+    "slop-0504-027": {
+      "slop_score": 0.531,
+      "signals": [
+        "closing_formulas:the bottom line is",
+        "listicle_tells:the long answer is",
+        "marketing_cta:99.9% uptime",
+        "marketing_cta:here's the catch",
+        "marketing_cta:loved by developers",
+        "marketing_cta:think about it this way",
+        "marketing_cta:this is where things get interesting",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "48819f9c5592bb7623d21b7fad0453b4a2f972e96dd6f62ae0728132dd05f73f"
+    },
+    "slop-0504-028": {
+      "slop_score": 0.632,
+      "signals": [
+        "generic_phrases:the good news is",
+        "marketing_cta:key takeaways from this post",
+        "marketing_cta:this is where things get interesting",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:to put it simply",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "marketing_cta:trusted by thousands of teams worldwide",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "fac69147c11977dc1aa1728107f3d0ba1c1f92ac92294c3df6c5ee62514bc2dd"
+    },
+    "slop-0504-029": {
+      "slop_score": 0.447,
+      "signals": [
+        "closing_formulas:the bottom line is",
+        "generic_phrases:the good news is",
+        "marketing_cta:think about it this way",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "metaphor_abuse:a double-edged sword"
+      ],
+      "label": "slop",
+      "text_sha256": "2ea739ec17e6dcd79bbe2178f469a69ada7ac31bf32d90b2e19c2331940ea472"
+    },
+    "slop-0504-030": {
+      "slop_score": 0.568,
+      "signals": [
+        "ecosystem",
+        "generic_phrases:the bad news is",
+        "hedging_qualifiers:importantly",
+        "marketing_cta:99.9% uptime",
+        "marketing_cta:final thoughts:",
+        "marketing_cta:here's the catch",
+        "marketing_cta:loved by developers",
+        "marketing_cta:this raises an important question",
+        "marketing_cta:what does this mean for your team"
+      ],
+      "label": "slop",
+      "text_sha256": "41732053bac85332f97c6f22969763d3c325ca46b9cc7a711946abd8f70d7442"
+    },
+    "slop-0504-031": {
+      "slop_score": 0.568,
+      "signals": [
+        "ecosystem",
+        "marketing_cta:99.9% uptime",
+        "marketing_cta:final thoughts:",
+        "marketing_cta:ready to get started",
+        "marketing_cta:start your free trial today",
+        "marketing_cta:the future of work is collaborative",
+        "marketing_cta:to put it simply",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "3ec34f2429d6cdfa05cd0f396eb39763bb6191229d8ae4cef3fca8e62641d8a8"
+    },
+    "slop-0504-032": {
+      "slop_score": 0.474,
+      "signals": [
+        "hedging_qualifiers:importantly",
+        "marketing_cta:the short answer is yes",
+        "marketing_cta:trusted by startups and enterprises alike",
+        "metaphor_abuse:a double-edged sword",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "a9e86c35d01dbfe2152be4b6bec9ac6256c2dbebf6040e20e681eb5ef4380f49"
+    },
+    "slop-0606-001": {
+      "slop_score": 0.574,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:the listing cites coverage in",
+        "assistant_signoff:topics range from",
+        "innovation",
+        "marketing_cta:all in one place",
+        "seamless",
+        "wiki_promo:boasts a vibrant"
+      ],
+      "label": "slop",
+      "text_sha256": "de199bef575da7f40387b1fc5d60031c73c92ad8c0afd6cc761b5614b98bffcd"
+    },
+    "slop-0606-002": {
+      "slop_score": 0.585,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:some critics argue",
+        "report_hedging:it is important to note",
+        "report_hedging:the redesign underscores",
+        "seamless",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:continues to thrive"
+      ],
+      "label": "slop",
+      "text_sha256": "b0bd09ab91fa7fd51cad6af52d8add907b76f929630b7e001f6f0b69229297e4"
+    },
+    "slop-0606-003": {
+      "slop_score": 0.548,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:some critics argue",
+        "report_hedging:industry reports suggest",
+        "seamless",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:continues to thrive"
+      ],
+      "label": "slop",
+      "text_sha256": "34c5c4bd1fddd4d179901c5202d012c4538d53b9fa446fba4a6b264aef18f87b"
+    },
+    "slop-0606-004": {
+      "slop_score": 0.606,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:experts believe",
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:the listing cites coverage in",
+        "assistant_signoff:topics range from",
+        "generic_transitions:additionally",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "6b7c5f18ec894d6a3d4c6bdd18364d55d8c712824e64b72d97c33c7582cb7376"
+    },
+    "slop-0606-005": {
+      "slop_score": 0.618,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:the listing cites coverage in",
+        "generic_transitions:additionally",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note"
+      ],
+      "label": "slop",
+      "text_sha256": "ef1e20685f427567425234ac6cd124777217fbdb881f96b2dd267afcb4738ec4"
+    },
+    "slop-0606-006": {
+      "slop_score": 0.536,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:topics range from",
+        "innovation",
+        "marketing_cta:all in one place",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "report_hedging:the redesign underscores",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "f602322018e192d9a6292cc8aa65ce71f02bade8ea5726153c0027ea34176440"
+    },
+    "slop-0606-007": {
+      "slop_score": 0.531,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:experts believe",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:the listing cites coverage in",
+        "innovation",
+        "marketing_cta:all in one place",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "wiki_promo:continues to thrive"
+      ],
+      "label": "slop",
+      "text_sha256": "e68d399e35dc974c443bf0e21a58aeaeee33605eb70918643d5c961fd8b1c50f"
+    },
+    "slop-0606-008": {
+      "slop_score": 0.699,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:the listing cites coverage in",
+        "assistant_signoff:topics range from",
+        "innovation",
+        "marketing_cta:all in one place",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "966bdfeaf08aa8a053b220b859b158bfee310357c58e6e4fd855a484880b94d0"
+    },
+    "slop-0606-009": {
+      "slop_score": 0.627,
+      "signals": [
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:let me know if you'd like more detail",
+        "generic_transitions:additionally",
+        "innovation",
+        "marketing_cta:all in one place",
+        "report_hedging:industry reports suggest",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "ef571795a02ace7d238281fc6884d37dc4dbc3089b546036dbe7ac146fcc08f5"
+    },
+    "slop-0606-010": {
+      "slop_score": 0.577,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:some critics argue",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "seamless",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "11717fc14595e711dc03d08e09ba81946c2133bc871c06563378a89d2e4ef260"
+    },
+    "slop-0606-011": {
+      "slop_score": 0.603,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:some critics argue",
+        "innovation",
+        "marketing_cta:all in one place",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "8f3e8c36a227f18a84b3a84ca6979fd9b71ffb47b7562dafa2feec455570bfaf"
+    },
+    "slop-0606-012": {
+      "slop_score": 0.632,
+      "signals": [
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:the listing cites coverage in",
+        "innovation",
+        "marketing_cta:all in one place",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:it is important to note"
+      ],
+      "label": "slop",
+      "text_sha256": "5d17c3da68f5766b262c6a823997bce9f543c433a26f9fed4f61e115b9bb1f0c"
+    },
+    "slop-0606-013": {
+      "slop_score": 0.557,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:the listing cites coverage in",
+        "assistant_signoff:topics range from",
+        "report_hedging:the redesign underscores",
+        "seamless",
+        "wiki_promo:boasts a vibrant"
+      ],
+      "label": "slop",
+      "text_sha256": "f300d9d1d2ae20cad059385a2dd7da6e7b8fe7fbd95e1c64412f114afa003594"
+    },
+    "slop-0606-014": {
+      "slop_score": 0.545,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:experts believe",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:topics range from",
+        "innovation",
+        "marketing_cta:all in one place",
+        "report_hedging:industry reports suggest",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "97a54e2ba8d0ce14fd0e4ac18359d76871f6e0295b6573b3e78ddd7ce4168f8d"
+    },
+    "slop-0606-015": {
+      "slop_score": 0.602,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:experts believe",
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:topics range from",
+        "generic_transitions:additionally",
+        "report_hedging:the redesign underscores",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "d96cfd92e1fd8ce67962f68f006f2883cb263e4e5984e6abdf5953004da9f965"
+    },
+    "slop-0606-016": {
+      "slop_score": 0.557,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:the listing cites coverage in",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "report_hedging:the redesign underscores",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "eaa48910f1272d39ab72bf6d1c6850a72c0154d62519377a890ef2deb74d386c"
+    },
+    "slop-0606-017": {
+      "slop_score": 0.584,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:some critics argue",
+        "innovation",
+        "marketing_cta:all in one place",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:it is important to note",
+        "wiki_promo:continues to thrive"
+      ],
+      "label": "slop",
+      "text_sha256": "7901ee9e4772ea9d252b91877fca75994e13bada7ae8b333824a20720b535640"
+    },
+    "slop-0606-018": {
+      "slop_score": 0.587,
+      "signals": [
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:some critics argue",
+        "innovation",
+        "marketing_cta:all in one place",
+        "report_hedging:industry reports suggest",
+        "report_hedging:the redesign underscores"
+      ],
+      "label": "slop",
+      "text_sha256": "1ce5c4297b4cbe633b15bd3be56231b34c07ac4cee8860bc0ffe6fa7d7c67f3f"
+    },
+    "slop-0606-019": {
+      "slop_score": 0.519,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:the listing cites coverage in",
+        "generic_transitions:additionally",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "seamless",
+        "wiki_promo:boasts a vibrant"
+      ],
+      "label": "slop",
+      "text_sha256": "c4100fc15c7a85ee72c62d6db7fdc669c4d34f04046fbdcedfe9a574050cb486"
+    },
+    "slop-0606-020": {
+      "slop_score": 0.642,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:experts believe",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:the listing cites coverage in",
+        "innovation",
+        "marketing_cta:all in one place",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "e0abde296a5ddc520931680aaaf274b3e6166ab92b4d9fdd39dfd8d1fb167654"
+    },
+    "slop-0606-021": {
+      "slop_score": 0.631,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:some critics argue",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "cbd2f1f8e6e5a68532502f121a22c2973f56b291230f7c8e170ccb048e45e326"
+    },
+    "slop-0606-022": {
+      "slop_score": 0.662,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:the listing cites coverage in",
+        "assistant_signoff:topics range from",
+        "innovation",
+        "marketing_cta:all in one place",
+        "report_hedging:it is important to note",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "18ef01673746b2ff6dda8185b0145168df903cae7d5a177e40583f098ffed663"
+    },
+    "slop-0606-023": {
+      "slop_score": 0.632,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:of course! here's the summary",
+        "innovation",
+        "marketing_cta:all in one place",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:it is important to note",
+        "report_hedging:the redesign underscores",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "9a87afd5bee0833b73727a98ab78b67c001199c762332d60c59ed3d9ad93d98f"
+    },
+    "slop-0606-024": {
+      "slop_score": 0.594,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:the listing cites coverage in",
+        "assistant_signoff:topics range from",
+        "generic_transitions:additionally",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "report_hedging:the redesign underscores"
+      ],
+      "label": "slop",
+      "text_sha256": "dd830f82765cdf19ae4a1d2cd1b68588164e266a64015bd38f82c3b9037c8164"
+    },
+    "slop-0606-025": {
+      "slop_score": 0.581,
+      "signals": [
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:topics range from",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the future looks bright"
+      ],
+      "label": "slop",
+      "text_sha256": "823db5a91ef91aae2092a395a7c3e4c4068b4b78e9319762f0e831a381920830"
+    },
+    "slop-0606-026": {
+      "slop_score": 0.628,
+      "signals": [
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:topics range from",
+        "generic_transitions:additionally",
+        "innovation",
+        "marketing_cta:all in one place",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "716e4ecb2623ede70456e09e02bdeb3e57202b99f83b3050fffa182c55094507"
+    },
+    "slop-0606-027": {
+      "slop_score": 0.585,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:the listing cites coverage in",
+        "generic_transitions:additionally",
+        "report_hedging:industry reports suggest",
+        "report_hedging:it is important to note",
+        "report_hedging:the redesign underscores",
+        "wiki_promo:the future looks bright",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "1dfc4c16641fe769329202352fbb1a9cb763929b3b089effb6e27a3df9f047bc"
+    },
+    "slop-0606-028": {
+      "slop_score": 0.635,
+      "signals": [
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:the listing cites coverage in",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:it is important to note",
+        "report_hedging:the redesign underscores",
+        "seamless",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the future looks bright",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "dbec93d0e130be190c54d24fa7a5dbbb395b333d1f2c2851191c48f9f657b1f7"
+    },
+    "slop-0606-029": {
+      "slop_score": 0.65,
+      "signals": [
+        "assistant_signoff:experts believe",
+        "assistant_signoff:fosters collaboration",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:some critics argue",
+        "assistant_signoff:the listing cites coverage in",
+        "assistant_signoff:topics range from",
+        "generic_transitions:additionally",
+        "report_hedging:the redesign underscores",
+        "seamless",
+        "wiki_promo:boasts a vibrant"
+      ],
+      "label": "slop",
+      "text_sha256": "eb8fd2be9ec06901893601d09af270e1c6470621bcc19022e849a16ba240244e"
+    },
+    "slop-0606-030": {
+      "slop_score": 0.536,
+      "signals": [
+        "assistant_signoff:certainly! let me expand",
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:some critics argue",
+        "innovation",
+        "marketing_cta:all in one place"
+      ],
+      "label": "slop",
+      "text_sha256": "ee4cc21b9a1522a6986d66a0ee44796ec8bb811bd1b9ea52ba41d90a4e7c0b19"
+    },
+    "slop-0606-031": {
+      "slop_score": 0.644,
+      "signals": [
+        "assistant_signoff:in order to proceed",
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:of course! here's the summary",
+        "assistant_signoff:seamless integrations",
+        "innovation",
+        "marketing_cta:all in one place",
+        "report_hedging:the redesign underscores",
+        "seamless",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "864af812320fdd3790929f2275b2ec9c2a35b312e08b0841475cc6d703880e53"
+    },
+    "slop-0606-032": {
+      "slop_score": 0.638,
+      "signals": [
+        "assistant_signoff:it's not just a dashboard",
+        "assistant_signoff:let me know if you'd like more detail",
+        "assistant_signoff:seamless integrations",
+        "assistant_signoff:some critics argue",
+        "pivotal",
+        "report_hedging:a pivotal moment",
+        "report_hedging:industry reports suggest",
+        "seamless",
+        "wiki_promo:boasts a vibrant",
+        "wiki_promo:continues to thrive",
+        "wiki_promo:the intricate interplay of"
+      ],
+      "label": "slop",
+      "text_sha256": "3e6929722c78f615229e98dbf8cdc0737ccef0f80768c1f2d2bcf185175a304e"
+    },
+    "slop-academic-01": {
+      "slop_score": 0.476,
+      "signals": [
+        "comprehensive",
+        "delve",
+        "generic_transitions:furthermore",
+        "hedging_qualifiers:it's worth noting",
+        "it's worth noting that",
+        "metaphor_abuse:paints a vivid picture",
+        "multifaceted",
+        "paints a vivid picture",
+        "the intersection of"
+      ],
+      "label": "slop",
+      "text_sha256": "14561e44bedb86534cb1e33c160d4cfe072433eaa2134aa14be15311747f251a"
+    },
+    "slop-authority-01": {
+      "slop_score": 0.405,
+      "signals": [
+        "cornerstone",
+        "holistic",
+        "metaphor_abuse:the cornerstone of",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "b3925664d032ef5adaae9d5063aeff89a92e608e0a500d7b5f2aa98bb68640a2"
+    },
+    "slop-clickbait-01": {
+      "slop_score": 0.515,
+      "signals": [
+        "listicle_tells:but wait, there's more",
+        "listicle_tells:here's the kicker"
+      ],
+      "label": "slop",
+      "text_sha256": "29632b64e02d07d63b82b00817035d17cd0c128bb7cc93ccad7c03d86f028aad"
+    },
+    "slop-crypto-01": {
+      "slop_score": 0.653,
+      "signals": [
+        "closing_formulas:embrace the future",
+        "cutting-edge",
+        "dynamic",
+        "ecosystem",
+        "hedging_qualifiers:it's crucial to understand",
+        "hedging_qualifiers:needless to say",
+        "innovation",
+        "it's crucial to understand",
+        "paradigm shift",
+        "paramount",
+        "the realm of",
+        "unlock"
+      ],
+      "label": "slop",
+      "text_sha256": "56be476bb5da37d03880756a8119cf046e2889392a7166c4311968ccbe7747f4"
+    },
+    "slop-de-01": {
+      "slop_score": 0.4,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "be787c2365c7dd95586a523f125d503229ec7e0b55f94b4a8830df7fb677e8ad"
+    },
+    "slop-de-02": {
+      "slop_score": 0.4,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "f7e210a712adeffe5b5349719d85c898637cdcab9a9865a73ce1cf8e7fe8973c"
+    },
+    "slop-es-01": {
+      "slop_score": 0.4,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "bc463bb894a77f75e439d2ee776581e22ba5960b5c4127a91d85059bc3ea1e18"
+    },
+    "slop-fr-01": {
+      "slop_score": 0.4,
+      "signals": [
+        "innovation"
+      ],
+      "label": "slop",
+      "text_sha256": "28fdbb6cb39d6ef0e09920fdfb6f2fa062c137ede4fb347808535fa4998c7b48"
+    },
+    "slop-generic-01": {
+      "slop_score": 0.654,
+      "signals": [
+        "cutting-edge",
+        "generic_transitions:furthermore",
+        "hedging_qualifiers:it's crucial to understand",
+        "hedging_qualifiers:it's important to note",
+        "in today's rapidly evolving",
+        "innovation",
+        "it's crucial to understand",
+        "landscape",
+        "listicle_tells:let's dive into",
+        "metaphor_abuse:rich tapestry",
+        "metaphor_abuse:serves as a testament",
+        "multifaceted",
+        "opening_formulas:whether you're a seasoned",
+        "rich tapestry",
+        "robust",
+        "seamless",
+        "serves as a testament",
+        "unlock",
+        "whether you're a seasoned"
+      ],
+      "label": "slop",
+      "text_sha256": "f0b9d84367734275f66882c8ebf03aed7b2321a26aa5df0c0a05cf5a05142232"
+    },
+    "slop-generic-02": {
+      "slop_score": 0.794,
+      "signals": [
+        "closing_formulas:embrace the future",
+        "closing_formulas:in conclusion,",
+        "closing_formulas:the possibilities are endless",
+        "elevate",
+        "generic_transitions:moreover",
+        "hedging_qualifiers:it's worth noting",
+        "holistic",
+        "it's worth noting that",
+        "metaphor_abuse:navigating the landscape",
+        "navigating the landscape",
+        "paramount",
+        "state-of-the-art",
+        "synergy",
+        "the power of",
+        "transformative"
+      ],
+      "label": "slop",
+      "text_sha256": "bc6f5075e5c617436b80b98b00973f1a835e0bf156f7d9f208b300e6e02fb7ef"
+    },
+    "slop-hi-01": {
+      "slop_score": 0.4,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "485f50387b3bb24373459184b36568251552089269fc42b0d60432a6124c42a1"
+    },
+    "slop-history-01": {
+      "slop_score": 0.758,
+      "signals": [
+        "a beacon of",
+        "hedging_qualifiers:it's worth noting",
+        "in the grand scheme of things",
+        "it's worth noting that",
+        "metaphor_abuse:a delicate balance",
+        "metaphor_abuse:navigating the landscape",
+        "metaphor_abuse:paints a vivid picture",
+        "metaphor_abuse:rich tapestry",
+        "metaphor_abuse:serves as a testament",
+        "navigating the landscape",
+        "paints a vivid picture",
+        "rich tapestry",
+        "serves as a testament"
+      ],
+      "label": "slop",
+      "text_sha256": "f38d798ee25de0cedff35bc0d4652d1d42237b054449860397aa1ba12ee3c91e"
+    },
+    "slop-legal-01": {
+      "slop_score": 0.4,
+      "signals": [
+        "closing_formulas:in conclusion,",
+        "generic_transitions:furthermore",
+        "hedging_qualifiers:it's important to note",
+        "metaphor_abuse:serves as a testament",
+        "multifaceted",
+        "robust",
+        "serves as a testament"
+      ],
+      "label": "slop",
+      "text_sha256": "efde88a7be3a4fe1ec697d43ab64839897611428dcf0b9a50b7028f9e4d085e3"
+    },
+    "slop-linkedin-01": {
+      "slop_score": 0.4,
+      "signals": [
+        "closing_formulas:the journey doesn't end here",
+        "forward-thinking",
+        "fostering",
+        "innovation",
+        "listicle_tells:key takeaway:",
+        "synergy"
+      ],
+      "label": "slop",
+      "text_sha256": "656c4ed50c25c48a8c95f4bfa156eed8ed152e2a4cff74fe6b4e8d5d89fe9d2f"
+    },
+    "slop-listicle-01": {
+      "slop_score": 0.482,
+      "signals": [
+        "game-changer",
+        "listicle_tells:fun fact:",
+        "listicle_tells:let's explore",
+        "listicle_tells:the short answer is",
+        "sweet spot"
+      ],
+      "label": "slop",
+      "text_sha256": "4de120a75d9281cb5a81dd153656b34a4395c9be2229d0e4e5c0dd05cd411fe1"
+    },
+    "slop-mirrored-01": {
+      "slop_score": 0.437,
+      "signals": [
+        "leverage",
+        "optimize",
+        "robust"
+      ],
+      "label": "slop",
+      "text_sha256": "266869a1b04f39f8254b01878cd85b4e8575bae57c88fb838debe116af4c794d"
+    },
+    "slop-parenting-01": {
+      "slop_score": 0.439,
+      "signals": [
+        "at the end of the day",
+        "fostering",
+        "generic_transitions:at the end of the day",
+        "hedging_qualifiers:it's important to remember",
+        "it's important to remember",
+        "metaphor_abuse:a delicate balance"
+      ],
+      "label": "slop",
+      "text_sha256": "473bdf02eead6e6f4dfb09c0b5f0c8d2130ac8bbe2f3a5857db1f3db782f7028"
+    },
+    "slop-peerreview-01": {
+      "slop_score": 0.285,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "3b1ffa9adcacfd7025f01dfb804a5def7f3698bdefd406a18160ad033bb1a4e6"
+    },
+    "slop-propaganda-01": {
+      "slop_score": 0.4,
+      "signals": [
+        "hedging_qualifiers:it's no secret that"
+      ],
+      "label": "slop",
+      "text_sha256": "5974ea1603a1e87425ea4015dda68c41467743024a369651a6e612a487f5057d"
+    },
+    "slop-pseudo-01": {
+      "slop_score": 0.4,
+      "signals": [
+        "generic_transitions:when all is said and done",
+        "hedging_qualifiers:it's no secret that"
+      ],
+      "label": "slop",
+      "text_sha256": "1e4d36ce6efa3546f7eba81a6dc74cba78a0052b2df6d2cb55460affa0e9799c"
+    },
+    "slop-recipe-01": {
+      "slop_score": 0.4,
+      "signals": [
+        "closing_formulas:the possibilities are endless",
+        "comprehensive",
+        "generic_transitions:in this blog post, we've",
+        "listicle_tells:let's dive into",
+        "opening_formulas:have you ever wondered",
+        "opening_formulas:whether you're a seasoned",
+        "unlock",
+        "whether you're a seasoned"
+      ],
+      "label": "slop",
+      "text_sha256": "1d84b400b4e34ca0c02fc7eebeaf8d969b3382a9ffddf54e46bea721caf04e14"
+    },
+    "slop-security-01": {
+      "slop_score": 0.044,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "0639fde4ccae08ab056bd910c93157a9575c889468125e328085bfd168011b16"
+    },
+    "slop-seo-01": {
+      "slop_score": 0.4,
+      "signals": [
+        "closing_formulas:the bottom line is",
+        "game-changer",
+        "let's dive in",
+        "listicle_tells:pro tip:",
+        "report_hedging:in this article, we will"
+      ],
+      "label": "slop",
+      "text_sha256": "105d59b4fe408077f097e85821aacc11a97da0e7e71bfac41faf5b60ee9bd03d"
+    },
+    "slop-ur-01": {
+      "slop_score": 0.4,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "cefe955ee8167b22f03d3f2208094cdb7f3823cac134d02829ae6146bfaea4c3"
+    },
+    "slop-vi-01": {
+      "slop_score": 0.4,
+      "signals": [],
+      "label": "slop",
+      "text_sha256": "07bc252e07c8c0d687b2eae879e21fe8dcdc4d87c1c07b324952ad5d9a3b71a2"
+    },
+    "slop-wellness-01": {
+      "slop_score": 0.493,
+      "signals": [
+        "at the end of the day",
+        "cultivating",
+        "fostering",
+        "generic_transitions:at the end of the day",
+        "hedging_qualifiers:it's important to remember",
+        "holistic",
+        "it's important to remember",
+        "realm"
+      ],
+      "label": "slop",
+      "text_sha256": "774253ff079c93c0c3b894ada0b95727028c34f84d766dacb4a4d1aab67c15ff"
+    },
+    "slop-workslop-01": {
+      "slop_score": 0.4,
+      "signals": [
+        "actionable insights",
+        "hedging_qualifiers:it's important to note",
+        "mission-critical",
+        "stakeholder"
+      ],
+      "label": "slop",
+      "text_sha256": "ebaa0f55cfdb0934ad49fb3992fef039bcc0216c04ecb3cd5d1858e425724822"
+    }
+  }
+}
