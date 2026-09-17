@@ -99,6 +99,8 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_register_profile.py` — #74 Register-Profile v2: Stilkarte (9 Felder, JSON) + register_drift_intern (Hälften-Distanz, detect-only ≤0.5, #42-Genre-Exemptions, Kollisionsdisziplin zu #81 register_drift), Scorer-Kontext-Ausgabe ohne Score-Einfluss
 - `tests/test_de_variant_rest.py` — #77-Rest: M18/M33/M65 als de_chatbot_leftover/de_signposting/de_copula_avoidance (Voll-Zweibeleg de-ev-17..19, DoD 3/3/2)
 - `tests/test_de_variant_rest2.py` — #77-Rest Welle 4: M35/M59/M70 als de_fake_dialog/de_faux_candid/de_false_agency (Voll-Zweibeleg de-ev-20..22, DoD 3/3/2)
+- `tests/test_de_variant_rest3.py` — #77-Rest Welle 5: M7/M26/M30 als de_dichotomy_close/de_quote_fabrication/de_register_shift (Voll-Zweibeleg de-ev-23..25, DoD 3/3/2)
+
 - `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, genre-keep_when, modal_particle_anomaly Stub für #76)
 - `tests/test_voice_drift.py` — #56 Voice-Drift-Guardrail: kumulatives Voice-Budget vs Draft_0 (β=25%), Burstiness-/TTR-Non-Regression (Floor draft_0×0.9), Loop-Integration (rejected_voice_drift_*, Audit-Payload, L1)
 

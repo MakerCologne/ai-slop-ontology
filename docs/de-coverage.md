@@ -21,7 +21,7 @@
 | M4 | Mechanische Konjunktionen (ferner, darüber hinaus) | **GEDECKT (neu, T2)** | **de_transitions (Teil 2)** | |
 | M5 | Abschnitts-Zusammenfassungen | **GEDECKT (neu, T2)** | **de_recap (Teil 2)** | |
 | M6 | Unpassendes „Fazit"-Kapitel | NEU (klein) | structural: Fazit-Heading ohne Substanz |
-| M7 | Dichotom-Schluss + Lob→Herausforderung→Ausblick-Schablone | DE-VARIANTE | BinaryContrast #26 + mirrored intro↔conclusion → DE-Daten |
+| M7 | Dichotom-Schluss + Lob→Herausforderung→Ausblick-Schablone | **GEDECKT (neu, #77-Rest W5 13.09.)** | **de_dichotomy_close (Voll-Zweibeleg de-ev-23)** | |
 | M8 | Negativ-Parallelismen (nicht nur … sondern auch) | **GEDECKT (neu, T2)** | **de_binary_contrast (Teil 2)** | |
 | M9 | Regel-der-Drei-Aufzählungen | GEDECKT | rhetorical_patterns (forced triads) |
 | M10 | Partizip-I-Anhängsel („…gewährleistend") | **GEDECKT (neu, T2)** | **de_participle (Teil 2, Phrase-Layer)** | |
@@ -40,11 +40,11 @@
 | M23 | Markdown statt Zielformat | GEDECKT | markup_anomalies |
 | M24 | KI-Tool-Artefakte (oaicite, contentReference) | GEDECKT | provenance #20 (Konfidenz ≈1.0) |
 | M25 | Defekte Links | GEDECKT (Teil) | provenance #20; Link-Prüfung Out-of-scope offline |
-| M26 | Zitat-/Quellenfabrikation | DE-VARIANTE | proof_metrics + Validierung → DE-Zitate |
+| M26 | Zitat-/Quellenfabrikation | **GEDECKT (neu, #77-Rest W5 13.09.)** | **de_quote_fabrication (Voll-Zweibeleg de-ev-24)** | |
 | M27 | Falsches Referenz-/Datumsformat | GEDECKT (Teil) | de_typography M48 (DE-Seite) |
 | M28 | Falsche Wiki-Kategorien | NEU (wiki-spezifisch) | out of scope (Plattform-) |
 | M29 | Abbruch mittendrin | NEU (klein) | Kandidat structural |
-| M30 | Stilwechsel zwischen Absätzen | DE-VARIANTE | register_drift #81 → DE-Marker |
+| M30 | Stilwechsel zwischen Absätzen | **GEDECKT (neu, #77-Rest W5 13.09.)** | **de_register_shift (Voll-Zweibeleg de-ev-25)** | |
 | M31 | Ich-Form-Bearbeitungszusammenfassungen | NEU (verhaltensbasiert) | out of scope (Text-Engine) |
 | M32 | Autoritäts-Floskeln („die eigentliche Frage ist") | DE-VARIANTE | rhetorical_setups/authority → #77 |
 | M33 | Signposting/Ankündigungen | **GEDECKT (neu, #77-Rest 13.09.)** | **de_signposting (Voll-Zweibeleg de-ev-18)** |
@@ -92,13 +92,13 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M7, M26, M30, M32, M34, M44, M54, M69 + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M32, M34, M44, M54, M69 (M7/M26/M30 seit Welle 5 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
 
 
 ## Bilanz (#77-Rest Welle 4, 13.09.2026)
 
 - **GEDECKT (neu, Welle 4):** 3 weitere Muster — M35 `de_fake_dialog`, M59 `de_faux_candid`, M70 `de_false_agency` (je 6 Phrasen, conf 0.6, **Voll-Zweibeleg** je Phrase: Wikipedia-Projektseite + own:corpus de-ev-20..22)
-- **DE-Signal-Zähler:** 25 + 3 = **28 DE-Signale gesamt**
+- **DE-Signal-Zähler:** 28 + 3 = **31 DE-Signale gesamt**
 - Fixtures je Kategorie 3/3/2 in tests/test_de_variant_rest2.py; DE_LAYER-Pin auf 22 Kategorien erweitert (C4: 99/132 Phrasen mit ≥ 2 Belegen — neue 18 Phrasen vollständig zweibelegt)
 - Kollisionsfix gegenüber Erstentwurf: "die forschung deutet darauf hin" → "die studienlage deutet darauf hin" (Teilstring-Kollision mit de_authority_floskel #46-Disziplin)
 

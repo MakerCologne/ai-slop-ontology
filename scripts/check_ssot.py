@@ -289,6 +289,9 @@ DE_LAYER = {
     "de_fake_dialog": 6,
     "de_faux_candid": 6,
     "de_false_agency": 6,
+    "de_dichotomy_close": 6,
+    "de_quote_fabrication": 6,
+    "de_register_shift": 6,
 }
 
 _DE_WIKI_OK = "/wiki/Wikipedia:Anzeichen"
