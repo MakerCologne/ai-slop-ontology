@@ -1314,6 +1314,10 @@ if __name__ == "__main__":
     result = slop_score(text, genre=genre, not_slop_store=not_slop_store,
                         project_config=project_cfg)
 
+    # Echo the applied project config so runs are reproducible (issue #11).
+    if project_cfg is not None:
+        result["config"] = project_cfg
+
     if use_json:
         print(json.dumps(result, indent=2))
     else:
