@@ -101,10 +101,12 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_cli.py` — CLI-Härtung (MS-I1)
 - `tests/test_findings_receipts.py` — #119 Findings-Standard mit Receipts: Feld-Vollständigkeit ({signal_id, span, evidence_quote, reliability, suggested_action}), Span↔Quote-Konsistenz, Sortierung, Clean-Text-Leerlauf, Mehrzeilen-Line-Nummern, build_findings auf Minimal-Result (L1)
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
+- `tests/test_project_config.py` — #11 projekt-lokale Config: --config slop.json (disabled_signals, term_allowlist, weight_overrides), strikte Validierung, Noisy-OR-Re-Scoring nach Filterung (L1)
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
 - `tests/test_conversational_fillers.py` — #110 conversational_fillers (Hassid-Liste): 4 Phrasen, Hard-Negative-Guards (Sign-off-Fenster, Quellenangabe)
 - `tests/test_chat_artifacts.py` — #113 chat-paste artifacts & elision: 6 deterministische Mikro-Signale (Chat-Paste-Artefakte wie Zeitstempel/Lead-Dashes, Elision), Fixtures inkl. Hard Negatives (L1)
 - `tests/test_weight_gain_pin.py` — #106 DoD-Rest: Doku-Pin der Gewichts-Einordnung (SCORE-GOVERNANCE.md + Herkunfts-Kommentar slop_scorer.py nennen den Kalibrierungs-Gewinn der 14-dimensionalen Gewichte gegenüber uniform 1/N; Test bindet diese Zahlen, Muster fp_baseline #80/#85) (L1)
+- `tests/test_slopkit_project_config.py` — #11 (slopkit-Variante): project-local config für das slopkit-Paket (disabled_signals/term_allowlist/weight_overrides, Fail-loud Exit 2) (L1)
 
 - `tests/test_paste_artifacts.py` — #113 detect-only-Paste-Artefakte: 6 Mikro-Signale (elision-comment, chat-preamble, fence-in-code, meta-process-comment, list-label-marker, placeholder-credential-shape; kein Score-Einfluss, ADR-0006)- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate

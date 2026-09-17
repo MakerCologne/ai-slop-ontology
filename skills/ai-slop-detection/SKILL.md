@@ -120,6 +120,19 @@ python3 scripts/slop_scorer.py --domain changelog --file CHANGELOG-entry.md
 - Default ohne `--domain`: unverändertes Verhalten (Opt-in, analog #42-Genre)
 - Domains (v1): `essay`, `marketing`, `ui_copy`, `changelog`, `devtools_docs`, `academic`, `security_report`
 
+**slopkit variant:** the `slopkit` package supports the same `--config slop.json` keys for its own signal set:
+
+```bash
+python3 -m slopkit --config slop.json score --file draft.md
+```
+
+Allowlisted terms are removed from buzzword tiers and phrase categories
+before detection; disabled signals are dropped from reports and the overall
+score is recomputed (Noisy-OR, escalation only for still-weighted critical /
+≥2 high signals). Config errors (unknown keys, bad severities, weights
+outside [0,1]) abort with exit code 2 instead of silently mis-scoring.
+
+
 ### Step 2: Classify slop type
 
 ```bash
