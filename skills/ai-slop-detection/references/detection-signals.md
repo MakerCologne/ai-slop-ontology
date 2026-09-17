@@ -168,7 +168,7 @@ signal-based review instead of gut judgment:
 - **Cheng et al. 2025** (Advances in Simulation 10(1):66, DOI 10.1186/s41077-025-00396-6):
   Human ability to distinguish LLM text from human text is **no better than random chance**.
 - **Fiedler & Döpke 2025** (Int. Review of Economics Education 49:100321, DOI 10.1016/j.iree.2025.100321):
-  German theses — humans recognized only **57 % of AI texts** and **64 % of human texts**.
+  German theses (DiLA study) — humans recognized only **57 % of AI texts** and **64 % of human texts**.
 - **Russell, Karpinska & Iyyer 2025** (ACL 2025, arXiv:2501.15654): Heavy LLM users reach ~**90 % accuracy** —
   but that still means **~10 % false positives**; light users are barely above chance (both directions).
 - **Language convergence**: LLM use shapes human writing, shrinking the gap the eye relies on —
@@ -178,6 +178,8 @@ signal-based review instead of gut judgment:
 Consequence for this reference: human judgment alone is **not** a valid detection signal —
 it is the baseline the statistical/ML methods above must beat, and the reason every finding
 here is phrased as a named, checkable signal rather than an impression.
+
+Source: [Wikipedia: Signs of AI writing — "Your detection ability"](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Your_detection_ability)
 
 ## Thresholds
 
