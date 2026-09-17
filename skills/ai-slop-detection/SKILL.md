@@ -76,7 +76,7 @@ python3 scripts/slop_scorer.py --file README.md
 - `weight_overrides`: merged over DEFAULT_WEIGHTS (no re-normalization; scores cap at 1.0).
 - Auto-discovery runs for `--file` input only; piped stdin stays environment-independent.
 - The applied config is echoed in the JSON output under `config` (run reproducibility).
-
+- Config composes with `--genre` (allowlist and genre exemptions apply together). Fail-loud: an invalid config aborts with exit code 2.
 ### Step 2: Classify slop type
 
 ```bash
