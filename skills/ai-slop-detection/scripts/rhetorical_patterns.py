@@ -197,6 +197,54 @@ RHETORICAL_PATTERNS = {
         "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - "
                      "not a decorative headline triple.",
     },
+    "OpenerAnnouncement": {
+        "label": "Opener announcement",
+        "confidence": 0.45,
+        "description": "Sentences that open by announcing content instead of "
+                       "carrying it: praise openers ('Spannender Punkt.'), "
+                       "'Ein weiterer Aspekt ist ...', question announcements "
+                       "('Die spannende Frage ist ...'), and text-initial "
+                       "Ich-approach frames without an in-sentence justification. "
+                       "Frame-based (placeholder mechanics #83/#88), not a growing word list.",
+        "example_slop": "Spannender Punkt. Ich denke, ein weiterer wichtiger Aspekt ist die Frage, wie viel Prozesswissen verfuegbar ist.",
+        "example_fix": "Wie viel Prozesswissen ist tatsaechlich verfuegbar?",
+        "keep_when": "Genuine stance differentiation: 'Ich denke, dass X, weil Y belegt' "
+                     "carries content and a reason - the frame is the point, not a run-up. "
+                     "Mid-text occurrences and ritual formulas (thanks, negotiation "
+                     "statements) stay unflagged.",
+    },
+    "engagement_comment_default": {
+        "label": "Engagement comment default",
+        "confidence": 0.45,
+        "description": "The default LinkedIn comment sequence — praise opener, "
+                       "paraphrase marker (\"Sie schreiben/In Ihrem Beitrag\", "
+                       "\"you describe/your post\"), an announced add-on "
+                       "(\"Ein weiterer Aspekt ist ...\") and a closing engagement "
+                       "question — with at least 3 of the 4 elements in order. Fires "
+                       "when ONE text walks the whole template, not on any single element.",
+        "example_slop": "Danke für diesen spannenden Beitrag. Sie beschreiben sehr "
+                        "treffend, wie FHUs unter Personalnot leiden. Ein weiterer "
+                        "Aspekt ist die Zulassungsdauer. Wie sehen Sie das?",
+        "example_fix": "Die Zulassungsdauer in Ihrem Beispiel passt nicht zu unseren "
+                        "Zahlen: 14 Monate Standardverfahren, 9 Monate im "
+                        "beschleunigten Verfahren. Wir hadern eher mit den "
+                        "Zusatzanforderungen der Krankenkassen.",
+        "keep_when": "A genuine FAQ conversation, interview or moderation where "
+                     "question and reference to the other side carry real "
+                     "information, not engagement ritual.",
+        "sequence_elements": {
+            "praise": ["danke für diesen", "danke fuer diesen", "spannender beitrag",
+                       "spannender punkt", "toller beitrag", "großartiger beitrag",
+                       "grossartiger beitrag", "wichtiger beitrag", "super beitrag",
+                       "great post", "great read", "love this post", "this resonates"],
+            "paraphrase": ["sie schreiben", "sie beschreiben", "sie erwähnen",
+                           "sie erwaehnen", "in ihrem beitrag", "wie sie sagen",
+                           "you describe", "you mention", "your post", "you write"],
+            "addon": ["ein weiterer aspekt", "ein weiterer punkt", "ein weiterer gedanke",
+                      "ergänzend", "ergaenzend", "hinzu kommt", "ergänzen möchte",
+                      "ergaenzen moechte", "to add", "adding to this", "one more thing"],
+        },
+    },
     "RepeatedOpenings": {
         "label": "Repeated sentence openings",
         "confidence": 0.55,
@@ -221,6 +269,28 @@ RHETORICAL_PATTERNS = {
             "that's a great point", "as of my last update",
             "let me know if you have any questions",
         ],
+    },
+    "ComparativeFraming": {
+        "label": "Comparative framing",
+        "confidence": 0.5,
+        "description": ("Contrast frames as a substitute for description: "
+                        "'weniger X als vielmehr Y', 'eher X als Y', "
+                        "'nicht X, sondern Y', 'less about X, more about Y'. "
+                        "Clustered use replaces concrete property statements. "
+                        "Engine implementation: structure_metrics."
+                        "comparative_framing (#75, Signal 6); EN 'not just X "
+                        "but Y' stays with BinaryContrast (collision "
+                        "discipline #46). Detect-only."),
+        "example_slop": ("Der Wandel ist eher eine Neujustierung als eine "
+                         "Revolution. Es geht nicht um Werkzeuge, sondern um "
+                         "Haltung."),
+        "example_fix": ("Der Wandel passt bestehende Ablaeufe an und "
+                        "veraendert keine Grundsaetze; ausschlaggebend ist "
+                        "die Haltung der Beteiligten."),
+        "keep_when": ("Real comparisons with concrete quantities (numbers, "
+                      "measures, named entities) do not count; a single "
+                      "contrast frame is normal rhetoric and stays "
+                      "unmarked; advisory only, never score-dominant."),
     },
 }
 
@@ -434,11 +504,17 @@ def find_rhetorical_patterns(text: str):
         em = text.count("\u2014") + text.count("\u2013")
         word_count = len(text.split())
         sent_count = max(len(_sentences(text)), 1)
-        if em >= 1 and word_count <= 120:
+        # COLL-2 (collisionMatrix, #46): the em-dash-cluster branch
+        # (em >= 3 and em / sent_count > 0.5) was removed — it is a strict
+        # subset of the classifier's EmDashExcess (>0.5 em dashes per
+        # sentence), so every cluster occurrence was double-reported.
+        # EmDashExcess owns cluster detection; FormattingSlop keeps only the
+        # doctrine branches EmDashExcess does not cover (short copy, long-draft
+        # allowance) — gated on em/sentence <= 0.5 so an EmDashExcess-cluster
+        # occurrence is never re-reported here.
+        if em >= 1 and word_count <= 120 and em / sent_count <= 0.5:
             formatting_evidence = f"em dash in short copy: {em} in {word_count} words"
-        elif em >= 3 and em / sent_count > 0.5:
-            formatting_evidence = f"em-dash cluster: {em} dashes in {sent_count} sentences"
-        elif em > 2 and word_count > 120:
+        elif em > 2 and word_count > 120 and em / sent_count <= 0.5:
             formatting_evidence = f"em dashes beyond long-draft allowance: {em} in {word_count} words"
     if formatting_evidence:
         add("FormattingSlop", formatting_evidence)
@@ -543,6 +619,32 @@ def find_rhetorical_patterns(text: str):
             if len(set(i.lower() for i in items)) == 3:
                 add("DecorativeSeparatorTriad", "" + " ".join("#" + i for i in items))
 
+    # 13c. Opener announcements (Issue #230 / P3) — sentences that announce
+    #      content instead of carrying it. Frame-based, detect-only.
+    #      Tier A: pure praise/announcement frames at sentence start (always).
+    _OPENER_FRAMES = (
+        "spannender punkt", "spanender punkt", "interessanter gedanke",
+        "wichtiger beitrag", "danke fuer diesen beitrag", "danke für diesen beitrag",
+        "du sprichst einen wichtigen punkt an", "das ist ein wichtiger aspekt",
+        "genau das ist entscheidend", "ein weiterer aspekt ist", "ein weiterer punkt waere",
+        "ein weiterer punkt wäre", "ergaenzend dazu", "ergänzend dazu",
+        "die eigentliche frage ist", "die spannende frage ist",
+        "was bedeutet das nun", "doch was heisst konkret", "doch was heißt konkret",
+    )
+    for frame in _OPENER_FRAMES:
+        if lowered.startswith(frame) or ("\n" + frame) in lowered or (". " + frame) in lowered:
+            add("OpenerAnnouncement", frame)
+            break
+    #      Tier B: Ich-approach frames — only at TEXT start and only without an
+    #      in-sentence justification marker (hard negative: 'Ich denke, dass X, weil Y').
+    _ICH_FRAMES = ("ich moechte", "ich möchte", "ich wollte", "ich denke",
+                   "ich finde", "ich glaube")
+    _JUSTIFICATION = re.compile(r"\b(weil|denn|grund|belegt|belegen|nachvollziehbar|gemessen|laut|deshalb|daher)\b")
+    if lowered.startswith(_ICH_FRAMES):
+        first_sent = sents[0].lower() if sents else lowered
+        if not _JUSTIFICATION.search(first_sent):
+            add("OpenerAnnouncement", "text-initial ich-approach: " + first_sent[:60])
+
     # 14. Repeated sentence openings — 3+ sentences starting with the same word.
     opener_counts = {}
     for s in sents:
@@ -554,7 +656,52 @@ def find_rhetorical_patterns(text: str):
             add("RepeatedOpenings", f"{len(occurrences)} sentences start with '{opener}'")
             break
 
-    # 15. Chatbot leftovers — assistant-register phrases in running prose.
+    # 15b. Engagement comment default (Issue #231 / P4) — the LinkedIn
+    #      comment template: praise opener -> paraphrase marker -> announced
+    #      add-on -> closing question. Fires when at least 3 of the 4 elements
+    #      appear IN ORDER in a single text. Any single element alone never
+    #      fires (hard negatives: substantive comments may paraphrase AND ask
+    #      a question — two elements are not the template).
+    meta_ecd = RHETORICAL_PATTERNS["engagement_comment_default"]
+    seq = meta_ecd["sequence_elements"]
+    pos = []
+    for elem in ("praise", "paraphrase", "addon"):
+        best = None
+        for term in seq[elem]:
+            idx = lowered.find(term)
+            if idx >= 0 and (best is None or idx < best):
+                best = idx
+        if best is not None:
+            pos.append((best, elem))
+    stripped_end = lowered.rstrip()
+    has_closing_question = (stripped_end.endswith("?") or
+                            "wie sehen sie das" in lowered or
+                            "was ist ihre erfahrung" in lowered or
+                            "was sind ihre erfahrungen" in lowered or
+                            "what are your thoughts" in lowered or
+                            "how do you see this" in lowered or
+                            "what has been your experience" in lowered)
+    if has_closing_question:
+        pos.append((len(lowered), "closing_question"))
+    pos.sort()
+    # Longest increasing subsequence over element order (praise < paraphrase <
+    # addon < question); count elements in template order.
+    order = {"praise": 0, "paraphrase": 1, "addon": 2, "closing_question": 3}
+    best_run = run = 0
+    last = -1
+    for _, elem in pos:
+        if order[elem] > last:
+            run += 1
+            last = order[elem]
+        else:
+            run, last = 1, order[elem]
+        best_run = max(best_run, run)
+    if best_run >= 3:
+        found = [e for _, e in pos]
+        add("engagement_comment_default",
+            "sequence elements in order: " + ", ".join(found))
+
+    # 16. Chatbot leftovers — assistant-register phrases in running prose.
     for phrase in RHETORICAL_PATTERNS["ChatbotLeftover"]["phrases"]:
         idx = lowered.find(phrase)
         if idx >= 0:
