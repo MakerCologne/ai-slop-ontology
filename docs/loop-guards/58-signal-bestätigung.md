@@ -1,6 +1,6 @@
 # Signal-Bestätigung: ≥ 2 unabhängige Nachweise vor jedem Fix (#58)
 
-**Status:** spec · **Vorbild:** SelfCheckGPT-Mechanik (Manakul et al., arXiv:2303.08896) · **Verwandt:** #57 (Layer 2), Kollisions-Matrix #46
+**Status:** implementiert (`src/confirm.py`, Integration `deslop_loop` via injizierbarem `confirm`-Gate; Tests `tests/test_confirm.py`) · **Vorbild:** SelfCheckGPT-Mechanik (Manakul et al., arXiv:2303.08896) · **Verwandt:** #57 (Layer 2), Kollisions-Matrix #46
 
 ## Regel
 
@@ -10,4 +10,4 @@ Ein Signal triggert einen Fix erst ab **2 unabhängigen Nachweisen**:
 
 ## Metrik
 
-FP-Fix-Rate vor/nach auf dem Benchmark-Korpus (`eval/corpus.jsonl`): Ziel FP-Fixes −50 % bei Recall-Verlust ≤ 2 Punkte; Report-Feld `evidence: [nachweis_1, nachweis_2]` je Fix-Trigger. Implementierung `confirm.py` (Loop-Issue).
+FP-Fix-Rate vor/nach auf dem Benchmark-Korpus (`eval/corpus.jsonl`): Ziel FP-Fixes −50 % bei Recall-Verlust ≤ 2 Punkte; Report-Feld `evidence: [nachweis_1, nachweis_2]` je Fix-Trigger. Implementierung `confirm.py` — **umgesetzt**: `ConfirmGate` (Pfade llm/resample/stability/confidence), `fp_fix_rate()`-Metrik, `evidence`-Feld im Loop-Audit (`iterations.jsonl`).
