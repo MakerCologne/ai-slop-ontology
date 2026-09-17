@@ -1,7 +1,7 @@
 # EVALS.md — Drei-Level-Evals-Architektur
 
 **Status:** konstitutiv (v2.0.0, Issue #68) · **Blaupause:** Hamel Husain, „Your AI Product Needs Evals" (2024) — L1/L2/L3-Pyramide; Methode E6 in `research/slop-ontology-gap-2026-08-24/methoden-fundament.md` §6 (externe Quelle).
-**Verwandt:** docs/METHODOLOGY.md (M1, M5, M8), adr/0003 (Control-Set-Gate), adr/0005 (Benchmark-Disziplin), docs/SCORE-GOVERNANCE.md (#67).
+**Verwandt:** docs/METHODOLOGY.md (M1, M5, M8), adr/0003 (Control-Set-Gate), adr/0005 (Benchmark-Disziplin), docs/SCORE-GOVERNANCE.md (#67), docs/TOOL-EVAL-CHECKLIST.md (#71 — Bewertung Fremd-Tools).
 
 ---
 
@@ -57,9 +57,11 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 
 ### L1 — Unit-Assertions (tests/)
 
+- `tests/test_example_fix_meta.py` — #229 Meta-Regressionstest (L1) — jedes `eval/example_fixes.jsonl`-Paar (broken→fixed) muss den eigenen Detektor passieren: broken erkannt (Score ≥ Schwelle), fixed clean (Score < Schwelle), beide Engines; verhindert Reinführung abgelehnter Schreibmuster
 - `tests/test_issue104_doc_drift.py` — #104 Slice A: Doku<->SSOT-Drift (L1) — Gate-Test für scripts/check_doc_signals.py (D1/D2, beide Richtungen) plus die beiden Issue-Beispiele als Matcher-/Classifier-Fixtures ('it is worth noting' in hedging_qualifiers, Template 'in today's [X]' in opening_formulas; konkrete SSOT-Varianten bleiben matchbar)
 - `tests/test_threshold_config.py` — #157 zentraler Threshold: config/threshold.json als einzige Quelle (Verhalten folgt der Config, Missing/Malformed/Out-of-Range brechen ab statt still zu fallen, committeter Wert 0.40 als Ratsche bis zum Sweep GL #6.3)
 - `tests/test_short_text_guards.py` — #52 Kurztext-Guards: dokumentierte Mindestlängen je Metrik in config/threshold.json (short_text_guards), definiertes Skip-Verhalten (neutral + ausgewiesene skipped-Liste + Gewicht-Re-Normalisierung, buzzwords bleibt aktiv), Fixtures für 5-/20-/50-Wort-Texte (L1)
+- `tests/test_model_notes.py` — #36 Modell-Dynamik: signalModelDynamics-SSOT-Sektion (schema, evidence-Pflicht M6, Halbwertszeit-Vokabular, Entries referenzieren reale Signale) + per-signal model_notes der Pilot-Signale + loop-guard-Doc-Existenz (L1)
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
 - `tests/test_adverb_rate.py` — Signal #24 Adverb-Rate (Fixtures)
 - `tests/test_anchor_drift.py` — #78 Anchor-Drift (detect-only, Anker-Diff, Dezimal-Grenzfall)
@@ -69,13 +71,16 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_calibration_drift.py` — #47 Kalibrierungs-Drift-Register (eval/calibration_reference.json, CI-Snapshot `scripts/calibration_drift.py --check`: Score-Verteilung p10/p50/p90 + per-Signal Hit-Rates gegen eingefrorenen Referenz-Snapshot; Messvorschrift docs/calibration-drift.md, Alert = Weight-Review-Trigger, kein Auto-Tuning)
 - `tests/test_cross_validation.py` — #85 Held-out-Schätzer: Folds disjunkt/vollständig/stratifiziert/deterministisch (M8), Leckage-Probe über einen injizierten Kalibrator (kein Text aus dem eigenen Held-out-Fold), Null-Runden-Kontrolle (ohne Kalibrierung muss Held-out = In-Sample sein, sonst steckt der Fehler in der Fold-Mechanik), In-Sample und Held-out nebeneinander, gefitteter Scorer getrennt vom ungefitteten Typ-Klassifikator und die Pipeline als gemischt markiert, Klassifikationspflicht je Engine (unklassifizierte Engine = Fehler, keine Vermutung), CLI `--cross-validate` opt-in und stdout nur Report (Kalibrator-Fortschritt auf stderr, sonst bricht `--json`), Lauffähigkeit von `eval/calibrate.py` (Gewichtsnamen gegen den Scorer) sowie der Doku-Pin: die in SKILL.md veröffentlichten Zahlen inkl. Korpusgröße und Konfusionsmatrix gegen einen frischen Benchmark-Lauf
 - `tests/test_type_pattern_position.py` — #88 Positionssemantik für TypePattern-Muster: `^`-Präfix im SSOT als klauselinitialer Marker (Textanfang, Satzende, Zeilenanfang, Listeneintrag) mit Gegenproben, Opt-in-Nachweis für unmarkierte Muster, Pattern-Parity über die drei Term-Regex-Module, Parity der hartcodierten Musterkopie in `slop_classifier.py` gegen ontology.json, drei Fachdoku-Hard-Negatives unter Schwelle, Recall-Wächter über echte Content-Farm-Texte, zwei Grenzfälle (Einzeltreffer bleibt Hypothese, Listicle-Opener in Liste zählt)
+- `tests/test_severity_ssot.py` — #55 Severity-SSOT: Classifier liest Per-Signal-Tiers aus ontology.json `signalSeverity` (Legacy-Map nur Fallback), RPN-Fix-Reihenfolge im Loop (Tier → Konfidenz), empirische Kalibrierung der 5 Konflikt-Signale am Hard-Negatives-Korpus (L1)
 - `tests/test_self_check_docs.py` — #48 Meta-Self-Check: jedes Repo-Markdown unter Schwelle nach dem #69-Präpass, Kern-Dokumente ohne Ausnahme, Ausnahmen-Register `eval/self_check_docs.json` mit Begründungspflicht und am Messwert klebender Obergrenze (Ratsche), Test gegen tote Ausnahmen, Fehlschlagprobe mit untergeschobenem Slop-Dokument
 - `tests/test_ci_gates.py` — #84 CI-Gate-Abdeckung: der Workflow muss die vollständige Suite fahren (kein `unittest discover`, das pytest-Dateien stumm überspringt), jedes dokumentierte Gate als eigener Schritt, Benchmark mit Untergrenzen statt „informational"; dazu Soll-Ist-Abgleich Testdateien gegen Collection und die Schwellenlogik von `eval/run_benchmark.py --min-precision/--min-recall`
 - `tests/test_markup_prepass.py` — #69 Markdown-Präpass: Strip-Einheiten (Code-Fences, Inline-Code, Blockquotes, Tabellen, Zitat-Listen, Inhaltsverzeichnis), Gegenprobe Prosa-Listen/Idempotenz, Selbstanwendung (README/ONTOLOGY/AI-SLOP-ONTOLOGY/USER-GUIDE < 0.40), Missbrauchsprobe (Prosa-Slop bleibt erkannt), FP-Guardrail (kein Korpus-Verdikt kippt), CLI `--strip-markup` mit Roh- und Strip-Score
 - `tests/test_phrase_matchability.py` — #83 Phrase-Matchbarkeit: struktureller Wächter, dass keine Phrase im SSOT unmatchbar ist (jede Phrase gegen ihre eigene Instanziierung), Platzhalter-Semantik [X]=Nominalphrase / [N]=Zahl mit Gegenproben, Pattern-Parity über src/scorer, skill/slop_scorer und skill/genre_profiles
+- `tests/test_project_config.py` — #11 Projekt-lokale Config: Validierung (unbekannte Familien/Keys, Gewichts-Bereich), Score-Integration (disabled_signals senkt Score, Allowlist senkt Buzzword-Count, Weight-Override), CLI --config (gültig + Fehlerfall)
 - `tests/test_packaging.py` — #82 Packaging-Contract: Deklarationstest (jeder zur Laufzeit geladene Pfad ist Wheel-Inhalt, ohne Build/Netz) + Build-Test (Wheel bauen, entpacken, Engine und CLI ausserhalb des Checkouts ausführen; benchmark/selfcheck brechen mit Meldung statt Traceback ab)
 - `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when, modal_particle_anomaly Stub für #76)
 - `tests/test_register_profile.py` — #74 Register-Profile v2: Stilkarte (9 Felder, JSON) + register_drift_intern (Hälften-Distanz, detect-only ≤0.5, #42-Genre-Exemptions, Kollisionsdisziplin zu #81 register_drift), Scorer-Kontext-Ausgabe ohne Score-Einfluss
+- `tests/test_domain_bindings.py` — #35 Domain-Trigger: SSOT-Sanity von `domainBindings` (≥5 Pilot-Signale, whitelist XOR blacklist, deklarierte Domains), Accessor-Semantik (Whitelist schlägt Blacklist, Default domain-agnostisch), Scorer-Integration (`--domain` zero-t gemappte Gewichtsdimensionen, JSON-Audit-Felder, Exit 2 bei unbekannter Domain), Classifier-Integration (Filter vor Noisy-OR-Aggregation, fail-loud)
 - `tests/test_de_evidence_densification.py` — #76-Rest RI-2-FU: Evidence-Verdichtung (≥2 unabhängige Belege für ≥50% der de_*-Phrasen; L1) mit own:corpus-Belegtexten `eval/de_evidence_texts.jsonl` (L1-Belegtextdatei, eigene Handschrift) und C4-Coverage-Pin (Manipulationsprobe)
 - `tests/test_structure_rest.py` — #76-Rest: M66 Fake-Analyse-Anhang + M71 Scheinnuance (detect-only ≤0.5, DoD 3/3/2); M67 bewusst nicht dupliziert (schon de_announcement_cleft)
 - `tests/test_discourse_metrics.py` — #72 L4: explorative Diskurs-Signale rank_without_criterion & identical_enumeration (conf ≤0.35, `exploratory: True`, DoD 3/3/2) gegen versionierten L4-Referenzkorpus `eval/discourse_ref.jsonl` (Artefakt-Typen deep/10 + deep/06, Kontrollartefakte inklusive)
@@ -85,17 +90,24 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_structure_metrics.py` — #76 Teil 2: M60 SynonymRotation + M61 IsometricUnits (detect-only, sprachagnostisch, 3/3/2-Fixtures, Schwellen fixture-kalibriert)
 - `tests/test_ssot_de_layer.py` — FU-17: check_ssot C4 de_*-Phrase-Layer-Pin (16 Kategorien, Evidence-Regel, Namespace-Präfix) mit 4 Manipulationsproben
 - `tests/test_genre_human_texts.py` — #80-Rest: Genre-Menschtexte je Genre ≥6 (own:handwritten), <0.40 auf beiden Engines, fp_baseline-Pin, Quartals-Re-Score-Anbindung (#47)
+- `tests/test_collision_matrix.py` — #46 Signal-Kollisions-Matrix: jede COLL-Auflösung aus `ontology.json#/collisionMatrix` hat ein Fixture, das belegt, dass dasselbe Vorkommen genau einmal zählt (COLL-1 FakeStrongVerb vs. copula rate, COLL-2 EmDashExcess vs. FormattingSlop, COLL-3 Adverb vs. positive-voice, COLL-4 Regex-Span-Dedup)
 - `tests/test_benchmark_runner.py` — L3-Runner selbst + Korpus-Disziplin (Zeilen, Quellen, 60 %-Regel)
 - `tests/test_binary_contrast_ext.py` — Signal #26 BinaryContrast
 - `tests/test_classifier.py` — src/classifier.py Klassifikation
 - `tests/test_cli.py` — CLI-Härtung (MS-I1)
+- `tests/test_findings_receipts.py` — #119 Findings-Standard mit Receipts: Feld-Vollständigkeit ({signal_id, span, evidence_quote, reliability, suggested_action}), Span↔Quote-Konsistenz, Sortierung, Clean-Text-Leerlauf, Mehrzeilen-Line-Nummern, build_findings auf Minimal-Result (L1)
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
-- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
+- `tests/test_conversational_fillers.py` — #110 conversational_fillers (Hassid-Liste): 4 Phrasen, Hard-Negative-Guards (Sign-off-Fenster, Quellenangabe)
+- `tests/test_chat_artifacts.py` — #113 chat-paste artifacts & elision: 6 deterministische Mikro-Signale (Chat-Paste-Artefakte wie Zeitstempel/Lead-Dashes, Elision), Fixtures inkl. Hard Negatives (L1)
+- `tests/test_weight_gain_pin.py` — #106 DoD-Rest: Doku-Pin der Gewichts-Einordnung (SCORE-GOVERNANCE.md + Herkunfts-Kommentar slop_scorer.py nennen den Kalibrierungs-Gewinn der 14-dimensionalen Gewichte gegenüber uniform 1/N; Test bindet diese Zahlen, Muster fp_baseline #80/#85) (L1)
+
+- `tests/test_paste_artifacts.py` — #113 detect-only-Paste-Artefakte: 6 Mikro-Signale (elision-comment, chat-preamble, fence-in-code, meta-process-comment, list-label-marker, placeholder-credential-shape; kein Score-Einfluss, ADR-0006)- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)
 - `tests/test_docs_examples.py` — Doku-Beispiele stimmen mit Scorer-Verhalten überein (#48)
+- `tests/test_project_config.py` — #11 Projekt-lokale Config (--config: disabled_signals/term_allowlist/weight_overrides, Fail-loud-Validierung, Strukturdimensionen unangetastet)
 - `tests/test_engine_sync.py` — SSOT-Parity Scorer↔ontology.json (ADR-0002)
 - `tests/test_ssot.py` — #49 SSOT-Gate (check_ssot.py: Ontology-Kopie, Generated-View, Konstanten-Register)
 - `tests/test_evals_doc.py` — diese Zuordnung prüfen (#68, Meta)
@@ -104,6 +116,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_human_voice.py` — #21 positive Gegenprofil-Referenz (Struktur-Pinning, kein Scorer)
 - `tests/test_fu_batch_g.py` — FU-Register-Abrechnung Batch G (FU-2/3/4 Red-Fixes aus Reviews C/D)
 - `tests/test_fu_batch_g2.py` — FU-5/7/10 (as_any-Kommentar-Guard, CHANGELOG-Claim, SKILL-Benchmark-Spiegel)
+- `tests/test_trajectory_guard.py` — #59 Score-Trajectory-Monitoring: ANOMALY/DIMINISHING/ROLLBACK_CHAIN-Trigger, Präzedenz, Konfigurierbarkeit, Run-Dir-Ingest (L1)
 - `tests/test_deslop_loop.py` — #51 Loop-Runner-Orchestrator: E1–E5-Exit-Checks, Rollback, Voice-Budget, Signal-Bestätigung, Audit-Vollständigkeit (deterministische Fake-Detektoren, L1)
 - `tests/test_lexikon.py` — #50 Lexikon-Pilot: Schema-Validierung, Beleg-Pflicht, Build-Determinismus, Sync-Gate (dist == Neubau), llms.txt-Struktur (L1)
 - `tests/test_fu12_watchlist.py` — FU-12 Generic-Phrase-Watchlist (Reviewer-Gegenproben < 0.40, Benchmark-Verteidigung)
@@ -111,6 +124,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_genre_profiles.py` — #42 Genre-Opt-in-Profile (ADR-0004)
 - `tests/test_governance_doc.py` — #67 Governance-Pflichtabschnitte (Meta)
 - `tests/test_input_norm.py` — #40 Input-Normalisierung/Evasion
+- `tests/test_project_config.py` — #11 Projekt-lokale Config (disabled_signals/term_allowlist/weight_overrides, Auto-Discovery)
 - `tests/test_instruction_slop.py` — Signal Instruction-Slop
 - `tests/test_intensifier_fix.py` — FU-1 Intensifier-Fix
 - `tests/test_best_practices_guard.py` — #156 FP-Guard: 'Best Practices' zählt nur mit generischem Verstärker (conditional_buzzwords), Plain-Referenz ist kein Marker (L1, TP+Hard Negative+SSOT-Pin)
