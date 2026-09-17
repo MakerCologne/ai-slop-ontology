@@ -130,3 +130,42 @@ Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind d
 - **Ziel erreicht:** 63/96 de_*-Phrasen (65,6 %) tragen jetzt **≥ 2 unabhängige Belege** (Pin ≥ 50 %, C4 in scripts/check_ssot.py, Manipulationsprobe in tests/test_de_evidence_densification.py). Zweite Belege: eigene handgeschriebene Belegtexte (`eval/de_evidence_texts.jsonl`, source `own:corpus`, je Kategorie ein Text mit 3–4 wörtlich enthaltenen Phrasen) — eigene Handschrift, keine Kopien aus CC BY-SA-Drittkatalogen (Lizenzregel).
 - **Dokumentierte Abweichung (33 Phrasen, 34,4 %):** Einzelbeleg (Wikipedia-Projektseite oder own:de-observation/en-pendant). Die Rest-Belegung läuft künftig über den C4-Coverage-Pin — Unterschreiten von 50 % failt das SSOT-Gate.
 - **Strukturmetrik-Rest:** M66 (fake_analysis_appendix) und M71 (pseudo_nuance) als detect-only Signale in structure_metrics.py (Konfidenz 0.5, je 3/3/2-Fixtures in tests/test_structure_rest.py). M67 (Ankündigungs-Spaltsatz) bereits als de_announcement_cleft gedeckt — bewusst keine Duplikation (#46).
+
+## 2026-09-17: OpenerAnnouncement + ParagraphConnectorRate (#230 / P3)
+
+- **OpenerAnnouncement** (rhetorical_patterns.py, detect-only, Konfidenz 0.45):
+  Lob-/Ankuendigungs-Frames am Satzanfang ("Spannender Punkt.", "Ein weiterer Aspekt ist ...",
+  "Die spannende Frage ist ...", "Du sprichst einen wichtigen Punkt an") sowie
+  text-initiale Ich-Anlaeufe ("Ich moechte/denke/finde/glaube ...") OHNE
+  Begruendungsmarker im Satz. Frame-basiert (Platzhalter-Mechanik #83/#88), keine
+  wachsende Wortliste. keep_when: echte Haltungsdifferenzierung ("Ich denke, dass X,
+  weil Y belegt"), Ritual-Formeln, Verhandlungs-Ankuendigungen.
+- **ParagraphConnectorRate** (rhythm_openers.py, advisory, nie gescored): Anteil der
+  Absaetze mit additivem Konnektor-Eroeffner (dt./engl.); Signal ab > 50 % und >= 2
+  Absaetzen. keep_when: strukturierte Genres (juristisch, regulatorisch, akademisch),
+  wo Konnektor-Absaetze Konvention sind.
+- Hard Negatives getestet in tests/test_opener_announcement.py (Begruendung im Satz,
+  mid-text-Ich, juristischer Einzel-Konnektor, Kurztext).
+
+## 2026-09-17: Genre-Profil comment/message + LinkedIn-Kommentar-Evals (#231 / P4)
+
+- **Genre-Profile `comment` und `message`** (genre_profiles.py, Opt-in via `--genre`,
+  ADR-0004: kein Auto-Detect): kurze Saetze und Ritual-Formeln (Grussformeln) sind
+  Genres-Konvention, kein Slop — exempt_terms fuer Grussformeln, zero_weights fuer
+  verbosity/list_heavy, decision_threshold 0.50. Lob-Auftakt und Triaden bleiben
+  voll verdächtig (Advisories verweisen auf OpenerAnnouncement /
+  engagement_comment_default / ForcedTriad).
+- **`engagement_comment_default`** (rhetorical_patterns.py, detect-only,
+  Konfidenz 0.45): feuert erst, wenn EIN Text mindestens 3 der 4 Sequenzelemente
+  IN REIHENFOLGE enthaelt (Lob-Anfang -> Paraphrase-Marker -> Ergaenzungs-Ankuendigung
+  -> schliessende Frage). Einzelne Elemente (auch Paraphrase + Frage) feuern nicht.
+  keep_when: echte FAQ-Konversation/Interview/Moderation.
+- **Control-Set-Erweiterung** (eval/control_set.jsonl, 10 -> 20 Texte, ADR-0005
+  eigene Handschrift): 5 CommentSlop-Sequenzen (als known_fn dokumentiert — kurze
+  Kommentare erreichen die Score-Eskalation nicht; Detektion laeuft detect-only,
+  ADR-0006) und 5 legitime LinkedIn-Kommentare als Hard Negatives
+  (differenzierter Widerspruch, echte Detailfrage, inhaltliche Zustimmung mit
+  Ergaenzung, Kritik am Vergleich, technische Gegenanalyse).
+  **FP-Rate auf den 5 legitimen Kommentaren: 0** (kein Signal, Score < 0.08).
+- Tests: tests/test_comment_genre.py (TP >= 1, Hard Negatives >= 2 inkl.
+  Control-Set-Texte, Opt-in ohne Auto-Detect).
