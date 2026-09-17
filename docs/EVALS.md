@@ -111,7 +111,8 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_slopkit_project_config.py` — #11 (slopkit-Variante): project-local config für das slopkit-Paket (disabled_signals/term_allowlist/weight_overrides, Fail-loud Exit 2) (L1)
 
 - `tests/test_paste_artifacts.py` — #113 detect-only-Paste-Artefakte: 6 Mikro-Signale (elision-comment, chat-preamble, fence-in-code, meta-process-comment, list-label-marker, placeholder-credential-shape; kein Score-Einfluss, ADR-0006)
-- `tests/test_gamed_verification.py` — #112 Gamed-Verification-Diff-Signale (detect-only): AssertionDelta, SkippedTest, TrivialAssertion, StubLeftBehind — Fixtures Positiv/Negativ je Signal (Signal-DoD)- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
+- `tests/test_gamed_verification.py` — #112 Gamed-Verification-Diff-Signale (detect-only): AssertionDelta, SkippedTest, TrivialAssertion, StubLeftBehind — Fixtures Positiv/Negativ je Signal (Signal-DoD)
+- `tests/test_geometric_aggregation.py` — #117 Geometrische Score-Aggregation: gewichtetes geometrisches Mittel je Dimension als Option neben Noisy-OR (Aequivalenz-/Grenzfaelle, Gewichts-Sensitivitaet) (L1)- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 - `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)
