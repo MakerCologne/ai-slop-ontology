@@ -95,5 +95,20 @@ class MicroPatternTests(unittest.TestCase):
         self.assertNotIn("HeadingRepeatedBelowItself", ids(text))
 
 
+    def test_every_example_fix_is_detector_clean(self):
+        """#229 meta-safety: micro example_fixes must survive the detectors."""
+        from rhetorical_patterns import find_rhetorical_patterns
+        from rhythm_openers import rhythm_metrics
+        for pid, meta in MICRO_PATTERNS.items():
+            fix = meta["example_fix"]
+            self.assertEqual(ids(fix), set(), f"{pid} example_fix triggers micro signals")
+            self.assertEqual(
+                find_rhetorical_patterns(fix), [],
+                f"{pid} example_fix triggers rhetorical signals")
+            self.assertEqual(
+                rhythm_metrics(fix)["signals"], [],
+                f"{pid} example_fix triggers rhythm signals")
+
+
 if __name__ == "__main__":
     unittest.main()

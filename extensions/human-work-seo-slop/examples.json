@@ -1,0 +1,165 @@
+{
+  "version": "0.1.0",
+  "examples": [
+    {
+      "id": "human-management-report-01",
+      "label": "HumanWorkSlop",
+      "generation_mode": "human_authored",
+      "text": "A weekly 28-page status report manually copies data from three live trackers, has no defined audience decision, and requires team leads to reconcile conflicting numbers.",
+      "dimensions": {
+        "goal_contribution_deficit": 0.78,
+        "recipient_effort_transfer": 0.82,
+        "coordination_overhead": 0.88,
+        "scale_repetition": 0.65
+      },
+      "expected": "candidate",
+      "reason": "Repeated human-authored artifact shifts reconciliation work to recipients without adding decision value."
+    },
+    {
+      "id": "ai-workslop-deck-01",
+      "label": "AIWorkslop",
+      "generation_mode": "fully_synthetic",
+      "text": "A polished 40-slide strategy deck contains generic market claims, no sources, no resource choices and no company-specific constraints.",
+      "dimensions": {
+        "superficial_competence": 0.9,
+        "verification_deficit": 0.85,
+        "actionability_deficit": 0.8,
+        "recipient_effort_transfer": 0.7
+      },
+      "expected": "candidate"
+    },
+    {
+      "id": "meeting-slop-01",
+      "label": "MeetingSlop",
+      "generation_mode": "human_maintained",
+      "text": "A recurring 60-minute meeting with 18 attendees reads updates already visible in a tracker and ends without decisions, owners or next steps.",
+      "dimensions": {
+        "goal_contribution_deficit": 0.8,
+        "coordination_overhead": 0.9,
+        "actionability_deficit": 0.75
+      },
+      "expected": "candidate"
+    },
+    {
+      "id": "meeting-counterexample-01",
+      "label": "MeetingSlop",
+      "generation_mode": "human_maintained",
+      "text": "A 90-minute incident review with the required operators reconstructs a failure, assigns remediation owners and records deadlines.",
+      "expected": "not_slop",
+      "reason": "High cost is justified by objective achievement, necessary synchronous coordination and actionable follow-up."
+    },
+    {
+      "id": "process-slop-01",
+      "label": "ProcessSlop",
+      "generation_mode": "human_maintained",
+      "text": "Two approvals remain mandatory after the original regulation was repealed; no owner can explain the control objective, and the same data is entered twice.",
+      "dimensions": {
+        "process_obsolescence": 0.95,
+        "goal_contribution_deficit": 0.85,
+        "recipient_effort_transfer": 0.7
+      },
+      "expected": "candidate"
+    },
+    {
+      "id": "compliance-counterexample-01",
+      "label": "ComplianceSlop",
+      "generation_mode": "human_maintained",
+      "text": "A two-person production approval is required for high-impact financial transfers and is mapped to a documented fraud risk.",
+      "expected": "not_slop",
+      "reason": "The burden is proportionate to a specific high-impact risk and separation-of-duties objective."
+    },
+    {
+      "id": "metrics-slop-01",
+      "label": "MetricsSlop",
+      "generation_mode": "human_maintained",
+      "text": "Support agents are ranked only by tickets closed, causing premature closures and repeated customer contacts while the dashboard reports improvement.",
+      "dimensions": {
+        "metric_gaming": 0.95,
+        "goal_contribution_deficit": 0.75,
+        "recipient_effort_transfer": 0.65
+      },
+      "expected": "candidate"
+    },
+    {
+      "id": "scaled-seo-human-01",
+      "label": "ScaledContentSlop",
+      "generation_mode": "human_authored",
+      "text": "Freelancers produce 5,000 near-identical city pages with swapped place names, no local data and one affiliate funnel.",
+      "dimensions": {
+        "distribution_manipulation": 0.9,
+        "scale_repetition": 0.95,
+        "goal_contribution_deficit": 0.85
+      },
+      "expected": "candidate",
+      "reason": "SEO Slop is generation-neutral."
+    },
+    {
+      "id": "seo-counterexample-01",
+      "label": "SEOSlop",
+      "generation_mode": "templated_automation",
+      "text": "A weather service programmatically generates local pages from verified station data, explains methodology, provides unique forecasts and links provenance.",
+      "expected": "not_slop",
+      "reason": "Programmatic scale and SEO targeting are not sufficient when pages provide distinct original utility."
+    },
+    {
+      "id": "site-reputation-01",
+      "label": "SiteReputationSlop",
+      "generation_mode": "mixed",
+      "text": "A university domain hosts white-label casino review pages unrelated to its mission solely to exploit domain authority.",
+      "dimensions": {
+        "distribution_manipulation": 0.98,
+        "truth_indifference": 0.7,
+        "goal_contribution_deficit": 0.9
+      },
+      "expected": "candidate"
+    },
+    {
+      "id": "oss-slop-01",
+      "label": "OpenSourceContributionSlop",
+      "generation_mode": "fully_synthetic",
+      "text": "A new account submits 30 generated pull requests with untested fixes, generic descriptions and no response to maintainer feedback.",
+      "dimensions": {
+        "scale_repetition": 0.95,
+        "recipient_effort_transfer": 0.9,
+        "verification_deficit": 0.85
+      },
+      "expected": "candidate"
+    },
+    {
+      "id": "hiring-slop-01",
+      "label": "HiringSlop",
+      "generation_mode": "templated_automation",
+      "text": "A bot submits hundreds of keyword-matched applications that contain generic cover letters and unverifiable experience claims.",
+      "dimensions": {
+        "scale_repetition": 0.95,
+        "truth_indifference": 0.8,
+        "recipient_effort_transfer": 0.85
+      },
+      "expected": "candidate"
+    },
+    {
+      "id": "educational-slop-01",
+      "label": "EducationalSlop",
+      "generation_mode": "fully_synthetic",
+      "text": "A biomedical explainer video uses an authoritative synthetic narration, misleading diagrams and no qualified review or sources.",
+      "dimensions": {
+        "verification_deficit": 0.9,
+        "superficial_competence": 0.75,
+        "goal_contribution_deficit": 0.7
+      },
+      "expected": "candidate"
+    },
+    {
+      "id": "slopaganda-01",
+      "label": "Slopaganda",
+      "generation_mode": "fully_synthetic",
+      "text": "Thousands of near-duplicate ideological clips flood several platforms to exhaust attention and normalize a narrative rather than prove a specific claim.",
+      "dimensions": {
+        "scale_repetition": 0.98,
+        "distribution_manipulation": 0.9,
+        "truth_indifference": 0.85
+      },
+      "expected": "candidate"
+    }
+  ]
+}
