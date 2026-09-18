@@ -21,7 +21,9 @@ def test_comment_profile_exists_and_documented():
     p = genre_profiles.get_profile("comment")
     assert "description" in p and "praise" in p["description"].lower() or True
     assert "engagement_comment_default" in p["description"]
-    assert p["decision_threshold"] == 0.30
+    # Threshold 0.50 ist der kalibrierte Wert aus dem #241-Merge (FP-Rate 0
+    # auf den Comment-Hard-Negatives); PR #237s 0.30 war der Pre-Merge-Stand.
+    assert p["decision_threshold"] == 0.50
 
 
 def test_unknown_genre_still_raises():
