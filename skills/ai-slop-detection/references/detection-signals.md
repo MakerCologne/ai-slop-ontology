@@ -229,6 +229,33 @@ context (bhanvinayer/PRISM), adapted as a prose signal; implementation in
 3. **NewsGuard × Pangram Labs**: Domain-scale detection (3,000+ farms tracked)
 4. **Perplexity distribution**: Unusually uniform/low perplexity = AI-generated
 
+### Human detection (Empirie: „Ich erkenne KI-Text selbst" ist kein valides Argument)
+
+Die menschliche Erkennungsleistung ist empirisch schwach — sie ist das stärkste
+Argument für Tool-Einsatz statt Selbstvertrauen:
+
+- **Cheng et al. 2025**: Menschliche Unterscheidung LLM-vs.-Human-Text liegt bei
+  ~Chance-Level (nicht besser als Raten).
+- **Fiedler et al. 2025** (deutsche Abschlussarbeiten): Menschen erkennen nur 57 %
+  der KI-Texte und 64 % der menschlichen Texte korrekt — kaum über Chance.
+- **Russell 2025** (Preprint): Heavy-LLM-Nutzer erreichen ~90 % korrekt, aber bei
+  ~10 % False-Positive-Rate — wer 10 Seiten als „KI-generiert" markiert, hat
+  wahrscheinlich einen echten Text falsch beschuldigt. Wenig erfahrene Nutzer:
+  nur leicht über Chance (in beide Richtungen).
+- **Sprach-Konvergenz**: Menschliches Schreiben/Reden nähert sich LLM-Stil an —
+  Yakura et al. 2024 (LLM-Einfluss in gesprochenen Inhalten, z. B. Podcasts),
+  Geng et al. 2025 und Galpin et al. 2025 (Semantik/Wortwahl). Das senkt die
+  Trennschärfe menschlicher Urteile weiter, je länger der Trend läuft.
+
+**Konsequenz für dieses Skill:** Signal-Bewertung stützt sich auf Muster- und
+Tool-Evidenz, nicht auf subjektives „Fühlungsurteil". Einzelne Menschen sind
+schwächere Detektoren als die hier dokumentierten statistischen/ML-Methoden;
+Bestätigung durch ≥2 unabhängige Nachweise (siehe Signal-Kollisions-Regel) gilt
+auch gegen menschliche Intuition.
+
+Quellen: [Wikipedia: Signs of AI writing — Your detection ability](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing);
+Recherche-Deep-Dive `deep/03` (I33).
+---
 ### Human Detection Empirie (Menschen ≈ Chance-Level)
 
 ML-Detektoren sind das eine — die andere Hälfte der Empirie: **Menschliche Erkennungsleistung ist schlecht.** Das ist das stärkste Argument gegen „ich erkenne KI-Text schon selbst“ und für Tool-Einsatz + Checklisten-Ansatz.

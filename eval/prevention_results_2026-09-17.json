@@ -1,0 +1,253 @@
+{
+  "eval": "prevention_contract_l2",
+  "issue": 232,
+  "korpus": "prevention_genres.jsonl",
+  "genres": [
+    {
+      "id": "pg-01-geschaeftsmail",
+      "genre": "freundliche Geschaeftsmail",
+      "varianten": [
+        {
+          "index": 1,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        },
+        {
+          "index": 2,
+          "label": "ich_senderzentriert",
+          "flags": [
+            "C1_ich_ohne_personenbezug"
+          ],
+          "opener": "ich"
+        },
+        {
+          "index": 3,
+          "label": "ok",
+          "flags": [
+            "C5_rhetorische_frage"
+          ],
+          "opener": "sachverhalt"
+        }
+      ],
+      "C6_opener_diversitaet": 2,
+      "C7_isometrie_cv": 0.073,
+      "C7_isometrie_flag": true,
+      "laengen": [
+        196,
+        169,
+        168
+      ]
+    },
+    {
+      "id": "pg-02-linkedin-kritik",
+      "genre": "kritischer LinkedIn-Kommentar",
+      "varianten": [
+        {
+          "index": 1,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        },
+        {
+          "index": 2,
+          "label": "lob_paraphrase_default",
+          "flags": [
+            "C2_lob_oder_paraphrase",
+            "C5_rhetorische_frage"
+          ],
+          "opener": "lob"
+        },
+        {
+          "index": 3,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        }
+      ],
+      "C6_opener_diversitaet": 2,
+      "C7_isometrie_cv": 0.09,
+      "C7_isometrie_flag": false,
+      "laengen": [
+        168,
+        146,
+        182
+      ]
+    },
+    {
+      "id": "pg-03-linkedin-zustimmung",
+      "genre": "zustimmender Kommentar mit Ergaenzung",
+      "varianten": [
+        {
+          "index": 1,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        },
+        {
+          "index": 2,
+          "label": "lob_paraphrase_triad_frage",
+          "flags": [
+            "C2_lob_oder_paraphrase",
+            "C3_triad_default",
+            "C5_rhetorische_frage"
+          ],
+          "opener": "lob"
+        },
+        {
+          "index": 3,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        }
+      ],
+      "C6_opener_diversitaet": 2,
+      "C7_isometrie_cv": 0.168,
+      "C7_isometrie_flag": false,
+      "laengen": [
+        142,
+        214,
+        172
+      ]
+    },
+    {
+      "id": "pg-04-fachliche-erklaerung",
+      "genre": "fachliche Erklaerung",
+      "varianten": [
+        {
+          "index": 1,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        },
+        {
+          "index": 2,
+          "label": "lob_triad_connector",
+          "flags": [
+            "C2_lob_oder_paraphrase"
+          ],
+          "opener": "lob"
+        },
+        {
+          "index": 3,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        }
+      ],
+      "C6_opener_diversitaet": 2,
+      "C7_isometrie_cv": 0.115,
+      "C7_isometrie_flag": false,
+      "laengen": [
+        189,
+        236,
+        184
+      ]
+    },
+    {
+      "id": "pg-05-persoenliche-nachricht",
+      "genre": "persoenliche Nachricht",
+      "varianten": [
+        {
+          "index": 1,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        },
+        {
+          "index": 2,
+          "label": "ich_senderzentriert",
+          "flags": [
+            "C1_ich_ohne_personenbezug",
+            "C2_lob_oder_paraphrase"
+          ],
+          "opener": "ich"
+        },
+        {
+          "index": 3,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        }
+      ],
+      "C6_opener_diversitaet": 2,
+      "C7_isometrie_cv": 0.108,
+      "C7_isometrie_flag": false,
+      "laengen": [
+        139,
+        180,
+        153
+      ]
+    },
+    {
+      "id": "pg-06-projektupdate",
+      "genre": "Projektupdate",
+      "varianten": [
+        {
+          "index": 1,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        },
+        {
+          "index": 2,
+          "label": "connector_saetze",
+          "flags": [
+            "C4_konnektor_satzfolge"
+          ],
+          "opener": "konnektor"
+        },
+        {
+          "index": 3,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        }
+      ],
+      "C6_opener_diversitaet": 2,
+      "C7_isometrie_cv": 0.126,
+      "C7_isometrie_flag": false,
+      "laengen": [
+        169,
+        213,
+        161
+      ]
+    },
+    {
+      "id": "pg-07-argumentativer-text",
+      "genre": "laengerer argumentativer Text",
+      "varianten": [
+        {
+          "index": 1,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        },
+        {
+          "index": 2,
+          "label": "ich_connector_je_absatz",
+          "flags": [
+            "C1_ich_ohne_personenbezug",
+            "C4_konnektor_satzfolge"
+          ],
+          "opener": "ich"
+        },
+        {
+          "index": 3,
+          "label": "ok",
+          "flags": [],
+          "opener": "sachverhalt"
+        }
+      ],
+      "C6_opener_diversitaet": 2,
+      "C7_isometrie_cv": 0.224,
+      "C7_isometrie_flag": false,
+      "laengen": [
+        498,
+        411,
+        282
+      ]
+    }
+  ],
+  "gesamt_flags": 13
+}

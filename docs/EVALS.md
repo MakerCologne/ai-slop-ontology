@@ -25,6 +25,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 - `eval/human_ideological.jsonl` — Seed-Korpus Human/Ideological Slop (#98-Vorlauf, 40 Einträge, alle `own:handwritten`, adr/0005: keine fremden Volltexte); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
 - `eval/control_set.jsonl` — Golden Control Set: 20 handgeschriebene Texte (10 Slop, davon 6 dokumentierte known_fn / 10 Hard Negatives), known-FN-Register (ADR-0003); P4/#231: +5 CommentSlop-Sequenzen (detect-only via engagement_comment_default) und +5 legitime LinkedIn-Kommentare (FP-Rate 0)
 - `eval/run_control_set.py` — FN/FP-Gate (Threshold 0.40, known_fn-Ausnahmen, RESOLVED-Meldung); läuft bei jedem Issue im Burn
+- `eval/prevention_genres.jsonl` + `eval/run_prevention_eval.py` + `eval/JUDGE-prevention.md` — L2-Prevention-Contract-Eval (#232): 7 Gattungen × 3 Varianten gegen den write-side-Vertrag aus `writing-rules.md` (#228); deterministische Kriterien C1–C7, Judge-Rubrik mit Error-Taxonomie, Erstmessung 2026-09-17, L3-Re-Score im Re-Baseline-Zyklus (Drift-Grenze ±30 % je Kriterium)
 
 ### L3 — Quartals-Re-Score / Kalibrierung
 
@@ -139,6 +140,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
 - `tests/test_review_counterfactual.py` — #122-Rest detect-only Review/Approval-Slop: Counterfactual Test (ankerlose generische Approvals passen auf jeden PR; Anker unterdrücken)
 - `tests/test_metadata_slop_111.py` — #111 Metadata-Slop-Erweiterung: CommitVelocitySlop (Cadence-Verhalten), PRStructureSlop (anti-slop-Regeln), CommitKeywordSlop (gitorit-Vokabular); FP-Guards per Einzel-Regel-Negativ-Fixtures
+- `tests/test_prevention_eval.py` — #232 Prevention-Eval: Schreibregeln (authoring-rules/writing-rules) evaluiert gegen Detektor-Suite (L1)
 - `tests/test_writing_rules_docs.py` — #228 Writing Rules (Einstiege, Ich-Bezug, Konnektoren): Doku-Pin der praeventiven Schreibregeln references/writing-rules.md (L1)
 - `tests/test_sample_mine.py` — #12 Sampling-Harness: Mine schlägt nur unbedeckte n-Gramme vor (SSOT-Filter gegen Scorer-Vokabular), Doc-Frequency-Ranking, Kandidaten-Cap, Einmal-Vorkommen wird ignoriert, `generate` ohne Endpoint verweigert sauber; `calibrate.py --sample-mine` druckt Tier-Vorschläge
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
