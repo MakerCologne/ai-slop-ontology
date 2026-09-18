@@ -46,6 +46,22 @@ GRAND_ENDPOINTS = {
     "microchips", "cave paintings", "black holes", "fire", "the wheel",
 }
 
+# Tech metaphor nouns (#246, gap G2): abstract buzzword substitutes that name
+# things metaphorically instead of concretely. Closed list; the ML-ambiguous
+# subset is only flagged OUTSIDE an ML terminology window (keep_when guard).
+TECH_METAPHOR_NOUNS = {
+    "substrate", "flywheel", "north star", "vector", "bedrock", "nexus",
+    "wedge", "scaffolding", "modality", "paradigm", "ratchet", "endgame",
+    "harness", "moat", "tailwind", "signal-to-noise",
+}
+_ML_AMBIGUOUS = {"vector", "modality", "paradigm", "harness", "scaffolding"}
+_ML_WINDOW = re.compile(
+    r"\b(model|models|training|train|inference|embedding|embeddings|classifier|"
+    r"tensor|gradient|attention|token|tokens|multimodal|multimodality|"
+    r"neural|network|dataset|benchmark|softmax|loss|layer|layers)\b",
+    re.IGNORECASE,
+)
+
 RECAP_OPENERS = ["in conclusion", "overall,", "to summarize"]
 
 _STOP = {
@@ -112,6 +128,18 @@ def _recap_ending(text: str):
     return None
 
 
+def _tech_metaphor_noun(text: str):
+    for sent in _sentences(text):
+        low = sent.lower()
+        for noun in TECH_METAPHOR_NOUNS:
+            if not re.search(r"\b" + re.escape(noun) + r"\b", low):
+                continue
+            if noun in _ML_AMBIGUOUS and _ML_WINDOW.search(low):
+                continue  # legit ML register in the same sentence
+            return sent
+    return None
+
+
 def _heading_repeated(text: str):
     lines = text.split("\n")
     for i, line in enumerate(lines):
@@ -171,6 +199,21 @@ MICRO_PATTERNS = {
         "keep_when": "A conclusion that adds a new, concrete decision or next step rather "
                      "than restating the intro.",
     },
+    "TechMetaphorNoun": {
+        "label": "Abstract tech-metaphor noun",
+        "confidence": 0.55,
+        "description": "Metaphorical instead of concrete naming: substrate, flywheel, "
+                       "north star, bedrock, nexus, wedge, moat, endgame, ... (closed "
+                       "list, #246). Name the actual thing.",
+        "example_slop": "Documentation is the substrate that keeps the flywheel spinning.",
+        "example_fix": "Documentation keeps onboarding repeatable and cheap.",
+        "keep_when": "Genuine technical register: vector/modality/paradigm/harness/"
+                     "scaffolding inside an ML terminology window (same sentence "
+                     "mentions model, training, embeddings, etc.) are legitimate "
+                     "ML terms and are suppressed; a vector in a math/physics text "
+                     "is not a metaphor. Detector reports the sentence for human "
+                     "judgement, never scores.",
+    },
     "HeadingRepeatedBelowItself": {
         "label": "Heading repeated below itself",
         "confidence": 0.5,
@@ -186,6 +229,7 @@ MICRO_PATTERNS = {
 _FINDERS = {
     "FalseAgency": lambda text: _false_agency(_sentences(text)),
     "FalseRange": _false_range,
+    "TechMetaphorNoun": _tech_metaphor_noun,
     "RecapEnding": _recap_ending,
     "HeadingRepeatedBelowItself": _heading_repeated,
 }
