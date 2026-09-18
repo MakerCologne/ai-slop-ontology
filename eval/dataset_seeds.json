@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "issue": 124,
+  "purpose": "Seed registry for the labeled corpus (BS-I2). Starting point for dataset candidates - none of these are downloaded or shipped; each entry documents source, license, label mapping, provenance risk and dedupe strategy so a corpus builder can make informed choices. Genre hard-negatives (GitHub/academic) remain an explicit gap (see docs/loop-guards/124-corpus-seeds.md).",
+  "selection_rules": [
+    "AI-label requires model provenance (which model, prompt context) or verifiable AI-generation pipeline",
+    "Human-label requires pre-LLM date cutoff (pre-2022-11) or verified human provenance",
+    "No dataset without an identifiable license enters the corpus",
+    "Per-source mixing cap: max 25% of final corpus from any single dataset (prevents single-source style bias)",
+    "Dedup: sha1(normalized text) before split; cross-dataset dedup mandatory (Reddit/Twitter text is widely mirrored)"
+  ],
+  "datasets": [
+    {
+      "id": "raid",
+      "source": "https://dataset.raid-bench.xyz/train_none.csv",
+      "origin": "wget (slop-alerter ml/data/download.py)",
+      "label": "both",
+      "label_mapping": "per-row model column: model != 'human' -> ai; adversarial/perturbed subsets excluded",
+      "license": "RAID benchmark license (research use; verify at raid-bench.xyz before inclusion)",
+      "size": "~800 MB CSV",
+      "preference": "high",
+      "risks": [
+        "Domain skew: news/wiki style dominates; not representative of dev-doc/PR prose",
+        "Adversarial subset must be excluded (evasion robustness tracked separately)"
+      ]
+    },
+    {
+      "id": "claude_fable",
+      "source": "hf://armand0e/claude-fable-5-claude-code",
+      "origin": "HF snapshot (slop-alerter ml/data/download.py)",
+      "label": "ai",
+      "label_mapping": "assistant text blocks only (type=assistant) -> ai",
+      "license": "MIT",
+      "size": "jsonl traces",
+      "preference": "medium",
+      "risks": [
+        "Single-model traces (Claude) -> single-model bias if used alone",
+        "Coding-agent prose (tool logs interleaved) needs cleaning before use as prose fixture"
+      ]
+    },
+    {
+      "id": "aigtbench",
+      "source": "hf://tarryzhang/AIGTBench",
+      "origin": "HF snapshot (slop-alerter ml/data/download.py)",
+      "label": "both",
+      "label_mapping": "AIGTBench labels map directly (ai-generated vs human)",
+      "license": "Apache-2.0",
+      "size": "benchmark set",
+      "preference": "high",
+      "risks": [
+        "Benchmark texts are short; pair with prose-heavy sources",
+        "Version pinning required - benchmark rows rotate"
+      ]
+    },
+    {
+      "id": "unmasking",
+      "source": "hf://redasers/Unmasking-the-Imposters",
+      "origin": "HF snapshot (slop-alerter ml/data/download.py)",
+      "label": "both",
+      "label_mapping": "imposters (ai) vs source (human)",
+      "license": "CC-BY-4.0",
+      "size": "mixed",
+      "preference": "medium",
+      "risks": [
+        "AI-imposters are rewrite-based; overlap with our deslop-axis (detector may learn 'rewrite style' not 'slop')"
+      ]
+    },
+    {
+      "id": "lmsys_chat_gpt5",
+      "source": "hf://ytz20/LMSYS-Chat-GPT-5-Chat-Response",
+      "origin": "HF snapshot (slop-alerter ml/data/download.py)",
+      "label": "ai",
+      "label_mapping": "assistant responses -> ai",
+      "license": "CC-BY-4.0",
+      "size": "chat responses",
+      "preference": "low",
+      "risks": [
+        "Chat register (short, imperative, lists) != prose slop register",
+        "Conversation-dependent context stripped away"
+      ]
+    },
+    {
+      "id": "linkedin_posts",
+      "source": "hf://ShayanShamsi/prompt_to_linkedin_post",
+      "origin": "HF single-file parquet (slop-alerter ml/data/download.py)",
+      "label": "ai",
+      "label_mapping": "output/post column -> ai (prompt->post generation pipeline)",
+      "license": "none declared",
+      "size": "1 parquet shard",
+      "preference": "low",
+      "risks": [
+        "No license on HF card -> excluded from corpus until clarified (selection rule 3)",
+        "Engagement-bait genre overlaps our SEOContentFarmSlop axis - good candidate IF licensed"
+      ]
+    },
+    {
+      "id": "moltbook",
+      "source": "hf://SimulaMet/moltbook-observatory-archive",
+      "origin": "HF snapshot filtered data/posts+comments parquet (slop-alerter ml/data/download.py)",
+      "label": "ai",
+      "label_mapping": "AI-agent-authored social posts/comments -> ai (verify per-file; archive also contains human replies)",
+      "license": "MIT",
+      "size": "parquet archive",
+      "preference": "medium",
+      "risks": [
+        "Mixed authorship in comments - needs per-row author-type filtering",
+        "Social-media register; short texts hit our Kurztext-Guards (#52)"
+      ]
+    },
+    {
+      "id": "sentiment140",
+      "source": "kaggle://kazanova/sentiment140",
+      "origin": "Kaggle (slop-alerter ml/data/download.py)",
+      "label": "human",
+      "label_mapping": "all tweets human (pre-2017, pre-ChatGPT), text column 5",
+      "license": "Kaggle dataset terms (research use)",
+      "size": "1.6M tweets",
+      "preference": "medium",
+      "risks": [
+        "Twitter register: very short, colloquial - only usable as hard-negative for short-text axis",
+        "Encoding pitfalls (latin-1)"
+      ]
+    },
+    {
+      "id": "reddit_ds_posts",
+      "source": "kaggle://maksymshkliarevskyi/reddit-data-science-posts",
+      "origin": "Kaggle (slop-alerter ml/data/download.py)",
+      "label": "human",
+      "label_mapping": "title+post -> human (2022, pre-ChatGPT)",
+      "license": "Kaggle dataset terms (research use)",
+      "size": "posts CSV",
+      "preference": "high",
+      "risks": [
+        "Reddit prose is closer to dev-doc register than news/wiki - valuable genre spread",
+        "Cross-mirroring: mandatory cross-dataset dedup"
+      ]
+    },
+    {
+      "id": "reddit_1m_comments",
+      "source": "kaggle://smagnan/1-million-reddit-comments-from-40-subreddits",
+      "origin": "Kaggle (slop-alerter ml/data/download.py)",
+      "label": "human",
+      "label_mapping": "comments -> human (verify collection date vs 2022-11 cutoff)",
+      "license": "Kaggle dataset terms (research use)",
+      "size": "1M comments",
+      "preference": "low",
+      "risks": [
+        "Collection date must be verified pre-cutoff; otherwise drop",
+        "Very short comments mostly unusable for prose"
+      ]
+    },
+    {
+      "id": "linkedin_influencers",
+      "source": "kaggle://shreyasajal/linkedin-influencers-data",
+      "origin": "Kaggle (slop-alerter ml/data/download.py)",
+      "label": "human",
+      "label_mapping": "influencer posts -> human (pre-ChatGPT collection assumed; verify)",
+      "license": "Kaggle dataset terms (research use)",
+      "size": "posts CSV",
+      "preference": "medium",
+      "risks": [
+        "LinkedIn engagement-bait is itself slop-adjacent human writing - excellent HARD NEGATIVE for EngagementSlop axis (human slop exists)",
+        "Date verification required"
+      ]
+    }
+  ],
+  "gaps": [
+    "Genre hard-negatives GitHub/academic (BS-I2 explicit gap; slop-alerter also unsolved) - must be hand-built, not downloaded",
+    "DE/EN balance: all Kaggle/HF candidates are EN; DE corpus stays handcrafted for now",
+    "ZH/JA (A9/A10): no candidates anywhere in the topic - confirmed Vorsprungsthema"
+  ]
+}

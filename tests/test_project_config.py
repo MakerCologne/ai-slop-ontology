@@ -47,7 +47,8 @@ class LoadConfigTests(unittest.TestCase):
         try:
             cfg = project_config.load_config(path)
             self.assertEqual(cfg, {"disabled_signals": [], "term_allowlist": [],
-                                   "weight_overrides": {}})
+                                   "weight_overrides": {},
+                                   "aggregation": {"mode": "weighted", "epsilon": 0.05}})
         finally:
             os.unlink(path)
 
@@ -173,7 +174,6 @@ class CliTests(unittest.TestCase):
         finally:
             import shutil
             shutil.rmtree(base)
-
 
 if __name__ == "__main__":
     unittest.main()

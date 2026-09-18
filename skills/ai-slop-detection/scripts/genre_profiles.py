@@ -61,23 +61,47 @@ GENRE_PROFILES = {
         "zero_weights": ["list_heavy"],
         "decision_threshold": 0.45,
     },
+    # Issue #231 (P4): interaction genres. Opt-in only, no auto-detect.
+    # Short sentences and ritual closings are convention; praise openers,
+    # engagement hooks and triads stay fully scored (detected by
+    # engagement_comment_default / OpenerAnnouncement / ForcedTriad).
     "comment": {
-        "description": "Social comments and personal messages — short, "
-                       "enthusiastic register and formulaic niceties "
-                       "(congratulations, thanks, emoji) are convention, "
-                       "not slop (#231). Opt-in only; the sequence signal "
-                       "engagement_comment_default (praise -> paraphrase -> "
-                       "addition -> question) is reported separately as a "
-                       "detect-only finding.",
+        "description": "LinkedIn comments, forum replies — short sentences, "
+                       "single connectors and ritual greeting/closing formulas "
+                       "are convention, not slop. Praise openers and slogan "
+                       "triads stay fully scored (issue #231).",
         "exempt_terms": [
-            "thanks for sharing", "thank you for sharing",
-            "congratulations", "congrats", "well said",
-            "great post", "great read", "great article",
+            "viele grüße", "viele gruesse", "beste grüße", "beste gruesse",
+            "best regards", "kind regards", "many thanks", "danke im voraus",
+            "guten morgen", "guten abend",
+            "thanks for sharing", "thank you for sharing", "congratulations", "congrats",
+            "well said", "great post", "great read", "great article",
             "best of luck", "all the best", "keep them coming",
         ],
-        "zero_weights": ["burstiness", "verbosity"],
-        "decision_threshold": 0.30,
+        "zero_weights": ["verbosity", "list_heavy"],
+        "decision_threshold": 0.50,
+        "advisories": [
+            "Short sentences and uniform length are normal in comments — "
+            "burstiness is NOT zeroed but the threshold accounts for it.",
+            "Praise openers stay suspicious: check OpenerAnnouncement / "
+            "engagement_comment_default findings.",
+            "Slogan triads (ForcedTriad) remain slop even in comments.",
+        ],
     },
+    "message": {
+        "description": "Direct messages, emails, chat — elliptic register and "
+                       "greeting/closing formulas are convention, not slop.",
+        "exempt_terms": [
+            "viele grüße", "viele gruesse", "beste grüße", "beste gruesse",
+            "best regards", "kind regards", "many thanks",
+            "liebe grüße", "liebe gruesse",
+        ],
+        "zero_weights": ["verbosity", "list_heavy"],
+        "decision_threshold": 0.50,
+        "advisories": [
+            "Very short turns are normal; structural metrics tolerate this.",
+            "Assistant-register phrases (ChatbotLeftover) remain findings.",
+        ],    },
 }
 
 

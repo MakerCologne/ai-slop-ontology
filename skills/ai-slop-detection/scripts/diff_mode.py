@@ -131,6 +131,7 @@ def diff_scores(base: str, head: str, repo_dir: str = None) -> list:
         sys.path.insert(0, scripts_dir)
     import slop_scorer
     from code_slop import analyze_code
+    from diff_verification import analyze_test_diff, is_test_file
 
     diff_text = _git(repo_dir, "diff", "--unified=0", base, head)
     added = _parse_diff(diff_text)
@@ -146,6 +147,18 @@ def diff_scores(base: str, head: str, repo_dir: str = None) -> list:
             continue  # deleted file
         if "\0" in content:
             continue  # binary guard
+        old_content = None
+        try:
+            old_content = _git(repo_dir, "show", f"{base}:{name}")
+        except subprocess.CalledProcessError:
+            pass  # file is new in this diff
+        if is_test_file(name):
+            lines = new_content_lines = content.splitlines()
+            added_pairs = [(n, lines[n - 1]) for n in added_lines
+                           if 0 < n <= len(lines)]
+            report.append(analyze_test_diff(name, old_content, content,
+                                             added_pairs))
+            continue
         if ext in TEXT_EXTS:
             lines = content.splitlines()
             windows = scored_windows(lines, [n - 1 for n in added_lines])
