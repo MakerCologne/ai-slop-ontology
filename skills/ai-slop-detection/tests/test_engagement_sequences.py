@@ -21,7 +21,7 @@ def test_comment_profile_exists_and_documented():
     p = genre_profiles.get_profile("comment")
     assert "description" in p and "praise" in p["description"].lower() or True
     assert "engagement_comment_default" in p["description"]
-    assert p["decision_threshold"] == 0.30
+    assert p["decision_threshold"] == 0.50  # master-kalibriert (#231 via #241); PR-Variante 0.30 superseded
 
 
 def test_unknown_genre_still_raises():

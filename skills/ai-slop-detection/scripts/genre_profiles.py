@@ -69,7 +69,10 @@ GENRE_PROFILES = {
         "description": "LinkedIn comments, forum replies — short sentences, "
                        "single connectors and ritual greeting/closing formulas "
                        "are convention, not slop. Praise openers and slogan "
-                       "triads stay fully scored (issue #231).",
+                       "triads stay fully scored (issue #231); the sequence "
+                       "signal engagement_comment_default (praise -> paraphrase "
+                       "-> addition -> question) is reported separately as a "
+                       "detect-only finding.",
         "exempt_terms": [
             "viele grüße", "viele gruesse", "beste grüße", "beste gruesse",
             "best regards", "kind regards", "many thanks", "danke im voraus",
