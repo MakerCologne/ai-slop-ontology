@@ -12,6 +12,18 @@ detektiert und kategorisiert Slop. Es verbessert nicht aktiv.
    Fixer (ADR-0001 unveraendert gueltig).
 4. Ausnahmen beduerfen eines neuen ADR mit Begruendung des Betreibers.
 
+**Zusatz-Ruling (Stefan, 18.09., gleichrangig):** Aktive Slop-Entfernung ist
+ein komplett eigener Skill, der die Ontologie integriert (als Abhaengigkeit),
+nie Bestandteil dieses Repos. Dementsprechend sind zudem ausgelagert:
+deslop_loop (Orchestrator), confirm (Signal-Bestaetigung vor Fixes),
+voice_drift, run_audit (Loop-Run-Audit), fixer/ (Fix-Strategien),
+deslop_loop_cli + Demo, die zugehoerigen Tests sowie editing-doctrine.md und
+edit-self-check.md (Fix-Doktrin). Neues Zuhause:
+MakerCologne/openclaw-skills/slop-removal (integriert die Ontology).
+Zurueckbleibt als Detektion: alle Signale, der Scorer, Klassifikator,
+Control-Sets, Detektions-Evals, human-voice.md (Counter-Profil fuer
+keep_when-Bewertungen — Detektions-Referenz).
+
 **Grund:** Die Markt-Positionierung des Projekts ist Detector-Nische
 (README); Praeventions-Inhalte im Detektor-Repo verwischen die Grenze und
 kompromittieren die Unparteilichkeit des Detektors gegenueber den Regeln,

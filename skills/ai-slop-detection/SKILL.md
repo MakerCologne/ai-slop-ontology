@@ -478,8 +478,6 @@ inhaltlichen Bezug; Lob->Paraphrase->Ergaenzung->Frage nie als Default-Sequenz.
 ```
 
 
-- **Editing doctrine (Minimum-Effective-Edit):** `references/editing-doctrine.md` (#30, Teil 1)
-- **Edit self-check (Re-Check-Loop):** `references/edit-self-check.md` (#30, Teil 2)
 
 maxIter never terminates as success. Terminal states are only **OUTPUT** ("slop-frei nach Maßstab der Ontology v1.x, Signalstand <Datum>") or **ESCALATE** ("human review required" + run report). The guarantee is scale-bound: paraphrased slop beyond the triggered signals stays invisible to the detector (Krishna et al., arXiv:2303.13408). Anti-pattern list and state machine: `../../docs/loop-guards/62-terminierungs-semantik.md`.
 
