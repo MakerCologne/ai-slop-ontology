@@ -19,6 +19,9 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 
 ### L2 — Control Set
 
+- `eval/human_ideological.jsonl` — Korpus Human/Ideological Slop (#98-Zielstand: 46 positiv / 40 negativ, alle `own:handwritten`, adr/0005: keine fremden Volltexte; positives Merkmal nie allein Phrase — Leak-Check-Feld `features`); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
+- `eval/run_human_ideological.py` — Korpus-Gate #98 (L2): Integrität 40/40 + Segment-Pins + Leak-Check + Precision-Pin ≥ 0.95 der Rhetorik-Gruppe auf Hard-Negatives; Gate 5b in `scripts/verify.sh`
+- `eval/control_set.jsonl` — Golden Control Set: 10 handgeschriebene Texte (5 Slop / 5 Hard Negatives), known-FN-Register (ADR-0003)
 - `eval/human_ideological.jsonl` — Seed-Korpus Human/Ideological Slop (#98-Vorlauf, 40 Einträge, alle `own:handwritten`, adr/0005: keine fremden Volltexte); Sampling-Plan: `eval/SAMPLING-human-ideological.md`
 - `eval/control_set.jsonl` — Golden Control Set: 20 handgeschriebene Texte (10 Slop, davon 6 dokumentierte known_fn / 10 Hard Negatives), known-FN-Register (ADR-0003); P4/#231: +5 CommentSlop-Sequenzen (detect-only via engagement_comment_default) und +5 legitime LinkedIn-Kommentare (FP-Rate 0)
 - `eval/run_control_set.py` — FN/FP-Gate (Threshold 0.40, known_fn-Ausnahmen, RESOLVED-Meldung); läuft bei jedem Issue im Burn
@@ -65,6 +68,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 
 ### L1 — Unit-Assertions (tests/)
 
+- `tests/test_gates.py` — #118 Hard Gates (Binärsignale): FAIL/PASS je Gate (placeholder_credentials, elision_comments, lorem_ipsum, dead_anchor, placeholder_image), Auto-Scope Code/Markup, Score-Neutralität (`--gates` ändert slop_score nie), gates-Key im CLI-JSON (L1)
 - `tests/test_conversational_fillers.py` — #110 konversationelle Floskeln (Hassid 4–8): Quick-Update-Meta-Ankündigungen plus bewachte Spezialfälle „most people" (satzinitial, ohne First-Person-Quelle) und „hope this helps" (Positions-Guard vor Grußformel); je Familie 2 positive + 2 Hard-Negative-Fixtures; „quick update on" bewusst ausgeschlossen (FP-Baseline clean-email-01) (L1)
 - `tests/test_issue104_doc_drift.py` — #104 Slice A: Doku<->SSOT-Drift (L1) — Gate-Test für scripts/check_doc_signals.py (D1/D2, beide Richtungen) plus die beiden Issue-Beispiele als Matcher-/Classifier-Fixtures ('it is worth noting' in hedging_qualifiers, Template 'in today's [X]' in opening_formulas; konkrete SSOT-Varianten bleiben matchbar)
 - `tests/test_human_work_seo_extension.py` — #86 Portierung PR#6: Status-/Parent-/Source-Resolution der Work-/SEO-Slop-Extension, FP-Exclusions je Typ, Nicht-Kollaps Human/AI-Generierung, SEOSlop-Generationsneutralität (L1)
@@ -100,6 +104,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_de_variant_rest.py` — #77-Rest: M18/M33/M65 als de_chatbot_leftover/de_signposting/de_copula_avoidance (Voll-Zweibeleg de-ev-17..19, DoD 3/3/2)
 - `tests/test_de_variant_rest2.py` — #77-Rest Welle 4: M35/M59/M70 als de_fake_dialog/de_faux_candid/de_false_agency (Voll-Zweibeleg de-ev-20..22, DoD 3/3/2)
 - `tests/test_de_variant_rest3.py` — #77-Rest Welle 5: M7/M26/M30 als de_dichotomy_close/de_quote_fabrication/de_register_shift (Voll-Zweibeleg de-ev-23..25, DoD 3/3/2)
+- `tests/test_de_variant_rest4.py` — #77-Rest Welle 6: M32/M56/M72 als de_rhetorical_setup/de_aphorism/de_therapeutic_validation (Voll-Zweibeleg de-ev-26..28, DoD 3/3/2)
 
 - `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, genre-keep_when, modal_particle_anomaly Stub für #76)
 - `tests/test_voice_drift.py` — #56 Voice-Drift-Guardrail: kumulatives Voice-Budget vs Draft_0 (β=25%), Burstiness-/TTR-Non-Regression (Floor draft_0×0.9), Loop-Integration (rejected_voice_drift_*, Audit-Payload, L1)
@@ -114,6 +119,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_opener_announcement.py` — #230 / P3: OpenerAnnouncement (Lob-/Ankuendigungs-Frames, text-initiale Ich-Anlaeufe ohne Begruendung) und ParagraphConnectorRate (advisory, nie gescored) — je ≥1 TP + ≥2 Hard Negatives (L1)
 - `tests/test_comment_genre.py` — #231 / P4: Genre-Profile comment/message (Opt-in via `--genre`, ADR-0004 kein Auto-Detect), engagement_comment_default (detect-only ≤0.5, Sequenz Lob→Paraphrase→Ergänzung→Frage, ≥3/4 in Reihenfolge) und FP-Rate-0-Nachweis für die 5 legitimen Kommentar-Hard-Negatives aus dem erweiterten Control-Set (L1/L2)
 - `tests/test_discourse_metrics.py` — #72 L4: explorative Diskurs-Signale rank_without_criterion & identical_enumeration (conf ≤0.35, `exploratory: True`, DoD 3/3/2) gegen versionierten L4-Referenzkorpus `eval/discourse_ref.jsonl` (Artefakt-Typen deep/10 + deep/06, Kontrollartefakte inklusive)
+- `tests/test_circular_explanations.py` — #122 CircularExplanation: tautologische Definitionen (definitional-Verb + Stamm-Overlap Subjekt/Praedikat, Praedikat ≤ 3 neue Staemme, conf ≤ 0.45 detect-only) mit Hard-Negatives (technische Referenz "handles", echte Definition, Kurzsatz, verb-lose Wiederholung) und DE-Fixture
 - `tests/test_de_typography.py` — #76 DE-Typografie M46/M47/M48/M49 (detect-only, DE-Sprachgate, je 3/3/2 Fixtures; Mapping: docs/de-coverage.md)
 - `tests/test_de_vocab_layer.py` — #77 DE-KI-Marker-Vokabular (4 DE-Phrase-Kategorien in ontology.json, Belegpflicht je Phrase, Kollisionsfreiheit, EN-Corpus-Sicherheit)
 - `tests/test_de_catalog_part2.py` — #76 Teil 2: 12 weitere DE-Phrase-Kategorien (Schema, Evidence-Pflicht mit Namespace-Präfix, #46-Kollisionsfreiheit inkl. paarweiser Substring-Check, Signal-DoD 3/3/2 je Kategorie)
@@ -131,9 +137,13 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_code_slop.py` — #9 detect-only-Code-Slop (kein Score-Einfluss, ADR-0006)
 - `tests/test_project_config.py` — #11 projekt-lokale Config: --config slop.json (disabled_signals, term_allowlist, weight_overrides), strikte Validierung, Noisy-OR-Re-Scoring nach Filterung (L1)
 - `tests/test_metadata_slop.py` — #45 detect-only-Metadata-Slop: Commit-Messages/PR-Bodies, JSON-Datenfelder, Config-Boilerplate (kein Score-Einfluss, ADR-0006)
+- `tests/test_review_counterfactual.py` — #122-Rest detect-only Review/Approval-Slop: Counterfactual Test (ankerlose generische Approvals passen auf jeden PR; Anker unterdrücken)
 - `tests/test_metadata_slop_111.py` — #111 Metadata-Slop-Erweiterung: CommitVelocitySlop (Cadence-Verhalten), PRStructureSlop (anti-slop-Regeln), CommitKeywordSlop (gitorit-Vokabular); FP-Guards per Einzel-Regel-Negativ-Fixtures
+- `tests/test_writing_rules_docs.py` — #228 Writing Rules (Einstiege, Ich-Bezug, Konnektoren): Doku-Pin der praeventiven Schreibregeln references/writing-rules.md (L1)
 - `tests/test_sample_mine.py` — #12 Sampling-Harness: Mine schlägt nur unbedeckte n-Gramme vor (SSOT-Filter gegen Scorer-Vokabular), Doc-Frequency-Ranking, Kandidaten-Cap, Einmal-Vorkommen wird ignoriert, `generate` ohne Endpoint verweigert sauber; `calibrate.py --sample-mine` druckt Tier-Vorschläge
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
+- `tests/test_human_ideological_runner.py` — #98-Zielstand: Runner-Exit-Code, 40/40 + Segment-Pins, Quellendisziplin, Leak-Check je Positivem
+- `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_conversational_fillers.py` — #110 conversational_fillers (Hassid-Liste): 4 Phrasen, Hard-Negative-Guards (Sign-off-Fenster, Quellenangabe)
 - `tests/test_chat_artifacts.py` — #113 chat-paste artifacts & elision: 6 deterministische Mikro-Signale (Chat-Paste-Artefakte wie Zeitstempel/Lead-Dashes, Elision), Fixtures inkl. Hard Negatives (L1)
 - `tests/test_weight_gain_pin.py` — #106 DoD-Rest: Doku-Pin der Gewichts-Einordnung (SCORE-GOVERNANCE.md + Herkunfts-Kommentar slop_scorer.py nennen den Kalibrierungs-Gewinn der 14-dimensionalen Gewichte gegenüber uniform 1/N; Test bindet diese Zahlen, Muster fp_baseline #80/#85) (L1)
@@ -171,6 +181,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_governance_doc.py` — #67 Governance-Pflichtabschnitte (Meta)
 - `tests/test_input_norm.py` — #40 Input-Normalisierung/Evasion
 - `tests/test_project_config.py` — #11 Projekt-lokale Config (disabled_signals/term_allowlist/weight_overrides, Auto-Discovery)
+- `tests/test_aggregation_geomean.py` — #117 Aggregations-Modus (slop.json `aggregation: geomean`): Config-Validierung, Geomean < additiv bei einseitigem Signal, Epsilon-Untergrenze, Floor-Erhalt
 - `tests/test_instruction_slop.py` — Signal Instruction-Slop
 - `tests/test_intensifier_fix.py` — FU-1 Intensifier-Fix
 - `tests/test_domain_trigger.py` — #35 Domain-Bindung: triggered_by:domain-Signale feuern nur im passenden Scope, ungebundene Signale und No-Arg-Pfad unverändert (L1, TP+Scope-Negativ+SSOT-Pin)

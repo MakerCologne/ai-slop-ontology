@@ -67,7 +67,8 @@ RHETORICAL_PATTERNS = {
         "description": "\"serves as / acts as / functions as a centralized hub/platform/"
                        "solution.\" Prefer a plain verb, 'is', or 'has'.",
         "example_slop": "The app serves as a centralized hub for sponsor management.",
-        "example_fix": "The app tracks sponsors, drafts, due dates, and approvals in one place.",
+        "example_fix": "(name the one concrete task with a plain verb - no hub, "
+                       "no feature list, no 'in one place')",
         "keep_when": "'serves as' names a literal role and no plainer verb fits.",
     },
     "SynonymCycling": {
@@ -77,7 +78,9 @@ RHETORICAL_PATTERNS = {
                        "(the agent, then the assistant, then the tool). If the clear word "
                        "is right, repeat it.",
         "example_slop": "The agent reviews the draft. The assistant scores it. The tool suggests fixes.",
-        "example_fix": "The agent reviews the draft, scores it, and suggests fixes.",
+        "example_fix": "(pick the clearest word and repeat it - repetition beats "
+                       "rotation; do not compress the three sentences into an "
+                       "X-Y-Z action triad either)",
         "keep_when": "The different words genuinely refer to different things.",
         "synonym_groups": [
             ["agent", "assistant", "tool", "bot", "model", "system", "copilot"],
@@ -188,7 +191,9 @@ RHETORICAL_PATTERNS = {
                        "runs of three short items used as a headline or kicker. Guarded "
                        "against markdown tables and genuine multi-item lists.",
         "example_slop": "Strategie | Umsetzung | Wirkung",
-        "example_fix": "Strategie und Umsetzung - und welche Wirkung daraus tatsaechlich entsteht.",
+        "example_fix": "(zwei konkrete Begriffe als Satz mit Subjekt schreiben; die "
+                       "angedeutete dritte Wirkung streichen oder als eigenen Satz "
+                       "mit eigenem Subjekt formulieren)",
         "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - "
                      "not a decorative headline triple.",
     },
@@ -246,7 +251,8 @@ RHETORICAL_PATTERNS = {
         "description": 'Three or more sentences open with the same word ("The team... The '
                        '"team... The team..."). Vary the subjects.',
         "example_slop": "The team shipped the billing page. The team then rewrote the search. The team also fixed login.",
-        "example_fix": "The team shipped the billing page, then rewrote search, then fixed login.",
+        "example_fix": "(keep one sentence as the main clause and subordinate the "
+                       "rest - varying subjects, not a 'then X, then Y' chain)",
         "keep_when": "Deliberate anaphora that fits the writer's rhythm, used sparingly.",
     },
     "ChatbotLeftover": {

@@ -224,6 +224,14 @@ rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
 Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
 `eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
 
+### Step 2i: Hard Gates — binäre Signale, kein Score-Anteil (#118)
+
+`scripts/gates.py` — Binärsignale (Platzhalter-Credentials, Elision-Comments,
+Lorem Ipsum, Tote Anker `href="#"`, Placeholder-Bild-URLs, Launch-Blocker-TODOs)
+laufen als **Gates statt Score**: FAIL → harte Markierung mit Evidence, PASS →
+kein Beitrag. Läuft automatisch für Code/Markup-Input, `--gates` erzwingt es für
+Prosa. „Necessary, not sufficient“ (nach pseo-quality-gate): ein FAIL ist ein
+starker Prädiktor, alle PASS garantieren nichts. Ausgabe: `gates`-Key im JSON.
 ### Step 2i: Chat-Paste-Artefakte & Elision (detect-only, #113)
 
 `scripts/chat_artifacts.py` — sechs deterministische Mikro-Signale für
@@ -271,6 +279,16 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
 [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
+### Step 2i: Circular Explanations (detect-only, #122)
+
+`scripts/circular_explanations.py` — `CircularExplanation`: tautologische
+Definition im Satz ("The auth module validates authentic user
+authentication."). Regel: definitionales Verb (is/means/validates/…)
++ geteilter Content-Stamm (Prefix ≥ 4) auf beiden Verb-Seiten
++ Praedikat bringt ≤ 3 neue Staemme (≥ 5 Woerter). Konfidenz fest 0.45,
+**detect-only**, nie score-wirksam. Hard Negatives: technische Referenz
+("handles") und echte Definitionen feuern nicht. SSOT-Eintrag:
+ontology.json → signals.text.structural.
 ### Step 2i: LLM-Zweit-Scanner — Layer 2 (advisory, #57)
 
 `scripts/llm_scanner.py` — optionale zweite Meinung eines LLM-Judges
@@ -428,6 +446,38 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
 - **UI slop signals (visual, detect-only):** `references/ui-slop-signals.md` (#15)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
+- **Praeventive Schreibregeln:** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
+- **Writing Rules (Einstiege, Ich-Bezug, Konnektoren):** `references/writing-rules.md` (#228)
+
+## Prevention (write-side)
+
+Neben der Detektion gibt es ein praeventives Regelwerk, damit typische Muster gar
+nicht erst entstehen. Detection- und Prevention-Seite sind getrennt: Praevention
+ist reine Schreib-/Prompt-Referenz und hat **keinen Score-Einfluss** (ADR-0006,
+detect-only-Disziplin).
+
+- `references/authoring-rules.md` — Dreierstrukturen, kuenstliche Rhythmik,
+  Trenner, Asymmetrie, keine Varianz-Quoten (#225)
+- `references/writing-rules.md` — Einstiegstypen-Katalog (Sachverhalt bis Frage,
+  Auswahl aus Kontext statt Ersetzungstabelle), "Ich" differenziert (keine
+  mechanische Ich->Passiv-Transformation), LinkedIn-Kommentar-Sequenz nicht als
+  Default, Konnektor-Absaetze, Hard Negatives (legitimes "Ich denke, dass X",
+  "Darueber hinaus" im juristischen Genre-Profil) (#228)
+
+**Kondensierter Style-Prompt fuer Erstgenerierung** (aus `writing-rules.md`,
+dort mit Wann-nicht-Gegenprofilen):
+
+```
+Beginne Saetze mit Inhalt, nicht mit der Ankuedigung des Inhalts ("Ich denke,
+dass ..." -> Aussage direkt). Waehle Einstiege aus dem Kontext: Sachverhalt,
+Beobachtung, Konsequenz, konkreter Bezug, Anlass, Empfaengerbezug, Handlung,
+Kontrast, Frage — keine Standardformeln, keine Ersetzungstabelle. "Ich" nur,
+wenn Person oder Haltung relevant sind; nie mechanisch ins Passiv. Kein
+Dreier-Default: Anzahl folgt dem Inhalt. Varianz ja, aber keine Quoten.
+Konnektor-Absaetze nur bei echter Gliederung. Kein Lob-Auftakt ohne
+inhaltlichen Bezug; Lob->Paraphrase->Ergaenzung->Frage nie als Default-Sequenz.
+```
+
 
 - **Editing doctrine (Minimum-Effective-Edit):** `references/editing-doctrine.md` (#30, Teil 1)
 - **Edit self-check (Re-Check-Loop):** `references/edit-self-check.md` (#30, Teil 2)
