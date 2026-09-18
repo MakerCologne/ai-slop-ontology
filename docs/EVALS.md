@@ -118,6 +118,29 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_structure_rest.py` — #76-Rest: M66 Fake-Analyse-Anhang + M71 Scheinnuance (detect-only ≤0.5, DoD 3/3/2); M67 bewusst nicht dupliziert (schon de_announcement_cleft)
 - `tests/test_example_fix_meta.py` — #229 / P2 Meta-Regressionstest: jeder `example_fix` aus RHETORICAL_PATTERNS muss den eigenen Detektor (rhetorical_patterns + rhythm_metrics) ohne Befund passieren — Anti-Slop darf keine neuen Templates säen (L1)
 - `tests/test_opener_announcement.py` — #230 / P3: OpenerAnnouncement (Lob-/Ankuendigungs-Frames, text-initiale Ich-Anlaeufe ohne Begruendung) und ParagraphConnectorRate (advisory, nie gescored) — je ≥1 TP + ≥2 Hard Negatives (L1)
+
+### L2 — Prevention Contract (Strukturvarianten ueber Gattungen, #232 / P5)
+
+Prueft, ob praeventive Regeln (writing-rules.md, authoring-rules.md) tatsaechlich zu
+strukturell variierenden, inhaltsbegonnenen Texten fuehren - nicht nur zu neuen
+Standardformulierungen. Harness: `eval/prevention-contract/measure_variants.py`
+(JSONL-Input: genre/variant/text; Ausgabe: Kriterienvektor je Variante + paarweise
+Distanzen). Kriterien: C1 Ich-Anfang ohne Personenbezug (Haltungs-Verben ausgenommen),
+C2 Lob-zuerst, C3 Engagement-Sequenz, C4 Ankuendigungs-Frame, C5 Triad-Haeufung,
+C6 Konnektor-Absatzrate, C7 Frage-Hook, C8 strukturelle vs. lexikalische Varianz
+(paarweise Distanz; nur fuer Varianten desselben Anlasses sinnvoll, Schwelle 1.0).
+Judge-Error-Taxonomie: E1 opener-announcement, E2 engagement-sequence, E3 triad-default,
+E4 connector-weave, E5 fake-question, E6 lexical-variant, E7 ich-centrism; OK-Ausnahme =
+inhaltliche Begruendung der Struktur (keep_when-Aequivalent).
+
+**Erstmessung 17.09.2026 (Baseline):** 5 legitime Kommentar-Hard-Negatives
+(neg-comment-01..05) - 5/5 sauber in C1-C7 nach C1-Verfeinerung (Haltungs-Verben =
+Inhalt). Gegenprobe: 5/5 CommentSlop-Texte korrekt markiert (C2/C3/C4). C8-Paarmessung
+auf unverwandten Texts ist nicht aussagekraeftig - echte C8-Erstmessung braucht je
+Gattung 3 Varianten desselben Anlasses (Generator-abhaengig, P5-Folgeschritt).
+Quartals-Re-Score: an L3-Kalender (#67) angebunden; Baseline-Datei:
+`eval/prevention-contract/erstmessung-2026-09-17-baseline.jsonl`.
+
 - `tests/test_comment_genre.py` — #231 / P4: Genre-Profile comment/message (Opt-in via `--genre`, ADR-0004 kein Auto-Detect), engagement_comment_default (detect-only ≤0.5, Sequenz Lob→Paraphrase→Ergänzung→Frage, ≥3/4 in Reihenfolge) und FP-Rate-0-Nachweis für die 5 legitimen Kommentar-Hard-Negatives aus dem erweiterten Control-Set (L1/L2)
 - `tests/test_discourse_metrics.py` — #72 L4: explorative Diskurs-Signale rank_without_criterion & identical_enumeration (conf ≤0.35, `exploratory: True`, DoD 3/3/2) gegen versionierten L4-Referenzkorpus `eval/discourse_ref.jsonl` (Artefakt-Typen deep/10 + deep/06, Kontrollartefakte inklusive)
 - `tests/test_circular_explanations.py` — #122 CircularExplanation: tautologische Definitionen (definitional-Verb + Stamm-Overlap Subjekt/Praedikat, Praedikat ≤ 3 neue Staemme, conf ≤ 0.45 detect-only) mit Hard-Negatives (technische Referenz "handles", echte Definition, Kurzsatz, verb-lose Wiederholung) und DE-Fixture
@@ -152,6 +175,9 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_slopkit_project_config.py` — #11 (slopkit-Variante): project-local config für das slopkit-Paket (disabled_signals/term_allowlist/weight_overrides, Fail-loud Exit 2) (L1)
 
 - `tests/test_paste_artifacts.py` — #113 detect-only-Paste-Artefakte: 6 Mikro-Signale (elision-comment, chat-preamble, fence-in-code, meta-process-comment, list-label-marker, placeholder-credential-shape; kein Score-Einfluss, ADR-0006)
+- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
+- `tests/test_prevention_contract.py` — #232 / P5: L1-Tests des Prevention-Contract-Harness (C1-Haltungs-Ausnahme, C8-Distanz)
+- `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_gamed_verification.py` — #112 Gamed-Verification-Diff-Signale (detect-only): AssertionDelta, SkippedTest, TrivialAssertion, StubLeftBehind — Fixtures Positiv/Negativ je Signal (Signal-DoD)
 - `tests/test_geometric_aggregation.py` — #117 Geometrische Score-Aggregation: gewichtetes geometrisches Mittel je Dimension als Option neben Noisy-OR (Aequivalenz-/Grenzfaelle, Gewichts-Sensitivitaet) (L1)- `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)
 

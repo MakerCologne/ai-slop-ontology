@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Loop-Guard #36 — Modell-Dynamik (model_notes + Halbwertszeiten)
 
 Issue: MakerCologne/ai-slop-ontology#36 (Backlog-Spiegel btm-openclaw-platform#1133)
@@ -35,7 +34,6 @@ Wikipedia "Signs of AI writing" (AIDASH/AICURLY/AIPUFFERY) + Economist-Studie
 - #12 Sampling-Loop: neue Generationsstichproben als Evidenzquelle.
 - #116 signalReliability: komplementäre Achse (Verlässlichkeit/Status),
   gleiche Register-Disziplin (kein freies Raten, evidence-Pflicht).
-=======
 # Modell-Dynamik: model_notes & Signal-Halbwertszeiten (#36)
 
 **Status:** spec (implementiert in `ontology.json` → `signalModelDynamics` + per-signal `model_notes`) · **Verwandt:** #12 (Sampling-Loop), #47 (Drift-Messvorschrift), #59 (Trajectory-Monitoring), adr/0003
@@ -55,4 +53,3 @@ Signale sind modell- und generationsabhängig: GPT-5.1+ supprimiert Em-Dashes, C
    Halbwertszeiten werden **gemessen** (#47-Drift-Artefakte), nie geschätzt; ohne Messung: `unmeasured`.
 4. **Quartals-Empirie-Notiz:** je Signal im Re-Baseline-Zyklus prüfen: `status_since` + `model_notes` zusammen; neue Evidenz aus Sampling-Artefakten (`eval/drift/YYYY-Qn.json`) nachtragen.
 5. **Evidence-Pflicht (M6):** jede model_note zitiert ihre Quelle (Studie, Wikipedia AIDASH/AICURLY/AIPUFFERY, oder Quartals-Artefakt).
->>>>>>> origin/master

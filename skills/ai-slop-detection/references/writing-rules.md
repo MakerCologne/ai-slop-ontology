@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Writing Rules — Einstiege, Ich-Bezug, Konnektoren (Praevention write-side)
 
 > Gegenpart zum Detektor, Fortsetzung von `authoring-rules.md` (Dreierstrukturen,
@@ -151,7 +150,6 @@ Wer trotzdem stolpert, faellt auf: `LowOpenerDiversity` (Satzanfangs-Wiederholun
 Grenze: Die Hard Negatives oben sind die dokumentierte Gegenseite. Praevention
 ist write-side und hat **keinen Score-Einfluss** (ADR-0006: detect-only-Module;
 dieses Dokument ist reine Referenz).
-=======
 # Writing Rules — Praevention beim Schreiben (write-side)
 
 > Gegenpart zur Detektion: Diese Regeln wirken vor und waehrend des Schreibens,
@@ -274,4 +272,3 @@ Wer trotzdem stolpert, faellt auf: `opener_announcement` (geplant, #230),
 `LowOpenerDiversity`, `UniformLengthRun`. Die `keep_when`-Vorbehalte der Signale
 sind die Grenze dieser Regeln: legitime persoenliche Haltung, bewusste Ankuendigung
 und drei wirklich verschiedene Punkte sind kein Slop.
->>>>>>> origin/master
