@@ -67,7 +67,8 @@ RHETORICAL_PATTERNS = {
         "description": "\"serves as / acts as / functions as a centralized hub/platform/"
                        "solution.\" Prefer a plain verb, 'is', or 'has'.",
         "example_slop": "The app serves as a centralized hub for sponsor management.",
-        "example_fix": "The app tracks sponsors, drafts, due dates, and approvals in one place.",
+        "example_fix": "(name the one concrete task with a plain verb - no hub, "
+                       "no feature list, no 'in one place')",
         "keep_when": "'serves as' names a literal role and no plainer verb fits.",
     },
     "SynonymCycling": {
@@ -77,7 +78,9 @@ RHETORICAL_PATTERNS = {
                        "(the agent, then the assistant, then the tool). If the clear word "
                        "is right, repeat it.",
         "example_slop": "The agent reviews the draft. The assistant scores it. The tool suggests fixes.",
-        "example_fix": "The agent reviews the draft, scores it, and suggests fixes.",
+        "example_fix": "(pick the clearest word and repeat it - repetition beats "
+                       "rotation; do not compress the three sentences into an "
+                       "X-Y-Z action triad either)",
         "keep_when": "The different words genuinely refer to different things.",
         "synonym_groups": [
             ["agent", "assistant", "tool", "bot", "model", "system", "copilot"],
@@ -188,7 +191,9 @@ RHETORICAL_PATTERNS = {
                        "runs of three short items used as a headline or kicker. Guarded "
                        "against markdown tables and genuine multi-item lists.",
         "example_slop": "Strategie | Umsetzung | Wirkung",
-        "example_fix": "Strategie und Umsetzung - und welche Wirkung daraus tatsaechlich entsteht.",
+        "example_fix": "(zwei konkrete Begriffe als Satz mit Subjekt schreiben; die "
+                       "angedeutete dritte Wirkung streichen oder als eigenen Satz "
+                       "mit eigenem Subjekt formulieren)",
         "keep_when": "A real navigation breadcrumb, keyboard shortcut chain, or table row - "
                      "not a decorative headline triple.",
     },
@@ -231,13 +236,18 @@ RHETORICAL_PATTERNS = {
             "praise": ["danke für diesen", "danke fuer diesen", "spannender beitrag",
                        "spannender punkt", "toller beitrag", "großartiger beitrag",
                        "grossartiger beitrag", "wichtiger beitrag", "super beitrag",
-                       "great post", "great read", "love this post", "this resonates"],
+                       "great post", "great read", "love this post", "this resonates",
+                       "thanks for sharing", "thank you for sharing", "thanks so much for sharing",
+                       "couldn't agree more",
+                       "excellent read", "powerful post", "couldn’t agree more"],
             "paraphrase": ["sie schreiben", "sie beschreiben", "sie erwähnen",
                            "sie erwaehnen", "in ihrem beitrag", "wie sie sagen",
                            "you describe", "you mention", "your post", "you write"],
             "addon": ["ein weiterer aspekt", "ein weiterer punkt", "ein weiterer gedanke",
                       "ergänzend", "ergaenzend", "hinzu kommt", "ergänzen möchte",
-                      "ergaenzen moechte", "to add", "adding to this", "one more thing"],
+                      "ergaenzen moechte", "to add", "adding to this", "one more thing",
+                      "i'd add", "i’d add", "my two cents", "worth adding",
+                      "here's what i'd add", "one thing i'd add"],
         },
     },
     "RepeatedOpenings": {
@@ -246,7 +256,8 @@ RHETORICAL_PATTERNS = {
         "description": 'Three or more sentences open with the same word ("The team... The '
                        '"team... The team..."). Vary the subjects.',
         "example_slop": "The team shipped the billing page. The team then rewrote the search. The team also fixed login.",
-        "example_fix": "The team shipped the billing page, then rewrote search, then fixed login.",
+        "example_fix": "(keep one sentence as the main clause and subordinate the "
+                       "rest - varying subjects, not a 'then X, then Y' chain)",
         "keep_when": "Deliberate anaphora that fits the writer's rhythm, used sparingly.",
     },
     "ChatbotLeftover": {
@@ -624,6 +635,9 @@ def find_rhetorical_patterns(text: str):
         "ein weiterer punkt wäre", "ergaenzend dazu", "ergänzend dazu",
         "die eigentliche frage ist", "die spannende frage ist",
         "was bedeutet das nun", "doch was heisst konkret", "doch was heißt konkret",
+        # PR #235 (Issue #230): EN-Spiegel der Frame-Liste
+        "interesting point", "another aspect is", "the exciting part is",
+        "the interesting question is", "great question",
     )
     for frame in _OPENER_FRAMES:
         if lowered.startswith(frame) or ("\n" + frame) in lowered or (". " + frame) in lowered:
@@ -632,7 +646,10 @@ def find_rhetorical_patterns(text: str):
     #      Tier B: Ich-approach frames — only at TEXT start and only without an
     #      in-sentence justification marker (hard negative: 'Ich denke, dass X, weil Y').
     _ICH_FRAMES = ("ich moechte", "ich möchte", "ich wollte", "ich denke",
-                   "ich finde", "ich glaube")
+                   "ich finde", "ich glaube",
+                   # PR #235 (Issue #230): EN-Ich-Frames am Textanfang
+                   "i want to walk through", "i want to explain",
+                   "i'd like to walk through", "i'd like to explain")
     _JUSTIFICATION = re.compile(r"\b(weil|denn|grund|belegt|belegen|nachvollziehbar|gemessen|laut|deshalb|daher)\b")
     if lowered.startswith(_ICH_FRAMES):
         first_sent = sents[0].lower() if sents else lowered

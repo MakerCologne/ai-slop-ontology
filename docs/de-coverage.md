@@ -46,7 +46,7 @@
 | M29 | Abbruch mittendrin | NEU (klein) | Kandidat structural |
 | M30 | Stilwechsel zwischen Absätzen | **GEDECKT (neu, #77-Rest W5 13.09.)** | **de_register_shift (Voll-Zweibeleg de-ev-25)** | |
 | M31 | Ich-Form-Bearbeitungszusammenfassungen | NEU (verhaltensbasiert) | out of scope (Text-Engine) |
-| M32 | Autoritäts-Floskeln („die eigentliche Frage ist") | DE-VARIANTE | rhetorical_setups/authority → #77 |
+| M32 | Autoritäts-Floskeln („die eigentliche Frage ist") | **GEDECKT (neu, #77-Rest W6 15.09.)** | **de_rhetorical_setup (Voll-Zweibeleg de-ev-26; disjunkt zu de_authority_floskel)** |
 | M33 | Signposting/Ankündigungen | **GEDECKT (neu, #77-Rest 13.09.)** | **de_signposting (Voll-Zweibeleg de-ev-18)** |
 | M34 | Fragment-Überschriften (Einzeiler-Nachspann) | DE-VARIANTE | rhythm/kicker-Signale → DE |
 | M35 | Rhetorische Fragen als Fake-Dialog | **GEDECKT (neu, #77-Rest 13.09.)** | **de_fake_dialog (Voll-Zweibeleg de-ev-20)** |
@@ -70,7 +70,7 @@
 | M53 | Lückenfüllende Spekulation | **GEDECKT (neu, T2)** | **de_hedging (Teil 2, Wissensgrenzen-Hinweise)** | |
 | M54 | Doppelpunkt-Titel-Schema | DE-VARIANTE | formatting slop → DE |
 | M55 | Gleichförmiger Satzrhythmus | GEDECKT | UniformSentenceLength/Burstiness, Copula #22, Adverb #24 |
-| M56 | Aphorismus-Formeln | NEU | Kandidat phrase DE |
+| M56 | Aphorismus-Formeln | **GEDECKT (neu, #77-Rest W6 15.09.)** | **de_aphorism (Voll-Zweibeleg de-ev-27)** |
 | M57 | Markdown-Struktur-Artefakte | GEDECKT | markup_anomalies/formatting slop |
 | M58 | Abstrakta-Stapel/Nominalstil | NEU (Teil) | Density-Dimension streift; Kandidat DE |
 | M59 | Forcierte Ich-Lockerheit | **GEDECKT (neu, #77-Rest 13.09.)** | **de_faux_candid (Voll-Zweibeleg de-ev-21)** |
@@ -86,14 +86,21 @@
 | M69 | Struktureller Register-Kollaps | DE-VARIANTE | register_drift #81 → DE-Profile |
 | M70 | Falsche Agency abstrakter Subjekte | **GEDECKT (neu, #77-Rest 13.09.)** | **de_false_agency (Voll-Zweibeleg de-ev-22)** |
 | M71 | Retroaktive Scheinnuance („Genauer gesagt …") | **GEDECKT (neu, #76-Rest)** | **structure_metrics.pseudo_nuance (≥2 Marker, detect-only)** |
-| M72 | Pseudo-therapeutische Validierung | NEU | Konversations-Kontext, Kandidat |
+| M72 | Pseudo-therapeutische Validierung | **GEDECKT (neu, #77-Rest W6 15.09.)** | **de_therapeutic_validation (Voll-Zweibeleg de-ev-28)** |
 
 ## Bilanz (Teil 2, dieser Batch)
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M32, M34, M44, M54, M69 (M7/M26/M30 seit Welle 5 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M56, M58, M63, M68, M72; M66/M71 seit #76-Rest gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M58, M63, M68; M56/M72 seit Welle 6 gedeckt)
 
+
+## Bilanz (#77-Rest Welle 6, 15.09.2026)
+
+- **GEDECKT (neu, Welle 6):** 3 weitere Muster — M32 `de_rhetorical_setup`, M56 `de_aphorism`, M72 `de_therapeutic_validation` (je 6 Phrasen, conf 0.6, **Voll-Zweibeleg** je Phrase: Wikipedia-Projektseite + own:corpus de-ev-26..28)
+- **DE-Signal-Zähler:** 31 + 3 = **34 DE-Signale gesamt**
+- Fixtures je Kategorie 3/3/2 in tests/test_de_variant_rest4.py; DE_LAYER-Pin auf 28 Kategorien erweitert (C4: 135/168 Phrasen mit ≥ 2 Belegen — neue 18 Phrasen vollständig zweibelegt)
+- Kollisionsdisziplin: „die eigentliche frage ist" bereits in de_authority_floskel → M32-Kategorie mit disjunktem Phrasensatz implementiert (W5-Präzedenzfall #46-Disziplin)
 
 ## Bilanz (#77-Rest Welle 4, 13.09.2026)
 
@@ -118,11 +125,23 @@
 
 Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind detect-only/advisory (Anti-Auto-Rewrite-Disziplin, vgl. SIGNAL-DOD.md).
 
+## Struktur-Signale für Satzanfangs-Ankündigungen und Konnektor-Absätze (#230, detect-only)
+
+- **OpenerAnnouncement** (`rhythm_openers.py`): Frame-basierte Zweiwort-Frames („Ich möchte …", „Ich denke[, …]", „Spannender Punkt.", „Ein weiterer Aspekt ist …", „Die spannende Frage ist …"; EN-Analoga) via Clause-Initial-Anker (#88-Mechanik) statt wachsender Wortliste. **keep_when:** echte Haltungsdifferenzierung — „Ich denke, dass X" mit folgender Begründung (und EN „I think that …") ist ausdrücklich exempt.
+- **ParagraphConnectorRate** (`rhythm_openers.py`, advisory): Anteil der Absätze mit additivem Konnektor-Eröffner (Darüber hinaus/Zudem/Ein weiterer (Aspekt|Punkt)/Gleichzeitig/Abschließend/Zusammenfassend + EN-Analoga). Feuert erst ab ≥ 3 Konnektor-Absätzen UND Rate > 0,4. **keep_when:** juristisches/akademisches Genre-Profil (konnektorgeführte Absätze als Hausstil; einzelnes „Darüber hinaus" feuert nie).
+- Kein Score-Einfluss (ADR-0006; Test in tests/test_rhythm_openers.py analog test_code_slop).
+
 ## Evidence-Verdichtung (RI-2-FU, #76-Rest)
 
 - **Ziel erreicht:** 63/96 de_*-Phrasen (65,6 %) tragen jetzt **≥ 2 unabhängige Belege** (Pin ≥ 50 %, C4 in scripts/check_ssot.py, Manipulationsprobe in tests/test_de_evidence_densification.py). Zweite Belege: eigene handgeschriebene Belegtexte (`eval/de_evidence_texts.jsonl`, source `own:corpus`, je Kategorie ein Text mit 3–4 wörtlich enthaltenen Phrasen) — eigene Handschrift, keine Kopien aus CC BY-SA-Drittkatalogen (Lizenzregel).
 - **Dokumentierte Abweichung (33 Phrasen, 34,4 %):** Einzelbeleg (Wikipedia-Projektseite oder own:de-observation/en-pendant). Die Rest-Belegung läuft künftig über den C4-Coverage-Pin — Unterschreiten von 50 % failt das SSOT-Gate.
 - **Strukturmetrik-Rest:** M66 (fake_analysis_appendix) und M71 (pseudo_nuance) als detect-only Signale in structure_metrics.py (Konfidenz 0.5, je 3/3/2-Fixtures in tests/test_structure_rest.py). M67 (Ankündigungs-Spaltsatz) bereits als de_announcement_cleft gedeckt — bewusst keine Duplikation (#46).
+
+## Kommentar-Genre-Profil + Engagement-Sequenz (#231, detect-only)
+
+- **Genre-Profil `comment`** (`genre_profiles.py`): Opt-in via `--genre comment` (ADR-0004, kein Auto-Detect). Exempt: Höflichkeitsformeln („Great post", „Thanks for sharing", „Congrats", „Well said" …), zero_weights: burstiness/verbosity (Kurztext-Konvention), decision_threshold 0.30.
+- **EngagementCommentDefault** (`engagement_sequences.py`, detect-only): Lob → Paraphrase → Ergänzung → Frage als Default-Engagement-Sequenz. Feuert nur bei vollständiger Vier-Stufen-Sequenz in ≤120 Wörtern; kurze authentische Kommentare feuern nie. Kein Score-Einfluss (ADR-0006-Politik, analog #230); Scoring-Integration zurückgestellt bis Korpuswachstum (ADR-0005).
+- **Evals:** 10 handgeschriebene Kommentar-Texte in `eval/control_set.jsonl` (5 Slop-Sequenzen als known_fn mit Sequenz-Nachweis, 5 legitime Hard Negatives, FP-Rate 0 am Genre-Threshold 0.30). Tests: `tests/test_engagement_sequences.py` (7 Tests).
 
 ## 2026-09-17: OpenerAnnouncement + ParagraphConnectorRate (#230 / P3)
 

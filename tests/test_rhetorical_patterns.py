@@ -192,5 +192,47 @@ class RhetoricalDetectionTests(unittest.TestCase):
         self.assertEqual(json_ids, set(RHETORICAL_PATTERNS))
 
 
+class ExampleFixMetaSafetyTests(unittest.TestCase):
+    """#229: every example_fix must survive its own detectors.
+
+    Meta-Sicherheit: Ein example_fix, das selbst ein Signal triggert, ist ein
+    Bug. Zusaetzlich duerfen Fixes keine neue Standardform praegen: dokumentierte
+    Faelle (Audit 15.09.) waren die then-Kette bei RepeatedOpenings und die
+    X-Y-Z-Aktionstriage bei SynonymCycling — beide sind jetzt Prinzip-Texte.
+    """
+
+    def test_every_example_fix_is_detector_clean(self):
+        from rhythm_openers import rhythm_metrics
+        for pattern_id, meta in RHETORICAL_PATTERNS.items():
+            fix = meta["example_fix"]
+            hits = find_rhetorical_patterns(fix)
+            self.assertEqual(
+                hits, [],
+                f"{pattern_id} example_fix triggers itself: "
+                f"{[(h['id'], h['evidence']) for h in hits]}")
+            self.assertEqual(
+                rhythm_metrics(fix)["signals"], [],
+                f"{pattern_id} example_fix triggers rhythm signals")
+
+    def test_no_example_fix_teaches_a_then_chain(self):
+        # Regression guard for the documented RepeatedOpenings case: the fix
+        # must not replace repeated openings with a 'then X, then Y' chain.
+        for pattern_id, meta in RHETORICAL_PATTERNS.items():
+            self.assertNotRegex(
+                meta["example_fix"], r", then .{2,40}, then ",
+                f"{pattern_id} example_fix teaches a then-chain frame")
+
+    def test_template_shaping_fixes_are_principles(self):
+        # Fixes for patterns whose old examples shaped a new standard form
+        # (feature list, action triad, separator-dash frame) must now be
+        # rewriting principles (parenthesized), not copy-paste sentences.
+        for pattern_id in ("FakeStrongVerb", "SynonymCycling",
+                           "DecorativeSeparatorTriad", "RepeatedOpenings"):
+            fix = RHETORICAL_PATTERNS[pattern_id]["example_fix"]
+            self.assertTrue(
+                fix.startswith("(") and fix.endswith(")"),
+                f"{pattern_id} example_fix should be a principle, got: {fix!r}")
+
+
 if __name__ == "__main__":
     unittest.main()

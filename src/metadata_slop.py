@@ -111,6 +111,51 @@ CONFIG_BOILERPLATE_PATTERNS = [
 ]
 
 
+# --- Review / Approval Slop: Counterfactual Test (issue #122, PRISM) ----
+#
+# PRISM-Frage: "wuerde derselbe Kommentar auch auf einen unanhaengigen PR
+# passen?" Ein Review-Kommentar feuert, wenn ALLES gilt:
+#   1. >= 2 Woerter.
+#   2. KEIN Domain-Anker: kein Backtick-Code, kein Pfad, kein Identifier
+#      (snake_case / CamelCase / ALL_CAPS / Funktionsaufruf), kein Issue-
+#      oder Zeilenbezug (#123, :12), keine Ziffern.
+#   3. >= 1 generischer Marker (LGTM, looks good, nice catch, approve,
+#      thanks, ship it, consider adding ..., DE-Pendants).
+# Ein ankerloser generischer Kommentar passt per Konstruktion auf jeden PR.
+#
+REVIEW_GENERIC_MARKERS = re.compile(
+    r"(?i)\b(?:"
+    r"lgtm|looks?\s+good|good\s+catch|nice\s+(?:catch|work|job)|"
+    r"great\s+(?:work|catch|job)|well\s+done|approved?|approve|"
+    r"ship\s+it|looks\s+(?:great|solid|fine|good\s+to\s+me)|"
+    r"thanks(?:\s+for\s+this)?|"
+    r"consider\s+(?:adding|updating|checking)|"
+    r"might\s+be\s+worth|could\s+(?:also\s+)?(?:add|be)|"
+    r"sieht\s+gut\s+aus|passt(?:\s+so)?|einverstanden|danke|"
+    r"gut\s+gemacht|stimme\s+(?:ich\s+)?zu|sehr\s+gut"
+    r")\b",
+)
+
+# "+1" separat (kein Wort-Boundary moeglich)
+REVIEW_PLUS_ONE = re.compile(r"(?<![\w+])\+1(?![\w+])")
+
+# Domain-Anker: alles, was den Kommentar an DIESEN PR bindet.
+REVIEW_ANCHOR_PATTERNS = (
+    re.compile(r"`[^`]+`"),                 # inline code
+    re.compile(r"\w+/[\w./-]+"),           # Pfade (src/foo.py)
+    re.compile(r"\b\w+\.(?:py|js|ts|json|ya?ml|md|go|rs|java|rb|sh|toml|txt|cfg|html|css|xml|sql)\b"),  # Datei-Endungen
+    re.compile(r"\b[a-z]+(?:_[a-z0-9]+)+\b"),  # snake_case
+    re.compile(r"\b[a-z]+[A-Z]\w*"),      # CamelCase
+    re.compile(r"\b[A-Z][A-Z0-9_]{2,}\b"),  # ALL_CAPS Konstanten
+    re.compile(r"\w+\("),                # Funktionsaufruf
+    re.compile(r"#[0-9]+"),               # Issue-/PR-Referenz
+    re.compile(r"[0-9]"),                 # Zeilen-/Count-Zahlen
+)
+
+REVIEW_MIN_WORDS = 2
+REVIEW_CONFIDENCE = 0.4   # detect-only, fest (ADR-0001)
+
+
 @dataclass
 class MetadataFinding:
     signal_id: str
@@ -154,6 +199,7 @@ class MetadataSlopClassifier:
         "CommitMessageSlop": "medium",
         "JsonFieldSlop": "medium",
         "ConfigBoilerplateSlop": "low",
+        "ReviewApprovalSlop": "low",
         "CommitVelocitySlop": "medium",
         "PRStructureSlop": "medium",
         "CommitKeywordSlop": "low",
@@ -221,6 +267,39 @@ class MetadataSlopClassifier:
         """Classify comments in Dockerfile/YAML/Terraform-style config."""
         return self._classify(
             "ConfigBoilerplateSlop", "config", self._config, config_text or "")
+
+    def classify_review_comment(self, comment: str) -> MetadataSlopResult:
+        """Counterfactual Test (issue #122, PRISM): feuert, wenn ein Review-
+        Kommentar KEINEN Domain-Anker enthaelt (kein Code, kein Pfad, kein
+        Identifier, keine Zahl) und mindestens einen generischen Approval-
+        Marker traegt — ein solcher Kommentar passt auf jeden beliebigen PR.
+
+        Detect-only, Konfidenz fest 0.4, nie score-wirksam (ADR-0001).
+        """
+        res = MetadataSlopResult()
+        text = (comment or "").strip()
+        words = re.findall(r"[\wäöüß]+", text.lower())
+        if len(words) < REVIEW_MIN_WORDS:
+            return res
+        marker = REVIEW_GENERIC_MARKERS.search(text) or REVIEW_PLUS_ONE.search(text)
+        if not marker:
+            return res
+        # Marker-Text vor der Anker-Pruefung entfernen: der Marker selbst
+        # kann Anker-Form haben (LGTM = ALL_CAPS, +1 = Ziffer) — er ist Teil
+        # des generischen Vokabulars, kein Domain-Anker.
+        anchor_text = REVIEW_PLUS_ONE.sub(" ", text)
+        anchor_text = REVIEW_GENERIC_MARKERS.sub(" ", anchor_text)
+        for pat in REVIEW_ANCHOR_PATTERNS:
+            if pat.search(anchor_text):
+                return res  # Anker gefunden: Kommentar ist spezifisch
+        res.signals_detected.append(MetadataFinding(
+            signal_id="ReviewApprovalSlop", surface="review_comment",
+            confidence=REVIEW_CONFIDENCE,
+            evidence=f"counterfactual: anchorless + generic marker "
+                     f"{marker.group(0)!r} — fits any PR",
+            severity=self.SIGNAL_SEVERITY["ReviewApprovalSlop"]))
+        res.slop_types.append("ReviewApprovalSlop")
+        return res
 
     def classify_all(self, commit_message="", json_text="", config_text=""):
         """Run all three surfaces, merge into one result."""
