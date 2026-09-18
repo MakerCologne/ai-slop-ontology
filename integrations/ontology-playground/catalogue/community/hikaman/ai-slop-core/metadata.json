@@ -1,0 +1,12 @@
+{
+  "name": "AI Slop Core",
+  "description": "Core text-slop phenomena and the evidence/mitigation scaffolding around them.",
+  "category": "general",
+  "icon": "sparkles",
+  "tags": [
+    "ai-slop",
+    "core",
+    "text"
+  ],
+  "author": "hikaman"
+}

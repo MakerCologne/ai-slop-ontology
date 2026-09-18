@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns="https://github.com/hikaman/ai-slop-ontology#"
+         xml:base="https://github.com/hikaman/ai-slop-ontology">
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ManagementSlop">
+    <rdfs:label xml:lang="en">Management Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#StrategySlop">
+    <rdfs:label xml:lang="en">Strategy Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#DecisionSlop">
+    <rdfs:label xml:lang="en">Decision Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#MetricsSlop">
+    <rdfs:label xml:lang="en">Metrics Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ProcessSlop">
+    <rdfs:label xml:lang="en">Process Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ComplianceSlop">
+    <rdfs:label xml:lang="en">Compliance Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#CommunicationSlop">
+    <rdfs:label xml:lang="en">Communication Slop</rdfs:label>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ManagementSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#StrategySlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#DecisionSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#MetricsSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ProcessSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ComplianceSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#CommunicationSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#specializesStrategy">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ManagementSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#StrategySlop"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#specializesDecision">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ManagementSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#DecisionSlop"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#gamedByMetrics">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#MetricsSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ProcessSlop"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#ritualizedBy">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ComplianceSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ProcessSlop"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#spreadsThrough">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#CommunicationSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ManagementSlop"/>
+  </owl:ObjectProperty>
+</rdf:RDF>
