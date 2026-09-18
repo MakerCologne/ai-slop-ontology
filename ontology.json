@@ -3023,7 +3023,8 @@
             "pattern": "—",
             "threshold": "> 0.5 per sentence",
             "confidence": 0.85,
-            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged"
+            "note": "Em-dashes are rare in casual human writing but extremely common in GPT/Claude output. Doctrine (no-ai-slop/humanizer): zero tolerance in short copy (<120 words), at most two in long drafts, clusters always flagged",
+            "model_notes": "Weaker for GPT-5.1+ (em-dashes measurably suppressed); Claude output uses more em-dashes than professional writers (Economist study 07/2026). Weight review quarterly (#47), evidence via sampling loop (#12)."
           },
           {
             "id": "UniformSentenceLength",
@@ -3062,7 +3063,8 @@
             "id": "PerfectGrammarUniformTone",
             "pattern": "Zero grammar errors + identical formality throughout",
             "confidence": 0.55,
-            "note": "Weak signal alone — professional editors also produce this"
+            "note": "Weak signal alone — professional editors also produce this",
+            "model_notes": "Confidence erodes as post-editing humanizer tools spread (unslop et al.); monitor via quarterly re-score (#47)."
           }
         ]
       },
@@ -3074,7 +3076,8 @@
             "char": "—",
             "threshold_per_sentence": 0.5,
             "confidence": 0.85,
-            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster"
+            "doctrine": "none in short copy (<120 words); 1-2 in long drafts; any cluster",
+            "model_notes": "Weaker for GPT-5.1+ (suppressed by default); Claude-only deployments: expect higher FP rate in professional-prose genres — apply genre register (#42) before flagging."
           },
           {
             "id": "EllipsisExcess",
@@ -3109,7 +3112,8 @@
             "id": "CurlyQuotes",
             "pattern": "“ ” in plain text",
             "confidence": 0.6,
-            "note": "Smart quotes in raw text/markdown are a typeset-output tell"
+            "note": "Smart quotes in raw text/markdown are a typeset-output tell",
+            "model_notes": "ChatGPT/DeepSeek-only tell (Wikipedia AICURLY); weak-to-zero for Claude/Gemini outputs. Treat as single-model evidence, not cross-model."
           },
           {
             "id": "HyphenatedPairRate",
@@ -3476,7 +3480,8 @@
               "unprecedented",
               "ever-evolving landscape",
               "ever-changing landscape"
-            ]
+            ],
+            "model_notes": "Marker vocabulary shifts with model generations: 'blatantly positive' puffery is being replaced by 'subtly positive' variants (Wikipedia AIPUFFERY); markers list needs quarterly refresh (#12/#47)."
           },
           "ForcedTriad": {
             "label": "Forced triad",
@@ -3679,7 +3684,25 @@
           "description": "Methods that don't exist in the library",
           "confidence": 0.85
         }
-      ]
+      ],
+      "uiSlop": {
+        "description": "UI defaults in generated front-end code and string literals (landing pages).",
+        "detection": "detect-only: each match is a named signal with a quoted line of evidence for a human to check; NOT folded into the numeric slop score",
+        "detectOnly": true,
+        "indicators": [
+          {
+            "id": "UiSlopStartCase",
+            "description": "Three or more consecutive Title Case words in UI string literals (labels, buttons, i18n values) — generated marketing copy in UI chrome",
+            "confidence": 0.5,
+            "regex": "[A-Z][a-z]+ [A-Z][a-z]+ [A-Z][a-z]+",
+            "knownExamples": [
+              "Streamline Your Workflow",
+              "Unlock Your Potential",
+              "Transform Your Business"
+            ]
+          }
+        ]
+      }
     },
     "audio": {
       "description": "Patterns in AI-generated audio/music.",
@@ -5418,14 +5441,12 @@
       "high": {
         "signals": [
           "ExcessiveEmDash",
-          "EmDashExcess",
           "FakeStrongVerb",
           "HollowKickerRecap",
           "ThroatClearing",
           "MirroredIntroConclusion",
           "RepeatedOpenings",
           "ChatbotLeftover",
-          "ExcessiveHedging",
           "BinaryContrast",
           "Workslop",
           "SecurityReportSlop",
@@ -5439,8 +5460,6 @@
           "NumberedListOveruse",
           "BalancedStructure",
           "PerfectGrammarUniformTone",
-          "EllipsisExcess",
-          "ExclamationExcess",
           "BoldFormatting",
           "EmojiInProfessional",
           "TitleCaseHeadings",
@@ -5456,14 +5475,19 @@
           "ImportancePuffery",
           "ForcedTriad",
           "ColonReveal",
-          "ExcessiveComments",
           "GenericErrorHandling",
-          "OverlyVerboseNaming"
+          "OverlyVerboseNaming",
+          "EmDashExcess",
+          "ExcessiveHedging"
         ],
         "fix_strategy_hint_default": "rewrite_or_condense"
       },
       "low": {
-        "signals": [],
+        "signals": [
+          "EllipsisExcess",
+          "ExclamationExcess",
+          "ExcessiveComments"
+        ],
         "fix_strategy_hint_default": "condense"
       }
     },
@@ -5683,8 +5707,8 @@
     ]
   },
   "collisionMatrix": {
-    "version": "1.0.0",
-    "lastUpdated": "2026-09-02",
+    "version": "1.1.0",
+    "lastUpdated": "2026-09-09",
     "source": "#46 (Signal-Kollisions-Matrix / Interferenz)",
     "rule": "Ein Token-Vorkommen zählt maximal in einer Signalklasse (First-Match nach Priorität unten); Doppelbestrafung desselben Vorkommens ist ausgeschlossen. Unterschiedliche Vorkommen desselben Musters dürfen natürlich in beiden Klassen zählen.",
     "resolutions": [
