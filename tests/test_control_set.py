@@ -39,15 +39,15 @@ def load_control_set():
 
 
 class TestControlSetGate(unittest.TestCase):
-    def test_control_set_has_20_items_10_slop_10_clean(self):
+    def test_control_set_has_30_items_15_slop_15_clean(self):
         # P4/#231: +10 LinkedIn-Kommentar-Texte (5 CommentSlop als known_fn,
         # 5 legitime Kommentare als Hard Negatives).
         items = load_control_set()
-        self.assertEqual(len(items), 20)
+        self.assertEqual(len(items), 30)
         slop = [i for i in items if i["label"] == "slop"]
         clean = [i for i in items if i["label"] == "clean"]
-        self.assertEqual(len(slop), 10)
-        self.assertEqual(len(clean), 10)
+        self.assertEqual(len(slop), 15)
+        self.assertEqual(len(clean), 15)
 
     def test_all_hard_negatives_below_threshold(self):
         for item in load_control_set():

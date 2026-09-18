@@ -120,6 +120,19 @@ python3 scripts/slop_scorer.py --domain changelog --file CHANGELOG-entry.md
 - Default ohne `--domain`: unverändertes Verhalten (Opt-in, analog #42-Genre)
 - Domains (v1): `essay`, `marketing`, `ui_copy`, `changelog`, `devtools_docs`, `academic`, `security_report`
 
+**slopkit variant:** the `slopkit` package supports the same `--config slop.json` keys for its own signal set:
+
+```bash
+python3 -m slopkit --config slop.json score --file draft.md
+```
+
+Allowlisted terms are removed from buzzword tiers and phrase categories
+before detection; disabled signals are dropped from reports and the overall
+score is recomputed (Noisy-OR, escalation only for still-weighted critical /
+≥2 high signals). Config errors (unknown keys, bad severities, weights
+outside [0,1]) abort with exit code 2 instead of silently mis-scoring.
+
+
 ### Step 2: Classify slop type
 
 ```bash
@@ -133,6 +146,20 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 ```bash
 python3 scripts/rhetorical_patterns.py "TEXT_TO_ANALYZE"
 ```
+
+### Step 2b-academic: Academic-Register-Signale (detect-only, #114)
+
+```bash
+python3 scripts/academic_register.py "TEXT_FILE" # oder - für stdin
+```
+
+Drei **invertierbare** Signale für Fachtexte (BS-I3, COLING-2025-Evidenz
+arXiv:2412.11385): `EpistemicMismatch` (starkes epistemisches Verb +
+Hedge im selben Satz), `UnquantifiedScopeClaim` („comprehensive analysis“
+ohne n=/Zeitraum im selben Satz), `VagueAttribution` („the literature
+suggests“ ohne Zitatmarker, ±120-Zeichen-Fenster). Jedes Signal invertiert
+mit der akademischen Absicherung (Zahl, Referenz, Quelle) — echte Papers
+feuern nicht. Nie score-wirksam.
 
 ### Step 2c: Check anchor drift between two versions (detect-only)
 
@@ -197,6 +224,14 @@ rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
 Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
 `eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
 
+### Step 2i: Hard Gates — binäre Signale, kein Score-Anteil (#118)
+
+`scripts/gates.py` — Binärsignale (Platzhalter-Credentials, Elision-Comments,
+Lorem Ipsum, Tote Anker `href="#"`, Placeholder-Bild-URLs, Launch-Blocker-TODOs)
+laufen als **Gates statt Score**: FAIL → harte Markierung mit Evidence, PASS →
+kein Beitrag. Läuft automatisch für Code/Markup-Input, `--gates` erzwingt es für
+Prosa. „Necessary, not sufficient“ (nach pseo-quality-gate): ein FAIL ist ein
+starker Prädiktor, alle PASS garantieren nichts. Ausgabe: `gates`-Key im JSON.
 ### Step 2i: Chat-Paste-Artefakte & Elision (detect-only, #113)
 
 `scripts/chat_artifacts.py` — sechs deterministische Mikro-Signale für
@@ -210,6 +245,20 @@ gelöschter Code), `chat-preamble` („Certainly! Here's …" als erste Zeile),
 gesetzter Wert). Interface wie `micro_patterns.py`: `find_chat_artifacts(text)`
 → `[{id, confidence, evidence, keep_when}]`, nie score-wirksam.
 
+
+### Step 2i: Findings-Standard mit Receipts (#119)
+
+`scripts/findings_standard.py` — Ausgabe-Vertrag für jeden Befund:
+`{signal_id, span, evidence_quote, reliability, suggested_action}`.
+Adapter für rhetorical_patterns / register_profile / naturalness_guard
+und `findings_from_result(result, text)` für receipts aus einem
+`slop_score()`-Ergebnis (buzzword/phrase/authority/multilingual mit
+char-Offsets; nicht lokalisierbare Befunde setzen `span: null`).
+**Nur Ausgabe, kein Score** — reliability beschreibt Beweislage
+(high/medium/low), nie eine Eskalationsstufe; detect-only-Hinweis ist
+Bestandteil jeder suggested_action. Normiert den Community-Konsens
+"Score mit receipts" (Slopdar/ZeroSlop/hallucinot,
+`tests/test_findings_standard.py`).
 ### DE-Phrase-Layer (#76/#77, SSOT in ontology.json)
 
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
@@ -230,6 +279,32 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
 [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
+### Step 2i: Circular Explanations (detect-only, #122)
+
+`scripts/circular_explanations.py` — `CircularExplanation`: tautologische
+Definition im Satz ("The auth module validates authentic user
+authentication."). Regel: definitionales Verb (is/means/validates/…)
++ geteilter Content-Stamm (Prefix ≥ 4) auf beiden Verb-Seiten
++ Praedikat bringt ≤ 3 neue Staemme (≥ 5 Woerter). Konfidenz fest 0.45,
+**detect-only**, nie score-wirksam. Hard Negatives: technische Referenz
+("handles") und echte Definitionen feuern nicht. SSOT-Eintrag:
+ontology.json → signals.text.structural.
+### Step 2i: LLM-Zweit-Scanner — Layer 2 (advisory, #57)
+
+`scripts/llm_scanner.py` — optionale zweite Meinung eines LLM-Judges
+gegen die deterministische Schicht (Swiss-Cheese: MT-Bench-Bias,
+arXiv:2306.05685; intrinsische Selbstkorrektur verschlechtert Ergebnisse
+ohne externes Feedback, arXiv:2310.01798). Der Judge ist **injizierbar**
+(`judge: prompt -> str`, JSON-Liste mit `signal_id` + `evidence_quote`),
+es gibt keine Modell-API und kein Netzwerk im Modul selbst. Pro Scan
+laeuft **genau ein Pass**: jede von ≥ 3 rotierten Prompt-Varianten wird
+mit vorwärts und rückwärts sortierter Signal-Liste gefahren
+(Position-Swap). Befunde müssen aus dem Text zitieren (erfundene Zitate
+werden verworfen); ein Befund mit < 90 % Reproduktionsrate wird auf
+`stability: "unsicher"` downgegradet statt zu feuern. Layer-2-Befunde
+sind **advisory** (`is_fix_trigger: False`, Konfidenz ≤ 0.5/0.35) und
+gehen nie in den numerischen Score ein; komplett unlesbare Judge-Antworten
+ergeben `status: "inconclusive"` statt eines Fehlers.
 ### Step 2d: Check UI slop on generated pages (detect-only)
 
 For screenshots of generated landing pages, run the `image` tool with the prompt extension from `references/ui-slop-signals.md`. For front-end source, flag `UiSlopStartCase` (≥3 consecutive Title Case words in UI string literals) and CSS defaults (indigo/purple gradients, glassmorphism, `border-radius: 9999px`). Report each hit with quoted evidence; do not fold into the numeric score.
@@ -372,9 +447,43 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **UI slop signals (visual, detect-only):** `references/ui-slop-signals.md` (#15)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
 - **Praeventive Schreibregeln:** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
+- **Writing Rules (Einstiege, Ich-Bezug, Konnektoren):** `references/writing-rules.md` (#228)
+
+## Prevention (write-side)
+
+Neben der Detektion gibt es ein praeventives Regelwerk, damit typische Muster gar
+nicht erst entstehen. Detection- und Prevention-Seite sind getrennt: Praevention
+ist reine Schreib-/Prompt-Referenz und hat **keinen Score-Einfluss** (ADR-0006,
+detect-only-Disziplin).
+
+- `references/authoring-rules.md` — Dreierstrukturen, kuenstliche Rhythmik,
+  Trenner, Asymmetrie, keine Varianz-Quoten (#225)
+- `references/writing-rules.md` — Einstiegstypen-Katalog (Sachverhalt bis Frage,
+  Auswahl aus Kontext statt Ersetzungstabelle), "Ich" differenziert (keine
+  mechanische Ich->Passiv-Transformation), LinkedIn-Kommentar-Sequenz nicht als
+  Default, Konnektor-Absaetze, Hard Negatives (legitimes "Ich denke, dass X",
+  "Darueber hinaus" im juristischen Genre-Profil) (#228)
+
+**Kondensierter Style-Prompt fuer Erstgenerierung** (aus `writing-rules.md`,
+dort mit Wann-nicht-Gegenprofilen):
+
+```
+Beginne Saetze mit Inhalt, nicht mit der Ankuedigung des Inhalts ("Ich denke,
+dass ..." -> Aussage direkt). Waehle Einstiege aus dem Kontext: Sachverhalt,
+Beobachtung, Konsequenz, konkreter Bezug, Anlass, Empfaengerbezug, Handlung,
+Kontrast, Frage — keine Standardformeln, keine Ersetzungstabelle. "Ich" nur,
+wenn Person oder Haltung relevant sind; nie mechanisch ins Passiv. Kein
+Dreier-Default: Anzahl folgt dem Inhalt. Varianz ja, aber keine Quoten.
+Konnektor-Absaetze nur bei echter Gliederung. Kein Lob-Auftakt ohne
+inhaltlichen Bezug; Lob->Paraphrase->Ergaenzung->Frage nie als Default-Sequenz.
+```
+
+
+- **Editing doctrine (Minimum-Effective-Edit):** `references/editing-doctrine.md` (#30, Teil 1)
+- **Edit self-check (Re-Check-Loop):** `references/edit-self-check.md` (#30, Teil 2)
+- **Praeventive Schreibregeln:** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
 - **Praeventive Schreibregeln (Aufzaehlung/Rhythmik):** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
 - **Praeventive Schreibregeln (write-side, P1/#228):** `references/writing-rules.md` - Einstiegstypen statt Ersatzliste, Inhalt statt Ankuendigung, differenziertes Ich, LinkedIn-Kommentar-Default, Konnektor-Absaetze, Style-Prompt-Snippet fuer die Erstgenerierung
-
 ## Termination Semantics (Fix-/Review-Loops, #62)
 
 maxIter never terminates as success. Terminal states are only **OUTPUT** ("slop-frei nach Maßstab der Ontology v1.x, Signalstand <Datum>") or **ESCALATE** ("human review required" + run report). The guarantee is scale-bound: paraphrased slop beyond the triggered signals stays invisible to the detector (Krishna et al., arXiv:2303.13408). Anti-pattern list and state machine: `../../docs/loop-guards/62-terminierungs-semantik.md`.

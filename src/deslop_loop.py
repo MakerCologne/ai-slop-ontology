@@ -30,9 +30,11 @@ claims success it cannot guarantee. All guarantees are bound to the
 detector's scale ("slop-frei nach Maßstab des Detektors"), not to absolute
 quality (#62: Fixpoint != Optimum).
 
-Signal confirmation (#58/Self-CheckGPT concept): a finding is only passed
-to the fix callback if it appeared in two consecutive top-of-iteration
-DETECT runs OR its confidence >= confirm_confidence.
+Signal confirmation (#58/SelfCheckGPT concept): a finding is only passed
+to the fix callback if it is confirmed by ≥ 2 independent evidences
+(``src/confirm.py`` ConfirmGate): deterministic match PLUS one of
+LLM second check, resample perturbation, stability across two
+top-of-iteration DETECTs, or confidence >= confirm_confidence.
 
 Voice-budget guardrail: a candidate whose token-change rate relative to
 the current text exceeds voice_budget (default 25%, Minimum-Effective-Edit
@@ -51,7 +53,14 @@ import os
 import re
 from collections import Counter
 from dataclasses import asdict, dataclass, field
+
+try:
+    from src.voice_drift import VoiceDriftParams, evaluate as voice_drift_evaluate
+except ImportError:  # direct module import without package context
+    from voice_drift import VoiceDriftParams, evaluate as voice_drift_evaluate  # noqa: E402
 from typing import Callable, Optional
+
+from src.confirm import ConfirmedFinding, ConfirmGate, ConfirmParams  # noqa: F401  (re-export)
 
 Detector = Callable[[str], "tuple[float, list[Finding]]"]
 Fixer = Callable[[str, list["Finding"]], Optional[str]]
@@ -95,6 +104,7 @@ class LoopParams:
     epsilon: float = 0.01
     voice_budget: float = 0.25
     confirm_confidence: float = 0.9
+    voice_drift: VoiceDriftParams = field(default_factory=VoiceDriftParams)
 
 
 @dataclass
@@ -111,8 +121,14 @@ class LoopResult:
     run_dir: Optional[str] = None
 
 
-def default_detector(ontology_path: str = "ontology.json") -> Detector:
-    """Read-only wrapper around the repo's deterministic classifier."""
+def default_detector(ontology_path: str = "ontology.json",
+                     domain: Optional[str] = None) -> Detector:
+    """Read-only wrapper around the repo's deterministic classifier.
+
+    `domain` (issue #35): optional domain scope forwarded to
+    classify_text — signals with a `triggered_by: domain` binding in
+    ontology.json are skipped when the scope does not match.
+    """
     import sys
 
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -122,7 +138,7 @@ def default_detector(ontology_path: str = "ontology.json") -> Detector:
     clf = SlopClassifier(ontology_path)
 
     def detect(text: str):
-        res = clf.classify_text(text)
+        res = clf.classify_text(text, domain=domain)
         findings = [
             Finding(signal=m.signal_id, confidence=m.confidence,
                     evidence=m.evidence, severity=m.severity,
@@ -153,9 +169,12 @@ class DeslopLoop:
     def __init__(self, detector: Optional[Detector] = None,
                  params: Optional[LoopParams] = None,
                  runs_dir: Optional[str] = None,
-                 run_id: Optional[str] = None):
+                 run_id: Optional[str] = None,
+                 confirm: Optional[ConfirmGate] = None):
         self.detector = detector or default_detector()
         self.params = params or LoopParams()
+        # #58: injizierbares Bestätigungstor; None -> Legacy-Inline-Kriterium
+        self.confirm = confirm
         self.runs_dir = runs_dir
         self.run_id = run_id or datetime.datetime.now().strftime(
             "%Y%m%d-%H%M%S") + f"-{id(self) % 10000:04d}"
@@ -164,6 +183,8 @@ class DeslopLoop:
     def _audit_start(self, text: str) -> Optional[str]:
         if not self.runs_dir:
             return None
+        self._audit_created = datetime.datetime.now().isoformat(
+            timespec="seconds")
         d = os.path.join(self.runs_dir, self.run_id)
         os.makedirs(d, exist_ok=True)
         manifest = {
@@ -276,6 +297,7 @@ class DeslopLoop:
         run_dir = self._audit_start(text)
 
         score_initial, baseline_findings = self.detector(text)
+        self._audit_baseline = baseline_findings
         baseline_ids = {f.signal for f in baseline_findings}
         current, current_score = text, score_initial
 
@@ -289,13 +311,22 @@ class DeslopLoop:
 
         while it < p.max_iter:
             it += 1
-            # ---- DETECT + TRIAGE (confirmation) ----
+            # ---- DETECT + TRIAGE (confirmation, #58) ----
             top_score, findings = self.detector(current)
-            confirmed = [
-                f for f in findings
-                if f.confidence >= p.confirm_confidence
-                or (prev_top_ids is not None and f.signal in prev_top_ids)
-            ]
+            if self.confirm is not None:
+                confirmed_objs = self.confirm.confirm(
+                    current, findings, prev_ids=prev_top_ids,
+                    detector=self.detector)
+                confirmed = [cf.finding for cf in confirmed_objs]
+                evidence_map = {cf.finding.signal: cf.evidence
+                                for cf in confirmed_objs}
+            else:
+                confirmed = [
+                    f for f in findings
+                    if f.confidence >= p.confirm_confidence
+                    or (prev_top_ids is not None and f.signal in prev_top_ids)
+                ]
+                evidence_map = None
             confirmed_ids = {f.signal for f in confirmed}
             prev_top_ids = {f.signal for f in findings}
             open_signals = sorted(confirmed_ids)
@@ -317,6 +348,7 @@ class DeslopLoop:
                                 "score_after": top_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                                 "action": "exit_ok", "budget_used": 0.0})
                 self._audit_iter(run_dir, records[-1])
                 break
@@ -331,6 +363,7 @@ class DeslopLoop:
                                 "score_after": top_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                                 "action": "escalate_no_fix",
                                 "budget_used": 0.0})
                 self._audit_iter(run_dir, records[-1])
@@ -346,20 +379,27 @@ class DeslopLoop:
                                 "score_after": top_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                                 "action": "escalate_no_candidate",
                                 "budget_used": 0.0})
                 self._audit_iter(run_dir, records[-1])
                 break
 
-            # ---- VOICE BUDGET (guardrail before verify) ----
+            # ---- VOICE BUDGET (per-step) + VOICE DRIFT (#56, cumulative vs draft_0) ----
             budget = token_change_rate(current, candidate)
-            if budget > p.voice_budget:
+            vd = voice_drift_evaluate(text, candidate, p.voice_drift)
+            vd_violation = vd.verdict in ("budget", "regression")
+            if budget > p.voice_budget or vd_violation:
                 records.append({"iter": it, "score_before": top_score,
                                 "score_after": current_score,
                                 "findings": sorted({f.signal for f in findings}),
                                 "confirmed": sorted(confirmed_ids),
-                                "action": "rejected_budget",
-                                "budget_used": round(budget, 4)})
+                                "evidence": evidence_map,
+                                "action": ("rejected_budget" if budget > p.voice_budget
+                                           else f"rejected_voice_drift_{vd.verdict}"),
+                                "budget_used": round(budget, 4),
+                                "voice_drift": asdict(vd)})
+
                 self._audit_iter(run_dir, records[-1])
                 continue
 
@@ -377,6 +417,7 @@ class DeslopLoop:
                             "score_after": cand_score,
                             "findings": sorted({f.signal for f in findings}),
                             "confirmed": sorted(confirmed_ids),
+                                "evidence": evidence_map,
                             "action": action,
                             "budget_used": round(budget, 4)})
             self._audit_iter(run_dir, records[-1])
@@ -411,4 +452,11 @@ class DeslopLoop:
                          iteration_records=records, run_dir=run_dir)
         self._audit_result(run_dir, res,
                            baseline_findings=baseline_findings)
+        try:
+            from src.run_audit import write_run_audit
+            write_run_audit(run_dir, res,
+                            baseline_findings=getattr(self, "_audit_baseline", None),
+                            created=getattr(self, "_audit_created", None))
+        except Exception as exc:  # audit must never break the loop
+            print(f"warn: run_audit writer failed: {exc}", file=sys.stderr)
         return res

@@ -25,6 +25,7 @@ from typing import Optional
 
 import domain_bindings
 import fp_guards
+import gates
 import genre_profiles
 import input_norm
 import learning_store
@@ -207,6 +208,50 @@ PHRASE_CATEGORIES = {
             "people are saying", "sources say", "insiders claim"
         ]
     },
+    # --- #115 (ZeroSlop): 'performed voice' + 'manufactured stakes'.
+    # Zwei Prosa-Muster, die LLMs aus Sozial-Media-/Marketing-Prosa
+    # importieren: Persoenlichkeits-Theater ("here's the thing nobody
+    # tells you") und Dringlichkeit ohne Sache ("in today's fast-paced").
+    # Beide Kategorien sind detect-only ueber die Kumulativregel (>= 2
+    # Treffer) und tragen keep_when-Guards (fp_guards.
+    # mask_performative_stakes), die VOR dem Matching maskieren:
+    #   - performative_voice: kein Fire, wenn im +-120-Zeichen-Fenster
+    #     ein First-Person-Erfahrungs-Anker steht ("when I ...",
+    #     "in my experience", "I lost/spent/learned/tried/failed")
+    #     — gelebte statt performte Stimme
+    #   - manufactured_stakes: kein Fire, wenn im Folgfenster (120
+    #     Zeichen) ein konkreter Termin/Fakt steht ("by Friday",
+    #     "deadline 15 October", Ziffern mit Einheit) — echte statt
+    #     dramatisierte Dringlichkeit
+    # Ueberlappung mit report_hedging "here's what nobody tells you"
+    # wird durch Longest-Match-Overlap-Suppression aufgelöst (keine
+    # Doppelbestrafung). Fact-Gate-Kopplung: Deslop löscht keine Facts
+    # (ontology.json deslopInvariants, #115) — der Score trifft die
+    # Inszenierung, nie den Fakt dahinter.
+    "performative_voice": {
+        "confidence": 0.55,
+        "phrases": [
+            "here's the thing nobody tells you",
+            "nobody tells you",
+            "i'm going to be honest with you",
+            "let me be brutally honest",
+            "i don't say this lightly",
+            "unpopular opinion, but",
+            "call me old-fashioned, but"
+        ]
+    },
+    "manufactured_stakes": {
+        "confidence": 0.6,
+        "phrases": [
+            "in today's fast-paced",
+            "the stakes have never been higher",
+            "now more than ever",
+            "at a critical juncture",
+            "time is running out",
+            "don't get left behind",
+            "before it's too late"
+        ]
+    },
     # --- Batch F (2026-08-25), cluster C2: business/report hedging and
     # fake-authority report formulas mined from FN series slop-0202 of
     # eval/corpus.jsonl. Same evidence discipline as C1 (>=3 slop texts,
@@ -350,7 +395,11 @@ PHRASE_CATEGORIES = {
             "here's the thing",
             "hope this helps",
             "to provide a quick update",
-            "^most people"
+            "^most people",
+            "just a quick update",
+            "giving you a quick update",
+            "here's a quick update",
+            "wanted to give you a quick update"
         ]
     },
     "generic_phrases": {
@@ -711,6 +760,11 @@ def adverb_stats(text: str) -> dict:
 
 def phrase_category_score(text: str) -> dict:
     text_lower = text.lower()
+    # #115: keep_when-Guards (echte Meinung / echte Dringlichkeit)
+    # muessen VOR dem Matching greifen — gleiche Mechanik wie die
+    # Quote-Exemption: Maskierung statt Post-Filter haelt Positionen und
+    # Longest-Match-Overlap-Logik fuer alle Kategorien intakt.
+    text_lower = fp_guards.mask_performative_stakes(text_lower)
     # #110: Hard-Negative-Guards fuer conversational_fillers muessen
     # VOR dem Matching greifen — unterstuetzungs-/erfahrungsprosa-
     # Kontexte (Grussformel-Naehe, direkte Quellenangabe) maskieren die
@@ -994,6 +1048,39 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         weights["portability"] * portability_slop
     )
 
+    # Issue #117 (spec docs/metric/AGGREGATION-GEOMEAN.md): optional
+    # weighted-geometric-mean aggregation over the 14 dimension
+    # contributions, selected via slop.json "aggregation": "geomean".
+    # Additive aggregation lets many small contributions hide empty
+    # dimensions and double-punishes repeated hits within one dimension;
+    # the geomean damps both ("one bad dimension can't be hidden behind
+    # good ones"). Each contribution is floored at epsilon (default
+    # 0.05) so a single clean dimension drags the composite down hard
+    # but cannot zero it. Escalation floors below (provenance, >=2
+    # strong families, multilingual) are floors, not aggregation — they
+    # apply unchanged in both modes.
+    agg_mode = "weighted"
+    agg_epsilon = 0.05
+    if project_config and project_config.get("aggregation"):
+        agg = project_config["aggregation"]
+        agg_mode = agg.get("mode", "weighted")
+        agg_epsilon = agg.get("epsilon", 0.05)
+    if agg_mode == "geomean":
+        contribs = {
+            "density": density_slop, "repetition": rep_slop,
+            "burstiness": burst_slop, "buzzwords": buzz_slop,
+            "phrases": phrase_slop, "punctuation": punct_slop,
+            "trailing_moral": moral_slop, "list_heavy": list_slop,
+            "fake_authority": auth_slop, "verbosity": verbose_slop,
+            "multilingual": multi_slop, "mirrored": mirrored_slop,
+            "structural": struct_slop, "portability": portability_slop,
+        }
+        total_w = sum(weights[k] for k in contribs) or 1.0
+        prod = 1.0
+        for k, v in contribs.items():
+            prod *= max(v, agg_epsilon) ** (weights[k] / total_w)
+        overall = prod
+
     # Non-English texts get diluted by the English-only dimensions (buzzwords,
     # phrases, authority claims are all English). If a text hits 3+ multilingual
     # AI markers, that is strong evidence on its own — floor at "Suspicious".
@@ -1085,6 +1172,7 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         "slop_score": score,
         "risk_level": risk,
         "action": action,
+        **({"aggregation": agg_mode} if agg_mode != "weighted" else {}),
         **({"genre": genre} if genre else {}),
         **({"domain": domain,
             "domain_gated_signals": domain_bindings.gated_signals(domain),
@@ -1307,6 +1395,15 @@ def format_report(result: dict) -> str:
     if signals["authority_phrases"]:
         lines.append(f"\n📢 Authority claims: {', '.join(signals['authority_phrases'])}")
 
+    # Issue #118: hard gates — binary signals, no score contribution.
+    gates_out = result.get("gates")
+    if gates_out and gates_out.get("gates"):
+        lines.append("\n🚧 Hard Gates (binär, kein Score-Anteil):")
+        for g in gates_out["gates"]:
+            mark = "❌ FAIL" if g["status"] == "fail" else "✅ pass"
+            lines.append(f"  {mark} {g['id']}" +
+                         (f" — {g['evidence']}" if g["status"] == "fail" else ""))
+
     # Issue #74: register context — detect-only style card, advisory.
     ctx = result.get("context") or {}
     card = ctx.get("register_profile")
@@ -1331,7 +1428,7 @@ if __name__ == "__main__":
 
     use_json = "--json" in sys.argv
     findings_only = "--findings" in sys.argv
-    args = [a for a in sys.argv[1:] if a not in ("--json", "--findings")]
+    args = [a for a in sys.argv[1:] if a not in ("--json", "--findings", "--gates")]
 
     # Issue #78: anchor-diff mode — protected anchors (numbers, quotes,
     # URLs, DOIs) must survive rewrites; drift is reported per changed
@@ -1429,6 +1526,39 @@ if __name__ == "__main__":
                 sys.exit(2)
             return args[i + 1]
         return None
+
+    # Issue #120: simple learn input — freetext + optional file is enough.
+    # Unlike --mark-not-slop this imposes no schema: signal_id optional
+    # (default "reviewed"), note itself doubles as the sample context when
+    # no --file is given. See docs/loop-guards/120-learn-input-standard.md.
+    if "--learn" in args:
+        i = args.index("--learn")
+        if i + 1 >= len(args):
+            print("Error: --learn requires a freetext note", file=sys.stderr)
+            sys.exit(2)
+        note = args[i + 1]
+        learn_file = _opt("--file")
+        if learn_file is not None and not os.path.isfile(learn_file):
+            print(f"Error: --file not found: {learn_file}", file=sys.stderr)
+            sys.exit(2)
+        sample_text = None
+        if learn_file:
+            with open(learn_file, encoding="utf-8", errors="replace") as f:
+                sample_text = f.read()
+        store = _opt("--store") or (
+            os.path.join(os.path.dirname(os.path.abspath(learn_file)), "not_slop.jsonl")
+            if learn_file else os.path.join(os.getcwd(), "not_slop.jsonl"))
+        try:
+            entry = learning_store.learn_entry(
+                store, note, signal_id=_opt("--signal"),
+                sample_text=sample_text, added_by=_opt("--by") or "manual")
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(2)
+        src = learn_file or "<note-as-sample>"
+        print(f"Learned: {entry['signal_id']} ({src}, hash {entry['sample_hash']}, "
+              f"store: {store})")
+        sys.exit(0)
 
     if "--mark-not-slop" in args:
         signal_id = _opt("--mark-not-slop")
@@ -1553,6 +1683,9 @@ if __name__ == "__main__":
                         not_slop_store=not_slop_store,
                         project_config=project_cfg)
 
+    # Issue #118: hard gates for binary signals — never a score
+    # contribution; auto-run for code/markup input, --gates forces them.
+    result["gates"] = gates.run_gates(text, force="--gates" in sys.argv)
     # Echo the applied project config so runs are reproducible (issue #11).
     if project_cfg is not None:
         result["config"] = project_cfg

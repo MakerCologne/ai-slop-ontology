@@ -76,6 +76,77 @@ SIGNAL_SEVERITY = {
 SEVERITY_WEIGHTS = {"critical": 1.0, "high": 0.7, "medium": 0.4, "low": 0.2}
 
 
+# Signal families ("dimensions") for geometric aggregation (#117):
+# double hits inside one dimension are damped (noisy-OR within the group,
+# weighted geometric mean across groups) — "one bad dimension can't be
+# hidden behind good ones", and a flood of small signals in one family
+# cannot masquerade as broad evidence.
+_SIGNAL_DIMENSIONS = {
+    "CriticalBuzzword": "lexical",
+    "BuzzwordOveruse": "lexical",
+    "BuzzwordOveruse_Severe": "lexical",
+    "PhrasePattern": "phrase",
+    "PhrasePatternSevere": "phrase",
+    "ExcessiveHedging": "phrase",
+    "MetaphorAbuse": "phrase",
+    "FakeAuthorityPattern": "phrase",
+    "WeaselAttribution": "phrase",
+    "EmDashExcess": "punctuation",
+    "EllipsisExcess": "punctuation",
+    "ExclamationExcess": "punctuation",
+    "UniformSentenceLength": "structure",
+    "TrailingMoral": "structure",
+    "ListHeavy": "structure",
+    "InventedPackage": "code",
+    "HardcodedSecret": "code",
+    "ExcessiveComments": "code",
+}
+
+
+def _signal_dimension(signal_id: str) -> str:
+    if signal_id in _SIGNAL_DIMENSIONS:
+        return _SIGNAL_DIMENSIONS[signal_id]
+    if signal_id.startswith("Multilingual_"):
+        return "multilingual"
+    if signal_id.startswith("TypePattern_"):
+        return "typepattern"
+    return "other"
+
+
+def aggregate_geometric(signals: list) -> float:
+    """Weighted geometric mean of per-dimension noisy-OR scores (#117).
+
+    Within a dimension, evidence accumulates via noisy-OR (independence
+    inside the family). Across dimensions, the weighted geometric mean
+    dampens double punishment: prod(d_i ^ w_i) ** (1 / sum(w_i)) with
+    w_i = max severity weight of that dimension.
+    """
+    dims: dict[str, list] = {}
+    for s in signals:
+        dims.setdefault(_signal_dimension(s.signal_id), []).append(s)
+    dim_scores = {}
+    dim_weights = {}
+    for dim, members in dims.items():
+        no_slop = 1.0
+        for s in members:
+            no_slop *= 1.0 - SEVERITY_WEIGHTS[s.severity] * s.confidence
+        dim_scores[dim] = 1.0 - no_slop
+        dim_weights[dim] = max(SEVERITY_WEIGHTS[s.severity] for s in members)
+    total_w = sum(dim_weights.values())
+    prod = 1.0
+    for dim, d in dim_scores.items():
+        prod *= d ** (dim_weights[dim] / total_w)
+    return prod
+
+
+def aggregate_noisy_or(signals: list) -> float:
+    """Noisy-OR over all signals (ontology §6, default aggregation)."""
+    no_slop_prob = 1.0
+    for s in signals:
+        no_slop_prob *= 1.0 - SEVERITY_WEIGHTS[s.severity] * s.confidence
+    return 1.0 - no_slop_prob
+
+
 def _severity_for(signal_id: str) -> str:
     # A multilingual hit means >= 2 language-specific AI markers matched;
     # since all other signals are English-based, this is strong evidence.
@@ -114,7 +185,12 @@ class ClassificationResult:
 class SlopClassifier:
     """Classify content using the AI Slop Ontology signal database."""
 
-    def __init__(self, ontology_path: str = "ontology.json"):
+    AGGREGATIONS = ("noisy_or", "geometric")
+
+    def __init__(self, ontology_path: str = "ontology.json", aggregation: str = "noisy_or"):
+        if aggregation not in self.AGGREGATIONS:
+            raise ValueError(f"unknown aggregation: {aggregation!r} (use one of {self.AGGREGATIONS})")
+        self.aggregation = aggregation
         with open(ontology_path) as f:
             self.ontology = json.load(f)
         self._load_signal_severity()
@@ -188,7 +264,16 @@ class SlopClassifier:
         # ontology.json domainBindings. Whitelist (applies_to) wins over
         # blacklist (restricted_in); unbound signals are domain-agnostic.
         b = self.ontology.get("domainBindings", {}).get("signals", {}).get(signal_id)
-        if not b or b.get("triggered_by") != "domain":
+        if b is None:
+            # Alternative binding section signalDomains (#193, issue #35):
+            # triggered_by: domain + domains whitelist (no restricted_in).
+            sd = self.ontology.get("signalDomains", {}).get("signals", {}).get(signal_id)
+            if sd and sd.get("triggered_by") == "domain":
+                doms = sd.get("domains")
+                if doms is not None:
+                    return domain in doms
+            return True
+        if b.get("triggered_by") != "domain":
             return True
         applies = b.get("applies_to")
         if applies is not None:
@@ -199,13 +284,21 @@ class SlopClassifier:
         """Issue #35: drop signals that are not triggered in ``domain``."""
         if domain is None:
             return result
-        known = self.ontology.get("domainBindings", {}).get("domains", [])
+        known = list(self.ontology.get("domainBindings", {}).get("domains", []))
+        known += [d for d in self.ontology.get("signalDomains", {}).get("domains_vocabulary", [])
+                  if d not in known]
         if domain not in known:
             raise ValueError(
                 f"Unknown domain {domain!r} — known: {', '.join(known)}")
-        result.signals_detected = [
-            s for s in result.signals_detected
-            if self._signal_active_in_domain(s.signal_id, domain)]
+        kept, dropped = [], []
+        for s in result.signals_detected:
+            (kept if self._signal_active_in_domain(s.signal_id, domain)
+             else dropped).append(s)
+        # Issue #35 (#193): make the filter decision auditable via notes.
+        for s in dropped:
+            result.notes.append(
+                f"domain_filter[{domain}]: dropped {s.signal_id}")
+        result.signals_detected = kept
         return result
 
     def classify_text(self, text: str, domain=None) -> ClassificationResult:
@@ -484,10 +577,11 @@ class SlopClassifier:
         self._filter_domain(result, domain)
 
         if result.signals_detected:
-            no_slop_prob = 1.0
-            for s in result.signals_detected:
-                no_slop_prob *= 1.0 - SEVERITY_WEIGHTS[s.severity] * s.confidence
-            result.overall_slop_score = min(1.0, round(1.0 - no_slop_prob, 4))
+            if self.aggregation == "geometric":
+                base = aggregate_geometric(result.signals_detected)
+            else:
+                base = aggregate_noisy_or(result.signals_detected)
+            result.overall_slop_score = min(1.0, round(base, 4))
 
             has_critical = any(s.severity == "critical" for s in result.signals_detected)
             high_count = sum(1 for s in result.signals_detected if s.severity in ("critical", "high"))
@@ -556,10 +650,11 @@ class SlopClassifier:
         for s in result.signals_detected:
             s.severity = self._severity_for(s.signal_id)
         if result.signals_detected:
-            no_slop_prob = 1.0
-            for s in result.signals_detected:
-                no_slop_prob *= 1.0 - SEVERITY_WEIGHTS[s.severity] * s.confidence
-            result.overall_slop_score = min(1.0, round(1.0 - no_slop_prob, 4))
+            if self.aggregation == "geometric":
+                base = aggregate_geometric(result.signals_detected)
+            else:
+                base = aggregate_noisy_or(result.signals_detected)
+            result.overall_slop_score = min(1.0, round(base, 4))
             if any(s.severity == "critical" for s in result.signals_detected):
                 result.overall_slop_score = max(result.overall_slop_score, 0.70)
             if result.overall_slop_score >= 0.70:
