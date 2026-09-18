@@ -22,6 +22,29 @@
 
 # Changelog
 
+## [Unreleased — #229] Meta-Haertung der example_fix-Empfehlungen
+
+Vier example_fix-Felder in `rhetorical_patterns.py` (+ `ontology.json`-Spiegel)
+praegten selbst eine neue Standardform statt eine zu lehren (Audit 15.09.,
+Systematisierung nach dem RoboticRhythm-Vorfall aus PR #225):
+
+- `RepeatedOpenings`: "The team shipped X, then rewrote search, then fixed
+  login." ersetzte wiederholte Satzanfaenge durch eine then-Kette — jetzt
+  Umschreibungsprinzip (Hauptsatz + Unterordnung, variierende Subjekte).
+- `SynonymCycling`: "The agent reviews the draft, scores it, and suggests
+  fixes." komprimierte drei Rotations-Saetze in eine X-Y-Z-Aktionstriade —
+  jetzt Prinzip (das klarste Wort wiederholen statt rotieren, keine Triade).
+- `FakeStrongVerb`: "tracks sponsors, drafts, due dates, and approvals in one
+  place." lehrte die App-Store-Feature-Liste ("in one place") — jetzt Prinzip
+  (eine konkrete Aufgabe, schlichtes Verb).
+- `DecorativeSeparatorTriad`: "Strategie und Umsetzung - und welche Wirkung
+  daraus tatsaechlich entsteht." behielt den Trennzeichen-Rahmen bei — jetzt
+  Prinzip (zwei Begriffe als Satz, dritte Wirkung streichen oder eigener Satz).
+
+Meta-Regressionstest (neu in `test_rhetorical_patterns.py`, zusaetzlich
+`test_micro_patterns.py`): jeder example_fix muss durch
+`find_rhetorical_patterns` + `rhythm_metrics` ohne Fund bleiben; then-Ketten-
+Regex-Guard; Template-faellige Fixes muessen Prinzip-Texte sein.
 ## [Unreleased] — #98-Zielstand: Human/Ideological-Korpus 46/40 + Runner-Gate 5b
 
 Der Seed-Stand (PR #132, 24/16) erreicht den Zielstand aus Issue #98: 46
