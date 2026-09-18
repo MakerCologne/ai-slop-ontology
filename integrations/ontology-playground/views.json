@@ -1,0 +1,124 @@
+{
+  "adapter_version": "0.2.0",
+  "source_of_truth": ["ontology.json", "ontology.ttl", "extensions/human-work-seo-slop/human_work_seo_slop.json", "extensions/human-work-seo-slop/human_work_seo_slop.ttl"],
+  "scaffold_classes": ["SlopPhenomenon", "DetectionEvidence", "MitigationAction", "Harm"],
+  "shared_classes": ["ContentItem", "SyntheticContent", "AI_AssistedContent"],
+  "views": [
+    {
+      "slug": "ai-slop-core",
+      "name": "AI Slop Core",
+      "description": "Core text-slop phenomena and the evidence/mitigation scaffolding around them.",
+      "category": "general",
+      "icon": "sparkles",
+      "tags": ["ai-slop", "core", "text"],
+      "classes": ["ContentItem", "SyntheticContent", "GenericSlop", "PseudoInsightSlop", "FakeAuthoritySlop", "SlopPhenomenon"],
+      "relationships": [
+        ["hasPhenomenon", "ContentItem", "SlopPhenomenon"],
+        ["exhibits", "SyntheticContent", "GenericSlop"],
+        ["exhibitsPseudoInsight", "SyntheticContent", "PseudoInsightSlop"],
+        ["citesFakeAuthority", "SyntheticContent", "FakeAuthoritySlop"],
+        ["generates", "SyntheticContent", "ContentItem"]
+      ]
+    },
+    {
+      "slug": "ai-slop-media",
+      "name": "AI Slop by Medium",
+      "description": "Slop phenomena across generated media: images, video, audio and code.",
+      "category": "media",
+      "icon": "photo",
+      "tags": ["ai-slop", "media", "video", "audio", "code"],
+      "classes": ["ContentItem", "SyntheticContent", "SurrealEngagementBait", "FakePhotographSlop", "FakeProductImageSlop", "AIGeneratedVideo", "FakeArtistMusic", "HallucinatedPackage"],
+      "relationships": [
+        ["generates", "SyntheticContent", "ContentItem"],
+        ["rendersAsVideo", "AIGeneratedVideo", "ContentItem"],
+        ["baitsEngagement", "SurrealEngagementBait", "SyntheticContent"],
+        ["fakesPhotograph", "FakePhotographSlop", "ContentItem"],
+        ["fakesProduct", "FakeProductImageSlop", "ContentItem"],
+        ["fakesArtist", "FakeArtistMusic", "ContentItem"],
+        ["hallucinatesPackage", "HallucinatedPackage", "SyntheticContent"]
+      ]
+    },
+    {
+      "slug": "ai-slop-domains",
+      "name": "AI Slop by Domain",
+      "description": "Domain-specific slop: SEO, academic, political, security and review contexts.",
+      "category": "general",
+      "icon": "globe",
+      "tags": ["ai-slop", "seo", "academic", "political"],
+      "classes": ["ContentItem", "SEOSlop", "AcademicSlop", "PoliticalSlop", "ReviewSlop", "SecurityReportSlop", "PeerReviewSlop"],
+      "relationships": [
+        ["pollutesSearch", "SEOSlop", "ContentItem"],
+        ["fabricatesCitations", "AcademicSlop", "ContentItem"],
+        ["amplifiesPropaganda", "PoliticalSlop", "ContentItem"],
+        ["fakesReviews", "ReviewSlop", "ContentItem"],
+        ["fakesSecurityReport", "SecurityReportSlop", "ContentItem"],
+        ["subvertsPeerReview", "PeerReviewSlop", "ContentItem"]
+      ]
+    },
+    {
+      "slug": "ai-slop-intent",
+      "name": "AI Slop by Intent",
+      "description": "Slop classified by the intent that drives its production.",
+      "category": "general",
+      "icon": "target",
+      "tags": ["ai-slop", "intent", "classification"],
+      "classes": ["ContentItem", "EngagementClickbaitSlop", "SEOContentFarmSlop", "PropagandaDisinfoSlop", "MonetizationSlop", "SpamNoiseSlop"],
+      "relationships": [
+        ["drivesProduction", "EngagementClickbaitSlop", "ContentItem"],
+        ["drivesProductionFarm", "SEOContentFarmSlop", "ContentItem"],
+        ["drivesPropaganda", "PropagandaDisinfoSlop", "ContentItem"],
+        ["drivesMonetization", "MonetizationSlop", "ContentItem"],
+        ["drivesSpamNoise", "SpamNoiseSlop", "ContentItem"]
+      ]
+    },
+    {
+      "slug": "work-slop",
+      "name": "Work Slop",
+      "description": "Human-authored and AI-assisted slop in everyday work products (detect-only extension).",
+      "category": "technology",
+      "icon": "briefcase",
+      "tags": ["work-slop", "human-authored", "detect-only"],
+      "classes": ["HumanWorkSlop", "AIWorkslop", "JargonSlop", "MeetingSlop", "DocumentationSlop", "ReviewSlop"],
+      "relationships": [
+        ["specializes", "HumanWorkSlop", "JargonSlop"],
+        ["specializesMeeting", "HumanWorkSlop", "MeetingSlop"],
+        ["specializesDocs", "HumanWorkSlop", "DocumentationSlop"],
+        ["contrasts", "AIWorkslop", "HumanWorkSlop"],
+        ["reviewsBadly", "ReviewSlop", "DocumentationSlop"]
+      ]
+    },
+    {
+      "slug": "management-slop",
+      "name": "Management Slop",
+      "description": "Slop in management communication: strategy, metrics, process and compliance rituals.",
+      "category": "general",
+      "icon": "org",
+      "tags": ["management-slop", "work-slop", "detect-only"],
+      "classes": ["ManagementSlop", "StrategySlop", "DecisionSlop", "MetricsSlop", "ProcessSlop", "ComplianceSlop", "CommunicationSlop"],
+      "relationships": [
+        ["specializesStrategy", "ManagementSlop", "StrategySlop"],
+        ["specializesDecision", "ManagementSlop", "DecisionSlop"],
+        ["gamedByMetrics", "MetricsSlop", "ProcessSlop"],
+        ["ritualizedBy", "ComplianceSlop", "ProcessSlop"],
+        ["spreadsThrough", "CommunicationSlop", "ManagementSlop"]
+      ]
+    },
+    {
+      "slug": "seo-slop",
+      "name": "SEO Slop",
+      "description": "Search-manipulation slop: scaled content, doorway pages, expired domains and GEO manipulation.",
+      "category": "general",
+      "icon": "search",
+      "tags": ["seo-slop", "search", "geomanipulation"],
+      "classes": ["ContentItem", "ScaledContentSlop", "DoorwayPageSlop", "SiteReputationSlop", "ExpiredDomainSlop", "ScrapedRemixSlop", "SearchSaturationSlop", "GEOManipulationSlop"],
+      "relationships": [
+        ["scalesContent", "ScaledContentSlop", "ContentItem"],
+        ["funnelsTraffic", "DoorwayPageSlop", "ContentItem"],
+        ["abusesReputation", "SiteReputationSlop", "ContentItem"],
+        ["revivesDomain", "ExpiredDomainSlop", "ContentItem"],
+        ["saturatesSearch", "SearchSaturationSlop", "ContentItem"],
+        ["manipulatesGEO", "GEOManipulationSlop", "ContentItem"]
+      ]
+    }
+  ]
+}

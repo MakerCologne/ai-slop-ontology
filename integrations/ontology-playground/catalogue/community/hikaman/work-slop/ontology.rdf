@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns="https://github.com/hikaman/ai-slop-ontology#"
+         xml:base="https://github.com/hikaman/ai-slop-ontology">
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#HumanWorkSlop">
+    <rdfs:label xml:lang="en">Human Work Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#AIWorkslop">
+    <rdfs:label xml:lang="en">A I Workslop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#JargonSlop">
+    <rdfs:label xml:lang="en">Jargon Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#MeetingSlop">
+    <rdfs:label xml:lang="en">Meeting Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#DocumentationSlop">
+    <rdfs:label xml:lang="en">Documentation Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ReviewSlop">
+    <rdfs:label xml:lang="en">Review Slop</rdfs:label>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#HumanWorkSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#AIWorkslop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#JargonSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#MeetingSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#DocumentationSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ReviewSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#specializes">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#HumanWorkSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#JargonSlop"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#specializesMeeting">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#HumanWorkSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#MeetingSlop"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#specializesDocs">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#HumanWorkSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#DocumentationSlop"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#contrasts">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#AIWorkslop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#HumanWorkSlop"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#reviewsBadly">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ReviewSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#DocumentationSlop"/>
+  </owl:ObjectProperty>
+</rdf:RDF>

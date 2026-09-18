@@ -1,0 +1,12 @@
+{
+  "name": "Work Slop",
+  "description": "Human-authored and AI-assisted slop in everyday work products (detect-only extension).",
+  "category": "technology",
+  "icon": "briefcase",
+  "tags": [
+    "work-slop",
+    "human-authored",
+    "detect-only"
+  ],
+  "author": "hikaman"
+}

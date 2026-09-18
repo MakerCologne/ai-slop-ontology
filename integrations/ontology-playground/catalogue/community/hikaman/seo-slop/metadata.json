@@ -1,0 +1,12 @@
+{
+  "name": "SEO Slop",
+  "description": "Search-manipulation slop: scaled content, doorway pages, expired domains and GEO manipulation.",
+  "category": "general",
+  "icon": "search",
+  "tags": [
+    "seo-slop",
+    "search",
+    "geomanipulation"
+  ],
+  "author": "hikaman"
+}
