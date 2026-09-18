@@ -9,7 +9,7 @@ Classify and score content for AI slop using the AI Slop Ontology v1.0.0.
 
 ## Market Positioning: Detector, not a Rewriter (#38)
 
-skills.sh market scan (2026-08, 100 hits for "slop"): the market is dominated by rewrite/humanizer skills; the detector niche is barely occupied. This skill deliberately positions itself as a **detector** — it reports `slop_score` + evidence and never silently rewrites content (detect-only layers document patterns; fixes stay the user's decision).
+skills.sh market scan (2026-08, 100 hits for "slop"): the market is dominated by rewrite/humanizer skills; the detector niche is barely occupied. This skill deliberately positions itself as a **detector** — it reports `slop_score` + evidence and never silently rewrites content (detect-only layers document patterns; fixes stay the user's decision). Rationale (ADR-0001): a rewriter coupled to its own detector invites Goodhart-style self-gaming; repair guidance stays documented as countermeasures, outside the scoring path.
 
 **Unique selling point: text + code + UI in one detector.** No market skill covers all three classes.
 
@@ -22,7 +22,6 @@ skills.sh market scan (2026-08, 100 hits for "slop"): the market is dominated by
 | **ai-slop-detection (this)** | — | ✓ | ✓ | ✓ | ✓ | **Detector** |
 
 Sources: `research/slop-ontology-gap-2026-08-24/` (report.md + deep/01–10, market-I2/I4).
-
 ## Core Concept
 
 AI Slop is not a binary type — it is a **risk profile**. Three necessary conditions (all must be met for confirmed slop):
@@ -76,6 +75,63 @@ python3 scripts/slop_scorer.py --file README.md
 - `term_allowlist`: terms stripped from signal matching only (same mechanic as genre exempt terms); structural dimensions keep the full text. Only the strong-evidence floors that remain after disabling are honest — allowlisting does not silence everything.
 - `weight_overrides`: merged over DEFAULT_WEIGHTS (no re-normalization; scores cap at 1.0).
 - Auto-discovery runs for `--file` input only; piped stdin stays environment-independent.
+- The applied config is echoed in the JSON output under `config` (run reproducibility).
+- Config composes with `--genre` (allowlist and genre exemptions apply together). Fail-loud: an invalid config aborts with exit code 2.
+- Disabled weighted dimensions keep appearing in the report; they just no longer contribute to the score.
+
+
+### Step 1c: Findings with receipts (Issue #119)
+
+```bash
+python3 scripts/slop_scorer.py --findings "TEXT_TO_ANALYZE"
+```
+
+Emits one JSON receipt per detected signal hit — the machine-readable
+findings standard (`finding = {signal_id, span, evidence_quote,
+reliability, suggested_action}`):
+
+- `signal_id`: family + qualifier, e.g. `buzzword.tier1_critical`,
+  `phrase.opening_formulas`, `authority`, `moral`
+- `span`: `{start, end}` (character offsets into the scored text) plus
+  1-based `line`
+- `evidence_quote`: the exact matched text at that span
+- `reliability`: heuristic default from the family's calibration tier
+  (buzzword tier confidence; phrase 0.7; authority 0.65; multilingual 0.6;
+  structural binaries 0.5)
+- `suggested_action`: concrete rewrite guidance per family
+
+Structural binary signals (trailing moral, list-heavy, mirrored
+intro/conclusion) get one whole-text receipt each. Register findings
+(#74) stay detect-only and are excluded. The same `findings` array is
+part of every `--json` output.
+
+### Step 1d: Domain context (--domain, #35)
+
+Slop-Defaults sind domain-konditional (unslop: "If the page is for devtools → ...").
+Signale mit `triggered_by: domain` (SSOT: `ontology.json` → `domainBindings`, 5 Pilot-Signale) feuern nur in ihren Domains:
+
+```bash
+python3 scripts/slop_scorer.py --domain changelog --file CHANGELOG-entry.md
+```
+
+- Whitelist (`applies_to`) schlägt Blacklist (`restricted_in`); Signale ohne Bindung sind domain-agnostisch
+- Gating wirkt auf Scorer-Gewichtsdimensionen (gemappt via `scripts/domain_bindings.py` `SIGNAL_WEIGHT_MAP`, z.B. Workslop→phrases, NumberedListOveruse→list_heavy) und auf Classifier-Findings (`classify_text(text, domain=)` filtert vor der Noisy-OR-Aggregation)
+- Fail-loud: unbekannte Domain → Exit 2; `--json` zeigt `domain`, `domain_gated_signals`, `domain_gated_weight_dims` (Auditierbarkeit)
+- Default ohne `--domain`: unverändertes Verhalten (Opt-in, analog #42-Genre)
+- Domains (v1): `essay`, `marketing`, `ui_copy`, `changelog`, `devtools_docs`, `academic`, `security_report`
+
+**slopkit variant:** the `slopkit` package supports the same `--config slop.json` keys for its own signal set:
+
+```bash
+python3 -m slopkit --config slop.json score --file draft.md
+```
+
+Allowlisted terms are removed from buzzword tiers and phrase categories
+before detection; disabled signals are dropped from reports and the overall
+score is recomputed (Noisy-OR, escalation only for still-weighted critical /
+≥2 high signals). Config errors (unknown keys, bad severities, weights
+outside [0,1]) abort with exit code 2 instead of silently mis-scoring.
+
 
 ### Step 2: Classify slop type
 
@@ -90,6 +146,20 @@ Returns: slop types (GenericSlop, SEOContentFarmSlop, AcademicSlop, LegalSlop, L
 ```bash
 python3 scripts/rhetorical_patterns.py "TEXT_TO_ANALYZE"
 ```
+
+### Step 2b-academic: Academic-Register-Signale (detect-only, #114)
+
+```bash
+python3 scripts/academic_register.py "TEXT_FILE" # oder - für stdin
+```
+
+Drei **invertierbare** Signale für Fachtexte (BS-I3, COLING-2025-Evidenz
+arXiv:2412.11385): `EpistemicMismatch` (starkes epistemisches Verb +
+Hedge im selben Satz), `UnquantifiedScopeClaim` („comprehensive analysis“
+ohne n=/Zeitraum im selben Satz), `VagueAttribution` („the literature
+suggests“ ohne Zitatmarker, ±120-Zeichen-Fenster). Jedes Signal invertiert
+mit der akademischen Absicherung (Zahl, Referenz, Quelle) — echte Papers
+feuern nicht. Nie score-wirksam.
 
 ### Step 2c: Check anchor drift between two versions (detect-only)
 
@@ -154,6 +224,33 @@ rhetorische Staffage). Beide **explorativ** (`exploratory: True`,
 Konfidenz ≤ 0.35, nie score-wirksam). Referenzkorpus:
 `eval/discourse_ref.jsonl` (versioniert, mit Kontrollartefakten).
 
+### Step 2i: Chat-Paste-Artefakte & Elision (detect-only, #113)
+
+`scripts/chat_artifacts.py` — sechs deterministische Mikro-Signale für
+Code-/Instruktions-/Kommentar-Dateien, die eingefügte LLM-Chat-Ausgabe
+verraten: `elision-comment` („// … rest of code unchanged" — stillschweigend
+gelöschter Code), `chat-preamble` („Certainly! Here's …" als erste Zeile),
+`fence-in-code` (eingerückte Markdown-Fences in Quelldateien),
+`meta-process-comment` (Kommentare erzählen den Generierungsprozess),
+`list-label-marker` (G1/NG2-Gliederungsmarker in Listpunkten/Headern),
+`placeholder-credential-shape` (your-api-key/sk-XXX/changeme als
+gesetzter Wert). Interface wie `micro_patterns.py`: `find_chat_artifacts(text)`
+→ `[{id, confidence, evidence, keep_when}]`, nie score-wirksam.
+
+
+### Step 2i: Findings-Standard mit Receipts (#119)
+
+`scripts/findings_standard.py` — Ausgabe-Vertrag für jeden Befund:
+`{signal_id, span, evidence_quote, reliability, suggested_action}`.
+Adapter für rhetorical_patterns / register_profile / naturalness_guard
+und `findings_from_result(result, text)` für receipts aus einem
+`slop_score()`-Ergebnis (buzzword/phrase/authority/multilingual mit
+char-Offsets; nicht lokalisierbare Befunde setzen `span: null`).
+**Nur Ausgabe, kein Score** — reliability beschreibt Beweislage
+(high/medium/low), nie eine Eskalationsstufe; detect-only-Hinweis ist
+Bestandteil jeder suggested_action. Normiert den Community-Konsens
+"Score mit receipts" (Slopdar/ZeroSlop/hallucinot,
+`tests/test_findings_standard.py`).
 ### DE-Phrase-Layer (#76/#77, SSOT in ontology.json)
 
 Returns fifteen sentence-level AI writing shapes as **named patterns with quoted
@@ -173,6 +270,26 @@ data-driven"). Data lives in `ontology.json`
 under `signals.text.rhetoricalPatterns`; concept adapted from
 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (MIT) and
 [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
+
+### Step 2i: LLM-Zweit-Scanner — Layer 2 (advisory, #57)
+
+`scripts/llm_scanner.py` — optionale zweite Meinung eines LLM-Judges
+gegen die deterministische Schicht (Swiss-Cheese: MT-Bench-Bias,
+arXiv:2306.05685; intrinsische Selbstkorrektur verschlechtert Ergebnisse
+ohne externes Feedback, arXiv:2310.01798). Der Judge ist **injizierbar**
+(`judge: prompt -> str`, JSON-Liste mit `signal_id` + `evidence_quote`),
+es gibt keine Modell-API und kein Netzwerk im Modul selbst. Pro Scan
+laeuft **genau ein Pass**: jede von ≥ 3 rotierten Prompt-Varianten wird
+mit vorwärts und rückwärts sortierter Signal-Liste gefahren
+(Position-Swap). Befunde müssen aus dem Text zitieren (erfundene Zitate
+werden verworfen); ein Befund mit < 90 % Reproduktionsrate wird auf
+`stability: "unsicher"` downgegradet statt zu feuern. Layer-2-Befunde
+sind **advisory** (`is_fix_trigger: False`, Konfidenz ≤ 0.5/0.35) und
+gehen nie in den numerischen Score ein; komplett unlesbare Judge-Antworten
+ergeben `status: "inconclusive"` statt eines Fehlers.
+### Step 2d: Check UI slop on generated pages (detect-only)
+
+For screenshots of generated landing pages, run the `image` tool with the prompt extension from `references/ui-slop-signals.md`. For front-end source, flag `UiSlopStartCase` (≥3 consecutive Title Case words in UI string literals) and CSS defaults (indigo/purple gradients, glassmorphism, `border-radius: 9999px`). Report each hit with quoted evidence; do not fold into the numeric score.
 
 ### Step 3: Interpret results
 
@@ -197,6 +314,12 @@ under `signals.text.rhetoricalPatterns`; concept adapted from
 
 **Citation Rule:**
 - Do NOT cite: AI-generated summaries without primary source, SEO listicles with no original reporting, articles with hallucinated references, synthetic social posts as evidence
+
+**Honest-Guarantee Rule (Fixpoint ≠ Optimum, #62):**
+- NEVER claim "slop-free" in absolute terms — only "slop-free per the scale of the AI Slop Ontology v<version>"
+- If a DESLOP loop run terminates with `EXIT_ESCALATE` (stagnation E3 or maxIter E5): report "human review required", never soft-pass it as success
+- Any guarantee derived from a loop run must cite verdict + detector version from `runs/<runId>/manifest.json`
+- Details: `docs/loop-guards/62-terminierungs-semantik.md`
 
 **Critical Review Rule:**
 - ALWAYS escalate (regardless of slop_score) for: legal, medical, political, financial, child safety, identity impersonation content
@@ -303,10 +426,14 @@ gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
 - **Detection signals (22 techniques):** `references/detection-signals.md`
 - **Scored examples (8 cases):** `references/slop-examples.md`
 - **Full ontology (459 signals):** `../../ontology.json` (repo root)
+- **UI slop signals (visual, detect-only):** `references/ui-slop-signals.md` (#15)
 - **Positive counter-profile (human voice):** `references/human-voice.md` (#21)
+
+- **Editing doctrine (Minimum-Effective-Edit):** `references/editing-doctrine.md` (#30, Teil 1)
+- **Edit self-check (Re-Check-Loop):** `references/edit-self-check.md` (#30, Teil 2)
+- **Praeventive Schreibregeln:** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
 - **Praeventive Schreibregeln (Aufzaehlung/Rhythmik):** `references/authoring-rules.md` (Dreierstrukturen, Rhythmik, Trenner, Asymmetrie)
 - **Praeventive Schreibregeln (write-side, P1/#228):** `references/writing-rules.md` - Einstiegstypen statt Ersatzliste, Inhalt statt Ankuendigung, differenziertes Ich, LinkedIn-Kommentar-Default, Konnektor-Absaetze, Style-Prompt-Snippet fuer die Erstgenerierung
-
 ## Termination Semantics (Fix-/Review-Loops, #62)
 
 maxIter never terminates as success. Terminal states are only **OUTPUT** ("slop-frei nach Maßstab der Ontology v1.x, Signalstand <Datum>") or **ESCALATE** ("human review required" + run report). The guarantee is scale-bound: paraphrased slop beyond the triggered signals stays invisible to the detector (Krishna et al., arXiv:2303.13408). Anti-pattern list and state machine: `../../docs/loop-guards/62-terminierungs-semantik.md`.
