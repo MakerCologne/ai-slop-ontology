@@ -112,3 +112,82 @@ class MicroPatternTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    # --- TechMetaphorNoun (#246, gap G2) ---
+
+    def test_tech_metaphor_positive_core_list(self):
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("Documentation is the substrate that keeps the flywheel spinning."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("Our north star for this quarter is retention."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("Trust is the bedrock of every healthy team."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("The product became the nexus of the whole ecosystem."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("Pricing is our wedge into the enterprise market."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("Brand loyalty is the moat that protects margins."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("The ratchet only turns one way now."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("This funding round is the endgame for the whole strategy."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("A hiring tailwind made growth cheap for a year."),
+        )
+        self.assertIn(
+            "TechMetaphorNoun",
+            ids("We use the pipeline as scaffolding for future features."),
+        )
+
+    def test_tech_metaphor_negative_ml_window(self):
+        # ML Fachtext hard-negatives: ambiguous terms inside an ML
+        # terminology window are legitimate and must NOT fire.
+        self.assertNotIn(
+            "TechMetaphorNoun",
+            ids("The model projects each token embedding onto a dense vector."),
+        )
+        self.assertNotIn(
+            "TechMetaphorNoun",
+            ids("We fuse text and image into a shared multimodal modality during training."),
+        )
+        self.assertNotIn(
+            "TechMetaphorNoun",
+            ids("This paradigm for training deep neural networks dates to 2017."),
+        )
+        self.assertNotIn(
+            "TechMetaphorNoun",
+            ids("The eval harness runs the classifier on the benchmark dataset."),
+        )
+
+    def test_tech_metaphor_negative_ambiguous_outside_window_concrete(self):
+        # "vector" as literal direction/magnitude in plain prose about a
+        # physics exercise is concrete register, not a metaphor claim.
+        self.assertNotIn(
+            "TechMetaphorNoun",
+            ids("Compute the velocity vector at t equals two seconds."),
+        )
+
+    def test_tech_metaphor_negative_plain_text(self):
+        self.assertNotIn("TechMetaphorNoun", ids("The team shipped the release on Friday."))
+        self.assertNotIn(
+            "TechMetaphorNoun",
+            ids("We fixed the login bug and updated the docs."),
+        )
