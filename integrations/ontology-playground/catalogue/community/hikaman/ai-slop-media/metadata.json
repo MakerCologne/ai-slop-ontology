@@ -1,0 +1,14 @@
+{
+  "name": "AI Slop by Medium",
+  "description": "Slop phenomena across generated media: images, video, audio and code.",
+  "category": "media",
+  "icon": "photo",
+  "tags": [
+    "ai-slop",
+    "media",
+    "video",
+    "audio",
+    "code"
+  ],
+  "author": "hikaman"
+}

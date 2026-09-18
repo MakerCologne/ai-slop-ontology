@@ -1,0 +1,12 @@
+{
+  "name": "AI Slop by Intent",
+  "description": "Slop classified by the intent that drives its production.",
+  "category": "general",
+  "icon": "target",
+  "tags": [
+    "ai-slop",
+    "intent",
+    "classification"
+  ],
+  "author": "hikaman"
+}
