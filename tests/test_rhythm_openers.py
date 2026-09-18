@@ -9,10 +9,15 @@ SCRIPTS = os.path.join(ROOT, "skills", "ai-slop-detection", "scripts")
 sys.path.insert(0, SCRIPTS)
 
 from rhythm_openers import rhythm_metrics
+from rhetorical_patterns import find_rhetorical_patterns
 
 
 def fired(text):
-    return {s["id"] for s in rhythm_metrics(text)["signals"]}
+    # OpenerAnnouncement lebt in rhetorical_patterns (Merge #241/#230),
+    # alle anderen Rhythmik-Signale in rhythm_openers (Union beider Module).
+    ids = {s["id"] for s in rhythm_metrics(text)["signals"]}
+    ids |= {f["id"] for f in find_rhetorical_patterns(text)}
+    return ids
 
 
 class UniformLengthRunTests(unittest.TestCase):
