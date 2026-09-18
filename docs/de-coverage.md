@@ -125,6 +125,12 @@
 
 Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind detect-only/advisory (Anti-Auto-Rewrite-Disziplin, vgl. SIGNAL-DOD.md).
 
+## Struktur-Signale für Satzanfangs-Ankündigungen und Konnektor-Absätze (#230, detect-only)
+
+- **OpenerAnnouncement** (`rhythm_openers.py`): Frame-basierte Zweiwort-Frames („Ich möchte …", „Ich denke[, …]", „Spannender Punkt.", „Ein weiterer Aspekt ist …", „Die spannende Frage ist …"; EN-Analoga) via Clause-Initial-Anker (#88-Mechanik) statt wachsender Wortliste. **keep_when:** echte Haltungsdifferenzierung — „Ich denke, dass X" mit folgender Begründung (und EN „I think that …") ist ausdrücklich exempt.
+- **ParagraphConnectorRate** (`rhythm_openers.py`, advisory): Anteil der Absätze mit additivem Konnektor-Eröffner (Darüber hinaus/Zudem/Ein weiterer (Aspekt|Punkt)/Gleichzeitig/Abschließend/Zusammenfassend + EN-Analoga). Feuert erst ab ≥ 3 Konnektor-Absätzen UND Rate > 0,4. **keep_when:** juristisches/akademisches Genre-Profil (konnektorgeführte Absätze als Hausstil; einzelnes „Darüber hinaus" feuert nie).
+- Kein Score-Einfluss (ADR-0006; Test in tests/test_rhythm_openers.py analog test_code_slop).
+
 ## Evidence-Verdichtung (RI-2-FU, #76-Rest)
 
 - **Ziel erreicht:** 63/96 de_*-Phrasen (65,6 %) tragen jetzt **≥ 2 unabhängige Belege** (Pin ≥ 50 %, C4 in scripts/check_ssot.py, Manipulationsprobe in tests/test_de_evidence_densification.py). Zweite Belege: eigene handgeschriebene Belegtexte (`eval/de_evidence_texts.jsonl`, source `own:corpus`, je Kategorie ein Text mit 3–4 wörtlich enthaltenen Phrasen) — eigene Handschrift, keine Kopien aus CC BY-SA-Drittkatalogen (Lizenzregel).

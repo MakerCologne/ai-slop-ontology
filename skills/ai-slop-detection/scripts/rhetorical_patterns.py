@@ -630,6 +630,9 @@ def find_rhetorical_patterns(text: str):
         "ein weiterer punkt wäre", "ergaenzend dazu", "ergänzend dazu",
         "die eigentliche frage ist", "die spannende frage ist",
         "was bedeutet das nun", "doch was heisst konkret", "doch was heißt konkret",
+        # PR #235 (Issue #230): EN-Spiegel der Frame-Liste
+        "interesting point", "another aspect is", "the exciting part is",
+        "the interesting question is", "great question",
     )
     for frame in _OPENER_FRAMES:
         if lowered.startswith(frame) or ("\n" + frame) in lowered or (". " + frame) in lowered:
@@ -638,7 +641,10 @@ def find_rhetorical_patterns(text: str):
     #      Tier B: Ich-approach frames — only at TEXT start and only without an
     #      in-sentence justification marker (hard negative: 'Ich denke, dass X, weil Y').
     _ICH_FRAMES = ("ich moechte", "ich möchte", "ich wollte", "ich denke",
-                   "ich finde", "ich glaube")
+                   "ich finde", "ich glaube",
+                   # PR #235 (Issue #230): EN-Ich-Frames am Textanfang
+                   "i want to walk through", "i want to explain",
+                   "i'd like to walk through", "i'd like to explain")
     _JUSTIFICATION = re.compile(r"\b(weil|denn|grund|belegt|belegen|nachvollziehbar|gemessen|laut|deshalb|daher)\b")
     if lowered.startswith(_ICH_FRAMES):
         first_sent = sents[0].lower() if sents else lowered
