@@ -137,6 +137,12 @@ Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind d
 - **Dokumentierte Abweichung (33 Phrasen, 34,4 %):** Einzelbeleg (Wikipedia-Projektseite oder own:de-observation/en-pendant). Die Rest-Belegung läuft künftig über den C4-Coverage-Pin — Unterschreiten von 50 % failt das SSOT-Gate.
 - **Strukturmetrik-Rest:** M66 (fake_analysis_appendix) und M71 (pseudo_nuance) als detect-only Signale in structure_metrics.py (Konfidenz 0.5, je 3/3/2-Fixtures in tests/test_structure_rest.py). M67 (Ankündigungs-Spaltsatz) bereits als de_announcement_cleft gedeckt — bewusst keine Duplikation (#46).
 
+## Kommentar-Genre-Profil + Engagement-Sequenz (#231, detect-only)
+
+- **Genre-Profil `comment`** (`genre_profiles.py`): Opt-in via `--genre comment` (ADR-0004, kein Auto-Detect). Exempt: Höflichkeitsformeln („Great post", „Thanks for sharing", „Congrats", „Well said" …), zero_weights: burstiness/verbosity (Kurztext-Konvention), decision_threshold 0.30.
+- **EngagementCommentDefault** (`engagement_sequences.py`, detect-only): Lob → Paraphrase → Ergänzung → Frage als Default-Engagement-Sequenz. Feuert nur bei vollständiger Vier-Stufen-Sequenz in ≤120 Wörtern; kurze authentische Kommentare feuern nie. Kein Score-Einfluss (ADR-0006-Politik, analog #230); Scoring-Integration zurückgestellt bis Korpuswachstum (ADR-0005).
+- **Evals:** 10 handgeschriebene Kommentar-Texte in `eval/control_set.jsonl` (5 Slop-Sequenzen als known_fn mit Sequenz-Nachweis, 5 legitime Hard Negatives, FP-Rate 0 am Genre-Threshold 0.30). Tests: `tests/test_engagement_sequences.py` (7 Tests).
+
 ## 2026-09-17: OpenerAnnouncement + ParagraphConnectorRate (#230 / P3)
 
 - **OpenerAnnouncement** (rhetorical_patterns.py, detect-only, Konfidenz 0.45):

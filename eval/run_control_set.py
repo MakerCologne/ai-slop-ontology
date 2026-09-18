@@ -40,14 +40,23 @@ def load_control_set(path: str) -> list:
 
 
 def run_gate(items: list, threshold: float) -> int:
+    import genre_profiles
     failures = []
     known_fns = []
     resolved = []
     for item in items:
-        score = slop_scorer.slop_score(item["text"])["slop_score"]
+        genre = item.get("genre")
+        result = slop_scorer.slop_score(item["text"], genre=genre)
+        score = result["slop_score"]
+        # Per-item genre threshold (issue #231): comment items are gated
+        # at their profile threshold, everything else at --threshold.
+        item_threshold = threshold
+        if genre:
+            profile = genre_profiles.get_profile(genre)
+            item_threshold = profile.get("decision_threshold", threshold)
         is_slop = item["label"] == "slop"
         expected_flag = is_slop and not item.get("known_fn")
-        flagged = score >= threshold
+        flagged = score >= item_threshold
         status = "ok"
         if item.get("known_fn") and is_slop:
             if flagged:
@@ -61,7 +70,9 @@ def run_gate(items: list, threshold: float) -> int:
             failures.append((item["id"], score, "expected slop >= threshold"))
         elif not is_slop and flagged:
             status = "FAIL (false positive)"
-            failures.append((item["id"], score, "expected clean < threshold"))
+            failures.append((item["id"], score,
+                             f"expected clean < {item_threshold}"
+                             + (f" [genre={genre}]" if genre else "")))
         print(f"  {item['id']:<16} {item['label']:<6} score={score:<6} {status}")
 
     print()
