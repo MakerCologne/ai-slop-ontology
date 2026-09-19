@@ -1,3 +1,15 @@
+## [Unreleased] — 2026-09-19 (#76-Rest: M29 Abbruch mittendrin)
+
+- `MidSentenceBreak` in structure_metrics.py: Dokument endet mitten im
+  Satz (letzte inhaltstragende Zeile ohne Satzschluss nach
+  abgeschlossenem Kontext; abrupte Endung auf Konjunktion/Praeposition/
+  Komma staerkt das Signal). DE+EN, Konfidenz 0.5, nie Score-wirksam
+- FP-Schutz: Listen-/Heading-/Code-/URL-Enden, Auslassungspunkte,
+  Signatur-Schlussworte (<3 Woerter ohne abrupte Endung) und Texte
+  <60 Woerter feuern nie
+- SSOT C3: +5 Konstanten; de-coverage M29 GEDECKT; EVALS-Eintrag;
+  tests/test_structure_m29.py (3/3/2-Fixtures + Wiring, 9 Tests)
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg

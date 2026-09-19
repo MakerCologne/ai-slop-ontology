@@ -43,7 +43,7 @@
 | M26 | Zitat-/Quellenfabrikation | **GEDECKT (neu, #77-Rest W5 13.09.)** | **de_quote_fabrication (Voll-Zweibeleg de-ev-24)** | |
 | M27 | Falsches Referenz-/Datumsformat | GEDECKT (Teil) | de_typography M48 (DE-Seite) |
 | M28 | Falsche Wiki-Kategorien | NEU (wiki-spezifisch) | out of scope (Plattform-) |
-| M29 | Abbruch mittendrin | NEU (klein) | Kandidat structural |
+| M29 | Abbruch mittendrin | **GEDECKT (neu, #76-Rest 19.09.)** | **MidSentenceBreak (structure_metrics, detect-only, DE+EN)** |
 | M30 | Stilwechsel zwischen Absätzen | **GEDECKT (neu, #77-Rest W5 13.09.)** | **de_register_shift (Voll-Zweibeleg de-ev-25)** | |
 | M31 | Ich-Form-Bearbeitungszusammenfassungen | NEU (verhaltensbasiert) | out of scope (Text-Engine) |
 | M32 | Autoritäts-Floskeln („die eigentliche Frage ist") | **GEDECKT (neu, #77-Rest W6 15.09.)** | **de_rhetorical_setup (Voll-Zweibeleg de-ev-26; disjunkt zu de_authority_floskel)** |
@@ -92,7 +92,7 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M58, M63, M68; M56/M72 seit Welle 6 gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M39, M40, M50–M52, M58, M63, M68; M29 seit 19.09. gedeckt, M56/M72 seit Welle 6 gedeckt)
 
 
 ## Bilanz (#77-Rest Welle 6, 15.09.2026)

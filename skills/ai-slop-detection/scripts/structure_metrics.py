@@ -178,7 +178,7 @@ def comparative_framing(text: str):
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
                         fake_analysis_appendix(text), pseudo_nuance(text),
-                        comparative_framing(text))
+                        comparative_framing(text), mid_sentence_break(text))
             if f]
 
 
@@ -254,4 +254,72 @@ def pseudo_nuance(text: str):
         "keep_when": ("echte Praezisierungen mit neuer Information; "
                       "einzelner Marker bleibt unmarkiert; nur advisory "
                       "werten (SIGNAL-DOD)"),
+    }
+
+
+# --- M29: Abbruch mittendrin ------------------------------------------------
+# Dokument endet mitten im Satz: Die letzte inhaltstragende Zeile hat
+# keinen Satzschluss und keine Abbruch-typische Endung (Ellipse/Doppelpunkt),
+# waehrend die vorangegangene Zeile vollstaendig abgeschlossen ist. Konzept
+# aus docs/de-coverage.md M29 (NEU klein): unvollstaendige Generierung, die
+# mitten im Satz oder Gedanken abbricht — typisch fuer Token-Limit-Ausgaben.
+# Sprachagnostisch DE+EN (Strukturheuristik). FP-Schutz: Auslassungspunkte,
+# Doppelpunkt-/Liste-, Code-, Heading- und Signatur-Enden feuern nie; kurze
+# Texte (<60 Woerter) und letzten Fragmenten mit Satzzeichen bleiben unmarkiert.
+MIDBREAK_TERMINAL_RE = re.compile(r"[.!?…:;\)\]\u201d\u2019\"']\s*$")
+MIDBREAK_NONPROSE_RE = re.compile(
+    r"^(?:#{1,6}\s|[-*+]\s|\d+[.)]\s|>|\||```|//|#|--)|^https?://\S+$"
+    r"|^[\W\d_]+$",
+)
+MIDBREAK_ABRUPT_WORD_RE = re.compile(
+    r"(?:^|\s)(?:,|und|oder|aber|der|die|das|den|dem|ein|eine|fuer|mit|von|zu|im|in|auf|"
+    r"and|or|but|the|a|an|for|with|of|to|in|on|by|that|which)\s*$",
+    re.IGNORECASE,
+)
+MIN_WORDS_MIDBREAK = 60          # Notizen/Chats: kein Fire (FP-Schutz)
+MAX_WORDS_FINAL_FRAGMENT = 40    # ganze Absaetze ohne Punkt sind kein Abbruch
+
+
+def mid_sentence_break(text: str):
+    """M29: Abbruch mittendrin — letzte inhaltstragende Zeile endet ohne
+    Satzschluss nach vollstaendig abgeschlossener vorheriger Zeile; abrupte
+    Endung auf Konjunktion/Praposition/Artikel oder Komma staerkt das
+    Signal. Abschluss-typische Endungen (Liste, Heading, Code, Signatur,
+    Auslassungspunkte) und kurze Texte feuern nie."""
+    words = text.split()
+    if len(words) < MIN_WORDS_MIDBREAK:
+        return None
+    # letzte inhaltstragende, nicht-prosa-freie Zeile suchen
+    last_line = None
+    for raw in reversed(text.rstrip().splitlines()):
+        line = raw.strip()
+        if not line or line.startswith("```"):
+            continue
+        if MIDBREAK_NONPROSE_RE.match(line):
+            return None   # Heading/Liste/Code/URL/Symbol-Zeile am Ende: kein Abbruch
+        last_line = line
+        break
+    if last_line is None:
+        return None
+    if MIDBREAK_TERMINAL_RE.search(last_line):
+        return None       # Satz-/Aufzaehlungsschluss oder Ellipse: kein Abbruch
+    frag_words = last_line.split()
+    if len(frag_words) > MAX_WORDS_FINAL_FRAGMENT:
+        return None
+    if not re.search(r"[.!?\u201d)]", text):
+        return None     # ohne abgeschlossenen Satzkontext: kein Abbruch-Beweis
+    abrupt = bool(MIDBREAK_ABRUPT_WORD_RE.search(last_line)) or last_line.endswith(",")
+    if len(frag_words) < 3 and not abrupt:
+        return None     # einzelne Schlussworte (Signatur, Name): kein Abbruch
+    return {
+        "id": "MidSentenceBreak",
+        "confidence": 0.5,
+        "evidence": ("Letzte Zeile endet ohne Satzschluss ("
+                     + ("abrupt auf Konjunktion/Praposition/Komma" if abrupt
+                        else "ohne Terminal-Zeichen")
+                     + ") nach abgeschlossenem Satzkontext — Dokument bricht "
+                       "mittendrin ab, wie bei Token-Limit-Abbruch"),
+        "keep_when": ("bewusst stichpunktartige Notizen, Chats, Tabellen- oder "
+                      "Code-Enden feuern nie; nur advisory werten, nie "
+                      "Score-dominant (SIGNAL-DOD)"),
     }
