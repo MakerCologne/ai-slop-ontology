@@ -99,6 +99,7 @@ SSOT_REGISTER = {
         "FINANCE_OBJECTS": ("corpus-calibrated", "deviation"),
         "GRAND_ENDPOINTS": ("corpus-calibrated", "deviation"),
         "RECAP_OPENERS": ("corpus-calibrated", "deviation"),
+        "AGENTLESS_CLAIM_VERBS": ("corpus-calibrated", "deviation"),
         "MICRO_PATTERNS": ("corpus-calibrated", "deviation"),
     },
     "proof_metrics.py": {

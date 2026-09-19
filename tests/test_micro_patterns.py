@@ -95,6 +95,50 @@ class MicroPatternTests(unittest.TestCase):
         self.assertNotIn("HeadingRepeatedBelowItself", ids(text))
 
 
+    # --- ActorlessClaim ---
+
+    def test_actorless_claim_positive_classic(self):
+        self.assertIn(
+            "ActorlessClaim",
+            ids("Mistakes were made and the launch was delayed."),
+        )
+
+    def test_actorless_claim_positive_it_was_decided(self):
+        self.assertIn(
+            "ActorlessClaim",
+            ids("It was decided that the feature would be removed."),
+        )
+
+    def test_actorless_claim_positive_passive_validation(self):
+        self.assertIn(
+            "ActorlessClaim",
+            ids("Queries are validated before execution."),
+        )
+
+    def test_actorless_claim_negative_named_agent(self):
+        self.assertNotIn(
+            "ActorlessClaim",
+            ids("Queries are validated by the gateway before execution."),
+        )
+
+    def test_actorless_claim_negative_policy_register(self):
+        self.assertNotIn(
+            "ActorlessClaim",
+            ids("Invoices shall be retained for ten years."),
+        )
+
+    def test_actorless_claim_negative_descriptive_passive(self):
+        self.assertNotIn(
+            "ActorlessClaim",
+            ids("The report was long and the meeting was short."),
+        )
+
+    def test_actorless_claim_negative_first_person(self):
+        self.assertNotIn(
+            "ActorlessClaim",
+            ids("We decided to remove the feature."),
+        )
+
     def test_every_example_fix_is_detector_clean(self):
         """#229 meta-safety: micro example_fixes must survive the detectors."""
         from rhetorical_patterns import find_rhetorical_patterns
