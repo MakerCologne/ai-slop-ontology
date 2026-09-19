@@ -22,6 +22,19 @@
 
 # Changelog
 
+## [Unreleased — #76-Rest] M17: Briefartiger Aufbau (LetterLikeStructure)
+
+- Neues detect-only Struktur-Signal `letter_like_structure` in
+  `structure_metrics.py`: vollständiger Briefrahmen (Betreff-Zeile +
+  Anrede-Zeile + Grußformel-Zeile) in Dokumenten mit Artikel-Markern
+  (Markdown-Headings, Listen) oder ≥ 80 Wörtern — E-Mail-Schablone in
+  unpassendem Genre (DE+EN, Konfidenz 0.5, nie Score-wirksam).
+- FP-Schutz: echte (Kurz-)E-Mails ohne Artikel-Marker feuern nie;
+  halber Rahmen (z. B. nur Betreff + Grußformel) bleibt unmarkiert.
+- SSOT C3: +5 Konstanten (LETTER_*_RE, MIN_WORDS_LETTER);
+  de-coverage.md M17 GEDECKT; `tests/test_structure_m17.py` neu
+  (3/3/2-Fixtures + Wiring).
+
 ## [Unreleased — #229] Meta-Haertung der example_fix-Empfehlungen
 
 Vier example_fix-Felder in `rhetorical_patterns.py` (+ `ontology.json`-Spiegel)

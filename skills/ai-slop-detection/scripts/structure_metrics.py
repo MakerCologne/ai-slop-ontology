@@ -178,8 +178,60 @@ def comparative_framing(text: str):
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
                         fake_analysis_appendix(text), pseudo_nuance(text),
-                        comparative_framing(text))
+                        comparative_framing(text), letter_like_structure(text))
             if f]
+
+
+# --- M17: Briefartiger Aufbau in Artikel-Kontext ----------------------------
+# Betreff-Zeile + Anredezeile + Grussformel-Zeile in einem Dokument, das
+# Artikel-Marker traegt (Markdown-Headings, Listen) oder lang genug fuer
+# einen Artikel ist. Konzept aus docs/de-coverage.md M17 (NEU klein):
+# KI-Ausgaben imitieren eine E-Mail, wo kein Brief hingehoert. Sprach-
+#agnostisch DE+EN (Formeln). Echte E-Mails sind Genre-Konvention -> FP-
+#Schutz ueber Artikel-Kontext-Gate.
+LETTER_SUBJECT_RE = re.compile(
+    r"^\s*(?:betreff|subject|re|fw|betreffzeile)\s*:\s*\S.{0,80}$",
+    re.IGNORECASE | re.MULTILINE,
+)
+LETTER_SALUTATION_RE = re.compile(
+    r"^\s*(?:sehr\s+geehrte[rsm]?[^,.!\n]{0,40}|liebe[rsm]?[^,.!\n]{0,30}|"
+    r"guten\s+tag|gruess\s+gott|hallo\s+\S+|dear\s+(?:mr|mrs|ms|dr|prof|team|"
+    r"all|everyone|sir|madam)\b[^\n]{0,30}|hi\s+(?:team|all|everyone)\b)\s*[,!]?\s*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+LETTER_CLOSING_RE = re.compile(
+    r"^\s*(?:mit\s+freundlichen\s+gr(?:ü|ue|u)(?:ß|ss)en|viele[nr]?\s+gr(?:ü|ue|u)(?:ß|ss)|"
+    r"beste[nr]?\s+gr(?:ü|ue|u)(?:ß|ss)|liebe\s+gr(?:ü|ue|u)(?:ß|ss)|herzliche\s+gr(?:ü|ue|u)(?:ß|ss)e[nm]?|"
+    r"best\s+regards|kind\s+regards|warm\s+regards|regards|sincerely|"
+    r"yours\s+(?:sincerely|faithfully)|cheers)[^\n]{0,20}$",
+    re.IGNORECASE | re.MULTILINE,
+)
+LETTER_ARTICLE_MARKER_RE = re.compile(r"^#{1,6}\s+\S|^\s*[-*+]\s+\S|^\d+\.\s+\S",
+                                      re.MULTILINE)
+MIN_WORDS_LETTER = 80          # echte Kurz-E-Mails: kein Fire (FP-Schutz)
+
+
+def letter_like_structure(text: str):
+    """M17: Betreff/Anrede/Grussformel als vollstaendiger Briefrahmen in
+    einem Dokument mit Artikel-Markern (Headings, Listen) oder >= 80
+    Woertern — E-Mail-Schablone in unpassendem Genre. Echte E-Mails und
+    kurze Nachrichten bleiben unmarkiert (Genre-Konvention)."""
+    if not (LETTER_SUBJECT_RE.search(text) and LETTER_SALUTATION_RE.search(text)
+            and LETTER_CLOSING_RE.search(text)):
+        return None
+    words = text.split()
+    if len(words) < MIN_WORDS_LETTER and not LETTER_ARTICLE_MARKER_RE.search(text):
+        return None
+    return {
+        "id": "LetterLikeStructure",
+        "confidence": 0.5,
+        "evidence": ("Vollstaendiger Briefrahmen (Betreff/Anrede/"
+                     "Grussformel) in Artikel-/Dokument-Kontext — "
+                     "E-Mail-Schablone statt passendem Genre"),
+        "keep_when": ("echte E-Mails, Briefe und Nachrichten sind "
+                      "Genre-Konvention und zaehlen nicht; nur advisory "
+                      "werten, nie Score-dominant (SIGNAL-DOD)."),
+    }
 
 
 # --- M66: Fake-Analyse-Anhang -----------------------------------------------

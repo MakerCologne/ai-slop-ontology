@@ -31,7 +31,7 @@
 | M14 | Falsche Listen-Syntax | GEDECKT | markup_anomalies |
 | M15 | Emojis vor Überschriften | GEDECKT | markup_anomalies/formatting slop |
 | M16 | Gedankenstrich-Cluster | GEDECKT | EmDashExcess + Em-Dash-Doctrine |
-| M17 | Briefartiger Aufbau (Betreff/Anrede/Grußformel) | NEU (klein) | Kandidat instruction/provenance-Umfeld |
+| M17 | Briefartiger Aufbau (Betreff/Anrede/Grußformel) | **GEDECKT (neu, #76-Rest 19.09.)** | **LetterLikeStructure (structure_metrics, detect-only, DE+EN)** |
 | M18 | Kollaborativ-Floskeln („Ich hoffe, das hilft“) | **GEDECKT (neu, #77-Rest 13.09.)** | **de_chatbot_leftover (Voll-Zweibeleg de-ev-17)** |
 | M19 | Wissensgrenzen-Hinweise („Stand …") | GEDECKT | provenance #20 (Update-Marker) |
 | M20 | Prompt-Ablehnungsreste | GEDECKT | provenance #20 / instruction slop |
@@ -92,7 +92,7 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M58, M63, M68; M56/M72 seit Welle 6 gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M29, M39, M40, M50–M52, M58, M68; M6/M17/M63 seit 19.09. gedeckt, M56/M72 seit Welle 6)
 
 
 ## Bilanz (#77-Rest Welle 6, 15.09.2026)
