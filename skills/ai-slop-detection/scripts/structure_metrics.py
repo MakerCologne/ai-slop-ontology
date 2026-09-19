@@ -26,6 +26,7 @@ Public surface:
     isometry(text) -> finding | None
     find_structure_findings(text) -> list[finding]
     comparative_framing(text) -> finding | None   (#75, Signal 6)
+    conditional_stacking(text) -> finding | None  (#76-Rest, M40)
 """
 
 import math
@@ -178,8 +179,63 @@ def comparative_framing(text: str):
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
                         fake_analysis_appendix(text), pseudo_nuance(text),
-                        comparative_framing(text))
+                        comparative_framing(text), conditional_stacking(text))
             if f]
+
+
+# --- M40: Wenn-Klausel-Stapel / ConditionalStacking (#76-Rest) --------------
+# Aufgeblähte Bedingungsarchitektur: statt einer Bedingung direkt zu nennen,
+# wird der Satz in mehrere gestapelte Konditionalsätze verschachtelt
+# ("wenn X, und wenn Y, falls Z, dann ...") — typische KI-Generierung zur
+# Dynamik-Vortäuschung. Sprachagnostisch DE+EN.
+CONDITIONAL_INTRODUCERS = [
+    re.compile(r"\b(?:wenn|falls|sofern|im\s+falle\s+dass)\b", re.I),
+    re.compile(r"\b(?:if|unless)\b", re.I),
+]
+
+MIN_CONDITIONALS_PER_SENTENCE = 3      # 1-2 Bedingungen = normal
+MIN_CONSECUTIVE_CONDITIONAL_SENTENCES = 3  # vereinzelte wenn-Saetze zaehlen nicht
+MIN_WORDS_CONDITIONAL = 30             # kurze Texte: keine Aussagekraft
+
+
+def conditional_stacking(text: str):
+    """M40: Satz mit >= 3 gestapelten Konditionalklauseln ODER >= 3
+    aufeinanderfolgende Saetze, die je mit einer Konditionalklausel
+    beginnen. 1-2 Bedingungen pro Satz bleiben unmarkiert (FP-Schutz)."""
+    if len(text.split()) < MIN_WORDS_CONDITIONAL:
+        return None
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    max_stack = 0
+    run = 0
+    for s in sentences:
+        n = sum(len(p.findall(s)) for p in CONDITIONAL_INTRODUCERS)
+        if n >= MIN_CONDITIONALS_PER_SENTENCE:
+            return {
+                "id": "ConditionalStacking",
+                "confidence": 0.5,
+                "evidence": (f"{n} gestapelte Konditionalklauseln in einem "
+                             f"Satz ({s[:60]}...) statt direkter Aussage"),
+                "keep_when": ("Verträge/Richtlinien stapeln legitime "
+                              "Bedingungen; Ein-/Zweifach-Bedingungen "
+                              "bleiben unmarkiert; nur advisory werten "
+                              "(SIGNAL-DOD)"),
+            }
+        if n >= 1 and len(s.split()) >= 5:
+            run += 1
+            if run >= MIN_CONSECUTIVE_CONDITIONAL_SENTENCES:
+                return {
+                    "id": "ConditionalStacking",
+                    "confidence": 0.5,
+                    "evidence": (">= 3 aufeinanderfolgende Saetze mit je "
+                                 "Konditionalklausel als Struktur-Ersatz "
+                                 "fuer eine direkte Aussage"),
+                    "keep_when": ("Vertrags-/HowTo-Genres mit bedingten "
+                                  "Anweisungen zaehlen nicht; nur advisory "
+                                  "werten (SIGNAL-DOD)"),
+                }
+        else:
+            run = 0
+    return None
 
 
 # --- M66: Fake-Analyse-Anhang -----------------------------------------------

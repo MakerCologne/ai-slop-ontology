@@ -1,3 +1,9 @@
+## [Unreleased] — 2026-09-19 (#76-Rest: M40 Wenn-Klausel-Stapel)
+
+- `ConditionalStacking` in structure_metrics.py: aufgeblaefte Bedingungs-architektur — ein Satz mit >= 3 gestapelten Konditionalklauseln oder >= 3 aufeinanderfolgende Konditionalsaetze als Struktur-Ersatz fuer direkte Aussagen. DE+EN, Konfidenz 0.5, nie Score-wirksam
+- FP-Schutz: 1-2 Bedingungen pro Satz und nicht-aufeinanderfolgende Konditionalsaetze feuern nie; Texte < 30 Woerter feuern nie; Vertrags-/HowTo-Genres im keep_when vermerkt
+- SSOT C3: +4 Konstanten; de-coverage M40 GEDECKT; EVALS-Eintrag; tests/test_structure_m40.py (3/3/2-Fixtures + Wiring, 9 Tests)
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg

@@ -141,6 +141,10 @@ SSOT_REGISTER = {
         "COMPARATIVE_FRAMING_PATTERNS": ("closed-list", "deviation"),
         "MIN_FRAMING_HITS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_FRAMING": ("engine-config", "fixture-calibrated"),
+        "CONDITIONAL_INTRODUCERS": ("closed-list", "deviation"),
+        "MIN_CONDITIONALS_PER_SENTENCE": ("engine-config", "fixture-calibrated"),
+        "MIN_CONSECUTIVE_CONDITIONAL_SENTENCES": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_CONDITIONAL": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
