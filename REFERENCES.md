@@ -73,3 +73,7 @@
 ## Adaptierte Fremdprojekte
 
 39. **Yang, "No AI slop" Editing-Skill** ([petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop), MIT) — Prosa-Editor mit ~20 rhetorischen AI-Mustern. Neun struktureller Satz-/Absatz-Muster wurden als detect-only Detektoren in `signals.text.rhetoricalPatterns` und `skills/ai-slop-detection/scripts/rhetorical_patterns.py` übernommen (eigene Regexe/Beispiele, benannte Evidenz statt Score).
+
+## M63 — Modalpartikel-Anomalie (#76)
+
+40. **Duden-Grammatik (9. Aufl.), Modalpartikeln** — Kanonische Beschreibung der Diskursfunktionen deutscher Modalpartikeln (ja, halt, eben, doch, mal …) als abtönende, satzbezogene Partikeln; Grundlage des geschlossenen Inventars in `naturalness_guard.modal_particle_anomaly`. Zweibeleg-Partner: own:corpus de-ev-29 (`eval/de_evidence_texts.jsonl`); Kontrolltexte NEG1–NEG3 in `tests/test_naturalness_guard.py`.
