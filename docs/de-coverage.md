@@ -53,7 +53,7 @@
 | M36 | Universal-Geschichts-Eröffnung („Seit jeher") | **GEDECKT (neu, T2)** | **de_opening (Teil 2)** | |
 | M37 | „In der heutigen X-Welt"-Rahmung | **GEDECKT (neu, T2)** | **de_opening + multilingual.german.buzzwords** | |
 | M38 | Aspirativer Schluss (grenzenlose Möglichkeiten) | **GEDECKT (neu, T2)** | **de_closing (Teil 2)** | |
-| M39 | Passiv-/subjektlose Fragmente | NEU | Kandidat structural (EN+DE messbar) |
+| **M39** | **Passiv-/subjektlose Fragmente** | **GEDECKT (neu, #76-Rest 20.09.)** | **structure_metrics.passive_fragment_stacking (detect-only)** |
 | M40 | Wenn-Klausel-Stapel | NEU | Kandidat syntaktisch |
 | M41 | Fehlkalibrierte Gewissheit | **GEDECKT (neu, T2)** | **de_hedging (Teil 2)** | |
 | M42 | Beleg-Aussage-Inkongruenz | DE-VARIANTE | proof_metrics (Kontext-Check) → DE |
@@ -92,7 +92,7 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M58, M63, M68; M56/M72 seit Welle 6 gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M40, M50–M52, M58, M63, M68; M39 seit 20.09. gedeckt; M56/M72 seit Welle 6 gedeckt)
 
 
 ## Bilanz (#77-Rest Welle 6, 15.09.2026)

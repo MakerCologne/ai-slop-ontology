@@ -26,6 +26,7 @@ Public surface:
     isometry(text) -> finding | None
     find_structure_findings(text) -> list[finding]
     comparative_framing(text) -> finding | None   (#75, Signal 6)
+    passive_fragment_stacking(text) -> finding | None  (#76, M39)
 """
 
 import math
@@ -178,8 +179,78 @@ def comparative_framing(text: str):
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
                         fake_analysis_appendix(text), pseudo_nuance(text),
-                        comparative_framing(text))
+                        comparative_framing(text),
+                        passive_fragment_stacking(text))
             if f]
+
+
+# --- M39: Passiv-/subjektlose Fragmente ------------------------------------
+# Segmente (Saetze, Bullets, Zeilen), die mit Passiv-Auxiliar oder reinem
+# Partizip beginnen — Handelnder fehlt, Aussage wird zum passiven Fragment
+# gestutzt ("Wird kontinuierlich optimiert." / "Implemented in phase two.").
+PASSIVE_FRAGMENT_AUX_DE = ("wird", "werden", "wurde", "wurden")
+PASSIVE_FRAGMENT_AUX_EN = ("is", "are", "was", "were", "being", "been")
+# Partizip-Start mit nachfolgender Praeposition = Bullet-Fragment-Stil
+PASSIVE_FRAGMENT_PARTICIPLE_PREP_DE = (
+    "durch", "in", "im", "mit", "für", "nach", "via",
+)
+PASSIVE_FRAGMENT_PARTICIPLE_PREP_EN = (
+    "by", "through", "via", "in", "with", "using",
+)
+
+MIN_PASSIVE_FRAGMENTS = 2      # Einzeltreffer bleibt unmarkiert (FP-Schutz)
+MIN_WORDS_PASSIVE_FRAGMENT = 30  # kurze Texte: keine Aussagekraft
+
+_AUX_DE_RE = re.compile(
+    r"^(?:%s)\s+(?:\S+\s+){0,2}?[A-Za-z]{5,}"
+    % "|".join(PASSIVE_FRAGMENT_AUX_DE),
+    re.IGNORECASE)
+_AUX_EN_RE = re.compile(
+    r"^(?:%s)\s+\w{4,}(?:ed|en)\b" % "|".join(PASSIVE_FRAGMENT_AUX_EN),
+    re.IGNORECASE)
+_PARTICIPLE_DE_RE = re.compile(
+    r"^[A-ZÄÖÜ]\w{5,}(?:t|en)\s+(?:%s)\b"
+    % "|".join(PASSIVE_FRAGMENT_PARTICIPLE_PREP_DE))
+_PARTICIPLE_EN_RE = re.compile(
+    r"^[A-Z]\w{3,}ed\s+(?:%s)\b"
+    % "|".join(PASSIVE_FRAGMENT_PARTICIPLE_PREP_EN))
+
+
+def _passive_fragment_segments(text: str) -> list:
+    """Segmente (Satz/Zeile/Bullet ohne praefix), die subjektlos mit
+    Passiv-Auxiliar oder Partizip beginnen."""
+    raw = re.split(r"[.!?\n]+|^\s*[-*]\s+", text, flags=re.M)
+    hits = []
+    for seg in raw:
+        seg = seg.strip()
+        if not seg:
+            continue
+        if (_AUX_DE_RE.match(seg) or _AUX_EN_RE.match(seg)
+                or _PARTICIPLE_DE_RE.match(seg) or _PARTICIPLE_EN_RE.match(seg)):
+            hits.append(seg)
+    return hits
+
+
+def passive_fragment_stacking(text: str):
+    """M39: >= 2 Passiv-/subjektlose Fragmente (Auxiliar- oder Partizip-
+    Start ohne Subjekt). Einzeltreffer bleibt unmarkiert — einzelne
+    passive Notiz ist kein Signal (Grenzfall, FP-Schutz)."""
+    if len(text.split()) < MIN_WORDS_PASSIVE_FRAGMENT:
+        return None
+    frags = _passive_fragment_segments(text)
+    if len(frags) < MIN_PASSIVE_FRAGMENTS:
+        return None
+    example = frags[0][:60]
+    return {
+        "id": "PassiveFragmentStacking",
+        "confidence": 0.5,
+        "evidence": (f"{len(frags)} Passiv-/subjektlose Fragmente "
+                     f"(Auxiliar-/Partizip-Start ohne Subjekt, z.B. "
+                     f'"{example}…"), sprachagnostisch DE+EN'),
+        "keep_when": ("Release-Notes/Changelogs/Protokolle nutzen legitim "
+                      "passive Kurzform; Einzeltreffer bleibt unmarkiert; "
+                      "nur advisory werten (SIGNAL-DOD)"),
+    }
 
 
 # --- M66: Fake-Analyse-Anhang -----------------------------------------------

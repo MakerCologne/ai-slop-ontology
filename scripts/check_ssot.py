@@ -141,6 +141,12 @@ SSOT_REGISTER = {
         "COMPARATIVE_FRAMING_PATTERNS": ("closed-list", "deviation"),
         "MIN_FRAMING_HITS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_FRAMING": ("engine-config", "fixture-calibrated"),
+        "PASSIVE_FRAGMENT_AUX_DE": ("closed-list", "deviation"),
+        "PASSIVE_FRAGMENT_AUX_EN": ("closed-list", "deviation"),
+        "PASSIVE_FRAGMENT_PARTICIPLE_PREP_DE": ("closed-list", "deviation"),
+        "PASSIVE_FRAGMENT_PARTICIPLE_PREP_EN": ("closed-list", "deviation"),
+        "MIN_PASSIVE_FRAGMENTS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_PASSIVE_FRAGMENT": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
@@ -222,6 +228,13 @@ ALLOWLIST_NOTES = [
     "project page 'Anzeichen fuer KI-generierte Inhalte' + own examples; "
     "no third-party pattern material copied). MIN_* thresholds are "
     "fixture-pinned (tests/test_structure_metrics.py).",
+    "structure_metrics (#76, M39) PASSIVE_FRAGMENT_AUX_DE/EN and "
+    "PASSIVE_FRAGMENT_PARTICIPLE_PREP_DE/EN are self-derived closed "
+    "inventories for the detect-only PassiveFragmentStacking signal "
+    "(Passiv-/subjektlose Fragmente; concept from docs/de-coverage.md "
+    "NEU candidate M39; own aux/participle heuristic and own "
+    "examples; no third-party pattern material copied). MIN_* "
+    "thresholds are fixture-pinned (tests/test_structure_passive_fragments.py).",
     "structure_metrics (#75, Signal 6) COMPARATIVE_FRAMING_PATTERNS is a "
     "self-derived EN/DE contrast-frame inventory (weniger X als vielmehr Y / "
     "eher X als Y / nicht X, sondern Y / not X but rather Y / less about X, "

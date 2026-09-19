@@ -1,3 +1,18 @@
+## [Unreleased] — 2026-09-20 (#76-Rest M39 — Passiv-/subjektlose Fragmente, detect-only)
+
+- `passive_fragment_stacking` (structure_metrics.py): >= 2 Segmente
+  (Saetze/Bullets/Zeilen), die subjektlos mit Passiv-Auxiliar ("Wird
+  kontinuierlich optimiert.") oder reinem Partizip + Praeposition
+  ("Implemented in phase two.") beginnen
+- FP-Schutz: Einzeltreffer unmarkiert, < 30 Woerter Skip, Release-Notes/
+  Changelog/Protokoll-Genres im keep_when; detect-only, conf 0.5, nie im
+  Slop-Score
+- SSOT C3: +6 Konstanten (PASSIVE_FRAGMENT_AUX_DE/EN, PASSIVE_FRAGMENT_
+  PARTICIPLE_PREP_DE/EN, MIN_PASSIVE_FRAGMENTS, MIN_WORDS_PASSIVE_FRAGMENT)
+- `tests/test_structure_passive_fragments.py` neu (DoD 3/3/2 + Wiring,
+  5 Testgruppen)
+- docs/de-coverage.md: M39 GEDECKT
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg
