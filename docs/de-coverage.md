@@ -133,8 +133,8 @@ Kein Muster wird als „automatisch fixbar" behandelt — alle DE-Signale sind d
 
 ## Evidence-Verdichtung (RI-2-FU, #76-Rest)
 
-- **Ziel erreicht:** 63/96 de_*-Phrasen (65,6 %) tragen jetzt **≥ 2 unabhängige Belege** (Pin ≥ 50 %, C4 in scripts/check_ssot.py, Manipulationsprobe in tests/test_de_evidence_densification.py). Zweite Belege: eigene handgeschriebene Belegtexte (`eval/de_evidence_texts.jsonl`, source `own:corpus`, je Kategorie ein Text mit 3–4 wörtlich enthaltenen Phrasen) — eigene Handschrift, keine Kopien aus CC BY-SA-Drittkatalogen (Lizenzregel).
-- **Dokumentierte Abweichung (33 Phrasen, 34,4 %):** Einzelbeleg (Wikipedia-Projektseite oder own:de-observation/en-pendant). Die Rest-Belegung läuft künftig über den C4-Coverage-Pin — Unterschreiten von 50 % failt das SSOT-Gate.
+- **Ziel erreicht (20.09. vollständig):** 168/168 de_*-Phrasen (100 %) tragen jetzt **≥ 2 unabhängige Belege** (Pin ≥ 50 %, C4 in scripts/check_ssot.py, Manipulationsprobe in tests/test_de_evidence_densification.py). Zweite Belege: eigene handgeschriebene Belegtexte (`eval/de_evidence_texts.jsonl`, source `own:corpus`) — eigene Handschrift, keine Kopien aus CC BY-SA-Drittkatalogen (Lizenzregel).
+- **RI-2-Rest geschlossen (20.09., #76-Rest):** die letzten 33 Einzelbeleg-Phrasen (16 Kategorien, de-ev-29 bis de-ev-44) erhielten own:corpus-Zweibelege. Die dokumentierte Einzelbeleg-Abweichung entfällt; der C4-Coverage-Pin (≥ 50 %) bleibt als Rückfall-Gate bestehen.
 - **Strukturmetrik-Rest:** M66 (fake_analysis_appendix) und M71 (pseudo_nuance) als detect-only Signale in structure_metrics.py (Konfidenz 0.5, je 3/3/2-Fixtures in tests/test_structure_rest.py). M67 (Ankündigungs-Spaltsatz) bereits als de_announcement_cleft gedeckt — bewusst keine Duplikation (#46).
 
 ## Kommentar-Genre-Profil + Engagement-Sequenz (#231, detect-only)

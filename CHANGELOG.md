@@ -1,3 +1,12 @@
+## [Unreleased] — 2026-09-20 (#76-Rest RI-2 — Evidence-Verdichtung abgeschlossen)
+
+- Alle 33 verbleibenden Einzelbeleg-de_*-Phrasen (16 Kategorien) tragen
+  jetzt >= 2 unabhaengige Belege (own:corpus-Zweibelege, de-ev-29 bis
+  de-ev-44 in eval/de_evidence_texts.jsonl)
+- C4-Deckung 168/168 (100 %); C4-Coverage-Pin (>= 50 %) bleibt als
+  Rueckfall-Gate bestehen
+- docs/de-coverage.md: dokumentierte Einzelbeleg-Abweichung entfaellt
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg

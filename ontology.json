@@ -1107,6 +1107,10 @@
                 {
                   "source": "own:en-pendant",
                   "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-33) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "nutzt die kraft von": [
@@ -1123,6 +1127,10 @@
                 {
                   "source": "own:en-pendant",
                   "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-33) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -1173,6 +1181,10 @@
                 {
                   "source": "own:de-pendant",
                   "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-29) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "revolutionär": [
@@ -1189,6 +1201,10 @@
                 {
                   "source": "own:de-pendant",
                   "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-29) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -1239,12 +1255,20 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-31) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "es ist allgemein bekannt": [
                 {
                   "source": "own:en-pendant",
                   "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-31) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "die eigentliche frage ist": [
@@ -1285,6 +1309,10 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Konzept im Artikel dokumentiert (uebersetzte Floskel/Werbesprache/vage Autoritaet/Meta-Sprache)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-37) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "kurz gesagt": [
@@ -1311,12 +1339,20 @@
                 {
                   "source": "own:en-pendant",
                   "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-37) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "zunächst einmal": [
                 {
                   "source": "own:en-pendant",
                   "note": "Eigenbeleg: DE-Ableitung aus eigener Ontology (EN-Pendant) bzw. eigene DE-Beobachtung"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-37) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -1377,12 +1413,20 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite nennt 'andererseits' explizit"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-43) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "des weiteren": [
                 {
                   "source": "own:de-observation",
                   "note": "eigene DE-Beobachtung: steife Konnektor-Variante desselben Konzepts"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-43) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -1433,6 +1477,10 @@
                 {
                   "source": "own:en-pendant",
                   "note": "EN-Pendant 'in conclusion,' aus eigener Ontology (closing_formulas)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-40) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "letztlich bleibt festzuhalten": [
@@ -1449,6 +1497,10 @@
                 {
                   "source": "own:de-observation",
                   "note": "eigene DE-Beobachtung: typische Ein-Satz-Rekap-Formel"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-40) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -1479,6 +1531,10 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite nennt 'unbedingt besuchen' explizit"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-41) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "unbedingt sehen": [
@@ -1505,6 +1561,10 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite nennt 'bleibendes Vermächtnis' explizit"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-41) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "unvergleichlich": [
@@ -1575,12 +1635,20 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite nennt 'fasziniert weiterhin' explizit"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-42) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "spielt eine bedeutende rolle": [
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite: 'spielt eine wichtige/bedeutende Rolle'"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-42) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -1611,6 +1679,10 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite nennt 'Beobachter haben zitiert' explizit"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-44) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "einige kritiker argumentieren": [
@@ -1627,6 +1699,10 @@
                 {
                   "source": "own:en-pendant",
                   "note": "EN-Pendant 'experts agree' aus eigener Ontology (weasel_attribution)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-44) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "zahlreiche studien belegen": [
@@ -1687,6 +1763,10 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite nennt 'betonend' explizit"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-39) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "widerspiegelnd": [
@@ -1703,6 +1783,10 @@
                 {
                   "source": "own:de-observation",
                   "note": "morphologische Geschwister-Form der projektseiten-dokumentierten Partizipien"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-39) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "sicherstellend": [
@@ -1763,12 +1847,20 @@
                 {
                   "source": "own:de-observation",
                   "note": "eigene DE-Beobachtung: rhetorische Kontrast-Variante"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-32) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "es geht weniger um": [
                 {
                   "source": "own:de-observation",
                   "note": "eigene DE-Beobachtung: Kontrast-Variante"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-32) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "im gegenteil": [
@@ -1839,12 +1931,20 @@
                 {
                   "source": "own:de-observation",
                   "note": "dito — zeitlich-räumlicher Gebrauch ist legitim und feuert nicht (Projektstellen-Hinweis)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-35) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "von spät bis": [
                 {
                   "source": "own:de-observation",
                   "note": "dito"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-35) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -1905,12 +2005,20 @@
                 {
                   "source": "own:en-pendant",
                   "note": "EN-Pendant 'since the dawn of time'-Topos aus eigener Ontology (opening_formulas-Umfeld)"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-38) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "in einer zeit, in der": [
                 {
                   "source": "own:en-pendant",
                   "note": "EN-Pendant 'imagine a world where' aus eigener Ontology"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-38) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -1951,6 +2059,10 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "dito, Projektseite nennt beide Varianten"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-34) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "die zukunft sieht": [
@@ -1967,6 +2079,10 @@
                 {
                   "source": "own:en-pendant",
                   "note": "EN-Pendant 'the possibilities are endless' aus eigener Ontology"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-34) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "eines ist sicher": [
@@ -2007,6 +2123,10 @@
                 {
                   "source": "own:de-observation",
                   "note": "eigene DE-Beobachtung: speculationstreibende Abschwächung"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-36) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "in gewisser weise": [
@@ -2043,6 +2163,10 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite: 'Obwohl spezifische Details begrenzt/rar sind …' explizit"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-36) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ]
             }
@@ -2083,6 +2207,10 @@
                 {
                   "source": "own:de-observation",
                   "note": "eigene DE-Beobachtung: Pseudo-Beobachtungs-Gestus"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-30) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "interessant zu beobachten ist": [
@@ -2099,6 +2227,10 @@
                 {
                   "source": "https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte",
                   "note": "Projektseite nennt 'es ist bemerkenswert' explizit"
+                },
+                {
+                  "source": "own:corpus",
+                  "note": "eigener handgeschriebener Belegtext eval/de_evidence_texts.jsonl (de-ev-30) — Zweibeleg unabhaengig von Wikipedia-Projektseite"
                 }
               ],
               "was oft übersehen wird": [
