@@ -141,6 +141,10 @@ SSOT_REGISTER = {
         "COMPARATIVE_FRAMING_PATTERNS": ("closed-list", "deviation"),
         "MIN_FRAMING_HITS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_FRAMING": ("engine-config", "fixture-calibrated"),
+        "DIFF_ANCHOR_PATTERNS_DE": ("closed-list", "deviation"),
+        "DIFF_ANCHOR_PATTERNS_EN": ("closed-list", "deviation"),
+        "MIN_DIFF_ANCHORS": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_DIFF_ANCHOR": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
@@ -222,6 +226,12 @@ ALLOWLIST_NOTES = [
     "project page 'Anzeichen fuer KI-generierte Inhalte' + own examples; "
     "no third-party pattern material copied). MIN_* thresholds are "
     "fixture-pinned (tests/test_structure_metrics.py).",
+    "structure_metrics (#76, M52) DIFF_ANCHOR_PATTERNS_DE/EN are self-derived "
+    "closed inventories for the detect-only DiffAnchoredWriting signal "
+    "(Diff-verankertes Schreiben; orphan diff/patch references without visible "
+    "diff context; concept from docs/de-coverage.md NEU candidate M52; own "
+    "phrases and own examples; no third-party pattern material copied). MIN_* "
+    "thresholds are fixture-pinned (tests/test_structure_diff_anchored.py).",
     "structure_metrics (#75, Signal 6) COMPARATIVE_FRAMING_PATTERNS is a "
     "self-derived EN/DE contrast-frame inventory (weniger X als vielmehr Y / "
     "eher X als Y / nicht X, sondern Y / not X but rather Y / less about X, "

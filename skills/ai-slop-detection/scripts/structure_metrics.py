@@ -178,8 +178,63 @@ def comparative_framing(text: str):
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
                         fake_analysis_appendix(text), pseudo_nuance(text),
-                        comparative_framing(text))
+                        comparative_framing(text),
+                        diff_anchored_writing(text))
             if f]
+
+
+# --- M52: Diff-verankertes Schreiben ----------------------------------------
+# Text verankert Aussagen in einem Diff/Patch, der im Text selbst nicht
+# sichtbar ist ("wie im obigen Diff geaendert" / "in the diff above") —
+# Schreiben ohne eigenstaendigen Kontext, verwaiste Referenz.
+DIFF_ANCHOR_PATTERNS_DE = (
+    "im obigen diff", "im diff oben", "wie im diff", "im obigen patch",
+    "im patch oben", "wie im patch", "im gezeigten diff",
+    "in der gezeigten aenderung", "siehe diff oben", "siehe patch oben",
+    "in der obigen aenderung", "wie oben im diff", "wie im patch oben",
+)
+DIFF_ANCHOR_PATTERNS_EN = (
+    "in the diff above", "as shown in the diff", "in the patch above",
+    "see diff above", "see the diff above", "as per the diff",
+    "per the patch", "in the changed file above",
+    "in the updated file above", "as shown in the patch",
+    "per the diff above", "shown in the diff",
+)
+MIN_DIFF_ANCHORS = 1            # eine verwaiste Diff-Referenz genuegt
+MIN_WORDS_DIFF_ANCHOR = 20      # kurze Texte: keine Aussagekraft
+
+_DIFF_ANCHOR_RE = re.compile(
+    "(?:%s)" % "|".join(DIFF_ANCHOR_PATTERNS_DE + DIFF_ANCHOR_PATTERNS_EN),
+    re.IGNORECASE)
+# sichtbarer Diff-/Code-Kontext im Text => Referenz ist verankert, kein Slop
+_DIFF_CONTEXT_RE = re.compile(
+    r"```|^\+\+\+ |^--- |^@@ |^diff --git ", re.M)
+
+
+def diff_anchored_writing(text: str):
+    """M52: Diff-verankertes Schreiben — Aussagen referenzieren einen
+    Diff/Patch, der im Text nicht sichtbar ist. Enthaelt der Text selbst
+    Code-Fences oder Diff-Marker, ist die Referenz verankert und das
+    Signal feuert nicht (FP-Schutz fuer Reviews/Changelogs mit echtem
+    Diff)."""
+    if len(text.split()) < MIN_WORDS_DIFF_ANCHOR:
+        return None
+    if _DIFF_CONTEXT_RE.search(text):
+        return None
+    hits = _DIFF_ANCHOR_RE.findall(text)
+    if len(hits) < MIN_DIFF_ANCHORS:
+        return None
+    example = hits[0][:40]
+    return {
+        "id": "DiffAnchoredWriting",
+        "confidence": 0.5,
+        "evidence": (f"verwaiste Diff-/Patch-Referenz ohne sichtbaren "
+                     f"Diff-Kontext ({len(hits)}x, z.B. \"{example}\", "
+                     f"DE+EN), Aussagen haengen an nicht vorhandenem Kontext"),
+        "keep_when": ("Review-/Changelog-Texte MIT echtem Diff-Kontext "
+                      "(Code-Fence/Diff-Marker) feuern nie; nur advisory "
+                      "werten (SIGNAL-DOD)"),
+    }
 
 
 # --- M66: Fake-Analyse-Anhang -----------------------------------------------

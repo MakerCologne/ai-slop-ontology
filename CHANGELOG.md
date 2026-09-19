@@ -1,3 +1,16 @@
+## [Unreleased] — 2026-09-20 (#76-Rest M52 — Diff-verankertes Schreiben)
+
+- Neues detect-only Struktur-Signal `DiffAnchoredWriting`
+  (structure_metrics.py, DE+EN, conf 0.5): verwaiste Diff-/Patch-Referenzen
+  ("wie im obigen Diff geaendert" / "in the diff above") ohne sichtbaren
+  Diff-Kontext im Text
+- FP-Gates: Code-Fences/Diff-Marker im Text => Referenz verankert, kein
+  Treffer; < 20 Woerter Skip; nie im numerischen Slop-Score (SIGNAL-DOD)
+- SSOT C3: DIFF_ANCHOR_PATTERNS_DE/EN (closed-list), MIN_DIFF_ANCHORS,
+  MIN_WORDS_DIFF_ANCHOR (fixture-pinned)
+- `tests/test_structure_diff_anchored.py` neu (DoD 3/3/2 + Wiring/Metadaten)
+- de-coverage.md: M52 GEDECKT (NEU-Rest M50 bleibt offen)
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg
