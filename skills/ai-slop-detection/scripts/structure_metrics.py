@@ -144,6 +144,10 @@ COMPARATIVE_FRAMING_PATTERNS = [
     # DE: "nicht X, sondern Y" (bis zum Komma max. 30 Zeichen ohne
     # Satzzeichen)
     re.compile(r"\bnicht\s+\S+[^,.;]{0,30}?\s*,\s*sondern\b", re.I),
+    # DE M68: "nicht so sehr X, sondern/vielmehr Y" (Abstand bis 40 Zeichen)
+    re.compile(r"\bnicht\s+so\s+sehr\s+\S+[^,.;]{0,40}?\s*,\s*(?:sondern|vielmehr)", re.I),
+    # EN M68: "not so much X as Y" / "not X, but rather Y"
+    re.compile(r"\bnot\s+so\s+much\s+\S+[^,.;]{0,40}?\s+as\b", re.I),
     # EN: "less about X and more about Y" / "less about X than about Y"
     re.compile(r"\bless\s+about\s+\S+[^,.;]{0,30}?\s+(?:and\s+(?:more|less)|more|than)\s+about\b", re.I),
 ]
@@ -153,8 +157,11 @@ MIN_WORDS_FRAMING = 25            # kurze Texte: keine Aussagekraft
 
 
 def comparative_framing(text: str):
-    """M72: >= 2 Kontrastframes ("eher X als Y", "nicht X, sondern Y",
-    "less about X, more about Y") als Beschreibungsersatz. Einzeltreffer
+    """M72/M68: >= 2 Kontrastframes ("eher X als Y", "nicht X, sondern
+    Y", "weniger X als vielmehr Y", "nicht so sehr X, sondern Y",
+    "not so much X as Y", "less about X, more about Y") als
+    Beschreibungsersatz. M68-Rest (19.09.): zusaetzliche DE/EN-Varianten
+    ergaenzt, de-coverage M68 GEDECKT. Einzeltreffer
     bleibt unmarkiert — normale Kontrastierung (DoD-Grenzfall in
     tests/test_structure_comparative.py)."""
     if len(text.split()) < MIN_WORDS_FRAMING:

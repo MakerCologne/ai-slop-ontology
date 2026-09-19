@@ -1,3 +1,14 @@
+## [Unreleased] — 2026-09-19 (#76-Rest: M68 Komparativ-Rahmung, Varianten-Vervollstaendigung)
+
+- comparative_framing (structure_metrics.py) um M68-Rest-Varianten ergaenzt:
+  DE „nicht so sehr X, sondern/vielmehr Y", EN „not so much X as Y"
+  (je detect-only im bestehenden >=2-Frames-Gate, Konfidenz 0.5,
+  Einzeltreffer bleibt unmarkiert, keine neuen SSOT-Konstanten noetig —
+  COMPARATIVE_FRAMING_PATTERNS ist bereits closed-list-registriert)
+- de-coverage M68 GEDECKT (NEU-Rest jetzt M39, M40, M50–M52, M58)
+- tests/test_structure_comparative.py: +5 M68-Tests (2 Positiv /
+  2 Negativ / 1 Grenzfall, DoD-konform)
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg

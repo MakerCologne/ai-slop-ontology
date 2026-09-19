@@ -100,3 +100,41 @@ class TestIntegration:
                 "dokumentiert, ohne Ausschmueckungen.")
         assert not any(f["id"] == "ComparativeFraming"
                        for f in sm.find_structure_findings(text))
+
+
+# --- M68-Rest (19.09.): zusaetzliche DE/EN-Varianten ------------------------
+
+M68_POS1 = ("Die Debatte ist nicht so sehr eine Frage des Budgets, sondern "
+            "eine Frage der Prioritaeten, heisst es. Es ist nicht so sehr "
+            "ein Methodenstreit, sondern eher ein Richtungsstreit, der "
+            "hier ausgetragen wird.")
+
+M68_POS2 = ("It was not so much a strategy as a habit. The roadmap was "
+            "not so much a plan as a collection of wishes, as critics "
+            "noted repeatedly during the review cycle last quarter.")
+
+M68_NEG1 = ("Das ist nicht so sehr teuer, sondern schlicht unbrauchbar "
+            "fuer unseren Anwendungsfall.")  # Einzeltreffer, konkret
+
+M68_NEG2 = "It was not so much a plan as an accident, honestly."  # Einzeltreffer
+
+M68_BOUND1 = (M68_NEG1 + " Im Rueckblick war es eher ein Experiment als "
+              "ein Fehler, auch wenn die Begruendung im Bericht "
+              "deutlich laenger ausfaellt als erwartet.")  # 2 Treffer -> fires
+
+
+class TestComparativeFramingM68:
+    def test_pos1_de_nicht_so_sehr(self):
+        assert sm.comparative_framing(M68_POS1) is not None
+
+    def test_pos2_en_not_so_much(self):
+        assert sm.comparative_framing(M68_POS2) is not None
+
+    def test_neg1_single_de_variant(self):
+        assert sm.comparative_framing(M68_NEG1) is None
+
+    def test_neg2_single_en_variant(self):
+        assert sm.comparative_framing(M68_NEG2) is None
+
+    def test_boundary_mixed_variant_fire(self):
+        assert sm.comparative_framing(M68_BOUND1) is not None

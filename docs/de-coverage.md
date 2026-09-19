@@ -82,7 +82,7 @@
 | M65 | Kopula-Vermeidung („fungiert als“) | **GEDECKT (neu, #77-Rest 13.09.)** | **de_copula_avoidance (Voll-Zweibeleg de-ev-19)** |
 | M66 | Fake-Analyse-Anhang (Relativsatz ohne Info) | **GEDECKT (neu, #76-Rest)** | **structure_metrics.fake_analysis_appendix (≥2 Treffer, detect-only)** |
 | M67 | Ankündigungs-Spaltsatz („Was mich überraschte …") | **GEDECKT (neu, T2)** | **de_announcement_cleft (Teil 2)** | |
-| M68 | Komparativ-Rahmung („weniger X als vielmehr Y") | NEU | Kandidat phrase DE |
+| M68 | Komparativ-Rahmung („weniger X als vielmehr Y") | **GEDECKT (#76-Rest 19.09.)** | **structure_metrics.comparative_framing (+ DE „nicht so sehr X, sondern Y", EN „not so much X as Y")** |
 | M69 | Struktureller Register-Kollaps | DE-VARIANTE | register_drift #81 → DE-Profile |
 | M70 | Falsche Agency abstrakter Subjekte | **GEDECKT (neu, #77-Rest 13.09.)** | **de_false_agency (Voll-Zweibeleg de-ev-22)** |
 | M71 | Retroaktive Scheinnuance („Genauer gesagt …") | **GEDECKT (neu, #76-Rest)** | **structure_metrics.pseudo_nuance (≥2 Marker, detect-only)** |
@@ -92,7 +92,7 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M58, M63, M68; M56/M72 seit Welle 6 gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M39, M40, M50–M52, M58; M6/M17/M29/M63/M68 gedeckt)
 
 
 ## Bilanz (#77-Rest Welle 6, 15.09.2026)
