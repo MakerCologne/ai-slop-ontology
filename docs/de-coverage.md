@@ -77,7 +77,7 @@
 | M60 | Synonym-Rotation für Entitäten | **GEDECKT (neu, T2)** | **structure_metrics.synonym_rotation (detect-only)** | |
 | M61 | Isometrisches Dokument (gleich lange Einheiten) | **GEDECKT (neu, T2)** | **structure_metrics.isometry (detect-only)** | |
 | M62 | Bewertender Schluss-Satz ohne neue Info | NEU | verwandt TrailingMoral |
-| M63 | Modalpartikel-Anomalie | OFFEN (Stub) | naturalness_guard.modal_particle_anomaly = Stub; DE-Inventar folgt (s. #81) |
+| M63 | Modalpartikel-Anomalie | **GEDECKT (neu, #76-Rest M63 19.09.)** | **naturalness_guard.modal_particle_anomaly (DE-Inventar 12 Partikeln, detect-only, conf 0.45; Voll-Zweibeleg: Duden-Grammatik-Referenz REFERENCES.md #40 + own:corpus de-ev-29)** |
 | M64 | KI-Marker-Vokabular DE | → #77 | de_ai_vocab (dieser Batch, Teil 2) |
 | M65 | Kopula-Vermeidung („fungiert als“) | **GEDECKT (neu, #77-Rest 13.09.)** | **de_copula_avoidance (Voll-Zweibeleg de-ev-19)** |
 | M66 | Fake-Analyse-Anhang (Relativsatz ohne Info) | **GEDECKT (neu, #76-Rest)** | **structure_metrics.fake_analysis_appendix (≥2 Treffer, detect-only)** |
@@ -92,7 +92,12 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M58, M63, M68; M56/M72 seit Welle 6 gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M58, M68; M56/M72 seit Welle 6, **M63 seit 19.09. gedeckt**)
+
+
+## Bilanz (#76-Rest M63, 19.09.2026)
+
+- **GEDECKT (neu):** M63 `naturalness_guard.modal_particle_anomaly` — DE-Modalpartikel-Inventar (12 Partikeln, Wortgrenzen-Matching mit Umlaut-Lookarounds), zwei Anomalie-Cues: density (≥ 6 Tokens UND ≥ 2,5 % Wortanteil) + stacking (≥ 2 Sätze mit je ≥ 2 distinkten Partikeln), detect-only, conf 0.45, Quote-Stripping + `genre=dialogue/fiction/spoken`-Suppression. Stub damit ersetzt (#81-Delegation eingelöst). Beleg: Duden-Grammatik-Referenz (REFERENCES.md #40) + own:corpus de-ev-29. Tests: `ModalParticleAnomalyDoD` 3 pos / 3 neg / 2 boundary + detect-only-Verkabelung, 18/18 grün.
 
 
 ## Bilanz (#77-Rest Welle 6, 15.09.2026)

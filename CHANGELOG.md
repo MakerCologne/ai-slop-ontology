@@ -22,6 +22,30 @@
 
 # Changelog
 
+## [Unreleased] — 2026-09-19 (#76-Rest M63 — Modalpartikel-Anomalie)
+
+- `naturalness_guard.modal_particle_anomaly`: Stub ersetzt durch vollständiges
+  DE-Modalpartikel-Inventar (12 Partikeln, Wortgrenzen-Matching mit
+  Umlaut-Lookarounds, ausserhalb von Zitaten). Zwei Anomalie-Cues, detect-only,
+  conf 0.45: density (≥ 6 Partikel-Tokens UND ≥ 2,5 % Wortanteil, ab 40 Wörtern)
+  + stacking (≥ 2 Sätze mit je ≥ 2 distinkten Partikeln).
+  keep_when-Suppression für Colloquial-Genres (dialogue/fiction/spoken).
+  Voll-Zweibeleg: Duden-Grammatik-Referenz (REFERENCES.md #40) + own:corpus
+  de-ev-29 (`eval/de_evidence_texts.jsonl`).
+- `tests/test_naturalness_guard.py` erweitert: `ModalParticleAnomalyDoD`
+  3 pos / 3 neg / 2 boundary + detect-only-Verkabelung (18/18 grün).
+
+## [Unreleased] — 2026-09-19 (#248 Gap G4 — ActorlessClaim)
+
+- Neues detect-only Micro-Signal `ActorlessClaim` (micro_patterns.py):
+  Passiv ohne Agent, wenn der fehlende Actor die Behauptung trägt
+  ("mistakes were made", "queries are validated", "it was decided that").
+  Konvergent aus unslop Regel 29 + slopbeth "Actorless claims" (Deep-Dive #39, G4).
+- Closed verb list (AGENTLESS_CLAIM_VERBS, SSOT-registriert), Guards:
+  benannter Agent ("by …"), Policy/Legal-Register (shall/must) und
+  Ich-Form werden übersprungen — nur Passiv mit Claim-Träger wird gemeldet.
+- 7 neue Tests (positiv/negativ inkl. Meta-Safety example_fix-clean).
+
 ## [Unreleased — #229] Meta-Haertung der example_fix-Empfehlungen
 
 Vier example_fix-Felder in `rhetorical_patterns.py` (+ `ontology.json`-Spiegel)

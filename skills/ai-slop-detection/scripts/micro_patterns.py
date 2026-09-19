@@ -48,6 +48,28 @@ GRAND_ENDPOINTS = {
 
 RECAP_OPENERS = ["in conclusion", "overall,", "to summarize"]
 
+# --- ActorlessClaim (#248, Gap G4) ----------------------------------------
+# Passive voice carrying a claim with no agent ("mistakes were made",
+# "queries are validated", "it was decided that"). Convergent from unslop
+# rule 29 and slopbeth "Actorless claims" (Deep-Dive #39). Closed verb list —
+# only claim-bearing participles; descriptive passives ("the file was large")
+# are out of scope.
+AGENTLESS_CLAIM_VERBS = (
+    "decided", "determined", "concluded", "agreed", "noted", "made",
+    "implemented", "established", "addressed", "resolved", "mitigated",
+    "optimized", "ensured", "validated", "chosen", "selected",
+)
+_AGENT_MARKER = re.compile(r"\bby\s+[A-Za-z]", re.IGNORECASE)
+_OBLIGATION_MARKER = re.compile(r"\b(?:shall|must)\b", re.IGNORECASE)
+_AGENTLESS_CLAIM = re.compile(
+    r"\b(?:it|this|that)\s+(?:was|were|is|are|has been|have been)\s+"
+    r"(?:" + "|".join(AGENTLESS_CLAIM_VERBS) + r")\s+(?:that|to)\b"
+    r"|\b[A-Za-z ]{2,40}?\s+(?:was|were|is|are)\s+"
+    r"(?:" + "|".join(AGENTLESS_CLAIM_VERBS) + r")\b"
+    r"|\bmistakes\s+were\s+made\b",
+    re.IGNORECASE,
+)
+
 _STOP = {
     "a", "an", "the", "and", "or", "but", "of", "to", "in", "on", "for",
     "with", "is", "are", "was", "were", "be", "it", "its", "this", "that",
@@ -131,6 +153,20 @@ def _heading_repeated(text: str):
     return None
 
 
+def _actorless_claim(text: str):
+    for s in _sentences(text):
+        # keep_when guards: explicit agent named, or policy/legal register
+        # where agentless obligation is intended (shall/must).
+        if _AGENT_MARKER.search(s) or _OBLIGATION_MARKER.search(s):
+            continue
+        if re.match(r"^\s*(?:we|i|you)\b", s, re.IGNORECASE):
+            continue
+        m = _AGENTLESS_CLAIM.search(s)
+        if m:
+            return s
+    return None
+
+
 MICRO_PATTERNS = {
     "FalseAgency": {
         "label": "False agency",
@@ -181,6 +217,19 @@ MICRO_PATTERNS = {
         "keep_when": "Documentation conventions that require the lead sentence to name the "
                      "section subject in full (e.g. legal or spec documents).",
     },
+    "ActorlessClaim": {
+        "label": "Actorless claim",
+        "confidence": 0.6,
+        "description": "Passive voice where the missing agent carries the claim "
+                       "('mistakes were made', 'queries are validated', 'it was "
+                       "decided that'). Name who did it.",
+        "example_slop": "Mistakes were made and the release was delayed.",
+        "example_fix": "The release team shipped the config too early; we rolled it back.",
+        "keep_when": "The actor is genuinely unknown or irrelevant, or policy/legal "
+                     "register where agentless obligation is intended (shall/must "
+                     "clauses are skipped). Sentences naming an agent ('by the team') "
+                     "are skipped.",
+    },
 }
 
 _FINDERS = {
@@ -188,6 +237,7 @@ _FINDERS = {
     "FalseRange": _false_range,
     "RecapEnding": _recap_ending,
     "HeadingRepeatedBelowItself": _heading_repeated,
+    "ActorlessClaim": _actorless_claim,
 }
 
 
