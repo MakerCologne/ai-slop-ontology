@@ -196,10 +196,15 @@ aller 72 Katalog-Muster: `docs/de-coverage.md`.
 
 `scripts/structure_metrics.py` — sprachagnostische Struktur-Signale:
 `synonym_rotation` (M60: ≥3 verschiedene Bezeichnungen aus einer
-Synonym-Familie für dieselbe Entität) und `isometry` (M61: ≥5
-Struktureinheiten mit Wortlängen-Streuung < 1.0). Beide advisory,
+Synonym-Familie für dieselbe Entität), `isometry` (M61: ≥5
+Struktureinheiten mit Wortlängen-Streuung < 1.0),
+`fake_analysis_appendix` (M66), `pseudo_nuance` (M71),
+`comparative_framing` (M72) und `hollow_conclusion` (M6:
+Fazit-/Summary-Heading mit ≤ 20 Wörtern Körper ohne Zahlen oder
+Querverweise — Schließzwang ohne Ergebnis). Alle advisory,
 Konfidenz 0.5, nie score-dominant; Schwellen fixture-kalibriert
-(`tests/test_structure_metrics.py`).
+(`tests/test_structure_metrics.py`, `tests/test_structure_rest.py`,
+`tests/test_structure_m6.py`).
 
 ### Step 2g: Register-Profile v2 (detect-only, #74)
 

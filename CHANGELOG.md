@@ -22,6 +22,19 @@
 
 # Changelog
 
+## [Unreleased] — 2026-09-19 (#76-Rest M6 — Unpassendes Fazit-Kapitel)
+
+- `structure_metrics.hollow_conclusion`: Fazit-/Zusammenfassungs-/Conclusion-
+  Heading, dessen Körper ≤ 20 Wörter hat und weder Zahlen noch konkrete
+  Querverweise (siehe/Abschnitt/see/table…) enthält — Schließzwang ohne
+  Ergebnis. Detect-only, conf 0.5, sprachagnostisch DE+EN; Dokument ohne
+  Substanz vor dem Heading (≥ 15 Wörter) feuert nicht.
+- Substanzvolle Fazits (Fakten, Zahlen, Verweise wie „Siehe Abschnitt X")
+  bleiben unmarkiert (FP-Schutz); Grenzbereich 24-Wörter-Recap bewusst
+  kein Fire.
+- `tests/test_structure_m6.py` neu: DoD 3/3/2 + Wiring; de-coverage.md M6
+  GEDECKT; SKILL.md Step 2f + EVALS.md ergänzt.
+
 ## [Unreleased] — 2026-09-19 (#76-Rest M63 — Modalpartikel-Anomalie)
 
 - `naturalness_guard.modal_particle_anomaly`: Stub ersetzt durch vollständiges

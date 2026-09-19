@@ -20,7 +20,7 @@
 | M3 | Meta-Kommentare statt Inhalt | DE-VARIANTE | meta_commentary (EN) → #77 de_meta_comment |
 | M4 | Mechanische Konjunktionen (ferner, darüber hinaus) | **GEDECKT (neu, T2)** | **de_transitions (Teil 2)** | |
 | M5 | Abschnitts-Zusammenfassungen | **GEDECKT (neu, T2)** | **de_recap (Teil 2)** | |
-| M6 | Unpassendes „Fazit"-Kapitel | NEU (klein) | structural: Fazit-Heading ohne Substanz |
+| M6 | Unpassendes „Fazit"-Kapitel | **GEDECKT (neu, #76-Rest M6 19.09.)** | **structure_metrics.hollow_conclusion (≤20 Wörter Körper ohne Zahlen/Verweise, detect-only, conf 0.5)** |
 | M7 | Dichotom-Schluss + Lob→Herausforderung→Ausblick-Schablone | **GEDECKT (neu, #77-Rest W5 13.09.)** | **de_dichotomy_close (Voll-Zweibeleg de-ev-23)** | |
 | M8 | Negativ-Parallelismen (nicht nur … sondern auch) | **GEDECKT (neu, T2)** | **de_binary_contrast (Teil 2)** | |
 | M9 | Regel-der-Drei-Aufzählungen | GEDECKT | rhetorical_patterns (forced triads) |

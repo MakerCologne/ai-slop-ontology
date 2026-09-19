@@ -178,8 +178,54 @@ def comparative_framing(text: str):
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
                         fake_analysis_appendix(text), pseudo_nuance(text),
-                        comparative_framing(text))
+                        comparative_framing(text), hollow_conclusion(text))
             if f]
+
+
+# --- M6: Unpassendes Fazit-Kapitel -----------------------------------------
+# Fazit-/Zusammenfassungs-Heading mit Mini-Koerper ohne eigene Substanz
+# (Schliesszwang ohne Ergebnis). Sprachagnostisch DE+EN.
+CONCLUSION_HEADING_RE = re.compile(
+    r"^#{1,6}\s+[a-zäöüß0-9]*[^\n]{0,60}?\b(?:fazit|schluss(?:wort|fazit)?|"
+    r"zusammenfassung|fazit\s+und\s+ausblick|ausblick\s+und\s+fazit|"
+    r"conclusion|summary|final\s+thoughts|wrap-?up)\b[^\n]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+HOLLOW_MAX_WORDS = 20      # fixture-kalibriert (Grenzbereich 24 = kein Fire)
+MIN_WORDS_BEFORE = 15      # Mini-Dokumente ohne Substanz davor: keine Aussagekraft (BOUND2=5)
+# Konkrete Querverweise zaehlen als Substanz-Ersatz (kein Schliessritual)
+CONCRETE_RE = re.compile(
+    r"\d|\b(?:siehe|vgl\.?|see|cf\.?|abschnitt|section|kapitel|chapter|"
+    r"anhang|appendix|tabelle|table|abbildung|figure)\b", re.IGNORECASE)
+
+
+def hollow_conclusion(text: str):
+    """M6: Fazit-/Summary-Heading, dessen Koerper <= 20 Woerter hat,
+    ohne Zahlen und ohne konkrete Querverweise — ein Schliessritual
+    ohne Ergebnis. Substanzvolle Fazits (Fakten, Zahlen, Verweise)
+    bleiben unmarkiert (FP-Schutz)."""
+    for m in CONCLUSION_HEADING_RE.finditer(text):
+        before, rest = text[:m.start()], text[m.end():]
+        if len(before.split()) < MIN_WORDS_BEFORE:
+            continue
+        nxt = re.search(r"^#{1,6}\s+\S", rest, re.MULTILINE)
+        body = rest[:nxt.start()] if nxt else rest
+        words = body.split()
+        if 0 < len(words) <= HOLLOW_MAX_WORDS and not CONCRETE_RE.search(body):
+            return {
+                "id": "HollowConclusion",
+                "confidence": 0.5,
+                "evidence": (f"Fazit-Kapitel mit nur {len(words)} Woertern "
+                             "ohne Zahlen oder Verweise (\"" +
+                             " ".join(words[:8]) + "…\") — Schließzwang "
+                             "ohne Ergebnis"),
+                "keep_when": ("Kurze abschließende Merksätze sind legitim, "
+                              "wenn sie ein konkretes Ergebnis nennen; nur "
+                              "advisory werten, nie Score-dominant "
+                              "(SIGNAL-DOD)."),
+            }
+    return None
 
 
 # --- M66: Fake-Analyse-Anhang -----------------------------------------------
