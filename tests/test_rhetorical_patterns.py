@@ -159,6 +159,22 @@ class RhetoricalDetectionTests(unittest.TestCase):
         self.assertNotIn("ColonReveal", ids("Ingredients: flour, water, salt, and yeast."))
         self.assertNotIn("ColonReveal", ids("Note: the server restarts at midnight UTC."))
 
+    def test_colon_connector_fires_on_mid_sentence_colon(self):
+        # Issue #249/G9: colon as clause connector without reveal character.
+        self.assertIn("ColonReveal", ids(
+            "the approach is simple: iterate carefully and then ship it"))
+        # Tech-stack style lists stay clean (keep_when).
+        self.assertNotIn("ColonReveal", ids(
+            "We deploy with docker compose: app, db, and cache containers."))
+
+    def test_inline_header_restatement(self):
+        # Issue #249/G5: bold label restated by the line under it.
+        self.assertIn("InlineHeaderRestatement", ids(
+            "**Performance:** Performance improved across all benchmarks."))
+        # Label followed by genuinely new information is the keep_when.
+        self.assertNotIn("InlineHeaderRestatement", ids(
+            "**Performance:** latency dropped to 41 ms at p99."))
+
     def test_findings_carry_evidence_and_fix(self):
         findings = find_rhetorical_patterns("The app serves as a centralized hub for teams.")
         self.assertTrue(findings)

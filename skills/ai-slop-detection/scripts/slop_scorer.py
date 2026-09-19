@@ -181,7 +181,22 @@ PHRASE_CATEGORIES = {
             "the rest of this essay", "the remainder of this document",
             "in this section, we will", "in the next section",
             "as we'll see later", "throughout this article",
-            "without further ado", "in the following paragraphs"
+            "without further ado", "in the following paragraphs",
+            # issue #249/G8 (BriefLeak): briefing/instruction register leaking
+            # into the artefact — meta_commentary extension, not a new signal
+            # (corpus has no briefing texts; concept-mapped per deep-dive G8).
+            "as per your request", "per your request", "as requested"
+        ]
+    },
+    # --- Issue #249/G7 (FillerPhrase-Liste, unslop rule filler set): padded
+    # connectives that add length, not meaning. Evidence discipline (corpus
+    # 2026-09-19): "in order to" 13 slop / 0 clean, "due to the fact that"
+    # 15 slop / 0 clean, "while specific details are limited" 7 slop / 0 clean.
+    "filler_phrases": {
+        "confidence": 0.7,
+        "phrases": [
+            "in order to", "due to the fact that",
+            "while specific details are limited"
         ]
     },
     "rhetorical_setups": {
@@ -300,9 +315,9 @@ PHRASE_CATEGORIES = {
             "certainly! let me expand",
             "of course! here's the summary",
             "it is believed that", "based on available information",
-            "experts believe", "to be clear", "i hope this helps",
+            "experts believe", "to be clear", "hope this helps",
             "up to my last training update", "some critics argue",
-            "in order to proceed", "the listing cites coverage in",
+            "the listing cites coverage in",
             "it's not just a dashboard", "seamless integrations",
             "fosters collaboration", "topics range from",
             "here's what you need to know",
@@ -633,6 +648,7 @@ def buzzword_score(text: str, tiers: Optional[dict] = None) -> tuple:
 # dimension and must not simultaneously lower the copula rate.
 SUBSTITUTE_VERB_PATTERNS = [
     "serves as", "boasts", "features", "refers to", "represents", "embodies",
+    "stands as",  # issue #249/G3 (FancyCopula-Erweiterung, unslop rule 24-ctx)
 ]
 
 

@@ -204,6 +204,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_quantifiers.py` — Signal Quantifiers
 - `tests/test_reinventing_wheel.py` — Signal Reinventing-the-Wheel
 - `tests/test_rhetorical_patterns.py` — Signal Rhetorical Patterns
+- `tests/test_filler_briefleak_gaps.py` — #249 Kleinere Lücken G7/G8: FillerPhrase-Kategorie („in order to", „due to the fact that"…) mit Korpus-Evidenz 2026-09-19 und BriefLeak-Phrasen als meta_commentary-Erweiterung statt neuem Signal (L1)
 - `tests/test_rhythm_openers.py` — Signal Rhythm-Opener
 - `tests/test_scorer.py` — Scorer-Kern (Score-Berechnung, Threshold)
 - `tests/test_signal_dod.py` — #64 DoD-Check-Script (Meta)

@@ -50,6 +50,15 @@ class TestCopulaStats(unittest.TestCase):
         self.assertGreaterEqual(stats["substitutes"], 5)
         self.assertLess(stats["rate"], 0.5)
 
+    def test_stands_as_counts_as_substitute(self):
+        # Issue #249/G3 (FancyCopula-Erweiterung): "stands as" is a
+        # substitute linking verb like "serves as".
+        stats = slop_scorer.copula_stats(
+            "The tool stands as a reference implementation. "
+            "It is fast.")
+        self.assertEqual(stats["substitutes"], 1)
+        self.assertLess(stats["rate"], 1.0)
+
     def test_buzzword_substitutes_are_excluded_from_denominator(self):
         # #46 prevention: "serves as a testament" is a tier-1 buzzword —
         # counting it as a copula substitute would reward the exact phrase

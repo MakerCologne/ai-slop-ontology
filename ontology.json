@@ -3300,10 +3300,18 @@
           "ColonReveal": {
             "label": "Colon reveal",
             "confidence": 0.55,
-            "description": "A short capitalized phrase, a colon, then a lowercase dramatic reveal. Rewrite as a plain sentence.",
+            "description": "A short capitalized phrase, a colon, then a lowercase dramatic reveal — or a mid-sentence colon used as a clause connector without reveal character. Rewrite as a plain sentence.",
             "example_slop": "The best part: it learns.",
             "example_fix": "It learns, which is the best part.",
             "keep_when": "The colon introduces a list, label, quote, ratio, or code."
+          },
+          "InlineHeaderRestatement": {
+            "label": "Inline header restatement",
+            "confidence": 0.6,
+            "description": "Bold label + colon that restates the label in the line under it (\"**Performance:** Performance improved …\") — the header adds structure, not information. Give the line its own claim.",
+            "example_slop": "**Performance:** Performance improved across all benchmarks.",
+            "example_fix": "Benchmarks improved by 8–12% on average.",
+            "keep_when": "The line after the label adds a genuinely new claim and does not merely restate the label word."
           },
           "SuperficialAnalysis": {
             "label": "Superficial analysis",

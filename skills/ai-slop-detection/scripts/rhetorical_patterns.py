@@ -38,10 +38,23 @@ RHETORICAL_PATTERNS = {
         "label": "Colon reveal",
         "confidence": 0.55,
         "description": "A short capitalized phrase, a colon, then a lowercase dramatic "
-                       "reveal. Rewrite as a plain sentence.",
+                       "reveal — or a mid-sentence colon used as a clause connector "
+                       "without reveal character (#249/G9). Rewrite as a plain sentence.",
         "example_slop": "The best part: it learns.",
         "example_fix": "It learns, which is the best part.",
         "keep_when": "The colon introduces a list, label, quote, ratio, or code.",
+    },
+    "InlineHeaderRestatement": {
+        "label": "Inline header restatement",
+        "confidence": 0.6,
+        "description": "Bold label + colon that restates the label in the line "
+                       "under it (\"**Performance:** Performance improved …\") — the "
+                       "header adds structure, not information. Give the line its own "
+                       "claim instead (#249/G5, unslop rule 16).",
+        "example_slop": "**Performance:** Performance improved across all benchmarks.",
+        "example_fix": "Benchmarks improved by 8–12% on average.",
+        "keep_when": "The line after the label adds a genuinely new claim and does "
+                     "not merely restate the label word.",
     },
     "SuperficialAnalysis": {
         "label": "Superficial analysis",
@@ -332,6 +345,23 @@ _COLON_LABELS = {
     "definition", "goal", "problem", "solution", "input", "output", "usage",
 }
 
+# Issue #249/G5: bold inline label whose line restates the label word
+# ("**Performance:** Performance improved ..."). The bold label must end with
+# a colon INSIDE the bold markers; the restating line starts with the label's
+# first word (case-insensitive). Labels followed by genuinely new content are
+# the keep_when and must not match.
+_INLINE_HEADER = re.compile(
+    r"(?m)^\s*\*\*([A-Za-z][^:*]{2,40}):\*\*\s+([^\n]+)$"
+)
+
+# Issue #249/G9: mid-sentence colon used as a clause connector, no reveal
+# character — the colon is preceded by a lowercase word (not sentence start, not
+# a single-word label). Same reveal shape as _COLON_REVEAL to stay conservative:
+# comma-free continuation, bounded length.
+_COLON_CONNECTOR = re.compile(
+    r"(?<=[a-z])\s([a-z][\w'’-]*(?:\s+[\w'’-]+){2,}):\s+([a-z][^,:\n]{3,60})(?=[.!?]|$)"
+)
+
 _SUPERFICIAL = re.compile(
     r",\s+(highlighting|underscoring|reflecting|showcasing|emphasizing|emphasising|"
     r"demonstrating|illustrating|signaling|signalling|marking|cementing|solidifying|"
@@ -427,6 +457,26 @@ def find_rhetorical_patterns(text: str):
             continue
         add("ColonReveal", f"{lead}: {reveal.strip()}")
         break
+
+    # 2b. Colon as mid-sentence connector (issue #249/G9): "the approach is
+    # simple: iterate then ship" — no reveal character, the colon merely
+    # glues two clauses. Detected under the same ColonReveal id because the
+    # fix is identical (write a plain sentence).
+    for m in _COLON_CONNECTOR.finditer(text):
+        left, right = m.group(1), m.group(2)
+        if left.lower() in _COLON_LABELS:
+            continue
+        add("ColonReveal", f"{left}: {right.strip()}")
+        break
+
+    # 2c. Inline header restatement (issue #249/G5)
+    for m in _INLINE_HEADER.finditer(text):
+        label, line = m.group(1).strip(), m.group(2).strip()
+        first_label_word = label.split()[0].lower()
+        first_line_word = line.split()[0].lower() if line.split() else ""
+        if first_line_word == first_label_word:
+            add("InlineHeaderRestatement", f"**{label}:** {line}")
+            break
 
     # 3. Superficial analysis
     m = _SUPERFICIAL.search(text)
