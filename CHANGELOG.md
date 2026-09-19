@@ -1,3 +1,14 @@
+## [Unreleased] — 2026-09-20 (#76-Rest: M51 Parataxe-Haeufung)
+
+- Neues detect-only-Struktur-Signal `parataxis_stacking` (M51, structure_metrics.py):
+  >= 2 Saetze mit je >= 4 rein koordinierten Segmenten (Komma / und / oder / aber / doch / and / or / but / yet)
+  ohne Unterordnung (Subordinator-Gate weil/dass/although/which/…), conf 0.5, DE+EN
+- FP-Gates: Einzelsatz unmarkiert, Ein-Wort-Segmente ignoriert, < 30 Woerter Skip,
+  Subordination disqualifiziert den Satz (literarischer Stakkato / Protokolle in keep_when)
+- SSOT C3: +5 Konstanten (PARATAXIS_SPLIT, PARATAXIS_SUBORDINATORS, MIN_PARATAXIS_*),
+  de-coverage M51 GEDECKT
+- `tests/test_structure_parataxis.py` neu (3/3/2 DoD-konform + Wiring-Test)
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg

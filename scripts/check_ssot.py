@@ -141,6 +141,12 @@ SSOT_REGISTER = {
         "COMPARATIVE_FRAMING_PATTERNS": ("closed-list", "deviation"),
         "MIN_FRAMING_HITS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_FRAMING": ("engine-config", "fixture-calibrated"),
+        "PARATAXIS_SPLIT": ("engine-config", "fixture-calibrated"),
+        "PARATAXIS_SUBORDINATORS": ("closed-list", "deviation"),
+        "MIN_PARATAXIS_SEGMENTS": ("engine-config", "fixture-calibrated"),
+        "MIN_PARATAXIS_WORDS_PER_SEG": ("engine-config", "fixture-calibrated"),
+        "MIN_PARATAXIS_SENTENCES": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_PARATAXIS": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
@@ -229,6 +235,13 @@ ALLOWLIST_NOTES = [
     "from issue #75 Signal 6, Komparativ-Rahmung; own regexes and own "
     "examples; no third-party pattern material copied). MIN_* thresholds "
     "are fixture-pinned (tests/test_structure_comparative.py).",
+    "structure_metrics (#76-Rest) PARATAXIS_SUBORDINATORS is a self-"
+    "derived closed EN/DE subordinator inventory (Subordination-Gate) "
+    "and PARATAXIS_SPLIT a coordinate-conjunction splitter for the "
+    "detect-only M51 ParataxisStacking signal (concept from "
+    "docs/de-coverage.md NEU candidate; own regexes and own examples; "
+    "no third-party pattern material copied). MIN_* thresholds are "
+    "fixture-pinned (tests/test_structure_parataxis.py).",
     "de_typography (#76) closed lists (DE function words, capitalized "
     "function words, EN month names, brand allowlist) are self-derived "
     "DE gate/matcher inventories after de.wikipedia Anzeichen-fuer-KI-"

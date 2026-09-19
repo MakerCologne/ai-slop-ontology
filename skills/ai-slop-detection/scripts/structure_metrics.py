@@ -178,7 +178,7 @@ def comparative_framing(text: str):
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
                         fake_analysis_appendix(text), pseudo_nuance(text),
-                        comparative_framing(text))
+                        comparative_framing(text), parataxis_stacking(text))
             if f]
 
 
@@ -254,4 +254,56 @@ def pseudo_nuance(text: str):
         "keep_when": ("echte Praezisierungen mit neuer Information; "
                       "einzelner Marker bleibt unmarkiert; nur advisory "
                       "werten (SIGNAL-DOD)"),
+    }
+
+
+# --- M51: Parataxe-Haeufung -------------------------------------------------
+# Aneinanderreihung kurzer Hauptsatz-Strukturen ohne Unterordnung,
+# typisch fuer generierte Texte mit gleichmaessigem Stakkato-Rhythmus
+# ("Es kam, es ging, es blieb. Wir sahen, wir prueften, wir blieben.")
+PARATAXIS_SPLIT = re.compile(
+    r";|,|\s(?:und|oder|aber|doch|denn|and|or|but|yet|so)\s", re.I)
+
+# Unterordnungs-Marker: schliesst echten Nebensatz-Bau aus
+# (Parataxe = rein koordinierte Segmente)
+PARATAXIS_SUBORDINATORS = re.compile(
+    r"\b(?:weil|dass|obwohl|während|währenddessen|nachdem|bevor|indem|"
+    r"sobald|damit|falls|welche[rms]?|da\s|ob\s|because|although|though|"
+    r"while|since|whereas|which|when|unless|after|before|if|that|"
+    r"however|moreover|therefore|in\s+order\s+to)\b", re.I)
+
+MIN_PARATAXIS_SEGMENTS = 4       # koordinierte Segmente je Satz
+MIN_PARATAXIS_WORDS_PER_SEG = 2  # Ein-Wort-Segmente sind Stakkato-Stub
+MIN_PARATAXIS_SENTENCES = 2      # Einzelsatz = normale Aufzaehlung
+MIN_WORDS_PARATAXIS = 30         # kurze Texte: keine Aussagekraft
+
+
+def parataxis_stacking(text: str):
+    """M51: >= 2 Saetze mit je >= 4 rein koordinierten Segmenten
+    (Parataxe-Stakkato) ohne Unterordnung. Einzelsatz bleibt
+    unmarkiert — normale Aufzaehlung/Gruendung (DoD-Grenzfall in
+    tests/test_structure_parataxis.py)."""
+    if len(text.split()) < MIN_WORDS_PARATAXIS:
+        return None
+    sentences = [s.strip() for s in re.split(r"[.!?]+", text) if s.strip()]
+    hits = []
+    for sent in sentences:
+        if PARATAXIS_SUBORDINATORS.search(sent):
+            continue
+        segs = [s.strip() for s in PARATAXIS_SPLIT.split(sent)]
+        segs = [s for s in segs if len(s.split()) >= MIN_PARATAXIS_WORDS_PER_SEG]
+        if len(segs) >= MIN_PARATAXIS_SEGMENTS:
+            hits.append(sent)
+    if len(hits) < MIN_PARATAXIS_SENTENCES:
+        return None
+    return {
+        "id": "ParataxisStacking",
+        "confidence": 0.5,
+        "evidence": (f"{len(hits)} Saetze mit je >= {MIN_PARATAXIS_SEGMENTS} "
+                     f"rein koordinierten Segmenten ohne Unterordnung "
+                     f"(z.B. {hits[0][:60]}…) — Stakkato-Rhythmus"),
+        "keep_when": ("literarischer Stakkato-Stil und knappe "
+                      "Protokoll-Notizen sind legitime Genres; nur im "
+                      "Kontext weiterer Signale werten; Einzelsatz "
+                      "bleibt unmarkiert (SIGNAL-DOD)"),
     }
