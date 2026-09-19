@@ -141,6 +141,11 @@ SSOT_REGISTER = {
         "COMPARATIVE_FRAMING_PATTERNS": ("closed-list", "deviation"),
         "MIN_FRAMING_HITS": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_FRAMING": ("engine-config", "fixture-calibrated"),
+        "ABSTRACT_NOUN_SUFFIXES_DE": ("closed-list", "deviation"),
+        "ABSTRACT_NOUN_SUFFIXES_EN": ("closed-list", "deviation"),
+        "MIN_ABSTRACT_PER_SENTENCE": ("engine-config", "fixture-calibrated"),
+        "MIN_ABSTRACT_SENTENCES": ("engine-config", "fixture-calibrated"),
+        "MIN_WORDS_NOMINAL": ("engine-config", "fixture-calibrated"),
     },
     "naturalness_guard.py": {
         "FORMAL_MARKERS": ("closed-list", "deviation"),
@@ -222,6 +227,12 @@ ALLOWLIST_NOTES = [
     "project page 'Anzeichen fuer KI-generierte Inhalte' + own examples; "
     "no third-party pattern material copied). MIN_* thresholds are "
     "fixture-pinned (tests/test_structure_metrics.py).",
+    "structure_metrics (#76, M58) ABSTRACT_NOUN_SUFFIXES_DE/EN are "
+    "self-derived closed suffix inventories for the detect-only "
+    "NominalStyleStacking signal (Abstrakta-Stapel/Nominalstil; concept "
+    "from docs/de-coverage.md NEU candidate M58; own suffix heuristic and "
+    "own examples; no third-party pattern material copied). MIN_* "
+    "thresholds are fixture-pinned (tests/test_structure_nominal.py).",
     "structure_metrics (#75, Signal 6) COMPARATIVE_FRAMING_PATTERNS is a "
     "self-derived EN/DE contrast-frame inventory (weniger X als vielmehr Y / "
     "eher X als Y / nicht X, sondern Y / not X but rather Y / less about X, "

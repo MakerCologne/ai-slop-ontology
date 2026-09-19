@@ -1,3 +1,16 @@
+## [Unreleased] — 2026-09-20 (#76-Rest M58 — Abstrakta-Stapel/Nominalstil, detect-only)
+
+- `nominal_style_stacking` (structure_metrics.py): >= 2 Saetze mit je >= 4
+  Abstrakta/Nominalisierungen (Suffix-Heuristik DE: -ung/-heit/-keit/-
+  schaft/-tion/-itaet/-ment/-nis, EN: -tion/-ment/-ness/-ity/-ship/-ance/
+  -ence; Wortlaenge >= 7, flektierte Pluralformen mitgezaehlt)
+- FP-Schutz: Einzelsatz unmarkiert, < 30 Woerter Skip, Fach-/Verwaltungs-
+  prosa im keep_when; detect-only, conf 0.5, nie im Slop-Score
+- SSOT C3: +5 Konstanten (ABSTRACT_NOUN_SUFFIXES_DE/EN, MIN_ABSTRACT_*,
+  MIN_WORDS_NOMINAL)
+- `tests/test_structure_nominal.py` neu (DoD 3/3/2 + Wiring, 12 Tests)
+- docs/de-coverage.md: M58 GEDECKT
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg

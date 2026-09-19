@@ -72,7 +72,7 @@
 | M55 | Gleichförmiger Satzrhythmus | GEDECKT | UniformSentenceLength/Burstiness, Copula #22, Adverb #24 |
 | M56 | Aphorismus-Formeln | **GEDECKT (neu, #77-Rest W6 15.09.)** | **de_aphorism (Voll-Zweibeleg de-ev-27)** |
 | M57 | Markdown-Struktur-Artefakte | GEDECKT | markup_anomalies/formatting slop |
-| M58 | Abstrakta-Stapel/Nominalstil | NEU (Teil) | Density-Dimension streift; Kandidat DE |
+| **M58** | **Abstrakta-Stapel/Nominalstil** | **GEDECKT (neu, #76-Rest 20.09.)** | **structure_metrics.nominal_style_stacking (detect-only)** |
 | M59 | Forcierte Ich-Lockerheit | **GEDECKT (neu, #77-Rest 13.09.)** | **de_faux_candid (Voll-Zweibeleg de-ev-21)** |
 | M60 | Synonym-Rotation für Entitäten | **GEDECKT (neu, T2)** | **structure_metrics.synonym_rotation (detect-only)** | |
 | M61 | Isometrisches Dokument (gleich lange Einheiten) | **GEDECKT (neu, T2)** | **structure_metrics.isometry (detect-only)** | |
@@ -92,7 +92,7 @@
 
 - **GEDECKT (neu, T2):** 14 weitere Muster — Phrase-Layer de_transitions, de_recap, de_superlativ, de_symbolik, de_vague_authority, de_participle, de_binary_contrast, de_false_range, de_opening, de_closing, de_hedging, de_announcement_cleft (je 6 Phrasen, conf 0.6, Evidence-Pflicht) + structure_metrics.py (M60 SynonymRotation, M61 IsometricUnits; detect-only, sprachagnostisch, daher bewusst ohne DE-Gate)
 - **DE-Signal-Zähler:** Teil 1: 4 (de_typography) + 4 (#77-Kategorien) = 8; Teil 2: +12 Kategorien +2 Struktur = 14 → **22 DE-Signale gesamt** (Master-Akzeptanz ≥20 erfüllt)
-- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50–M52, M58, M63, M68; M56/M72 seit Welle 6 gedeckt)
+- Offene DE-Varianten (Rest des 30er-Postens): M34, M44, M54, M69 (M7/M26/M30 seit Welle 5, M32 seit Welle 6 gedeckt) + NEU-Rest (M6, M17, M29, M39, M40, M50, M52, M63, M68; M51+M58 seit 20.09. gedeckt; M56/M72 seit Welle 6 gedeckt)
 
 
 ## Bilanz (#77-Rest Welle 6, 15.09.2026)

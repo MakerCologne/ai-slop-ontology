@@ -129,6 +129,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_de_vocab_layer.py` — #77 DE-KI-Marker-Vokabular (4 DE-Phrase-Kategorien in ontology.json, Belegpflicht je Phrase, Kollisionsfreiheit, EN-Corpus-Sicherheit)
 - `tests/test_de_catalog_part2.py` — #76 Teil 2: 12 weitere DE-Phrase-Kategorien (Schema, Evidence-Pflicht mit Namespace-Präfix, #46-Kollisionsfreiheit inkl. paarweiser Substring-Check, Signal-DoD 3/3/2 je Kategorie)
 - `tests/test_structure_metrics.py` — #76 Teil 2: M60 SynonymRotation + M61 IsometricUnits (detect-only, sprachagnostisch, 3/3/2-Fixtures, Schwellen fixture-kalibriert)
+- `tests/test_structure_nominal.py` — #76-Rest M58: Abstrakta-Stapel/Nominalstil (Suffix-Heuristik DE+EN, >=2 Saetze je >=4 Abstrakta; detect-only ≤0.5, DoD 3/3/2, Einzelsatz unmarkiert) (L1)
 - `tests/test_structure_comparative.py` — #75 Signal 6: M72 ComparativeFraming / Komparativ-Rahmung ("eher X als Y", "nicht X, sondern Y", "weniger X als vielmehr Y", "less about X, more about Y"; detect-only ≤0.5, DoD 3/3/2, Einzeltreffer unmarkiert; EN "not just X but Y" bleibt bei BinaryContrast, #46)
 - `tests/test_ssot_de_layer.py` — FU-17: check_ssot C4 de_*-Phrase-Layer-Pin (16 Kategorien, Evidence-Regel, Namespace-Präfix) mit 4 Manipulationsproben
 - `tests/test_de_variant_rest.py` — #77-Rest: 3 neue de_*-Kategorien (M18 de_chatbot_leftover, M33 de_signposting, M65 de_copula_avoidance; je 6 Phrasen conf 0.6, Voll-Zweibeleg) mit Signal-DoD 3/3/2 je Kategorie (L1)

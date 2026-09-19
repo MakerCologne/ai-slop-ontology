@@ -26,6 +26,7 @@ Public surface:
     isometry(text) -> finding | None
     find_structure_findings(text) -> list[finding]
     comparative_framing(text) -> finding | None   (#75, Signal 6)
+    nominal_style_stacking(text) -> finding | None  (#76, M58)
 """
 
 import math
@@ -178,8 +179,65 @@ def comparative_framing(text: str):
 def find_structure_findings(text: str) -> list:
     return [f for f in (synonym_rotation(text), isometry(text),
                         fake_analysis_appendix(text), pseudo_nuance(text),
-                        comparative_framing(text))
+                        comparative_framing(text),
+                        nominal_style_stacking(text))
             if f]
+
+
+# --- M58: Abstrakta-Stapel / Nominalstil -----------------------------------
+# Saetze, die Abstrakta (Nominalisierungen) stapeln, statt Verben/Handlungen
+# zu nennen — Verwaltungsprosa als Struktur-Ersatz fuer Aussagen. Suffix-
+# Heuristik DE+EN (sprachagnostisch registriert, kein DE-Gate).
+ABSTRACT_NOUN_SUFFIXES_DE = (
+    "ung", "heit", "keit", "schaft", "tion", "ität", "ment", "nis",
+)
+ABSTRACT_NOUN_SUFFIXES_EN = (
+    "tion", "ment", "ness", "ity", "ship", "ance", "ence",
+)
+
+MIN_ABSTRACT_PER_SENTENCE = 4    # <4 = normale Fachprosa, kein Fund
+MIN_ABSTRACT_SENTENCES = 2       # Einzelsatz bleibt unmarkiert (FP-Schutz)
+MIN_WORDS_NOMINAL = 30           # kurze Texte: keine Aussagekraft
+_ABSTRACT_MIN_LEN = 7            # schliesst Kurzwoerter wie "Loesung" nicht aus, aber "Ordnung" zaehlt
+
+_ABSTRACT_RE = re.compile(r"\b\w{%d,}\b" % _ABSTRACT_MIN_LEN)
+
+
+def _abstract_noun_count(sentence: str) -> int:
+    """Anzahl Abstrakta-Hits in einem Satz (Suffix-Heuristik, >=7 Zeichen,
+    flektierte Formen (-en Plural DE, -s Plural EN) zaehlen mit)."""
+    count = 0
+    for word in _ABSTRACT_RE.findall(sentence):
+        w = word.lower()
+        if any(w.endswith(s) or w.endswith(s + "en") or w.endswith(s + "s")
+               for s in ABSTRACT_NOUN_SUFFIXES_DE + ABSTRACT_NOUN_SUFFIXES_EN):
+            count += 1
+    return count
+
+
+def nominal_style_stacking(text: str):
+    """M58: >= 2 Saetze mit je >= 4 Abstrakta (Nominalisierungen) als
+    Nominalstil-Stapel. Einzelsatz bleibt unmarkiert — echte Fachprosa
+    kann abstrakte Begriffe dicht nutzen (Grenzfall, FP-Schutz)."""
+    if len(text.split()) < MIN_WORDS_NOMINAL:
+        return None
+    sentences = [s for s in re.split(r"[.!?]+", text) if s.strip()]
+    stacked = [s for s in sentences
+               if _abstract_noun_count(s) >= MIN_ABSTRACT_PER_SENTENCE]
+    if len(stacked) < MIN_ABSTRACT_SENTENCES:
+        return None
+    example = " ".join(stacked[0].split())[:60]
+    return {
+        "id": "NominalStyleStacking",
+        "confidence": 0.5,
+        "evidence": (f"{len(stacked)} Saetze mit je >="
+                     f"{MIN_ABSTRACT_PER_SENTENCE} Abstrakta/"
+                     f"Nominalisierungen (z.B. {example}…), "
+                     f"sprachagnostisch DE+EN"),
+        "keep_when": ("echte Fach-/Verwaltungsprosa mit notwendiger "
+                      "Terminologie (Juristik, Normen) zaehlt nicht; "
+                      "Einzelsatz bleibt unmarkiert; nur advisory werten"),
+    }
 
 
 # --- M66: Fake-Analyse-Anhang -----------------------------------------------
