@@ -123,6 +123,12 @@ SSOT_REGISTER = {
         "_CAP_FUNCTION_WORDS": ("closed-list", "deviation"),
         "_EN_MONTH_DATE": ("closed-list", "deviation"),
         "_BRAND_ALLOWLIST": ("closed-list", "deviation"),
+        "BULLET_LINE_RE": ("closed-list", "deviation"),
+        "BULLET_CHECKBOX_RE": ("closed-list", "deviation"),
+        "BULLET_END_MARKS": ("closed-list", "deviation"),
+        "BULLET_NEUTRAL_ENDS": ("closed-list", "deviation"),
+        "MIN_BULLET_ITEMS": ("engine-config", "fixture-calibrated"),
+        "MIN_STYLE_CLASS_MEMBERS": ("engine-config", "fixture-calibrated"),
     },
     "structure_metrics.py": {
         "SYNONYM_FAMILIES": ("closed-list", "deviation"),

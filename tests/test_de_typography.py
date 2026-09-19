@@ -23,7 +23,7 @@ sys.path.insert(0, SCRIPTS)
 import slop_scorer  # noqa: E402
 from de_typography import (  # noqa: E402
     is_german, quote_mismatch, title_case_headings, en_number_formats,
-    genitive_apostrophe, find_de_typography,
+    genitive_apostrophe, bullet_style_inconsistency, find_de_typography,
 )
 
 DE_BASE = ("Der Ausschuss hat die Zahlen geprüft und dabei festgestellt, "
@@ -158,6 +158,77 @@ class ScoreDiscipline(unittest.TestCase):
         for f in find_de_typography(text):
             self.assertIn("keep_when", f)
             self.assertLessEqual(f["confidence"], 0.75)
+
+
+BULLETS_MIXED_CASE = ("Der Ausschuss hat die Zahlen geprueft und dabei "
+    "festgestellt, dass man weiter messen muss, bevor entschieden wird, "
+    "ob es greift oder nicht wirklich hilft.\n\n"
+    "- Erster Punkt der Liste mit viel Inhalt\n"
+    "- zweiter Punkt der Liste mit Inhalt\n"
+    "- Dritter Punkt mit anderem Inhalt\n"
+    "- vierter Punkt ohne jeden Endpunkt\n")
+
+BULLETS_MIXED_ENDS = ("Der Ausschuss hat die Zahlen geprueft und dabei "
+    "festgestellt, dass man weiter messen muss, bevor entschieden wird, "
+    "ob es greift oder nicht wirklich hilft.\n\n"
+    "- Erster Punkt der Liste mit viel Inhalt.\n"
+    "- Zweiter Punkt der Liste mit Inhalt.\n"
+    "- Dritter Punkt mit anderem Inhalt\n"
+    "- Vierter Punkt ohne jeden Endpunkt\n")
+
+
+class M50BulletStyle(unittest.TestCase):
+    def test_positives(self):
+        for t in (BULLETS_MIXED_CASE, BULLETS_MIXED_ENDS):
+            f = bullet_style_inconsistency(t)
+            self.assertIsNotNone(f, t)
+            self.assertEqual(f["id"], "BulletStyleInconsistency")
+            self.assertLessEqual(f["confidence"], 0.75)
+
+    def test_negatives(self):
+        consistent_case = ("Der Ausschuss hat die Zahlen geprueft und dabei "
+            "festgestellt, dass man weiter messen muss, bevor entschieden "
+            "wird, ob es greift oder nicht wirklich hilft.\n\n"
+            "- Erster Punkt der Liste mit viel Inhalt\n"
+            "- Zweiter Punkt der Liste mit Inhalt\n"
+            "- Dritter Punkt mit anderem Inhalt\n"
+            "- Vierter Punkt ohne jeden Endpunkt\n")
+        all_punct = ("Der Ausschuss hat die Zahlen geprueft und dabei "
+            "festgestellt, dass man weiter messen muss, bevor entschieden "
+            "wird, ob es greift oder nicht wirklich hilft.\n\n"
+            "- Erster Punkt der Liste mit viel Inhalt.\n"
+            "- Zweiter Punkt der Liste mit Inhalt.\n"
+            "- Dritter Punkt mit anderem Inhalt.\n"
+            "- Vierter Punkt mit jedem Endpunkt.\n")
+        en_bullets = ("The committee reviewed the numbers and found that "
+            "further work is needed before anyone decides anything at all.\n"
+            "- First item of the list with mixed\n"
+            "- second item of the list here\n"
+            "- Third item with more content\n"
+            "- fourth item without any ending\n")
+        for t in (consistent_case, all_punct, en_bullets):
+            self.assertIsNone(bullet_style_inconsistency(t), t)
+
+    def test_boundaries(self):
+        # zu kleiner Block: nur 2 gemischte + 2 Kurzhinweise < MIN_BULLET_ITEMS
+        small = ("Der Ausschuss hat geprueft und festgestellt, dass man "
+            "weiter messen muss.\n\n"
+            "- Erster Punkt mit genug Inhalt hier\n"
+            "- zweiter Punkt mit genug Inhalt\n"
+            "- ja\n- nein\n")
+        self.assertIsNone(bullet_style_inconsistency(small))
+        # Checkbox-Items sind exempt, Mischung entsteht nicht
+        checkboxes = ("Der Ausschuss hat geprueft und festgestellt, dass man "
+            "weiter messen muss, bevor alle entscheiden.\n\n"
+            "- [ ] erste Aufgabe die noch offen ist\n"
+            "- [ ] zweite Aufgabe die noch offen ist\n"
+            "- [x] dritte Aufgabe die erledigt wurde\n"
+            "- [x] vierte Aufgabe die erledigt wurde\n")
+        self.assertIsNone(bullet_style_inconsistency(checkboxes))
+
+    def test_wiring_in_aggregator(self):
+        f = find_de_typography(BULLETS_MIXED_CASE)
+        self.assertTrue(any(x["id"] == "BulletStyleInconsistency" for x in f))
 
 
 if __name__ == "__main__":

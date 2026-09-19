@@ -1,3 +1,17 @@
+## [Unreleased] — 2026-09-20 (#76-Rest M50 — Stichpunkt-Großschreibung/Endpunkte)
+
+- Neues detect-only Typografie-Signal `BulletStyleInconsistency`
+  (de_typography.py, DE-Gate, conf 0.5): Bullet-Block mit gemischter
+  Gross-/Kleinschreibung oder gemischten Satzendpunkten
+- FP-Gates: nur zusammenhaengende Bloecke >=4 Items; je >=2 Items pro
+  Stilklasse; Checkbox-Items ("- [ ]") und Kurzhinweise (<3 Woerter) exempt;
+  ":"/";"-Enden neutral; konsistente Listen feuern nie; DE-Sprachgate
+- SSOT C3: BULLET_LINE_RE/BULLET_CHECKBOX_RE/BULLET_END_MARKS/
+  BULLET_NEUTRAL_ENDS (closed-list), MIN_BULLET_ITEMS,
+  MIN_STYLE_CLASS_MEMBERS (fixture-pinned)
+- tests/test_de_typography.py: M50-Klasse (DoD 3/3/2 + Aggregator-Wiring)
+- de-coverage.md: M50 GEDECKT
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg

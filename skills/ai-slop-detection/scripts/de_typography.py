@@ -13,6 +13,9 @@ Quick Wins aus dem DE-Coverage-Mapping (docs/de-coverage.md, #76):
                            Versionsnummern (v2.5, Python 3.12) sind exempt
   M49 GenitiveApostroph    Englisches Genitiv-'s an deutschen Namen
                            (Peter's); Marken-Allowlist (McDonald's)
+  M50 BulletStyleInconsistency   Stichpunkt-Liste mit gemischter
+                           Gross-/Kleinschreibung oder gemischten
+                           Satzendpunkten innerhalb EINES Blocks
 
 Lizenz-Schutz: Konzepte nach de.wikipedia „Anzeichen für KI-generierte
 Inhalte“ sowie eigenen DE-Beispielen re-deriviert; KEIN Pattern-Material
@@ -26,7 +29,8 @@ Title Case) sind legitim und werden nie markiert.
 Public surface:
     is_german(text) -> bool
     quote_mismatch(text) / title_case_headings(text) /
-    en_number_formats(text) / genitive_apostrophe(text) -> finding | None
+    en_number_formats(text) / genitive_apostrophe(text) /
+    bullet_style_inconsistency(text) -> finding | None
     find_de_typography(text) -> list[finding]
 """
 
@@ -167,10 +171,79 @@ def genitive_apostrophe(text: str):
     return None
 
 
+# --- M50 Stichpunkt-Gross-schreibung / Endpunkte -----------------------------
+
+BULLET_LINE_RE = re.compile(r"^\s*(?:[-*+\u2022]|\d+[.)])\s+(.+?)\s*$")
+BULLET_CHECKBOX_RE = re.compile(r"^\[[ xX]\]\s*")
+BULLET_END_MARKS = {".", "!", "?", "\u2026"}
+BULLET_NEUTRAL_ENDS = {":", ";"}
+MIN_BULLET_ITEMS = 4
+MIN_STYLE_CLASS_MEMBERS = 2
+
+
+def _bullet_blocks(text: str) -> list:
+    """Zusammenhaengende Bullet-Bloecke als Listen von Item-Strings."""
+    blocks, current = [], []
+    for line in text.splitlines():
+        m = BULLET_LINE_RE.match(line)
+        if m:
+            current.append(m.group(1))
+        elif current:
+            blocks.append(current)
+            current = []
+    if current:
+        blocks.append(current)
+    return blocks
+
+
+def bullet_style_inconsistency(text: str):
+    """M50: Ein-und-derselbe Bullet-Block mischt Schreibweisen - z. B.
+    Items mit/ohne Punkt oder mit/ohne Anfangsgrossbuchstaben.
+    Konsistente Listen (auch durchgaengig kleingeschrieben oder
+    durchgaengig ohne Punkte) feuern nie."""
+    if not is_german(text):
+        return None
+    for block in _bullet_blocks(text):
+        items = []
+        for raw in block:
+            item = BULLET_CHECKBOX_RE.sub("", raw)
+            if len(item.split()) < 3:
+                continue  # Kurzhinweise ("- ja") sind stilfrei
+            items.append(item)
+        if len(items) < MIN_BULLET_ITEMS:
+            continue
+        cap = [i for i in items if i[0].isupper()]
+        lower = [i for i in items if not i[0].isupper()]
+        ended = [i for i in items if i[-1] in BULLET_END_MARKS]
+        # neutrale Fortsetzungszeichen ":" / ";" zaehlen zu keiner Klasse
+        unended = [i for i in items if i[-1] not in BULLET_END_MARKS
+                   and i[-1] not in BULLET_NEUTRAL_ENDS]
+        ev = []
+        if len(cap) >= MIN_STYLE_CLASS_MEMBERS and \
+                len(lower) >= MIN_STYLE_CLASS_MEMBERS:
+            ev.append("gemischte Gross-/Kleinschreibung "
+                      f"({len(cap)} groß / {len(lower)} klein)")
+        if len(ended) >= MIN_STYLE_CLASS_MEMBERS and \
+                len(unended) >= MIN_STYLE_CLASS_MEMBERS:
+            ev.append(f"gemischte Endpunkte ({len(ended)} mit / "
+                      f"{len(unended)} ohne Punkt)")
+        if ev:
+            return {
+                "id": "BulletStyleInconsistency",
+                "confidence": 0.5,
+                "evidence": ("Bullet-Block mit " + len(items).__str__() +
+                             " Items: " + "; ".join(ev)),
+                "keep_when": ("konsistente Listen (auch kleingeschrieben "
+                              "oder durchgaengig unpunktiert) feuern nie; "
+                              "Checkbox- und Kurzhinweis-Items sind exempt; "
+                              "nur DE-Text"),
+            }
+    return None
+
 # --- Aggregator ---------------------------------------------------------------
 
 _FINDERS = (quote_mismatch, title_case_headings, en_number_formats,
-            genitive_apostrophe)
+            genitive_apostrophe, bullet_style_inconsistency)
 
 
 def find_de_typography(text: str) -> list:
