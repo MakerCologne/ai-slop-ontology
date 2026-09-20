@@ -1,3 +1,13 @@
+## [Unreleased] — 2026-09-20 (Corpus v2 Teil-Batch 2 — #1078 single-point expansion)
+
+- LinkedInSlop + AcademicSlop je n=1 -> 5 (+8 EN-Items: slop-linkedin-02..05,
+  slop-academic-02..05, source-Feld "handcrafted (corpus v2 Teil-Batch 2, #1078)")
+- Kalibrierung gegen Marker-Datenbank (tier1_critical/tier2_high, AI-Phrasen);
+  alle 8 Items roh >0.42, keines floor-pinned; corpus n=347
+- Gates: benchmark P1.0/R0.983/F1 0.991 (FNs identisch pre-existing:
+  peerreview/security/subtle), control set PASSED (KNOWN-FN comment-genre by
+  design), test_ci_gates 9 passed
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg
