@@ -1,3 +1,16 @@
+## [Unreleased] — 2026-09-20 (Corpus v2 Teil-Batch 4 — #1078 single-point expansion, Finale)
+
+- WikipediaRehash, EngagementClickbaitSlop, PropagandaDisinfoSlop je n=1 -> 5,
+  WellnessSlop 2 -> 5, SEOContentFarmSlop 3 -> 5 (+17 EN-Items: slop-wikipedia-02..05,
+  slop-clickbait-02..05, slop-propaganda-02..05, slop-wellness-02..04, slop-seo-04..05,
+  source-Feld "handcrafted (corpus v2 expansion #1078, batch 4)")
+- Kalibrierung gegen Typ-Musterlisten (EngagementClickbait/PropagandaDisinfo/
+  SEO-Phrasen exakt gepinnt); 5 Items in Kalibrierungsschleife nachgeschärft;
+  kein neuer FN; corpus n=372
+- Gates: benchmark P1.0/R0.996/F1 0.998 (einziger FN pre-existing
+  hard-slop-subtle-01), control set PASSED (KNOWN-FN comment-genre by design),
+  ssot/consistency/doc-signals/methodology OK, test_ci_gates 9 passed
+
 ## [Unreleased] — 2026-09-20 (Corpus v2 Teil-Batch 3 — #1078 single-point expansion)
 
 - Workslop + LegalSlop je n=1 -> 5 (+8 EN-Items: slop-workslop-02..05,
