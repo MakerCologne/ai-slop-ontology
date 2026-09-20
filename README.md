@@ -26,7 +26,7 @@ Market scan (skills.sh, 2026-08, 100 hits for "slop"): nearly the entire market 
 | no-ai-slop | 7.2k | ✓ | ✗ | ✗ | ✗ | Rewriter |
 | **AI Slop Ontology / `slop`** | — | ✓ | ✓ | ✓ | ✓ | **Detector** |
 
-Sources: `research/slop-ontology-gap-2026-08-24/` (report.md + deep/01–10, market-I2/I4).
+Sources: `research/slop-ontology-gap-2026-08-24/` (report.md + deep/01–10, market-I2/I4). Distribution update (#123): `npx skills add` is the standard channel (GitHub topic scan 2026-09-02) — detector + skill wrapper is the expected package; ML tools (fasttext/ONNX) confirm the two-level doctrine (ML = filter, rules = gate).
 
 ## Quick Start
 
@@ -98,6 +98,8 @@ This repo detects and scores — it never rewrites (ADR-0001). Every finding is
 Rewriting is deliberately out of scope (Goodhart risk: a rewriter coupled to its
 own detector optimizes the score instead of the text); repair guidance exists as
 documented countermeasures outside the scoring path.
+
+**Distribution — the skill is the expected package (2026-09).** In the GitHub topic `ai-slop-detection` (38 repos, 27 reviewed), the de-facto distribution standard is `npx skills add <repo>` (scanaislop/skills, ZeroSlop, deslopper, deslop-ai-lint-skill, cbsteh); "skill only" and "CLI only" are the edge cases. This repo already ships the detector as an agent skill (`skills/ai-slop-detection/`) plus the `slop` CLI — matching the market's expectation. Related observation: PRISM-style `[[enforce]]` blocks (claim + named rule, fails loudly) are a citable packaging pattern for hard rules (cf. #21, adr/0006/0031). Adjacent ML approaches (slop-alerter fasttext, SlopProx ONNX ensemble) confirm the two-level doctrine: ML as context/filter, deterministic rules as gate. Positioning line (slop-alerter disclaimer): *"trust your own judgement over the model"* — the same contract this detector makes explicit (ADR-0001).
 
 **Multi-domain is the differentiator** — the skills.sh "slop" market (100 hits,
 Aug 2026) is almost entirely rewrite skills, and none covers more than one domain:
