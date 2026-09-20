@@ -1031,6 +1031,30 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         struct_signals += 1
     struct_slop = min(1, struct_signals / 3)
 
+    # GL #2 / btm-openclaw-platform #1077: non-English texts are diluted by
+    # the English-only signal dimensions (buzzwords, phrases, fake_authority
+    # are all English marker lists), so the weighted sum collapses to ~0.2
+    # and non-EN detection survives only via the >=3-marker floor pinned at
+    # DECISION_THRESHOLD — which dies the moment a sweep raises the threshold
+    # (0.41 would erase non-EN detection entirely). When the English signal
+    # families carry no meaningful evidence (weighted contribution < 0.05 —
+    # a lone tier-4 weak buzzword like "innovation" is noise, not signal)
+    # but 3+ multilingual markers matched (floor-level evidence),
+    # redistribute the dead English signal weights onto the
+    # multilingual family so the evidence carries its own score instead of
+    # leaning on the floor. Marker expansion cannot fix this: the corpus
+    # items already match 6-8 markers each and still score 0.400.
+    en_signal_contribution = (
+        weights["buzzwords"] * buzz_slop
+        + weights["phrases"] * phrase_slop
+        + weights["fake_authority"] * auth_slop)
+    if (total_multi >= 3 and en_signal_contribution < 0.05
+            and "multilingual" not in exempted_families):
+        weights = dict(weights)
+        weights["multilingual"] += (
+            weights["buzzwords"] + weights["phrases"]
+            + weights["fake_authority"])
+
     overall = (
         weights["density"] * density_slop +
         weights["repetition"] * rep_slop +

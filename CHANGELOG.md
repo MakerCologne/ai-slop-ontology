@@ -1,3 +1,22 @@
+## [Unreleased] — 2026-09-20 (GL #2 / btm #1077 — Multilingual-Floor-Dilution behoben)
+
+- Skill-Scorer: Gewichts-Renormalisierung für nicht-englische Texte. Wenn alle
+  EN-Signalfamilien (buzzwords/phrases/fake_authority) stumm sind (gewichteter
+  Beitrag < 0.05 — ein einzelner tier-4-Buzzword wie "innovation" ist Rauschen),
+  aber >= 3 Multilingual-Matcher vorliegen (Floor-Niveau), wird das tote
+  EN-Gewicht auf die Multilingual-Familie umgeschichtet. Nicht-EN-Slop scorrt
+  jetzt aus eigener Evidenz (0.83–1.0 statt exakt 0.400 via Floor) — ein
+  Threshold-Sweep auf 0.41 löscht die Nicht-EN-Detection nicht mehr aus.
+- Evidenz, dass der in GL #2 vermutete Fix "DE-Marker-Ausbau" erschöpft ist:
+  die Korpus-Items matchen bereits 6–8 Marker je Text und scoren trotzdem
+  0.400 — der Flaschenhals war die Gewichtung (multilingual 0.04 vs.
+  buzzwords 0.26 + phrases 0.30), nicht die Markerliste.
+- `tests/test_multilingual_renorm.py` neu (Renorm ab 3 Markern, keine Renorm
+  bei 2 Markern / EN-Evidenz, Clean-DE-Schutz)
+- Gates: control set, benchmark (P 1.0 / R 0.995, de/es/fr/hi/ur/vi recall je 1.0),
+  consistency/ssot/methodology/fp-baseline/self-check grün (signal_dod 1 FAIL
+  pre-existing, unverändert durch diesen Change)
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg
