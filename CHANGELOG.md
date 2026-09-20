@@ -1,3 +1,14 @@
+## [Unreleased] — 2026-09-20 (Corpus v2 Teil-Batch 3 — #1078 single-point expansion)
+
+- Workslop + LegalSlop je n=1 -> 5 (+8 EN-Items: slop-workslop-02..05,
+  slop-legal-02..05, source-Feld "handcrafted (corpus v2 expansion #1078,
+  batch 3)")
+- Kalibrierung gegen Workslop-/LegalSlop-Musterliste; alle 8 Items Typ-Score
+  0.9+, kein FN; corpus n=355
+- Gates: benchmark P1.0/R0.996/F1 0.998 (FN identisch pre-existing:
+  hard-slop-subtle-01), control set PASSED (KNOWN-FN comment-genre by design),
+  ssot/consistency/doc-signals/methodology OK, test_ci_gates 9 passed
+
 ## [Unreleased] — 2026-09-20 (Corpus v2 Teil-Batch 2 — #1078 single-point expansion)
 
 - LinkedInSlop + AcademicSlop je n=1 -> 5 (+8 EN-Items: slop-linkedin-02..05,
