@@ -150,18 +150,43 @@ class BenchmarkThresholdTest(unittest.TestCase):
         pipeline = next(r for r in report
                         if r["engine"].startswith("skill-pipeline"))
         rounded, exact = pipeline["recall"], pipeline["recall_exact"]
-        self.assertGreater(
-            exact, rounded,
-            "fixture assumption: the corpus must round recall down here",
+        self.assertNotEqual(
+            rounded, exact,
+            "fixture assumption: the corpus must not sit exactly on a "
+            "3-decimal boundary",
         )
 
-        between = (rounded + exact) / 2
-        passes = self._run("--min-recall", repr(between))
-        self.assertEqual(
-            passes.returncode, 0,
-            f"floor {between} is below the true recall {exact} and must pass:\n"
-            f"{passes.stdout}{passes.stderr}",
+        # A floor strictly between the two reported values must be judged
+        # against the exact recall, not the rounded one. Direction-agnostic:
+        # the fixture works whether rounding goes down (0.9954 -> 0.995) or
+        # up (0.99565 -> 0.996), i.e. for any corpus size.
+        lower, upper = sorted((rounded, exact))
+        between = (lower + upper) / 2
+        self.assertGreater(
+            between, lower,
+            "fixture construction: floor must sit above the smaller value",
         )
+        self.assertLess(
+            between, upper,
+            "fixture construction: floor must sit below the larger value",
+        )
+        if exact > rounded:
+            # floor is below the exact recall -> must pass
+            passes = self._run("--min-recall", repr(between))
+            self.assertEqual(
+                passes.returncode, 0,
+                f"floor {between} is below the true recall {exact} and must pass:\n"
+                f"{passes.stdout}{passes.stderr}",
+            )
+        else:
+            # floor is above the exact recall -> must fail; rounded gating
+            # would wrongly let it through
+            fails = self._run("--min-recall", repr(between))
+            self.assertEqual(
+                fails.returncode, 1,
+                f"floor {between} is above the true recall {exact} and must "
+                f"fail; passing here means gating used the rounded value",
+            )
 
         above = self._run("--min-recall", repr(exact + 1e-9))
         self.assertEqual(
