@@ -3012,6 +3012,40 @@
                 }
               ]
             }
+          },
+          "tech_metaphor_nouns": {
+            "confidence": 0.65,
+            "description": "NEU #246 (unslop #26, Gap G2 aus Deep-Dive slopbeth/unslop 2026-09-05): abstrakte Tech-Metaphern-Nomen als Buzzword-Substitution — metaphorische statt konkrete Benennung (substrate, flywheel, north star, bedrock, nexus, wedge, scaffolding, modality, paradigm, ratchet, evacuate, endgame, harness, vector). keep_when zwingend: modality/vector/paradigm/harness sind im ML-Kontext legitime Terminologie — Guard fp_guards.mask_tech_metaphor_ml_terms maskiert Vorkommen bei ML-Kontext-Keyword im selben Satz (implementiert in slop_scorer.phrase_category_score). Kumulativregel >= 2 Treffer (PHRASE_MIN_HITS). Status: nursery (#63-Lebenszyklus)",
+            "items": [
+              "substrate",
+              "flywheel",
+              "north star",
+              "bedrock",
+              "nexus",
+              "wedge",
+              "scaffolding",
+              "modality",
+              "paradigm",
+              "ratchet",
+              "evacuate",
+              "endgame",
+              "harness",
+              "vector (guarded: kein ML-Kontext-Keyword im selben Satz)"
+            ],
+            "evidence": {
+              "flywheel": [
+                {
+                  "source": "own:issue-246",
+                  "note": "unslop-Regel 26 via Deep-Dive docs/research/deep-dive-slopbeth-unslop-2026-09-05.md G2 — groesste Einzelluecke des Deep-Dives (26/31 abgedeckt)"
+                }
+              ],
+              "modality": [
+                {
+                  "source": "own:issue-246",
+                  "note": "ML-legitim (multimodal, vision, audio) — keep_when-Pflicht laut Issue; Guard implementiert und per Fixture getestet"
+                }
+              ]
+            }
           }
         }
       },

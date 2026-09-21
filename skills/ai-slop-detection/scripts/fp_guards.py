@@ -210,3 +210,46 @@ def mask_conversation_fillers(text_lower: str) -> str:
     for start, end in sorted(spans, reverse=True):
         result = result[:start] + " " * (end - start) + result[end:]
     return result
+
+
+# --- TechMetaphorNoun (unslop #26 / issue #246): ML-context keep_when -----
+# modality/vector/paradigm/harness are core ML/engineering terminology; the
+# metaphor-noun signal only applies when the surrounding sentence is NOT an
+# ML/technical context. Guard: mask the noun when ML keywords occur in the
+# same sentence (crude sentence window, no cross-sentence look-ahead).
+_ML_CONTEXT_RE = re.compile(
+    r"\b(?:model|models|training|train|inference|embedding|embeddings|"
+    r"multimodal|tensor|tensors|gradient|loss|dataset|datasets|neural|"
+    r"transformer|transformers|classifier|classification|regression|"
+    r"dimension|dimensions|layer|layers|token|tokens|attention|"
+    r"encoder|decoder|checkpoint|fine-?tun(?:e|ing)|llm|gpt|bert|"
+    r"image|vision|audio|signal processing|mathematics|physics)\b"
+)
+_TECH_METAPHOR_GUARDED = re.compile(
+    r"\b(?:modality|modalities|vector|vectors|paradigm|paradigms|harness|harnesses)\b"
+)
+_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?;])\s+")
+
+
+def mask_tech_metaphor_ml_terms(text_lower: str) -> str:
+    """Mask ML-legit occurrences of guarded tech-metaphor nouns (#246).
+
+    Same masking mechanic as mask_conversation_fillers: guarded spans are
+    replaced by spaces *before* phrase matching so positions and overlap
+    logic stay intact for all other categories. A guarded noun
+    (modality, vector, paradigm, harness) is masked when an ML-context
+    keyword occurs in the same sentence — e.g. "the model handles a new
+    modality" is terminology, not metaphor abuse.
+    """
+    result = text_lower
+    # Offsets are relative to `sentence`; track absolute positions.
+    spans = []
+    pos = 0
+    for sentence in _SENTENCE_SPLIT_RE.split(result):
+        if _ML_CONTEXT_RE.search(sentence):
+            for m in _TECH_METAPHOR_GUARDED.finditer(sentence):
+                spans.append((pos + m.start(), pos + m.end()))
+        pos += len(sentence)
+    for start, end in sorted(spans, reverse=True):
+        result = result[:start] + " " * (end - start) + result[end:]
+    return result

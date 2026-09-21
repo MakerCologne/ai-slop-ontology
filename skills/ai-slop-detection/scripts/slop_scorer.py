@@ -410,6 +410,20 @@ PHRASE_CATEGORIES = {
             "the good news is", "the bad news is"
         ]
     },
+    # unslop #26 / issue #246 (Gap G2): abstract tech-metaphor nouns as
+    # buzzword substitution. Single nouns need a raised bar (min_hits=2
+    # default is fine, but two metaphor nouns in one text is already a
+    # pattern). ML-legit terms (modality, vector, paradigm, harness) are
+    # guarded via fp_guards.mask_tech_metaphor_ml_terms (same-sentence
+    # ML-context keep_when) applied in phrase_category_score.
+    "tech_metaphor_nouns": {
+        "confidence": 0.65,
+        "phrases": [
+            "substrate", "flywheel", "north star", "bedrock", "nexus",
+            "wedge", "scaffolding", "modality", "paradigm", "ratchet",
+            "evacuate", "endgame", "harness", "vector"
+        ]
+    },
 }
 
 MULTILINGUAL_BUZZWORDS = {
@@ -772,6 +786,10 @@ def phrase_category_score(text: str) -> dict:
     # entfernen (Maskierung = Positions- und Ueberlappungslogik bleibt
     # fuer alle anderen Kategorien unveraendert).
     text_lower = fp_guards.mask_conversation_fillers(text_lower)
+    # #246 TechMetaphorNoun: ML-legit modality/vector/paradigm/harness
+    # maskieren, bevor die Metaphern-Nomen matchen — gleiche Mechanik
+    # wie die Guards oben (Maskierung statt Post-Filter).
+    text_lower = fp_guards.mask_tech_metaphor_ml_terms(text_lower)
     term_to_cat = {}
     all_terms = []
     for cat_name, cat_def in PHRASE_CATEGORIES.items():
