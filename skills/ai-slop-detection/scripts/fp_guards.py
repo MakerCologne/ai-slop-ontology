@@ -223,7 +223,9 @@ _ML_CONTEXT_RE = re.compile(
     r"transformer|transformers|classifier|classification|regression|"
     r"dimension|dimensions|layer|layers|token|tokens|attention|"
     r"encoder|decoder|checkpoint|fine-?tun(?:e|ing)|llm|gpt|bert|"
-    r"image|vision|audio|signal processing|mathematics|physics)\b"
+    r"image|vision|audio|signal processing|mathematics|physics|"
+    r"evaluation|evaluations|benchmark|benchmarks|pipeline|pipelines|"
+    r"superglue|glue)\b"
 )
 _TECH_METAPHOR_GUARDED = re.compile(
     r"\b(?:modality|modalities|vector|vectors|paradigm|paradigms|harness|harnesses)\b"
