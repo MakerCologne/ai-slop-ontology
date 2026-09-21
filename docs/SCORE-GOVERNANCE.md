@@ -103,7 +103,8 @@ weitere Grenz-Hard-Negatives nahe 0.40 → Anschluss #47 (Drift-Messung) und
 Hard-Negative-Programm.
 
 **Wo die Kalibrierung wirklich zahlt: Risk-Tiers.** uniform: 0 Korpus-Slop-
-Texte erreichen Tier „Slop“ (>= 0.70); kalibriert: **24**. Der messbare
+Texte erreichen Tier „Slop“ (>= 0.70); kalibriert: **31** (Stand nach multilingual-
+Renorm, PR #268 — zuvor 24; die Renorm hebt 7 weitere non-EN-Texte ins Slop-Tier). Der messbare
 Kalibrierungsbeitrag ist die Schwere-Graduierung (Suspicious vs. Slop), nicht
 die Detektion. Der Herkunfts-Kommentar und dieser Abschnitt sagen das jetzt
 explizit; `tests/test_weight_gain_pin.py` pinnt alle Zahlen dieser Sektion an
@@ -123,7 +124,7 @@ noch nicht gesättigt sind:
 
 1. **FP-Headroom:** Maximum der Hard-Negative-Scores und Abstand zum Gate —
    Sättigung hier heißt „0.342 → 0.39“, nicht „F1 1.0“.
-2. **Tier-Verteilung:** Anteil erkannter Slop-Texte >= 0.70 (heute 24/221);
+2. **Tier-Verteilung:** Anteil erkannter Slop-Texte >= 0.70 (heute 31/221);
    Ziel ist Recall *und* Graduierung, nicht nur Binärentscheid.
 3. **Margin-Verteilung:** Median-Score-Abstand der Slop-Texte vom Gate
    (aktuell flooren 19/221 exakt — jeder Punkt weniger ist echter Fortschritt).

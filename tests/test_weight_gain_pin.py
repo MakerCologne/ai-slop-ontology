@@ -36,7 +36,7 @@ PIN_UNIFORM = {"tp": 216, "fp": 0, "tn": 110, "fn": 5}
 PIN_DEFAULT = {"tp": 217, "fp": 0, "tn": 110, "fn": 4}
 # Risik-Tier-Beitrag (der eigentliche messbare Kalibrierungseffekt):
 PIN_UNIFORM_TIER2 = 0   # uniform: kein Korpus-Slop-Text erreicht 0.70
-PIN_DEFAULT_TIER2 = 24  # kalibriert: 24 Texte im "Slop"-Tier (>= 0.70)
+PIN_DEFAULT_TIER2 = 31  # kalibriert: 31 Texte im "Slop"-Tier (>= 0.70) — Stand PR #268 (multilingual Renorm: +7 non-EN-Texte im Slop-Tier)
 
 
 def _load(path):
