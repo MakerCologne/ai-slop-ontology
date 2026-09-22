@@ -142,6 +142,18 @@ SLOP_TYPE_PATTERNS = {
         "description": "AI-generated peer reviews: narrow, generic feedback without engagement "
                        "with the actual content (Organization Science 2026: >30% of reviews AI-involved)",
     },
+    "MonetizationSlop": {
+        # Ontology typePatterns (SSOT): affiliate/ad-farm monetization content.
+        # Phrases are conversion-boilerplate, deliberately distinct from
+        # SEOContentFarmSlop (informational listicle openers) — these are
+        # buyer-intent closers (issue #1076 / GL #3).
+        "patterns": ["we may earn a commission", "at no extra cost to you",
+                      "we did the research so you don't have to",
+                      "after hours of testing", "check the latest price",
+                      "our top pick for"],
+        "description": "AI-generated affiliate/monetization content: buyer-guides that "
+                       "simulate testing to funnel clicks, not to review honestly",
+    },
 }
 
 

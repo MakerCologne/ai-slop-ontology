@@ -3281,6 +3281,18 @@
               "would benefit from additional experiments",
               "the related work section"
             ]
+          },
+          "MonetizationSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated affiliate/monetization content: buyer-guides that simulate testing to funnel clicks, not to review honestly",
+            "patterns": [
+              "we may earn a commission",
+              "at no extra cost to you",
+              "we did the research so you don't have to",
+              "after hours of testing",
+              "check the latest price",
+              "our top pick for"
+            ]
           }
         }
       },
