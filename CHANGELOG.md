@@ -1,3 +1,19 @@
+## [Unreleased] — 2026-09-22 (slopgh#249 G5+G9 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 2)
+
+- G5: Neues detect-only Pattern `InlineHeaderRestatement` (unslop #16):
+  Bold-Label + Doppelpunkt, der den Satzbeginn restatiert
+  ("**Performance:** Performance improved…") — feuert nur bei echtem
+  Label-Restatement (erstes Label-Wort == erstes Satz-Wort);
+  keep_when: Label als Mini-Satz mit Punkt oder echte Liste
+- G9: `ColonReveal` um Mid-Sentence-Connector erweitert (unslop #14):
+  lowercase-Lead-Klausel + Kolon + Fortsetzung ohne Listen-/Zitat-Charakter
+  ("the reason is simple: …"); Listen/Label/Quote/Code-Right-Sides bleiben
+  ausgeschlossen ([^,:] plus _COLON_LABELS); Label + Description + keep_when
+  von ColonReveal entsprechend erweitert
+- ontology.json-Spiegel (rhetoricalPatterns + medium-Signalliste),
+  Tests: test_colon_connector_mid_sentence, test_inline_header_restatement
+  (je pos + Hard-Negatives)
+
 ## [Unreleased] — 2026-09-22 (slopgh#249 G3+G7 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 1)
 
 - G3: `stands as` als Copula-Substitut ergänzt (SUBSTITUTE_VERB_PATTERNS);
