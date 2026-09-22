@@ -3293,6 +3293,42 @@
               "check the latest price",
               "our top pick for"
             ]
+          },
+          "ArticleSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated news articles from content farms and UAINs (unreliable AI-generated news sites): source-free hedged reporting that mimics journalism without verification",
+            "patterns": [
+              "according to reports",
+              "reached out for comment",
+              "watch this space",
+              "developing story",
+              "only time will tell",
+              "it remains to be seen"
+            ]
+          },
+          "BookSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated nonfiction e-books (Amazon Kindle flood): formulaic how-to books padded with promises instead of content",
+            "patterns": [
+              "in this book, you will discover",
+              "by the end of this book",
+              "actionable strategies",
+              "packed with real-world examples",
+              "this chapter will take you",
+              "regardless of where you are on your journey"
+            ]
+          },
+          "ProductReviewSlop": {
+            "confidence": 0.8,
+            "description": "AI-generated fake product reviews: enthusiasm template without product-specific evidence, often with purchase-justification framing",
+            "patterns": [
+              "i was skeptical at first, but",
+              "exceeded my expectations",
+              "worth every penny",
+              "would highly recommend to anyone looking",
+              "if you're on the fence",
+              "10/10 would recommend"
+            ]
           }
         }
       },

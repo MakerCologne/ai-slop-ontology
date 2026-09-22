@@ -154,6 +154,38 @@ SLOP_TYPE_PATTERNS = {
         "description": "AI-generated affiliate/monetization content: buyer-guides that "
                        "simulate testing to funnel clicks, not to review honestly",
     },
+    "ArticleSlop": {
+        # Ontology typePatterns (SSOT): content-farm/UAIN pseudo-journalism.
+        # Source-free hedged reporting register — deliberately distinct from
+        # PropagandaDisinfoSlop (persuasion) and SEOContentFarmSlop (how-to
+        # listicles): this is news-shaped filler without verification (issue
+        # #1076 / GL #3).
+        "patterns": ["according to reports", "reached out for comment",
+                      "watch this space", "developing story",
+                      "only time will tell", "it remains to be seen"],
+        "description": "AI-generated news articles from content farms and UAINs "
+                       "(unreliable AI-generated news sites): source-free hedged "
+                       "reporting that mimics journalism without verification",
+    },
+    "BookSlop": {
+        # Ontology typePatterns (SSOT): AI nonfiction e-book flood (Amazon).
+        "patterns": ["in this book, you will discover", "by the end of this book",
+                      "actionable strategies", "packed with real-world examples",
+                      "this chapter will take you",
+                      "regardless of where you are on your journey"],
+        "description": "AI-generated nonfiction e-books (Amazon Kindle flood): "
+                       "formulaic how-to books padded with promises instead of "
+                       "content",
+    },
+    "ProductReviewSlop": {
+        # Ontology typePatterns (SSOT): fake review templates.
+        "patterns": ["i was skeptical at first, but", "exceeded my expectations",
+                      "worth every penny", "would highly recommend to anyone looking",
+                      "if you're on the fence", "10/10 would recommend"],
+        "description": "AI-generated fake product reviews: enthusiasm template "
+                       "without product-specific evidence, often with "
+                       "purchase-justification framing",
+    },
 }
 
 
