@@ -1,3 +1,21 @@
+## [Unreleased] — 2026-09-22 (slopgh#249 G3+G7 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 1)
+
+- G3: `stands as` als Copula-Substitut ergänzt (SUBSTITUTE_VERB_PATTERNS);
+  FakeStrongVerb-Kollision ("stands as a hub …") bleibt durch COLL-1
+  Overlap-Ausschluss entdoppelt, artikellose Verwendungen
+  ("stands as proof that …") senken die Copula-Rate
+- G7: `due to the fact that` und `while specific details are limited`
+  (Cutoff-Tell) in conversational_fillers (Einzelvorkommen signifikant);
+  `in order to` in generic_phrases mit bestehender kumulativer >=3-Schwelle
+  (FU-12-Logik: Paar-Vorkommen bleiben unter 0.40)
+- ontology.json conversational_fillers-Spiegel aktualisiert;
+  Tests: G7WordyFillerTests, G7InOrderToWatchlistTests,
+  TestStandsAsSubstitute (2 pos + Hard-Negatives je Familie)
+- G5 (InlineHeaderRestatement), G9 (ColonConnector) bewusst NICHT Teil
+  dieses PRs: Pattern-Design + FP-Validierung gegen Listen/Label-Kolon
+  getrennt zu leisten (Folge-PRs), G6/G8 laut Issue erst nach Prüfung
+  gegen meta_commentary / authority_claims
+
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
 - 3 neue de_*-Phrase-Kategorien (je 6 Phrasen, conf 0.6, Voll-Zweibeleg
