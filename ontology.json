@@ -4000,6 +4000,23 @@
           "confidence": 0.8
         }
       ]
+    },
+    "deIdeology": {
+      "description": "DE/EN detect-only Rhetorik-Layer fuer ideologische Ritualmuster (#92). Bewertet die Strategieform der Rhetorik, nicht die Parteizugehörigkeit (ADR-0008). Findings sind advisory und gehen NICHT in slop_score ein (ADR-0006).",
+      "mode": "detect-only",
+      "source": "src/de_ideology.py (corpus-kalibrierte Inline-Liste, dokumentierte Abweichung), Korpus #98: 46 pos / 40 hard-neg, FP=0",
+      "patterns": [
+        "RitualFirewall",
+        "MartyrCartel",
+        "CollectiveOther",
+        "ReplacementKicker",
+        "EthnopluralistRebrand",
+        "PurityBan",
+        "VibeScapegoat",
+        "SalvationModel",
+        "UnfalsifiableTemplate",
+        "EnemyVermin"
+      ]
     }
   },
   "normativeFramings": {
