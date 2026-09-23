@@ -31,6 +31,13 @@
   dieses PRs: Pattern-Design + FP-Validierung gegen Listen/Label-Kolon
   getrennt zu leisten (Folge-PRs), G6/G8 laut Issue erst nach Prüfung
   gegen meta_commentary / authority_claims
+## [Unreleased] — 2026-09-23 #249 G6: NameDropList (detect-only)
+
+- **NameDropList** (G6, unslop #2): Medien-/Brand-Aufzaehlung ohne Aussageinhalt
+  (`micro_patterns.py`, detect-only). Lead-in-Liste (featured in/seen on/trusted by…)
+  ODER Bare-Enumeration mit ≤6 Nicht-Listen-Wörtern; Guards: KEEP-Verben für echte
+  Aussagen (compared/tested/ranked…), Referenz-Listen-Konventionen (Bullet/Nummer/Link),
+  ≥3-Item-Schwelle. Tests: `tests/test_namedrop_g6.py` (L1), EVALS.md-Zuordnung ergänzt.
 
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
