@@ -41,3 +41,13 @@
 ## Pattern-Bezug
 
 `RitualFirewall` (Keep-When: konkretes Verfahren) muss auf den Texten 5–8 FP=0 liefern; Annotationen gehen in das #98-Korpus ein.
+
+## RESEARCH — Quellenlage (eigene Worte)
+
+- **Ritualisierung des Protests:** Das nd dokumentierte die Entwicklung der „Brandmauer"-Demonstrationen 2023 als zunächst unterschätzt, dann ritualisiert; 2024 war „We're the firewall!" ein reproduzierbarer Demo-Slogan über mehrere Anlässe hinweg (Saison-Ritual statt Einzelereignis).
+- **Metapher als Organisationsprinzip:** The Economist (2026-08) beschrieb, wie die Brandmauer-Metapher bis in den Bundestags-Fußball hinein zum Organisationsprinzip öffentlichen Lebens wurde — ohne dass damit ein konkretes Instrument benannt wird.
+- **Talkshow-Schablone:** Das „halten vs. reißen"-Schema dominiert Debattenformate, während Verfahrensoptionen (Minderheitsregierung, Ausschussrechte, Parteiverbotsverfahren, kommunale Mehrheitsbildung) außerhalb des Frames bleiben.
+- **Gegenpolemik als Entmenschlichung:** Die NZZ (2026) dokumentierte Schädlingsmetaphorik in der Gegenpolemik — das ist Spiegel-Slop (EnemyVermin), keine „Antwort" auf das Ritual.
+- **Gegen-Empirie:** Die WZB-Auswertung (2025) zu Kreistags-Mitabstimmungen liefert die belastbare Referenz für substanzielle Kritik statt Ritual (Hard-Negative 5).
+
+Verwendung: Nur als Kontext für die Annotation der Kurztextskelette; keine automatisierte Quellenextraktion.
