@@ -48,6 +48,32 @@ GRAND_ENDPOINTS = {
 
 RECAP_OPENERS = ["in conclusion", "overall,", "to summarize"]
 
+# G6 (issue #249 / unslop #2): NameDropList — media/brand enumerations
+# without statement content. Lead-ins are a closed list; the second path
+# (bare enumeration, almost nothing else in the sentence) is capped by
+# MAX_NON_LIST_WORDS so it only fires on genuinely content-free lists.
+NAME_DROP_LEADINS = [
+    "featured in", "as featured in", "seen in", "as seen in", "seen on",
+    "as seen on", "covered by", "mentioned in", "praised by", "endorsed by",
+    "trusted by", "recommended by", "highlighted in", "spotlighted in",
+]
+
+# If any of these content verbs shape the list, the sentence makes a real
+# statement about the named things (comparison, review, interview) — not
+# a bare name drop.
+NAME_DROP_KEEP_VERBS = [
+    "compared", "tested", "benchmark", "benchmarked", "analyzed",
+    "analysed", "reviewed", "studied", "interviewed", "surveyed",
+    "evaluated", "ranked", "audited", "measured", "mapped",
+]
+MAX_NON_LIST_WORDS = 6
+
+# One enumerated item: capitalized word(s), optionally "The X"/"X of the Y".
+_ITEM = r"(?:[Tt]he\s+)?[A-Z][\w&.'’-]*(?:\s+[A-Z][\w&.'’-]*)*"
+_NAME_ENUM = re.compile(
+    r"(" + _ITEM + r"(?:\s*,\s*(?:and\s+|or\s+)?" + _ITEM + r"){2,})"
+)
+
 _STOP = {
     "a", "an", "the", "and", "or", "but", "of", "to", "in", "on", "for",
     "with", "is", "are", "was", "were", "be", "it", "its", "this", "that",
@@ -131,7 +157,61 @@ def _heading_repeated(text: str):
     return None
 
 
+def _name_drop_items(enum_match: str):
+    """Split an enumeration core into cleaned item strings."""
+    items = [p.strip() for p in enum_match.split(",")]
+    cleaned = []
+    for it in items:
+        it = re.sub(r"^(?:and|or)\s+", "", it, flags=re.IGNORECASE).strip()
+        # trailing 'and X' inside the last comma-less segment
+        parts = re.split(r"\s+(?:and|&)\s+", it)
+        cleaned.extend(p.strip() for p in parts if p.strip())
+    return cleaned
+
+
+def _name_drop_list(text: str):
+    for raw_line in text.split("\n"):
+        line = raw_line.strip()
+        # Reference-list conventions are legitimate enumerations by design.
+        if (not line or line.startswith(("-", "*", ">", "[", "(", "#"))
+                or line[0].isdigit() or "http" in line.lower()):
+            continue
+        for s in _sentences(line):
+            low = s.lower()
+            if any(v in low for v in NAME_DROP_KEEP_VERBS):
+                continue
+            m = _NAME_ENUM.search(s)
+            if not m:
+                continue
+            items = _name_drop_items(m.group(1))
+            if len(items) < 3:
+                continue
+            lead_in = next((li for li in NAME_DROP_LEADINS if li in low), None)
+            remainder = (s[:m.start(1)] + " " + s[m.end(1):]).strip()
+            if lead_in:
+                remainder = remainder.lower().replace(lead_in, " ")
+            words = [w for w in re.findall(r"[a-zA-Z']+", remainder)
+                     if w.lower() not in _STOP]
+            if len(words) <= MAX_NON_LIST_WORDS:
+                return s
+    return None
+
+
 MICRO_PATTERNS = {
+    "NameDropList": {
+        "label": "Name-drop list",
+        "confidence": 0.6,
+        "description": "Enumeration of 3+ media/brand/outlet names with no statement "
+                       "content — 'As featured in TechCrunch, Forbes, and Wired.' "
+                       "The names ARE the sentence. FakeAuthoritySlop's list-shaped "
+                       "cousin (G6, unslop #2).",
+        "example_slop": "As featured in TechCrunch, Forbes, and Wired.",
+        "example_fix": "TechCrunch covered the launch; the benchmark data is in the report.",
+        "keep_when": "Reference lists, directories and citation sections (bullet/numbered "
+                     "lines are skipped), and sentences whose verb makes a real claim "
+                     "about the named things (compared/tested/interviewed/ranked…), "
+                     "e.g. 'We compared React, Vue, and Angular in the benchmark.'",
+    },
     "FalseAgency": {
         "label": "False agency",
         "confidence": 0.6,
@@ -184,6 +264,7 @@ MICRO_PATTERNS = {
 }
 
 _FINDERS = {
+    "NameDropList": _name_drop_list,
     "FalseAgency": lambda text: _false_agency(_sentences(text)),
     "FalseRange": _false_range,
     "RecapEnding": _recap_ending,
