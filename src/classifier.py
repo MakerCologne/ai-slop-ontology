@@ -372,6 +372,35 @@ class SlopClassifier:
         # ============================================================
         # 2. PHRASE PATTERN DETECTION (all categories)
         # ============================================================
+        # #246 TechMetaphorNoun: ML-legit modality/vector/paradigm/harness
+        # vor dem Phrase-Matching maskieren (Parity zum slop_scorer, der
+        # fp_guards.mask_tech_metaphor_ml_terms in phrase_category_score
+        # anwendet). Satzfenster-Keep_when: nur wenn im selben Satz ein
+        # ML-Kontext-Keyword steht, wird das Nomen maskiert.
+        try:
+            from fp_guards import mask_tech_metaphor_ml_terms  # type: ignore
+        except ImportError:
+            try:
+                from src.fp_guards import mask_tech_metaphor_ml_terms  # type: ignore
+            except ImportError:
+                mask_tech_metaphor_ml_terms = None
+        if mask_tech_metaphor_ml_terms is None:
+            # Fallback: fp_guards.py liegt in skills/ai-slop-detection/scripts
+            # (gleiche Datei wie im slop_scorer-Kontext) — repo-relativ
+            # auflösen, damit der Guard auch ohne spezielles sys.path greift.
+            import importlib.util
+            _fg_path = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                "skills", "ai-slop-detection", "scripts", "fp_guards.py",
+            )
+            if os.path.exists(_fg_path):
+                _spec = importlib.util.spec_from_file_location(
+                    "_fp_guards_fallback", _fg_path)
+                _mod = importlib.util.module_from_spec(_spec)
+                _spec.loader.exec_module(_mod)
+                mask_tech_metaphor_ml_terms = _mod.mask_tech_metaphor_ml_terms
+        if mask_tech_metaphor_ml_terms is not None:
+            text_lower = mask_tech_metaphor_ml_terms(text_lower)
         phrase_hits = {}
         total_phrase_hits = 0
 
