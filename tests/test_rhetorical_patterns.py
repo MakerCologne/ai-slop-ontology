@@ -159,6 +159,31 @@ class RhetoricalDetectionTests(unittest.TestCase):
         self.assertNotIn("ColonReveal", ids("Ingredients: flour, water, salt, and yeast."))
         self.assertNotIn("ColonReveal", ids("Note: the server restarts at midnight UTC."))
 
+    def test_colon_connector_mid_sentence(self):
+        # G9 (unslop #14): mid-sentence colon as a verb connector, no reveal drama.
+        self.assertIn("ColonReveal", ids(
+            "We kept the old parser. The reason is simple: we ran out of time before the deadline."))
+        self.assertIn("ColonReveal", ids(
+            "The plan was clear from the start: rewrite the whole loop in one sprint."))
+        # Legit list/quote/code right sides must NOT fire (no comma-enumeration reveals).
+        self.assertNotIn("ColonReveal", ids(
+            "You need three things: patience, coffee, and a calm reviewer."))
+        self.assertNotIn("ColonReveal", ids(
+            "The docs say it plainly: use the flag, then restart."))
+
+    def test_inline_header_restatement(self):
+        # G5 (unslop #16): bold label + colon restating the sentence subject.
+        self.assertIn("InlineHeaderRestatement", ids(
+            "**Performance:** Performance improved by 20% after the rewrite."))
+        # Label that introduces NEW content (not a restatement) stays clean.
+        self.assertNotIn("InlineHeaderRestatement", ids(
+            "**Setup:** Install the package and run the migrate command once."))
+        self.assertNotIn("InlineHeaderRestatement", ids(
+            "**Costs:** The migration saved 14 hours per week."))
+        # Multi-word labels restating the sentence start also fire.
+        self.assertIn("InlineHeaderRestatement", ids(
+            "**Search speed:** Search speed doubled after the index swap."))
+
     def test_findings_carry_evidence_and_fix(self):
         findings = find_rhetorical_patterns("The app serves as a centralized hub for teams.")
         self.assertTrue(findings)

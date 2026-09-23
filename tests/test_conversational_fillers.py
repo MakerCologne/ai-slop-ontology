@@ -194,3 +194,57 @@ class QuickUpdateVariantTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class G7WordyFillerTests(unittest.TestCase):
+    """slopgh#249 G7: Weitschweifigkeits-Fuellseln (unslop #26).
+
+    'due to the fact that' und 'while specific details are limited'
+    (Cutoff-Tell) sind gespraechige Umwege statt knapper Formulierung —
+    Einzelvorkommen signifikant, kumulative Kategorie-Logik wie #110.
+    """
+
+    WORDY_PAIR = ("Due to the fact that the cache grew, the deploy failed. "
+                  "While specific details are limited, the rollout paused.")
+
+    def test_pair_fires(self):
+        r = slop_scorer.slop_score(self.WORDY_PAIR)
+        self.assertGreaterEqual(r["dimensions"]["phrase_match_count"], 2)
+
+    def test_both_terms_matched(self):
+        hits = slop_scorer.find_term_matches(self.WORDY_PAIR.lower(), [
+            "due to the fact that",
+            "while specific details are limited"])
+        self.assertEqual(sum(hits.values()), 2)
+
+    def test_negative_plain_prose_not_scored(self):
+        # gleiche Aussage, knappe menschliche Formulierung: keine Kategorie
+        plain = ("Because the cache grew, the deploy failed. "
+                 "The rollout paused.")
+        self.assertEqual(
+            slop_scorer.phrase_category_score(plain)
+            .get("conversational_fillers", []), [])
+
+    def test_negative_single_hit_not_family(self):
+        t = ("The meeting moved because the room was booked. "
+             "Due to the fact that nobody objected, we shipped.")
+        r = slop_scorer.slop_score(t)
+        self.assertLess(r["dimensions"]["phrase_match_count"], 2)
+
+
+class G7InOrderToWatchlistTests(unittest.TestCase):
+    """slopgh#249 G7: 'in order to' nur kumulativ (>=3) wie FU-12-Logik."""
+
+    def test_triple_fires_generic_category(self):
+        t = ("In order to build, we test. In order to test, we read. "
+             "In order to read, we sit still.")
+        cats = slop_scorer.phrase_category_score(t)
+        self.assertIn("in order to", cats.get("generic_phrases", []))
+
+    def test_negative_pair_below_threshold(self):
+        # zwei Vorkommen: menschliche Formatprosa — phrase_category_score
+        # listet Begriffe unabhaengig von min_hits (Engine-Verhalten),
+        # entscheidend ist die Score-Schwelle (FU-12-Logik: < 0.40)
+        t = ("In order to build, we test. In order to test, we read. Done.")
+        r = slop_scorer.slop_score(t)
+        self.assertLess(r["slop_score"], 0.40)

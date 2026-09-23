@@ -399,7 +399,12 @@ PHRASE_CATEGORIES = {
             "just a quick update",
             "giving you a quick update",
             "here's a quick update",
-            "wanted to give you a quick update"
+            "wanted to give you a quick update",
+            # slopgh#249 G7: gespraechige Weitschweifigkeits-Fuellseln
+            # (unslop #26); Einzelvorkommen schon signifikant, daher hier
+            # statt generic_phrases (kumulative >=3-Schwelle).
+            "due to the fact that",
+            "while specific details are limited",
         ]
     },
     "generic_phrases": {
@@ -407,7 +412,10 @@ PHRASE_CATEGORIES = {
         "min_hits": 3,
         "phrases": [
             "in other words", "going forward",
-            "the good news is", "the bad news is"
+            "the good news is", "the bad news is",
+            # slopgh#249 G7: "in order to" — in menschlichem Formatprosa
+            # einzeln gaengig, deshalb kumulativ >=3 wie die FU-12-Logik
+            "in order to",
         ]
     },
     # unslop #26 / issue #246 (Gap G2): abstract tech-metaphor nouns as
@@ -645,8 +653,14 @@ def buzzword_score(text: str, tiers: Optional[dict] = None) -> tuple:
 # (#46 prevention) copula_stats() excludes substitute matches that overlap
 # a buzzword span — those phrases are already penalized by the buzzword
 # dimension and must not simultaneously lower the copula rate.
+# (slopgh#249 G3): "stands as" ergaenzt neben boasts/features — die
+# FakeStrongVerb-Kollision ist bereits abgedeckt: "stands as a/an/the …"
+# matcht _FAKE_STRONG_VERB, der Overlap-Ausschluss (COLL-1) zaehlt das
+# Vorkommen dann nur einmal. Artikellose Verwendungen ("stands as proof
+# that …") senken die Copula-Rate.
 SUBSTITUTE_VERB_PATTERNS = [
     "serves as", "boasts", "features", "refers to", "represents", "embodies",
+    "stands as",
 ]
 
 

@@ -90,3 +90,37 @@ class TestCopulaRateInScorer(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestStandsAsSubstitute(unittest.TestCase):
+    """slopgh#249 G3: 'stands as' als Substitute-Verb neben boasts/features.
+
+    Artikellose Verwendungen ('stands as proof that …') senken die
+    Copula-Rate; 'stands as a/an/the …' kollidiert mit FakeStrongVerb
+    (COLL-1) und wird vom Overlap-Ausschluss ignoriert.
+    """
+
+    def test_stands_as_counts_articleless(self):
+        text = ("The audit stands as proof that the process works. "
+                "The mill serves as the museum. Both are old.")
+        stats = slop_scorer.copula_stats(text)
+        # 'stands as proof' (ohne Artikel) + 'serves as the museum'
+        # ('the' matcht FakeStrongVerb -> COLL-1-Ausschluss nicht noetig,
+        # aber Buzzword-Freiheit gegeben) — mindestens eines zaehlt.
+        self.assertGreaterEqual(stats["substitutes"], 1)
+
+    def test_stands_as_fakestrong_collision_excluded(self):
+        # 'stands as a hub' matcht _FAKE_STRONG_VERB -> COLL-1: das
+        # Vorkommen zaehlt NICHT als Copula-Substitut
+        text = "The result stands as a hub for ideas. It is fine."
+        stats = slop_scorer.copula_stats(text)
+        self.assertEqual(stats["substitutes"], 0)
+
+    def test_stands_as_testament_counts_documented(self):
+        # 'stands as a testament' ist FakeStrongVerb-Nomen nicht einschliessend
+        # und nur Phrase-Kategorie (report_hedging), kein Buzzword-Tier —
+        # es zaehlt daher als Substitut (dokumentiertes Grenzverhalten,
+        # kollidiert mit keiner COLL-Regel der Buzzword-/FakeStrongVerb-Spans).
+        text = "The result stands as a testament to hard work. It is fine."
+        stats = slop_scorer.copula_stats(text)
+        self.assertEqual(stats["substitutes"], 1)
