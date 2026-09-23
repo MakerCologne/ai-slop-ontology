@@ -1,0 +1,12 @@
+{
+  "name": "Management Slop",
+  "description": "Slop in management communication: strategy, metrics, process and compliance rituals.",
+  "category": "general",
+  "icon": "org",
+  "tags": [
+    "management-slop",
+    "work-slop",
+    "detect-only"
+  ],
+  "author": "hikaman"
+}

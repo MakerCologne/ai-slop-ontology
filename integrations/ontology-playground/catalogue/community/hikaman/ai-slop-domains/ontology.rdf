@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns="https://github.com/hikaman/ai-slop-ontology#"
+         xml:base="https://github.com/hikaman/ai-slop-ontology">
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ContentItem">
+    <rdfs:label xml:lang="en">Content Item</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#SEOSlop">
+    <rdfs:label xml:lang="en">S E O Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#AcademicSlop">
+    <rdfs:label xml:lang="en">Academic Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#PoliticalSlop">
+    <rdfs:label xml:lang="en">Political Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ReviewSlop">
+    <rdfs:label xml:lang="en">Review Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#SecurityReportSlop">
+    <rdfs:label xml:lang="en">Security Report Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#PeerReviewSlop">
+    <rdfs:label xml:lang="en">Peer Review Slop</rdfs:label>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SEOSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#AcademicSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#PoliticalSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ReviewSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SecurityReportSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#PeerReviewSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#pollutesSearch">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SEOSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#fabricatesCitations">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#AcademicSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#amplifiesPropaganda">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#PoliticalSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#fakesReviews">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ReviewSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#fakesSecurityReport">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SecurityReportSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#subvertsPeerReview">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#PeerReviewSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+</rdf:RDF>

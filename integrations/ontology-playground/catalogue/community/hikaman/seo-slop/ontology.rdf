@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns="https://github.com/hikaman/ai-slop-ontology#"
+         xml:base="https://github.com/hikaman/ai-slop-ontology">
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ContentItem">
+    <rdfs:label xml:lang="en">Content Item</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ScaledContentSlop">
+    <rdfs:label xml:lang="en">Scaled Content Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#DoorwayPageSlop">
+    <rdfs:label xml:lang="en">Doorway Page Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#SiteReputationSlop">
+    <rdfs:label xml:lang="en">Site Reputation Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ExpiredDomainSlop">
+    <rdfs:label xml:lang="en">Expired Domain Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ScrapedRemixSlop">
+    <rdfs:label xml:lang="en">Scraped Remix Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#SearchSaturationSlop">
+    <rdfs:label xml:lang="en">Search Saturation Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#GEOManipulationSlop">
+    <rdfs:label xml:lang="en">G E O Manipulation Slop</rdfs:label>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ScaledContentSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#DoorwayPageSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SiteReputationSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ExpiredDomainSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ScrapedRemixSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SearchSaturationSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#GEOManipulationSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#scalesContent">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ScaledContentSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#funnelsTraffic">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#DoorwayPageSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#abusesReputation">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SiteReputationSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#revivesDomain">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ExpiredDomainSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#saturatesSearch">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SearchSaturationSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#manipulatesGEO">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#GEOManipulationSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+</rdf:RDF>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns="https://github.com/hikaman/ai-slop-ontology#"
+         xml:base="https://github.com/hikaman/ai-slop-ontology">
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#ContentItem">
+    <rdfs:label xml:lang="en">Content Item</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#SyntheticContent">
+    <rdfs:label xml:lang="en">Synthetic Content</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#SurrealEngagementBait">
+    <rdfs:label xml:lang="en">Surreal Engagement Bait</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#FakePhotographSlop">
+    <rdfs:label xml:lang="en">Fake Photograph Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#FakeProductImageSlop">
+    <rdfs:label xml:lang="en">Fake Product Image Slop</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#AIGeneratedVideo">
+    <rdfs:label xml:lang="en">A I Generated Video</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#FakeArtistMusic">
+    <rdfs:label xml:lang="en">Fake Artist Music</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="https://github.com/hikaman/ai-slop-ontology#HallucinatedPackage">
+    <rdfs:label xml:lang="en">Hallucinated Package</rdfs:label>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SyntheticContent"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SurrealEngagementBait"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#FakePhotographSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#FakeProductImageSlop"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#AIGeneratedVideo"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#FakeArtistMusic"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hasIdentifier">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#HallucinatedPackage"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <isIdentifier>true</isIdentifier>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#generates">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SyntheticContent"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#rendersAsVideo">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#AIGeneratedVideo"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#baitsEngagement">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#SurrealEngagementBait"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#SyntheticContent"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#fakesPhotograph">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#FakePhotographSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#fakesProduct">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#FakeProductImageSlop"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#fakesArtist">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#FakeArtistMusic"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#ContentItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://github.com/hikaman/ai-slop-ontology#hallucinatesPackage">
+    <rdfs:domain rdf:resource="https://github.com/hikaman/ai-slop-ontology#HallucinatedPackage"/>
+    <rdfs:range rdf:resource="https://github.com/hikaman/ai-slop-ontology#SyntheticContent"/>
+  </owl:ObjectProperty>
+</rdf:RDF>
