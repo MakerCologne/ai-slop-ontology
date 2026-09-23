@@ -35,13 +35,26 @@ RHETORICAL_PATTERNS = {
         "keep_when": "A genuine correction of a specific misconception, not a rhetorical flourish.",
     },
     "ColonReveal": {
-        "label": "Colon reveal",
+        "label": "Colon reveal / connector",
         "confidence": 0.55,
         "description": "A short capitalized phrase, a colon, then a lowercase dramatic "
-                       "reveal. Rewrite as a plain sentence.",
+                       "reveal — or a mid-sentence colon used as a verb connector "
+                       "('the reason is simple: …'). Rewrite as a plain sentence.",
         "example_slop": "The best part: it learns.",
         "example_fix": "It learns, which is the best part.",
-        "keep_when": "The colon introduces a list, label, quote, ratio, or code.",
+        "keep_when": "The colon introduces a list, label, quote, ratio, or code — or the lead clause ends in a noun/verb that the right side completes with substance.",
+    },
+    "InlineHeaderRestatement": {
+        "label": "Inline-header restatement",
+        "confidence": 0.55,
+        "description": "Bold label + colon that restates the sentence's own "
+                       "subject ('**Performance:** Performance improved…'). "
+                       "Cut the label and start with the subject.",
+        "example_slop": "**Performance:** Performance improved by 20% after the rewrite.",
+        "example_fix": "(cut the bold label and start with the subject - keep the concrete fact)",
+        "keep_when": "The bold label is a mini-sentence ending in a period "
+                     "('**Performance.** Performance improved…') or introduces a "
+                     "genuine list (unslop #16).",
     },
     "SuperficialAnalysis": {
         "label": "Superficial analysis",
@@ -332,6 +345,20 @@ _COLON_LABELS = {
     "definition", "goal", "problem", "solution", "input", "output", "usage",
 }
 
+# G9 (unslop #14): mid-sentence colon used as a connector — a lowercase lead
+# clause, a colon, then a lowercase continuation. Distinguished from the
+# sentence-start ColonReveal by the lowercase lead (a sentence never starts
+# lowercase); list/quote/code right sides are excluded via [^,:\n].
+_COLON_CONNECTOR = re.compile(
+    r"([a-z][\w'’-]+(?:\s+[\w'’-]+){2,7}):\s+([a-z][^,:\n]{3,60})(?=[.!?]|$)"
+)
+
+# G5 (unslop #16): bold inline-header label + colon that restates the
+# following sentence's subject ('**Performance:** Performance improved…').
+_INLINE_HEADER = re.compile(
+    r"\*\*([A-Za-z][A-Za-z /&+-]{1,30}):\*\*\s+([A-Za-z][^.\n]{0,90})"
+)
+
 _SUPERFICIAL = re.compile(
     r",\s+(highlighting|underscoring|reflecting|showcasing|emphasizing|emphasising|"
     r"demonstrating|illustrating|signaling|signalling|marking|cementing|solidifying|"
@@ -418,7 +445,8 @@ def find_rhetorical_patterns(text: str):
             add("BinaryContrast", _snippet(text, *m.span()))
             break
 
-    # 2. Colon reveal
+    # 2. Colon reveal / mid-sentence colon connector
+    colon_found = False
     for m in _COLON_REVEAL.finditer(text):
         lead, reveal = m.group(1), m.group(2)
         # Skip single-word labels (Note:, Warning:, Summary:, ...) — legitimate
@@ -426,7 +454,13 @@ def find_rhetorical_patterns(text: str):
         if lead.lower() in _COLON_LABELS:
             continue
         add("ColonReveal", f"{lead}: {reveal.strip()}")
+        colon_found = True
         break
+    if not colon_found:
+        for m in _COLON_CONNECTOR.finditer(text):
+            lead, reveal = m.group(1), m.group(2)
+            add("ColonReveal", f"{lead}: {reveal.strip()}")
+            break
 
     # 3. Superficial analysis
     m = _SUPERFICIAL.search(text)
@@ -717,6 +751,18 @@ def find_rhetorical_patterns(text: str):
         idx = lowered.find(phrase)
         if idx >= 0:
             add("ChatbotLeftover", _snippet(lowered, idx, idx + 80))
+            break
+
+    # 13d. Inline-header restatement (unslop #16 / G5) — a bold "**Label:**"
+    #      header that restates the subject of the sentence it introduces
+    #      ("**Performance:** Performance improved by 20%…"). The label is
+    #      redundant scaffolding: the sentence works without it. Kept when the
+    #      label is a mini-sentence ending in a period or heads a genuine list.
+    for m in _INLINE_HEADER.finditer(text):
+        label, rest = m.group(1), m.group(2)
+        label_first = re.escape(label.split()[0].lower())
+        if re.match(label_first + r"\b", rest.lower()):
+            add("InlineHeaderRestatement", f"**{label}:** {rest.strip()[:60]}")
             break
 
     return findings

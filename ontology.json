@@ -3300,12 +3300,20 @@
             "keep_when": "A genuine correction of a specific misconception, not a rhetorical flourish."
           },
           "ColonReveal": {
-            "label": "Colon reveal",
+            "label": "Colon reveal / connector",
             "confidence": 0.55,
-            "description": "A short capitalized phrase, a colon, then a lowercase dramatic reveal. Rewrite as a plain sentence.",
+            "description": "A short capitalized phrase, a colon, then a lowercase dramatic reveal — or a mid-sentence colon used as a verb connector ('the reason is simple: …'). Rewrite as a plain sentence.",
             "example_slop": "The best part: it learns.",
             "example_fix": "It learns, which is the best part.",
-            "keep_when": "The colon introduces a list, label, quote, ratio, or code."
+            "keep_when": "The colon introduces a list, label, quote, ratio, or code — or the lead clause ends in a noun/verb that the right side completes with substance."
+          },
+          "InlineHeaderRestatement": {
+            "label": "Inline-header restatement",
+            "confidence": 0.55,
+            "description": "Bold label + colon that restates the sentence's own subject ('**Performance:** Performance improved…'). Cut the label and start with the subject.",
+            "example_slop": "**Performance:** Performance improved by 20% after the rewrite.",
+            "example_fix": "(cut the bold label and start with the subject - keep the concrete fact)",
+            "keep_when": "The bold label is a mini-sentence ending in a period ('**Performance.** Performance improved…') or introduces a genuine list (unslop #16)."
           },
           "SuperficialAnalysis": {
             "label": "Superficial analysis",
@@ -5477,6 +5485,7 @@
           "ImportancePuffery",
           "ForcedTriad",
           "ColonReveal",
+          "InlineHeaderRestatement",
           "GenericErrorHandling",
           "OverlyVerboseNaming",
           "EmDashExcess",
