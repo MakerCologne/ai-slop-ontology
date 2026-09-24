@@ -167,6 +167,141 @@ def _actorless_claim(text: str):
     return None
 
 
+# --- Fallstudie #97: PuritySlop / Slopaganda (detect-only) ---------------
+# Ritual anti-AI purity declarations (Bluesky "AI IS THEFT. PASS IT ON."
+# chain letters) and identity-signalling bans. Willison-test: unverlangt,
+#gedankenlos skaliert — oft ohne dass ein Modell den Text schrieb.
+_PURITY_RITUAL = re.compile(
+    r"\bai\s+is\s+theft\b"
+    r"|\bpass\s+it\s+on\b"
+    r"|\bblock\s+me\s+if\s+you\s+(?:use|support|like)\s+(?:any\s+)?ai\b"
+    r"|\bif\s+you\s+use\s+ai,?\s+block\s+me\b"
+    r"|\b(?:100%|one\s+hundred\s+percent)\s+(?:human[- ]written|human[- ]made)\b"
+    r"|\bno\s+ai\s+was\s+(?:used|involved|harmed)\b"
+    # DE (Fallstudie #97, Texte 3–4): Purity-Test ohne Argument
+    r"|\bai[- ]?tools?\s+nutzt,?\s+hat\s+als\s+mensch\b"
+    r"|\bai[- ]?avatar\s+hat,?\s+ist\s+blockiert\b"
+    r"|\bnicht\s+verhandeln\b"
+    # HIS: Teil-des-Problems-Ritual (Partizipation als Position, ohne Argument)
+    r"|\bwer\s+[^.!?]{0,80}\bist\s+teil\s+des\s+problems\b"
+    r"|\bkeine\s+unschuldigen\s+zuschauer\b"
+    r"|\bschauen\s+ist\s+schon\s+position\b",
+    re.IGNORECASE,
+)
+# keep_when: compliance/provenance disclosure — factual statements required by
+# a policy, licence, watermark or evaluation, not identity signalling.
+_PURITY_DISCLOSURE = re.compile(
+    r"\b(?:watermark|watermarked|provenance|disclosure|pursuant|compliance|"
+    r"licence|license|verified|certified|per\s+(?:the\s+)?(?:policy|contract|"
+    r"requirement|guideline)|evaluation|benchmark)\b",
+    re.IGNORECASE,
+)
+
+# VibeScapegoat: "vibe coding" invoked as blanket cause of a failure without
+# naming any technical mechanism (Bluesky outage discourse, Ars Technica
+# 2026-04).
+_VIBE_CODING = re.compile(r"\bvibe[- ]?cod(?:e|ed|er|ing)\b", re.IGNORECASE)
+_VIBE_FAILURE = re.compile(
+    r"\b(?:outage|broke|broke\s+down|down|downtime|incident|failure|"
+    r"crashed|went\s+down|meltdown|ausfall|st\u00f6rung)\b",
+    re.IGNORECASE,
+)
+_VIBE_EVIDENCE_DENIAL = re.compile(
+    r"\b(?:keine\s+(?:meldung|logs?|untersuchung|postmortem)|"
+    r"man\s+braucht\s+keine\s+meldung|no\s+logs?\s+needed|"
+    r"wir\s+wissen\s+alle|we\s+all\s+know|my\s+foot)\b",
+    re.IGNORECASE,
+)
+_VIBE_TECHNICAL = re.compile(
+    r"\b(?:commit|deploy|config|database|query|migration|log|cache|regex|"
+    r"race\s+condition|index|schema|load\s+balancer|dns|certificate|"
+    r"token|timeout|revert|rollback|hotfix)\b",
+    re.IGNORECASE,
+)
+
+# SalvationModel: monetised AI melodrama arc — injustice -> humiliation ->
+# redemption (WIRED 2026-07 schema) — signalled by stacked arc markers plus
+# an AI/money noun in the redemption sentence.
+_SALVATION_MARKERS = re.compile(
+    r"\b(?:against\s+all\s+odds|humble\s+beginnings|no\s+one\s+believed|"
+    r"laughed\s+(?:at|me\s+out)|rejected\s+by\s+everyone|slept\s+in\s+(?:a|my)\s+"
+    r"car|lost\s+everything|down\s+to\s+(?:my|his|her)\s+last\s+\$?\d+|"
+    r"tears\s+(?:of|streamed)|cried\s+(?:when|tears|for)|"
+    r"(?:never|still\s+can(?:'t|\s+not))\s+(?:believe|imagined)|"
+    r"(?:life|everything)\s+(?:is|was|has\s+been)\s+(?:changed|never\s+the\s+same)|"
+    r"forever\s+grateful|best\s+decision\s+(?:i|we|he|she)\s+ever\s+made)\b",
+    re.IGNORECASE,
+)
+_SALVATION_AI_MONEY = re.compile(
+    r"\b(?:ai|a\.i\.|chatgpt|gpt-?\d|grok|claude|gemini|midjourney|"
+    r"automation|bot)\b|\$\s?\d",
+    re.IGNORECASE,
+)
+
+# SLOPAGANDA_RITUAL (#97, Texte 5–8): unambiguous identity-regime phrases
+# (Erlöser-Schema, Lösch-Mobilisierung, Lügenpresse-Frame, Loyalitätstest).
+# Single marker fires — these are closed rituals, not ordinary rhetoric.
+_SLOPAGANDA_RITUAL = re.compile(
+    r"\bonly\s+\w+\s+can\s+save\b[^.!?]*\beveryone\s+else\b"
+    r"|\bteilt\s+(?:es|das),?\s+bevor\s+es\s+gelöscht\s+wird\b"
+    r"|\blügenpresse\b"
+    r"|\bliken\s*(?:=|ist)\s*loyalitäts?\b"
+    r"|\bwer\s+nicht\s+liked\b"
+    # HIS: Erloeser-Schema DE / Einheits-Pathos
+    r"|\bnur\s+noch\s+\w+\s+kann\s+[^.!?]*\bretten\b"
+    r"|\balle\s+anderen\s+sind\s+teil\s+des\s+problems\b"
+    r"|\beine\s+bewegung,?\s+ein\s+wille\b",
+    re.IGNORECASE,
+)
+
+
+def _purity_ban(text: str):
+    for s in _sentences(text):
+        m = _PURITY_RITUAL.search(s)
+        if m and not _PURITY_DISCLOSURE.search(s):
+            return s
+    return None
+
+
+def _vibe_scapegoat(text: str):
+    sentences = _sentences(text)
+    for i, s in enumerate(sentences):
+        if _VIBE_CODING.search(s) and _VIBE_FAILURE.search(s):
+            # keep_when: a post-mortem that names the actual mechanism is
+            # technical writing, not scapegoating.
+            if _VIBE_TECHNICAL.search(s):
+                continue
+            return s
+        # adjacency: failure claim and 'vibe coding' blame split across a
+        # question/answer pair ("Service down again? Vibe-coded devs…")
+        prev = sentences[i - 1] if i > 0 else ""
+        if (_VIBE_CODING.search(s) and _VIBE_FAILURE.search(prev)
+                and not _VIBE_TECHNICAL.search(s)):
+            return f"{prev} {s}".strip()
+        # blame-without-evidence: failure + dismissal of any investigation
+        # (HIS-052/53) — scapegoating without the buzzword
+        if (_VIBE_FAILURE.search(s) and _VIBE_EVIDENCE_DENIAL.search(s)
+                and not _VIBE_TECHNICAL.search(s)):
+            return s
+        if (_VIBE_FAILURE.search(prev) and _VIBE_EVIDENCE_DENIAL.search(s)
+                and not _VIBE_TECHNICAL.search(s)):
+            return f"{prev} {s}".strip()
+    return None
+
+
+def _salvation_model(text: str):
+    for s in _sentences(text):
+        if _SLOPAGANDA_RITUAL.search(s):
+            return s
+    markers = _SALVATION_MARKERS.findall(text)
+    if len(set(m.lower() for m in markers)) < 2:
+        return None
+    for s in _sentences(text):
+        if _SALVATION_MARKERS.search(s) and _SALVATION_AI_MONEY.search(s):
+            return s
+    return None
+
+
 MICRO_PATTERNS = {
     "FalseAgency": {
         "label": "False agency",
@@ -230,6 +365,51 @@ MICRO_PATTERNS = {
                      "clauses are skipped). Sentences naming an agent ('by the team') "
                      "are skipped.",
     },
+    "PurityBan": {
+        "label": "Ritual AI-purity declaration",
+        "confidence": 0.55,
+        "description": "Identity-signalling anti-AI ritual phrases ('AI IS THEFT. "
+                       "PASS IT ON.', 'block me if you use AI', '100% human-made') "
+                       "scaled mindlessly, often without any model writing the text. "
+                       "Human slop: the frame is human, the mass is synthetic.",
+        "example_slop": "AI IS THEFT. PASS IT ON. Block me if you use it.",
+        "example_fix": "I don't want my posts used for training without my "
+                       "consent; my complaint is scraping and licensing, not identity.",
+        "keep_when": "Compliance or provenance disclosures required by policy, "
+                     "licence or watermark rules ('this report is watermarked per "
+                     "contract requirements') — sentences with disclosure/"
+                     "provenance/compliance vocabulary are skipped.",
+    },
+    "VibeScapegoat": {
+        "label": "'Vibe coding' blamed without mechanism",
+        "confidence": 0.55,
+        "description": "'Vibe coding' invoked as a blanket cause of an outage or "
+                       "failure while naming no technical mechanism — a scapegoat "
+                       "frame instead of a post-mortem.",
+        "example_slop": "The site went down because they were vibe coding, plain "
+                        "and simple.",
+        "example_fix": "The site went down after an unreviewed config change; the "
+                        "migration lacked a rollback plan.",
+        "keep_when": "Post-mortems or reviews that name a concrete mechanism "
+                     "(commit, deploy, database, migration, rollback…). Those "
+                     "sentences are skipped by the technical-token guard.",
+    },
+    "SalvationModel": {
+        "label": "AI salvation melodrama arc",
+        "confidence": 0.6,
+        "description": "Monetised AI melodrama following the arc injustice -> "
+                       "humiliation -> redemption ('lost everything… now $12k a "
+                       "month') — stacked arc markers plus an AI/money payoff.",
+        "example_slop": "I lost everything and no one believed in me. Today the "
+                        "AI bot earns me $40,000 a month and I still can't believe "
+                        "it.",
+        "example_fix": "I was broke in 2024. After eight months of building a "
+                        "support-ticket automation, it now covers my rent; the "
+                        "revenue table with numbers is below.",
+        "keep_when": "Genuine personal narratives with verifiable, concrete "
+                        "details (numbers, timelines, named methods) — the detector "
+                        "only reports the stacked arc markers for a human to judge.",
+    },
 }
 
 _FINDERS = {
@@ -238,6 +418,9 @@ _FINDERS = {
     "RecapEnding": _recap_ending,
     "HeadingRepeatedBelowItself": _heading_repeated,
     "ActorlessClaim": _actorless_claim,
+    "PurityBan": _purity_ban,
+    "VibeScapegoat": _vibe_scapegoat,
+    "SalvationModel": _salvation_model,
 }
 
 
