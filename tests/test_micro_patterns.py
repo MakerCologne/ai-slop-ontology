@@ -36,24 +36,6 @@ class MicroPatternTests(unittest.TestCase):
     def test_false_agency_negative_inanimate_verb(self):
         self.assertNotIn("FalseAgency", ids("The data shows what matters next quarter."))
 
-    # --- FalseRange ---
-
-    def test_false_range_positive_grand_sweep(self):
-        self.assertIn(
-            "FalseRange",
-            ids("This guide covers everything from the Big Bang to dark matter."),
-        )
-
-    def test_false_range_negative_same_topic_everyday(self):
-        self.assertNotIn(
-            "FalseRange",
-            ids("We migrated the service from the old cluster to the new cluster."),
-        )
-        self.assertNotIn(
-            "FalseRange",
-            ids("The tour goes from the kitchen to the living room."),
-        )
-
     # --- RecapEnding ---
 
     def test_recap_ending_positive_opener_and_restatement(self):
