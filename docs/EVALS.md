@@ -88,6 +88,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
 - `tests/test_adverb_rate.py` — Signal #24 Adverb-Rate (Fixtures)
 - `tests/test_opener_announcement.py` — #230 P3 Opener-Announcement (L1, detect-only): Frame-basierte Ankuendigungs-/Praise-Opener (Tier A immer, Tier B Ich-Anlauf nur text-initial ohne in-sentence Begruendung), TP/Hard-Negative-Fixtures inkl. Hard-Negative 'Ich denke, dass X, weil Y'
+- `tests/test_briefleak_g8.py` — #249 G8 BriefLeak: Briefing-Register („as per your request"…) als meta_commentary-Erweiterung, Hard-Negatives: normales Verb „requested", exakte Einzelzählung, ontology.json-Spiegel-Check
 - `tests/test_namedrop_g6.py` — #249 G6 NameDropList (L1, detect-only): Medien-/Brand-Aufzaehlung ohne Aussageinhalt (Lead-in-Liste ODER Bare-Enumeration ≤6 Nicht-Listen-Woerter), Guards: KEEP-Verben (compared/tested/ranked…), Referenz-Listen-Konventionen (Bullet/Nummer/Link), Zwei-Item-Schwelle, Hard-Negatives inkl. Vergleichssatz und Content-Satz um Namen (L1)
 - `tests/test_anchor_drift.py` — #78 Anchor-Drift (detect-only, Anker-Diff, Dezimal-Grenzfall)
 - `tests/test_anchor_diff_cli.py` — #78 Anchor-Diff-CLI (--anchor-diff im Diff-Modus)

@@ -1,3 +1,14 @@
+## [Unreleased] — 2026-09-25 (slopgh#249 G8 — BriefLeak)
+
+- **G8 (BriefLeak)**: Briefing-/Instruktions-Register im Artefakt
+  („as per your request", „per your request", „as requested") als
+  `meta_commentary`-Phrasen-Erweiterung, kein neues Signal — laut Issue-Prüfung
+  hat das Korpus keine Briefing-Texte, damit ist eine eigene Signal-Kalibrierung
+  nicht ehrlich (Konzept-Mapping wie im Deep-Dive #39 vorgesehen).
+  ontology.json-Spiegel aktualisiert; Tests: `tests/test_briefleak_g8.py`
+  (6 Fixtures inkl. Hard-Negatives: normales Verb „requested", exakte
+  Einzelzählung bei Quoted-Request)
+
 ## [Unreleased] — 2026-09-22 (slopgh#249 G5+G9 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 2)
 
 - G5: Neues detect-only Pattern `InlineHeaderRestatement` (unslop #16):
