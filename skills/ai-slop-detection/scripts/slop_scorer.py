@@ -181,7 +181,11 @@ PHRASE_CATEGORIES = {
             "the rest of this essay", "the remainder of this document",
             "in this section, we will", "in the next section",
             "as we'll see later", "throughout this article",
-            "without further ado", "in the following paragraphs"
+            "without further ado", "in the following paragraphs",
+            # issue #249/G8 (BriefLeak): briefing/instruction register leaking
+            # into the artefact — meta_commentary extension, not a new signal
+            # (corpus has no briefing texts; concept-mapped per deep-dive G8).
+            "as per your request", "per your request", "as requested"
         ]
     },
     "rhetorical_setups": {
