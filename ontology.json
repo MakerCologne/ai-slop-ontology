@@ -4017,6 +4017,17 @@
         "UnfalsifiableTemplate",
         "EnemyVermin"
       ]
+    },
+    "deSurface": {
+      "description": "4 deterministische DE-Quick-Wins (#73 Punkt 3): falsche Anfuehrungszeichen (U+201E-Pairing), Genitiv-Apostroph ('Peter's Hund'), US-Datum/Punkt-Dezimal vor dt. Einheiten, Title Case in dt. Ueberschriften. DE-gegated (>= 3 dt. Funktionswoerter). Findings sind advisory und gehen NICHT in slop_score ein (ADR-0006).",
+      "mode": "detect-only",
+      "source": "src/de_surface.py (corpus-kalibrierte Inline-Liste, dokumentierte Abweichung), eigenstaendig re-deriviert aus de.wikipedia 'Anzeichen fuer KI-generierte Inhalte' (CC BY-SA 4.0, kein humanizer-de-Copy)",
+      "signals": [
+        "de-mismatched-quotes",
+        "de-genitive-apostroph",
+        "de-us-format",
+        "de-title-case"
+      ]
     }
   },
   "normativeFramings": {
