@@ -97,7 +97,6 @@ SSOT_REGISTER = {
         "INANIMATE_SUBJECTS": ("corpus-calibrated", "deviation"),
         "HUMAN_VERBS": ("corpus-calibrated", "deviation"),
         "FINANCE_OBJECTS": ("corpus-calibrated", "deviation"),
-        "GRAND_ENDPOINTS": ("corpus-calibrated", "deviation"),
         "RECAP_OPENERS": ("corpus-calibrated", "deviation"),
         "AGENTLESS_CLAIM_VERBS": ("corpus-calibrated", "deviation"),
         "MICRO_PATTERNS": ("corpus-calibrated", "deviation"),

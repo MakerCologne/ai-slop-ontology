@@ -36,15 +36,6 @@ _FINANCE_REALIZES = re.compile(
     re.IGNORECASE,
 )
 
-# Grand-sweep endpoints for FalseRange: gesture-at-scale placeholders from
-# cosmology/history/tech. Both endpoints must be from this list (or a matched
-# grand noun) for the pattern to fire — an everyday "from X to Y" in one
-# domain does not.
-GRAND_ENDPOINTS = {
-    "big bang", "dark matter", "atoms", "galaxies", "dinosaurs", "quantum",
-    "roman empire", "stone age", "printing press", "steam engine",
-    "microchips", "cave paintings", "black holes", "fire", "the wheel",
-}
 
 RECAP_OPENERS = ["in conclusion", "overall,", "to summarize"]
 
@@ -106,14 +97,6 @@ def _false_agency(sentences: list):
             return s
     return None
 
-
-def _false_range(text: str):
-    for m in re.finditer(r"from\s+(the\s+)?([a-z][a-z\s]{2,30}?)\s+to\s+(the\s+)?([a-z][a-z\s]{2,30}?)(?=[.,;:)]|$)", text, re.IGNORECASE):
-        left = m.group(2).strip().lower()
-        right = m.group(4).strip().lower()
-        if left in GRAND_ENDPOINTS and right in GRAND_ENDPOINTS:
-            return m.group(0)
-    return None
 
 
 def _recap_ending(text: str):
@@ -182,18 +165,7 @@ MICRO_PATTERNS = {
                      "('realizes a gain/profit/loss' — Fachsprache, not agency), which "
                      "the verb list still matches only for the named subjects.",
     },
-    "FalseRange": {
-        "label": "False from-X-to-Y range",
-        "confidence": 0.55,
-        "description": "Grandiosity sweep 'from the X to the Y' where both endpoints are "
-                       "gesture-at-scale placeholders (Big Bang, dark matter, dinosaurs, "
-                       "printing press). Name the actual scope.",
-        "example_slop": "This guide covers everything from the Big Bang to dark matter.",
-        "example_fix": "This guide covers cosmology from the early universe to structure formation.",
-        "keep_when": "The endpoints are the literal topic (a cosmology lecture legitimately "
-                     "spans Big Bang to dark matter) — the guard is intent, the detector "
-                     "only reports the sweep for a human to judge.",
-    },
+
     "RecapEnding": {
         "label": "Recap ending with restatement",
         "confidence": 0.6,
@@ -234,7 +206,6 @@ MICRO_PATTERNS = {
 
 _FINDERS = {
     "FalseAgency": lambda text: _false_agency(_sentences(text)),
-    "FalseRange": _false_range,
     "RecapEnding": _recap_ending,
     "HeadingRepeatedBelowItself": _heading_repeated,
     "ActorlessClaim": _actorless_claim,

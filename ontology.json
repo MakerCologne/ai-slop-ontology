@@ -3599,6 +3599,61 @@
               "nicht .*, sondern",
               "less about .* more about"
             ]
+          },
+          "FalseRange": {
+            "label": "False range",
+            "confidence": 0.6,
+            "description": "\"from X to Y\" where X and Y do not sit on a shared scale (\"from scalability to passion\", \"from atoms to empathy\"). The span gestures at breadth it cannot deliver. Also fires for grandiosity sweeps where both endpoints are gesture-at-scale placeholders (Big Bang, dark matter). Migrated from the micro-pattern of the same name (#13) and broadened per #247 (Gap G1, unslop rule 12). Detect-only.",
+            "example_slop": "The conference ranged from scalability to passion.",
+            "example_fix": "The conference covered scaling talks in the morning and a keynote on craft in the afternoon.",
+            "keep_when": "A genuine span or enumeration: both endpoints on the same scale (\"from startups to enterprises\", \"from kitchen to attic\", \"from Monday to Friday\") or a literal topic span (a cosmology lecture legitimately spans Big Bang to dark matter). The detector only reports scale-mismatched pairs for a human to judge.",
+            "scales": {
+              "grand": [
+                "big bang",
+                "dark matter",
+                "atoms",
+                "galaxies",
+                "dinosaurs",
+                "quantum",
+                "roman empire",
+                "stone age",
+                "printing press",
+                "steam engine",
+                "microchips",
+                "cave paintings",
+                "black holes",
+                "fire",
+                "wheel"
+              ],
+              "technical": [
+                "scalability",
+                "performance",
+                "reliability",
+                "efficiency",
+                "latency",
+                "throughput",
+                "architecture",
+                "infrastructure",
+                "automation",
+                "optimization",
+                "deployment",
+                "maintenance"
+              ],
+              "emotional": [
+                "passion",
+                "hope",
+                "empathy",
+                "belonging",
+                "purpose",
+                "meaning",
+                "joy",
+                "love",
+                "wonder",
+                "vulnerability",
+                "authenticity",
+                "connection"
+              ]
+            }
           }
         }
       }

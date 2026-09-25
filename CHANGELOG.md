@@ -1,3 +1,23 @@
+## [Unreleased] — 2026-09-24 (slopgh#247 — FalseRange als rhetoricalPattern, Gap G1)
+
+- `FalseRange` von Micro-Pattern (#13, nur Grand-Sweep) nach
+  `rhetorical_patterns.py` migriert und auf Skalen-Mismatch verbreitert:
+  "from X to Y" feuert, wenn beide Endpunkte im Skalen-Lexikon bekannt und
+  auf UNTERSCHIEDLICHEN Skalen liegen (technical/emotional/grand) oder beide
+  auf der Grand-Sweep-Skala (#13-Verhalten erhalten)
+- Skalen-Lexika (corpus-calibrated): grand (15), technical (12),
+  emotional (12); ungelistete Endpunkte feuern nie (konservativ),
+  echte Spannen ("from startups to enterprises", "from Monday to Friday")
+  bleiben per Konstruktion sauber (keep_when: echte Spanne/Aufzählung)
+- Kollisions-Disziplin (#46): Micro-Pattern-FalseRange entfernt
+  (GENAU EIN Detektor pro Konzept), GRAND_ENDPOINTS aus micro_patterns
+  entfernt, SSOT-Register angepasst (C3)
+- ontology.json-Spiegel (rhetoricalPatterns.patterns.FalseRange,
+  confidence 0.6, scales); Eval-Anforderung #247 erfuellt:
+  tests/test_false_range.py mit 11 Positiv- + 11 Negativ-Beispielen
+  (Issue verlangt >=10/>=10); Endpunkt-Normalisierung schneidet
+  Praepositional-Anhaenger ("throughput in ten weeks" -> "throughput")
+
 ## [Unreleased] — 2026-09-22 (slopgh#249 G5+G9 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 2)
 
 - G5: Neues detect-only Pattern `InlineHeaderRestatement` (unslop #16):
