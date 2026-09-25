@@ -1,168 +1,124 @@
-"""Naturalness-Guard (issue #81, detect-only, low confidence).
+"""Tests for src/naturalness_guard.py — detect-only over-sanitization guard (#81).
 
-register_drift + over_sanitized as advisory signals — they must NEVER be
-score-dominant and must respect genre keep_when guards (academic/legal
-register is legitimate). modal_particle_anomaly is an explicit STUB until
-the DE layer lands (#76); the stub never emits a finding.
+Pflicht laut #81: Grenzfixtures „legitim gleichmäßig" (Guardrail, #42
+Genre-Profile) müssen vorhanden sein.
 """
 
-import json
 import os
 import sys
-import unittest
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPTS = os.path.join(ROOT, "skills", "ai-slop-detection", "scripts")
-sys.path.insert(0, SCRIPTS)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from naturalness_guard import (  # noqa: E402
-    register_drift, over_sanitized, modal_particle_anomaly,
-    find_naturalness_findings,
-)
-import slop_scorer  # noqa: E402
+from naturalness_guard import NaturalnessGuard, EXEMPT_GENRES  # noqa: E402
 
+CLF = NaturalnessGuard()
 
-def words(t):
-    return len(t.split())
+# --- 1) over_sanitized -----------------------------------------------------
 
-
-class RegisterDriftDoD(unittest.TestCase):
-    """3 positive / 3 negative / 2 boundary fixtures (#64 workflow)."""
-
-    POS1 = ("Furthermore, the longitudinal results are robust across all "
-            "cohorts. Yeah, kinda wild, right? Moreover, the effect persists "
-            "under correction. Hey, that is honestly wild stuff. In "
-            "addition, the sensitivity analysis holds. Okay, so we are "
-            "fairly confident that this pattern is real and meaningful here.")
-    POS2 = ("Ferner ist hervorzuheben, dass die Datenlage begrenzt bleibt. "
-            "Na ja, irgendwie ist das halt schon krass. Gemäß dem Bericht "
-            "liegt die Zahl bei zwölf Prozent. Mithin bleibt festzuhalten, "
-            "dass weitere Studien nötig sind, was irgendwie auch wieder "
-            "typisch ist für das Feld, halt.")
-    POS3 = ("In addition, the paper formalizes the model. We are going to "
-            "skip the proofs. Yeah okay, gonna be honest, that part was "
-            "dense stuff. Furthermore, the appendix lists the datasets.")
-
-    def test_positives_fire(self):
-        for name, text in (("pos1", self.POS1), ("pos2", self.POS2),
-                           ("pos3", self.POS3)):
-            finding = register_drift(text)
-            self.assertIsNotNone(finding, name)
-            self.assertLessEqual(finding["confidence"], 0.5, name)
-
-    def test_negatives_do_not_fire(self):
-        formal = ("Furthermore, the results are robust. Moreover, the "
-                  "appendix lists all datasets. In addition, the sensitivity "
-                  "analysis confirms the finding across cohorts and years.")
-        conversational = ("Yeah, that was kinda wild, right? Hey, honestly, "
-                          "okay, I did not expect that stuff to work at all. "
-                          "Gonna try it again tomorrow, I guess.")
-        single_marker = ("Furthermore, the results are robust across "
-                         "cohorts, and yeah, they hold up under correction "
-                         "in every single replication we ran this year.")
-        for name, text in (("formal", formal), ("conversational", conversational),
-                           ("single", single_marker)):
-            self.assertIsNone(register_drift(text), name)
-
-    def test_boundaries(self):
-        # b1: colloquial markers inside quotes are dialogue, not drift
-        quoted = ('Furthermore, the results are robust. The reviewer wrote: '
-                  '"Yeah, kinda hand-wavy stuff, honestly." Moreover, the '
-                  'appendix lists all datasets and replication steps taken.')
-        self.assertIsNone(register_drift(quoted))
-        # b2: very short snippets (< 30 words) never fire
-        short = "Furthermore it holds. Yeah kinda wild. Moreover it repeats."
-        self.assertIsNone(register_drift(short))
+UNIFORM_BLAND = (
+    "The system provides functionality. The system ensures reliability. "
+    "The system delivers performance. The system supports scalability. "
+    "The system enables efficiency. The system maintains stability. "
+    "The system offers capability. The system implements process steps. "
+    "The system provides functionality. The system ensures reliability. "
+    "The system delivers performance. The system supports scalability. "
+    "The system enables efficiency. The system maintains stability. "
+    "The system offers capability. The system implements process steps. "
+) * 2
 
 
-class OverSanitizedDoD(unittest.TestCase):
-    BASE = ("We consider the estimator first. It is consistent under the "
-            "stated assumptions, and we are confident in the robustness "
-            "checks. That is not a trivial claim: do not overlook the "
-            "sample size. There is a caveat, they are preliminary, and the "
-            "model can not be extrapolated beyond the support of the data.")
-
-    def test_pos1_full_forms_no_contractions(self):
-        self.assertIsNotNone(over_sanitized(self.BASE))
-
-    def test_pos2_long_announcement_prose(self):
-        text = ("It is important to note that the rollout finishes in June. "
-                "There is a migration guide, and it is linked below. We are "
-                "aware that some teams will need time. They are advised to "
-                "plan the switch, and do not defer it until the last week, "
-                "because that is when the load peaks and support can not "
-                "guarantee same-day answers for every ticket filed then.")
-        self.assertIsNotNone(over_sanitized(text))
-
-    def test_pos3_repeated_expanded_negations(self):
-        text = ("The service will not restart on failure. Users do not see "
-                "internal errors. The cache can not be shared across "
-                "regions. It is documented, that is the contract, and we "
-                "are not changing it this quarter because they are load "
-                "bearing defaults that keep the platform stable for all.")
-        self.assertIsNotNone(over_sanitized(text))
-
-    def test_negatives(self):
-        # n1: one contraction present -> human-typed rhythm
-        with_contraction = self.BASE.replace("do not", "don't")
-        self.assertIsNone(over_sanitized(with_contraction))
-        # n2: short text, full forms are just formal brevity
-        self.assertIsNone(over_sanitized("It is fine. We are done. Do not "
-                                         "worry about the rest tonight."))
-        # n3: contraction-rich prose
-        casual = ("We don't restart on failure and users won't see what's "
-                  "internal. It's documented, that's the contract, and we "
-                  "aren't changing it because they're load-bearing defaults "
-                  "keeping things stable for everyone who's relying on it.")
-        self.assertIsNone(over_sanitized(casual))
-
-    def test_boundaries(self):
-        # b1: only 2 distinct full forms -> below threshold of 3
-        two = ("It is documented and we are aware that the migration guide "
-               "exists for teams that need extra lead time before the "
-               "switch completes, plus support runs office hours weekly.")
-        self.assertIsNone(over_sanitized(two))
-        # b2: possessive 's is NOT a contraction; full forms still fire
-        possessive = ("The model's output is stable. We are confident in "
-                      "the checks. It is documented, do not change the "
-                      "defaults, and there is a rollback path listed.")
-        self.assertIsNotNone(over_sanitized(possessive))
+def test_over_sanitized_fires_on_uniform_bland():
+    r = CLF.classify_text(UNIFORM_BLAND)
+    ids = [f.signal_id for f in r.signals_detected]
+    assert "over_sanitized" in ids
+    assert all(f.severity == "low" for f in r.signals_detected)
 
 
-class GenreGuardAndScoreDiscipline(unittest.TestCase):
-    def test_over_sanitized_exempt_in_formal_genres(self):
-        findings = find_naturalness_findings(OverSanitizedDoD.BASE,
-                                             genre="academic")
-        ids = [f["id"] for f in findings]
-        self.assertNotIn("OverSanitized", ids)
-
-    def test_findings_low_confidence_detect_only(self):
-        for f in find_naturalness_findings(RegisterDriftDoD.POS1):
-            self.assertLessEqual(f["confidence"], 0.5)
-            self.assertIn("keep_when", f)
-
-    def test_never_score_dominant(self):
-        # TESTS_MODIFIED_AFTER_RED (dokumentiert): urspruenglich
-        # "score < 0.40" — vermischte den unabhaengigen Scorer-Verdict mit
-        # der Modul-Disziplin. Korrekte Disziplin-Assertion: der Scorer
-        # selbst meldet KEINE Naturalness-Findings (kein Score-Wiring).
-        result = slop_scorer.slop_score(RegisterDriftDoD.POS1)
-        serialized = json.dumps(result)
-        for banned in ("RegisterDrift", "OverSanitized",
-                       "ModalParticleAnomaly", "naturalness"):
-            self.assertNotIn(banned, serialized)
-        findings = find_naturalness_findings(RegisterDriftDoD.POS1)
-        self.assertTrue(findings)  # advisory output exists, unwired
-
-    def test_modal_particle_stub_is_explicit_and_silent(self):
-        stub = modal_particle_anomaly("Na ja, das ist halt irgendwie so.")
-        self.assertEqual(stub["status"], "stub")
-        self.assertIn("#76", stub["note"])
-        self.assertIsNone(stub.get("finding"))
-        ids = [f["id"] for f in
-               find_naturalness_findings("Na ja, das ist halt irgendwie so.")]
-        self.assertNotIn("ModalParticleAnomaly", ids)
+def test_over_sanitized_confidence_low_advisory():
+    r = CLF.classify_text(UNIFORM_BLAND)
+    f = [x for x in r.signals_detected if x.signal_id == "over_sanitized"][0]
+    assert f.confidence == 0.35
+    assert f.confidence < 0.5  # advisory, never score-dominant
 
 
-if __name__ == "__main__":
-    unittest.main()
+# --- 2) Grenzfixtures: legitim gleichmäßig (Guardrail Pflicht) --------------
+
+def test_technical_genre_exempt():
+    r = CLF.classify_text(UNIFORM_BLAND, genre="technical")
+    assert r.signals_detected == []
+    assert any("genre" in n for n in r.notes)
+
+
+def test_all_exempt_genres_silent():
+    for g in EXEMPT_GENRES:
+        assert CLF.classify_text(UNIFORM_BLAND, genre=g).signals_detected == []
+
+
+def test_human_prose_not_flagged():
+    # decent human writing: quirks present, varied lengths -> no signal
+    human = (
+        "Honestly, I wasn't sure this would work — but it did! We shipped it "
+        "on a Friday, which in hindsight was a terrible idea, and yet nothing broke. "
+        "The morning after, our dashboards looked suspiciously calm. "
+        "Turns out the fix held. "
+        "I've kept the notes below, mostly so future-me doesn't repeat the "
+        "whole saga, but also because the debugging detour taught us "
+        "something about our caching layer that no postmortem ever did. "
+        "Would I do it again? Probably not on a Friday. But the confidence "
+        "gained was real, and honestly that counts for something around here."
+    )
+    r = CLF.classify_text(human)
+    assert [f.signal_id for f in r.signals_detected
+            if f.signal_id == "over_sanitized"] == []
+
+
+# --- 3) register_drift ------------------------------------------------------
+
+def test_register_drift_two_halves():
+    casual = (
+        "Honestly, this thing is kind of a mess! But we love it anyway. "
+        "So let's talk about what broke — and why. It's a fun story, "
+        "actually. Basically, everything was on fire, and we didn't even "
+        "notice at first. To be fair, the alerts did fire. We just ignored "
+        "them, which is a whole different post. Anyway: the fix worked, "
+        "and the lessons were worth it."
+    )
+    clinical = (
+        "The deployment process consists of sequential stages. Each stage "
+        "validates specific criteria. The system records validation results. "
+        "Operators review recorded results periodically. Documentation of "
+        "each stage ensures compliance requirements. The process continues "
+        "until all criteria pass. This description omits implementation "
+        "details. Additional stages exist in supplementary documents. "
+        "Each additional stage follows identical validation procedures. "
+        "Supplementary procedures define further compliance criteria. "
+        "The records include timestamps and operator identifiers. "
+        "Periodic audits verify the recorded validation results again."
+    )
+    r = CLF.classify_text(casual + " " + clinical)
+    ids = [f.signal_id for f in r.signals_detected]
+    assert "register_drift" in ids
+
+
+def test_uniform_text_no_false_drift():
+    r = CLF.classify_text(UNIFORM_BLAND)
+    assert "register_drift" not in [f.signal_id for f in r.signals_detected]
+
+
+# --- 4) Kurztext / Randfälle -------------------------------------------------
+
+def test_short_text_skipped():
+    r = CLF.classify_text("Too short. Very bland. Nothing here.")
+    assert r.signals_detected == []
+    assert any("words" in n for n in r.notes)
+
+
+def test_empty_text():
+    r = CLF.classify_text("")
+    assert r.signals_detected == []
+
+
+def test_result_shape():
+    r = CLF.classify_text(UNIFORM_BLAND)
+    assert r.is_advisory is True
+    assert "over_sanitized" in r.summary()
