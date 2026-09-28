@@ -29,7 +29,7 @@ Rhetorisches Muster "This is not X. It's Y." / "The question isn't X, it's Y." /
 
 ## Ethnopluralismus
 
-`LEX-2026-008` · Kategorie: type · Status: nursery · v1 · content_hash: `2bd3e511dcff0b3f`
+`LEX-2026-008` · Kategorie: type · Status: nursery · v2 · content_hash: `4165b63601cf4996`
 
 Ideologische Strategie, die Kulturen als gleichwertig UND unverträglich erklärt und daraus getrennte, möglichst homogene Räume als einzige operationale Policy ableitet. Modelliert nicht als Schlagwort, sondern als Strategie (Ziel, Taktik, semantische Tarnung), weil genau die Schlussform — von „Differenz“ auf Trennung — den Slop-Charakter erzeugt: endlose „Differenz“-Prosa ohne operationalisierbaren Gehalt außer Trennung (Detektionszweck, keine politische Wertung über den analytischen Bedarf hinaus).
 
@@ -44,12 +44,20 @@ Ideologische Strategie, die Kulturen als gleichwertig UND unverträglich erklär
 2. Strategischer Kern (Taguieff, Rueda, Spektorowski): kein Verzicht auf Exklusion, sondern Rebranding vom biologistischen zu kulturalistischem Rassismus („cultural turn“) — Sprache von Diversität, Antitotalitarismus, Antiimperialismus und Umweltschutz wird gekapert; Taguieff beschreibt die Tarnung suprematistischer Gehalte hinter egalitärem Vokabular.
    > „Strategischer Kern (Taguieff, Rueda, Spektorowski). Kein Verzicht auf Exklusion, sondern Rebranding: biologistischer Rassismus → kulturalistischer Rassismus („cultural turn"). Sprache von Diversität, Antitotalitarismus, Antiimperialismus, Umweltschutz wird gekapert. Taguieff: Tar…“
    > — <https://github.com/MakerCologne/ai-slop-ontology/issues/94> (Zugriff 2026-09-02)
+   > „Rueda locates this ideal as part of what will be called ‘the cultural turn in racism’, that is, the passage from biological and pseudo-scientific racism to alterophobic discourses based on culture and ethnicity among European far-right intellectuals. (Rueda, Patterns of Prejudice…“
+   > — <https://doi.org/10.1080/0031322X.2021.1920722> (Zugriff 2026-09-28)
+   > „The Nouvelle Droite’s ideology promoted a hierarchised ethno-nationalist society, carefully packaged as “non-racist” and “non-fascist”. (Green European Journal, 05.12.2024)“
+   > — <https://www.greeneuropeanjournal.eu/metapolitics-and-the-battle-for-europes-future/> (Zugriff 2026-09-28)
 3. Ambiguity-Befund (Journal of Political Ideologies 2023/25): Texte von Benoist, Faye, Eichberg und Lichtmesz zeigen den Cultural Turn bei gleichzeitig fortbestehenden biologistischen Resten — die Doppelbödigkeit ist Design, nicht Nebeneffekt. Malik: Kultur wird zum Synonym für Abstammung, sobald Zugehörigkeit an Herkunftsort und Deszendenz gebunden wird.
    > „Ambiguity-Befund (Journal of Political Ideologies 2023/25). Texte von Benoist, Faye, Eichberg, Lichtmesz: Cultural Turn ja, Reste biologistischer Argumentation bleiben — die Doppelbödigkeit ist Design.“
    > — <https://github.com/MakerCologne/ai-slop-ontology/issues/94> (Zugriff 2026-09-02)
+   > „It was also found that there are still elements of biological racism in the texts of these radical-right thinkers, particularly where they connect ethnopluralism with the idea of the heredity of culture and with biological determinist interpretations of territoriality. (Havertz, …“
+   > — <https://doi.org/10.1080/13569317.2023.2212252> (Zugriff 2026-09-28)
 4. Metapolitik: Gramsci von rechts — kulturelle Hegemonie vor Staat. Deshalb wirkt der Begriff als Slop-Generator: Er produziert endlose „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.
    > „Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat. Deshalb taugt der Begriff als Slop-Generator — er produziert endlos „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.“
    > — <https://github.com/MakerCologne/ai-slop-ontology/issues/94> (Zugriff 2026-09-02)
+   > „Sellner was clear about the need to first build what he called “metapolitical power” to pave the way for their extreme agenda. … before the public could be persuaded to accept the idea of “remigration” … the groundwork had to be laid by shifting societal norms and perceptions. (G…“
+   > — <https://www.greeneuropeanjournal.eu/metapolitics-and-the-battle-for-europes-future/> (Zugriff 2026-09-28)
 
 *Detect:* Schluss von „Differenz“/„Vielfalt“ auf getrennte Räume oder Remigration, ökologische Mimikry (Biodiversität ↔ Völkervielfalt), „Recht auf Differenz“ als Politikforderung statt Ethnografie
 
