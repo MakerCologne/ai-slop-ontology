@@ -1,8 +1,12 @@
 {
-  "generated_from": "eval/corpus.jsonl (label=clean, n=93)",
+  "generated_from": "eval/corpus.jsonl (label=clean, n=125)",
   "threshold": 0.4,
   "note": "Borderline monitoring band (issue #79): die 5 hoechstbewerteten Hard Negatives + 3 handgeschriebene fast-saubere Grenzfixtures. Toleranz im Gate: ±0.02 (Register) — FP-Drift wird sichtbar, bevor das 0.40-Gate bricht.",
   "top5_clean": [
+    {
+      "id": "hardneg-076",
+      "score": 0.352
+    },
     {
       "id": "hardneg-036",
       "score": 0.342
@@ -18,10 +22,6 @@
     {
       "id": "hardneg-049",
       "score": 0.323
-    },
-    {
-      "id": "hardneg-008",
-      "score": 0.315
     }
   ],
   "handcrafted": {
