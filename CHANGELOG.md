@@ -1,3 +1,25 @@
+## [Unreleased] — 2026-10-02 (slopgh#76 NEU-Batch: M6/M17/M50 — DE-Struktur-Signale, detect-only)
+
+- `skills/ai-slop-detection/scripts/de_structure.py` (neu): drei
+  detect-only DE-Struktur-Signale aus den offenen NEU-Items des
+  DE-Coverage-Mappings (docs/de-coverage.md):
+  - **M6 HollowFazitHeading** (0.65): Fazit-/Zusammenfassungs-Heading
+    mit < 30 Wörtern Nachspann — substanzlose Recap-Schablone;
+    keep_when: echter Fazit-Absatz ≥ 30 Wörter
+  - **M17 LetterStructure** (0.60): ≥ 2 von 3 Brief-Marker-Typen
+    (Betreff:/Anrede/Grußformel) im Artefakt — Briefschablone statt
+    Zielformat; keep_when: echtes Korrespondenz-Genre
+  - **M50 BulletCapitalization** (0.55): Stichpunkt-Liste (≥ 4 Items)
+    komplett großgeschrieben mit Endpunkt, mehrheitlich kurze Phrasen —
+    EN-Konvention im DE-Text; keep_when: Satz-Bullets legitim,
+    Aufzählungen ohne Endpunkte feuern nie
+- DE-Sprachgate via de_typography.is_german; SSOT-Registrierung in
+  scripts/check_ssot.py (closed-lists + fixture-gepinnte MIN_/*-Schwellen)
+- Tests: tests/test_de_structure.py — 9/9 grün (3/3/2-Fixture-Konvention
+  je Signal + Aggregator + EN-Gate)
+- Lizenz: Konzepte aus de.wikipedia-Projektseite re-deriviert, keine
+  CC-BY-SA-Pattern-Materialien übernommen
+
 ## [Unreleased] — 2026-09-22 (slopgh#249 G5+G9 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 2)
 
 - G5: Neues detect-only Pattern `InlineHeaderRestatement` (unslop #16):

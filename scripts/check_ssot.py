@@ -119,6 +119,12 @@ SSOT_REGISTER = {
     "anchor_diff.py": {
         "AUTHORITY_CARRIERS": ("closed-list", "deviation"),
     },
+    "de_structure.py": {
+        "_RECAP_HEADINGS": ("closed-list", "deviation"),
+        "MIN_FAZIT_WORDS": ("engine-config", "fixture-calibrated"),
+        "MIN_BULLETS": ("engine-config", "fixture-calibrated"),
+        "MAX_PHRASE_WORDS": ("engine-config", "fixture-calibrated"),
+    },
     "de_typography.py": {
         "_DE_FUNCTION_WORDS": ("closed-list", "deviation"),
         "_CAP_FUNCTION_WORDS": ("closed-list", "deviation"),
@@ -230,6 +236,14 @@ ALLOWLIST_NOTES = [
     "from issue #75 Signal 6, Komparativ-Rahmung; own regexes and own "
     "examples; no third-party pattern material copied). MIN_* thresholds "
     "are fixture-pinned (tests/test_structure_comparative.py).",
+    "de_structure (#76 backlog NEU M6/M17/M50) closed lists (recap "
+    "headings, greeting/closing/subject regexes) are self-derived DE "
+    "matcher inventories for the detect-only HollowFazitHeading / "
+    "LetterStructure / BulletCapitalization signals (concepts from "
+    "docs/de-coverage.md NEU candidates; re-derived from the de.wikipedia "
+    "project page 'Anzeichen fuer KI-generierte Inhalte' + own examples; "
+    "no third-party pattern material copied). MIN_* thresholds are "
+    "fixture-pinned (tests/test_de_structure.py).",
     "de_typography (#76) closed lists (DE function words, capitalized "
     "function words, EN month names, brand allowlist) are self-derived "
     "DE gate/matcher inventories after de.wikipedia Anzeichen-fuer-KI-"
