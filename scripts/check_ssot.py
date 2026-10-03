@@ -151,6 +151,13 @@ SSOT_REGISTER = {
         "MIN_WORDS_REGISTER": ("engine-config", "fixture-calibrated"),
         "MIN_WORDS_SANITIZED": ("engine-config", "fixture-calibrated"),
         "MIN_FULL_FORMS": ("engine-config", "fixture-calibrated"),
+        "COLLOQUIAL_GENRES": ("engine-config", "synced-via-genre_profiles"),
+        "DE_MODAL_PARTICLES": ("closed-list", "deviation"),
+        "MIN_WORDS_PARTICLES": ("engine-config", "fixture-calibrated"),
+        "MIN_PARTICLE_TOKENS": ("engine-config", "fixture-calibrated"),
+        "MAX_PARTICLE_DENSITY": ("engine-config", "fixture-calibrated"),
+        "MIN_STACKING_SENTENCES": ("engine-config", "fixture-calibrated"),
+        "MIN_DISTINCT_PER_SENTENCE": ("engine-config", "fixture-calibrated"),
     },
     "register_profile.py": {
         "IMPERATIVE_STARTERS": ("closed-list", "deviation"),
@@ -215,7 +222,16 @@ ALLOWLIST_NOTES = [
     "COLLOQUIAL_MARKERS, FULL_FORMS) are self-derived EN/DE inventories for "
     "the detect-only advisory signals; MIN_* thresholds are fixture-pinned "
     "(tests/test_naturalness_guard.py). No third-party pattern material "
-    "copied (register-profile idea adapted as architecture, deep/11).",
+    "copied (register-profile idea adapted as architecture, deep/11). "
+    "naturalness_guard (#76-Rest M63) DE_MODAL_PARTICLES is a self-derived "
+    "closed inventory of 12 high-frequency German modal particles (ja, halt, "
+    "eben, doch, mal, wohl, schon, denn, eigentlich, einfach, irgendwie, "
+    "quasi) for the detect-only modal_particle_anomaly signal (discourse-"
+    "function concept from Duden-Grammatik reference, REFERENCES.md #40; "
+    "no third-party pattern material copied). MIN_*/MAX_* thresholds and the "
+    "two anomaly cues (density + stacking) are fixture-pinned "
+    "(tests/test_naturalness_guard.py, ModalParticleAnomalyDoD). "
+    "COLLOQUIAL_GENRES is synced with the #42/#81 genre-profile conventions.",
     "structure_metrics (#76 Teil 2) SYNONYM_FAMILIES is a self-derived "
     "closed EN/DE synonym-family inventory for the detect-only M60 "
     "SynonymRotation / M61 IsometricUnits signals (concepts from "
