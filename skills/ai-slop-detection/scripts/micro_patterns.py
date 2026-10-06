@@ -46,6 +46,55 @@ GRAND_ENDPOINTS = {
     "microchips", "cave paintings", "black holes", "fire", "the wheel",
 }
 
+# Cross-domain abstract endpoints for FalseRange (issue #247 / G1): "from X to
+# Y" where both endpoints are abstract nouns but from different semantic
+# domains — there is no shared scale, so the span is rhetorical, not literal
+# ("from scalability to passion"). Endpoints in the SAME domain describe a
+# real span on one scale ("from latency to throughput" — both engineering
+# qualities) and do not fire. Concrete nouns are never in these lists, so
+# everyday spans ("from the kitchen to the living room") stay clean.
+ABSTRACT_DOMAINS = {
+    "tech": {
+        "scalability", "latency", "throughput", "uptime", "performance",
+        "reliability", "bandwidth", "observability", "deployments",
+        "infrastructure", "architecture", "automation", "integration",
+    },
+    "emotion": {
+        "passion", "joy", "fear", "hope", "empathy", "wonder", "anxiety",
+        "delight", "belonging", "nostalgia",
+    },
+    "business": {
+        "revenue", "growth", "profit", "churn", "retention", "margin",
+        "valuation", "market share", "conversion", "pipeline",
+    },
+    "meaning": {
+        "meaning", "truth", "ethics", "existence", "consciousness",
+        "purpose", "identity", "justice", "freedom", "beauty",
+    },
+    "society": {
+        "politics", "culture", "history", "education", "inequality",
+        "community", "power", "trust", "institutions", "migration",
+    },
+    "craft": {
+        "craft", "design", "storytelling", "aesthetics", "technique",
+        "composition", "typography", "rhythm", "voice",
+    },
+}
+_ABSTRACT_TO_DOMAINS = {
+    noun: dom for dom, nouns in ABSTRACT_DOMAINS.items() for noun in nouns
+}
+
+
+def _domains(word):
+    """Domain set for a (lowercased, singularized) endpoint noun."""
+    w = word.strip().lower()
+    if w in _ABSTRACT_TO_DOMAINS:
+        return {"domain:" + _ABSTRACT_TO_DOMAINS[w]}
+    # Allow one trailing 's' (plural) without rebuilding the lists.
+    if w.endswith("s") and w[:-1] in _ABSTRACT_TO_DOMAINS:
+        return {"domain:" + _ABSTRACT_TO_DOMAINS[w[:-1]]}
+    return set()
+
 RECAP_OPENERS = ["in conclusion", "overall,", "to summarize"]
 
 # --- ActorlessClaim (#248, Gap G4) ----------------------------------------
@@ -107,12 +156,28 @@ def _false_agency(sentences: list):
     return None
 
 
+def _endpoint_candidates(phrase):
+    """All word-prefix candidates for an endpoint (1..4 words, lowercase)."""
+    words = phrase.strip().lower().split()
+    return [" ".join(words[:i]) for i in range(1, min(4, len(words)) + 1)]
+
+
 def _false_range(text: str):
-    for m in re.finditer(r"from\s+(the\s+)?([a-z][a-z\s]{2,30}?)\s+to\s+(the\s+)?([a-z][a-z\s]{2,30}?)(?=[.,;:)]|$)", text, re.IGNORECASE):
-        left = m.group(2).strip().lower()
-        right = m.group(4).strip().lower()
-        if left in GRAND_ENDPOINTS and right in GRAND_ENDPOINTS:
-            return m.group(0)
+    for m in re.finditer(
+        r"from\s+(?:the\s+)?([a-z][a-z\s]{2,30}?)\s+to\s+(?:the\s+)?([a-z][a-z\s]{2,30})(?=[.,;:)]|\s+\w|$)",
+        text, re.IGNORECASE,
+    ):
+        left_raw, right_raw = m.group(1), m.group(2)
+        # The lazy regex stops the right endpoint at the first split the
+        # lookahead accepts; enumerate word-prefix candidates on both sides
+        # so "dark matter" and other multi-word endpoints are considered.
+        for left in _endpoint_candidates(left_raw):
+            for right in _endpoint_candidates(right_raw):
+                if left in GRAND_ENDPOINTS and right in GRAND_ENDPOINTS:
+                    return m.group(0)
+                ldom, rdom = _domains(left), _domains(right)
+                if ldom and rdom and ldom.isdisjoint(rdom):
+                    return m.group(0)
     return None
 
 
@@ -184,15 +249,21 @@ MICRO_PATTERNS = {
     },
     "FalseRange": {
         "label": "False from-X-to-Y range",
-        "confidence": 0.55,
-        "description": "Grandiosity sweep 'from the X to the Y' where both endpoints are "
-                       "gesture-at-scale placeholders (Big Bang, dark matter, dinosaurs, "
-                       "printing press). Name the actual scope.",
+        "confidence": 0.6,
+        "description": "Two false-span shapes: (a) grandiosity sweep 'from the X to "
+                       "the Y' where both endpoints are gesture-at-scale placeholders "
+                       "(Big Bang, dark matter, printing press), and (b) cross-domain "
+                       "abstract span where both endpoints are abstract nouns from "
+                       "different semantic domains, so no shared scale exists "
+                       "('from scalability to passion'). Name the actual scope.",
         "example_slop": "This guide covers everything from the Big Bang to dark matter.",
         "example_fix": "This guide covers cosmology from the early universe to structure formation.",
-        "keep_when": "The endpoints are the literal topic (a cosmology lecture legitimately "
-                     "spans Big Bang to dark matter) — the guard is intent, the detector "
-                     "only reports the sweep for a human to judge.",
+        "keep_when": "(a) The endpoints are the literal topic (a cosmology lecture "
+                     "legitimately spans Big Bang to dark matter); (b) the endpoints "
+                     "share one domain/scale — 'from latency to throughput' is a real "
+                     "engineering span, 'from fear to joy' is a real emotional arc. "
+                     "Concrete everyday spans (rooms, orgs, prices) never fire. The "
+                     "detector only reports the span for a human to judge.",
     },
     "RecapEnding": {
         "label": "Recap ending with restatement",
