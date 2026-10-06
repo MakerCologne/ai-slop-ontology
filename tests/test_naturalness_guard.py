@@ -9,7 +9,17 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from naturalness_guard import NaturalnessGuard, EXEMPT_GENRES  # noqa: E402
+# Module-name collision guard: other tests cache the dict-based
+# skills/.../scripts/naturalness_guard.py under the same module name.
+# Load src/naturalness_guard.py explicitly so both APIs can coexist.
+import importlib.util as _ilu
+_spec = _ilu.spec_from_file_location(
+    "src_naturalness_guard",
+    os.path.join(os.path.dirname(__file__), "..", "src", "naturalness_guard.py"))
+_ng = _ilu.module_from_spec(_spec)
+_spec.loader.exec_module(_ng)
+NaturalnessGuard = _ng.NaturalnessGuard
+EXEMPT_GENRES = _ng.EXEMPT_GENRES
 
 CLF = NaturalnessGuard()
 
