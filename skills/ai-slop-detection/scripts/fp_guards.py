@@ -30,12 +30,17 @@ THRESHOLDS = {
     "GENERIC_PHRASE_MIN_HITS": 3,
 }
 
-# ASCII double/single quotes and curly variants. Nested/unbalanced quotes are
+# ASCII double/single quotes, curly variants, German quotes (U+201E … U+201C)
+# and Guillemets (»…«). Nested/unbalanced quotes are
 # handled by the regex fallbacks below (non-greedy pair matching).
 _QUOTE_PAIRS = [
     (re.compile(r'"([^"]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})"'), ""),
     (re.compile(r'\u201c([^\u201d]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\u201d'), ""),
     (re.compile(r'(?<!\w)\'([^\']{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\'(?!\w)'), ""),
+    # German: „ opens low (U+201E), “ closes high (U+201C) — issue #299/btm #1269
+    (re.compile(r'\u201e([^\u201c]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\u201c'), ""),
+    # Guillemets: »…« (German direction, » opens)
+    (re.compile(r'\u00bb([^\u00ab]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\u00ab'), ""),
 ]
 
 
