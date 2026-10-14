@@ -13,6 +13,7 @@ Usage:
 """
 
 import json
+import os
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -326,12 +327,11 @@ class SlopClassifier:
             # (same file the slop_scorer context uses) — resolve repo-relative
             # so the guard applies without special sys.path setup.
             import importlib.util
-            import os as _os
-            _fg_path = _os.path.join(
-                _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+            _fg_path = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                 "skills", "ai-slop-detection", "scripts", "fp_guards.py",
             )
-            if _os.path.exists(_fg_path):
+            if os.path.exists(_fg_path):
                 _spec = importlib.util.spec_from_file_location(
                     "_fp_guards_strip_quotes", _fg_path)
                 _mod = importlib.util.module_from_spec(_spec)
