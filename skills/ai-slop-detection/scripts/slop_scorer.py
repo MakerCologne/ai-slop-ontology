@@ -471,7 +471,49 @@ MULTILINGUAL_BUZZWORDS = {
         "آج کی تیز رفتار دنیا میں", "یہ بات قابل ذکر ہے", "ڈیجیٹل دور میں",
         "خلاصہ یہ ہے کہ", "اہم کردار ادا کرتا ہے", "اس میں کوئی شک نہیں",
         "آئیے جانتے ہیں", "مجموعی طور پر"
-    ]
+    ],
+    # Added 2026-10 (#53): ZH/JA/PT/IT/RU/AR/TR — high-slop-volume languages.
+    # Same discipline as 2026-07 batch: formulaic translated templates
+    # (opening/hedging/closing), no single-word markers, hard negatives
+    # in tests/test_multilingual_expansion.py.
+    "chinese": [
+        "在当今快速发展的世界中", "发挥着至关重要的作用", "值得注意的是",
+        "综上所述", "整体而言", "不可否认", "扮演着关键角色",
+        "在数字化时代", "起着不可忽视的作用"
+    ],
+    "japanese": [
+        "重要な役割を果たしている", "結論として", "シームレスな",
+        "包括的な", "と考えられる", "デジタル時代において",
+        "言うまでもなく", "ますます重要になっている"
+    ],
+    "portuguese": [
+        "é importante notar que", "desempenha um papel crucial",
+        "em conclusão", "uma abordagem holística", "inegável",
+        "no mundo acelerado de hoje", "não pode ser negado que",
+        "desempenha um papel fundamental"
+    ],
+    "italian": [
+        "è importante notare che", "svolge un ruolo cruciale",
+        "in conclusione", "un approccio olistico",
+        "senza soluzione di continuità", "nel mondo frenetico di oggi",
+        "non si può negare che", "gioca un ruolo fondamentale"
+    ],
+    "russian": [
+        "важно отметить", "играют ключевую роль", "в заключение",
+        "бесшовный", "целостный подход", "невозможно отрицать",
+        "в современном быстро меняющемся мире", "нельзя не отметить"
+    ],
+    "arabic": [
+        "من المهم أن نلاحظ", "يلعب دورًا محوريًا", "في الختام",
+        "لا يمكن إنكار", "نهج شامل", "عالم اليوم سريع التغير",
+        "دورًا حاسمًا", "بشكل عام"
+    ],
+    "turkish": [
+        "dikkat çekmek gerekir", "çok önemli bir rol oynuyor",
+        "sonuç olarak", "bütüncül bir yaklaşım", "inkar edilemez",
+        "hızla değişen dünyasında", "önemli bir rol üstleniyor",
+        "genel olarak değerlendirildiğinde"
+    ],
 }
 
 STRUCTURAL_INDICATORS = [
@@ -564,8 +606,14 @@ def _term_pattern(term: str) -> str:
         pos = m.end()
     parts.append(re.escape(t[pos:]))
     # A placeholder at either edge still begins/ends on a word character.
-    left = r"\b" if (t[0].isalnum() or t.startswith(("[x]", "[n]"))) else ""
-    right = r"\b" if (t[-1].isalnum() or t.endswith(("[x]", "[n]"))) else ""
+    # #53: word boundaries only at ASCII edges — CJK/Arabic/Cyrillic markers
+    # must match inside running (spaceless) text, where \b between two
+    # word-chars never fires. Non-ASCII edges get no boundary constraint.
+    def _ascii_word_edge(ch):
+        return ch.isascii() and ch.isalnum()
+
+    left = r"\b" if (t.startswith(("[x]", "[n]")) or _ascii_word_edge(t[0])) else ""
+    right = r"\b" if (t.endswith(("[x]", "[n]")) or _ascii_word_edge(t[-1])) else ""
     core = left + "".join(parts) + right
     return _CLAUSE_START + core if clause_initial else core
 
