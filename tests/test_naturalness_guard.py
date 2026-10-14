@@ -155,13 +155,86 @@ class GenreGuardAndScoreDiscipline(unittest.TestCase):
         self.assertTrue(findings)  # advisory output exists, unwired
 
     def test_modal_particle_stub_is_explicit_and_silent(self):
-        stub = modal_particle_anomaly("Na ja, das ist halt irgendwie so.")
-        self.assertEqual(stub["status"], "stub")
-        self.assertIn("#76", stub["note"])
-        self.assertIsNone(stub.get("finding"))
+        # M63 landed (feat/76): short snippet stays silent via the
+        # MIN_WORDS_PARTICLES guard — kept as boundary fixture.
+        self.assertIsNone(
+            modal_particle_anomaly("Na ja, das ist halt irgendwie so."))
         ids = [f["id"] for f in
                find_naturalness_findings("Na ja, das ist halt irgendwie so.")]
         self.assertNotIn("ModalParticleAnomaly", ids)
+
+
+class ModalParticleAnomalyDoD(unittest.TestCase):
+    """M63 (#76): 3 positive / 3 negative / 2 boundary fixtures."""
+
+    # pos1: density cue — >= 6 tokens, > 2.5 % of ~45 words
+    POS1 = ("Und ja, das ist halt wirklich so, oder? Also ich meine, das "
+            "ist eben genau der Punkt, denn so sieht das doch jeder mal "
+            "so, eigentlich. Und halt, ja, das war schon irgendwie so "
+            "gemeint, quasi als Ansage, eben, ohne wenn und aber.")
+    # pos2: stacking cue — two sentences, each >= 2 distinct particles
+    POS2 = ("Der Bericht zeigt ja eigentlich die bekannten Grenzen der "
+            "Methodik in hinreichender Deutlichkeit auf. Die Zahlen sind "
+            "halt eben trotzdem belastbar genug für eine erste Einschätzung. "
+            "Weitere Details stehen im Anhang und bedürfen keiner "
+            "Diskussion an dieser Stelle, wie die Redaktion mehrfach "
+            "betont hat und wie bereits früher dokumentiert wurde.")
+    # pos3: both cues combined
+    POS3 = ("Ja, das ist halt schon krass, oder? Denn so etwas sieht man "
+            "doch eigentlich nie, mal ehrlich. Und halt, eben, das war ja "
+            "quasi absehbar, irgendwie schon. Denn so einfach bleibt das "
+            "doch mal eben nicht, oder etwa doch ja?")
+
+    NEG1 = ("Die Modalpartikeln des Deutschen erfüllen unterschiedliche "
+            "Diskursfunktionen. In geschriebener Sprache treten sie "
+            "seltener auf als im gesprochenen Deutsch. Der vorliegende "
+            "Text erläutert ihre distributionellen Eigenheiten und ihre "
+            "Abgrenzung zu Adverbien der Modalität sowie zu anderen "
+            "Partikeln der deutschen Gegenwartssprache, die hier nur am "
+            "Rande interessieren.")
+    NEG2 = ("Das Meeting wurde verschoben, weil der Raum doppelt belegt "
+            "war. Die Teilnehmer wurden per E-Mail informiert. Ein neuer "
+            "Termin steht noch aus, wird aber diese Woche bekannt "
+            "gegeben, wie die Organisatoren auf Nachfrage bestätigten.")
+    # NEG3: particles inside quoted speech never count
+    NEG3 = ("Die Zeugin sagte aus: \"Das war ja irgendwie seltsam, halt "
+            "so richtig weird, denn so etwas sieht man doch eigentlich "
+            "nie, mal ehrlich.\" Der Richter protokollierte den Wortlaut "
+            "und wies darauf hin, dass wörtliche Rede unverändert in die "
+            "Akten aufgenommen wird, was dem Verfahrensstandard entspricht.")
+
+    def test_positives_fire(self):
+        for name, text in (("pos1", self.POS1), ("pos2", self.POS2),
+                           ("pos3", self.POS3)):
+            finding = modal_particle_anomaly(text)
+            self.assertIsNotNone(finding, name)
+            self.assertEqual(finding["id"], "ModalParticleAnomaly", name)
+            self.assertLessEqual(finding["confidence"], 0.45, name)
+
+    def test_negatives_do_not_fire(self):
+        for name, text in (("neg1", self.NEG1), ("neg2", self.NEG2),
+                           ("neg3", self.NEG3)):
+            self.assertIsNone(modal_particle_anomaly(text), name)
+
+    def test_boundary_word_count_guards(self):
+        # dense but short (< 40 words after quote stripping) -> silent
+        short = "Ja, halt, eben, doch, mal, ja, halt, eben, doch, mal, quasi."
+        self.assertIsNone(modal_particle_anomaly(short))
+
+    def test_genre_suppression(self):
+        findings = find_naturalness_findings(self.POS3, genre="dialogue")
+        self.assertNotIn("ModalParticleAnomaly", [f["id"] for f in findings])
+
+    def test_wired_into_finder(self):
+        findings = find_naturalness_findings(self.POS3)
+        self.assertIn("ModalParticleAnomaly", [f["id"] for f in findings])
+
+    def test_detect_only_never_in_score(self):
+        result = slop_scorer.score_text(self.POS3) if hasattr(
+            slop_scorer, "score_text") else None
+        if result is not None:
+            serialized = json.dumps(result)
+            self.assertNotIn("ModalParticleAnomaly", serialized)
 
 
 if __name__ == "__main__":
