@@ -13,6 +13,7 @@ Befund im Issue (Stand f8c4aa3):
 import os
 import sys
 import unittest
+from unittest import mock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPTS = os.path.join(ROOT, "skills", "ai-slop-detection", "scripts")
@@ -81,6 +82,43 @@ class EngineAppliesQuoteExemption(unittest.TestCase):
     def test_same_slop_unquoted_is_still_flagged(self):
         result = self._score(DE_INNER)
         self.assertGreaterEqual(result.overall_slop_score, 0.40)
+
+    def test_signal_text_survives_without_fp_guards(self):
+        # Regression (Review 14.10., HORST): classify_text las `text_lower`
+        # in der signal_text-Zeile, BEVOR text_lower belegt wurde. Ohne
+        # fp_guards (Wheel/Deploy-Layout: weder importierbar noch Repo-
+        # Datei) knallte dadurch JEDER classify_text-Aufruf mit
+        # UnboundLocalError — dieselbe Bug-Klasse, die 9057b5d für den
+        # os.path-Fallback fixte.
+        import os as _os
+        import sys as _sys
+        saved_mod = _sys.modules.pop("fp_guards", None)
+        saved_path = _sys.path[:]
+        scripts_dir = _os.path.join(
+            "skills", "ai-slop-detection", "scripts")
+        fallback_suffix = _os.path.join(scripts_dir, "fp_guards.py")
+
+        real_exists = _os.path.exists
+
+        def fake_exists(p):
+            if isinstance(p, str) and p.endswith(fallback_suffix):
+                return False
+            return real_exists(p)
+
+        try:
+            _sys.path = [
+                p for p in _sys.path
+                if not (isinstance(p, str)
+                        and p.rstrip("/").endswith(scripts_dir))
+            ]
+            with mock.patch("os.path.exists", fake_exists):
+                result = self.engine.classify_text(
+                    "Wir prüfen das Setup kurz.")
+        finally:
+            _sys.path = saved_path
+            if saved_mod is not None:
+                _sys.modules["fp_guards"] = saved_mod
+        self.assertIsInstance(result.overall_slop_score, float)
 
     def test_quoted_slop_paragraph_engine_parity(self):
         # Paritätsfall wie tests/test_fp_guards.py im Skill-Scorer: ein

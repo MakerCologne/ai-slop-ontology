@@ -337,9 +337,9 @@ class SlopClassifier:
                 _mod = importlib.util.module_from_spec(_spec)
                 _spec.loader.exec_module(_mod)
                 strip_quotes = _mod.strip_quotes
+        text_lower = text.lower()
         signal_text = text_lower if strip_quotes is None else strip_quotes(text).lower()
 
-        text_lower = text.lower()
         words = re.findall(r'\b[\w-]+\b', text_lower)
         total_words = len(words)
         unique_words = len(set(words))
