@@ -13,6 +13,7 @@ Usage:
 """
 
 import json
+import os
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -311,6 +312,35 @@ class SlopClassifier:
         """
         result = ClassificationResult(modality="text")
 
+        # ============================================================
+        # 0. QUOTE EXEMPTION (issue #23 / #299)
+        # ============================================================
+        # Quoted passages longer than QUOTE_MIN_CHARS are exempt from
+        # signal recognition (buzzwords, phrases, authority claims) —
+        # parity with slop_scorer.py. Structural dimensions below measure
+        # the *original* text; only signal matching uses the stripped text.
+        try:
+            from fp_guards import strip_quotes  # type: ignore
+        except ImportError:
+            try:
+                from src.fp_guards import strip_quotes  # type: ignore
+            except ImportError:
+                strip_quotes = None
+        if strip_quotes is None:
+            import importlib.util as _ilu
+            _fg_path = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                "skills", "ai-slop-detection", "scripts", "fp_guards.py",
+            )
+            strip_quotes = None
+            if os.path.exists(_fg_path):
+                _spec = _ilu.spec_from_file_location("_fp_guards_sq", _fg_path)
+                _mod = _ilu.module_from_spec(_spec)
+                _spec.loader.exec_module(_mod)
+                strip_quotes = _mod.strip_quotes
+        signal_text = strip_quotes(text) if strip_quotes is not None else text
+        signal_lower = signal_text.lower()
+
         text_lower = text.lower()
         words = re.findall(r'\b[\w-]+\b', text_lower)
         total_words = len(words)
@@ -333,7 +363,7 @@ class SlopClassifier:
             for w in tier_words:
                 term_to_tier[w] = tier_name
                 all_terms.append(w)
-        matched = find_term_matches(text_lower, all_terms)
+        matched = find_term_matches(signal_lower, all_terms)
         for w, count in matched.items():
             tier_name = term_to_tier[w]
             tier_summary.setdefault(tier_name, []).append((w, count))
@@ -400,7 +430,7 @@ class SlopClassifier:
                 _spec.loader.exec_module(_mod)
                 mask_tech_metaphor_ml_terms = _mod.mask_tech_metaphor_ml_terms
         if mask_tech_metaphor_ml_terms is not None:
-            text_lower = mask_tech_metaphor_ml_terms(text_lower)
+            signal_lower = mask_tech_metaphor_ml_terms(signal_lower)
         phrase_hits = {}
         total_phrase_hits = 0
 
@@ -410,7 +440,7 @@ class SlopClassifier:
             for p in phrases:
                 term_to_cats.setdefault(p, []).append(cat_name)
                 all_phrases.append(p)
-        for p in find_term_matches(text_lower, all_phrases):
+        for p in find_term_matches(signal_lower, all_phrases):
             for cat_name in term_to_cats[p]:
                 phrase_hits.setdefault(cat_name, []).append(p)
                 total_phrase_hits += 1
@@ -529,7 +559,7 @@ class SlopClassifier:
         # ============================================================
         type_hits = {}
         for type_name, type_def in self.type_patterns.items():
-            matched = find_term_matches(text_lower, type_def["patterns"])
+            matched = find_term_matches(signal_lower, type_def["patterns"])
             if matched:
                 type_hits[type_name] = sorted(matched)
         # >= 2 distinctive patterns of one type are decisive on their own;
@@ -552,7 +582,7 @@ class SlopClassifier:
         for lang, lang_data in self.multilingual.items():
             if isinstance(lang_data, dict) and "buzzwords" in lang_data:
                 lang_hits = sorted(find_term_matches(
-                    text_lower, [w.lower() for w in lang_data["buzzwords"]]))
+                    signal_lower, [w.lower() for w in lang_data["buzzwords"]]))
                 # Conditional markers (#156): common legitimate terms (e.g.
                 # 'Best Practices') only count as AI markers when coupled
                 # with a generic intensifier ('allen', 'modernen', ...) in
@@ -562,8 +592,8 @@ class SlopClassifier:
                     marker_l = marker.lower()
                     intensifiers = [i.lower() for i in rule.get("intensifiers", [])]
                     window = int(rule.get("window_chars", 60))
-                    for m in re.finditer(_term_pattern(marker_l), text_lower):
-                        ctx = text_lower[max(0, m.start() - window):m.start()]
+                    for m in re.finditer(_term_pattern(marker_l), signal_lower):
+                        ctx = signal_lower[max(0, m.start() - window):m.start()]
                         if any(re.search(
                                 _term_pattern(i), ctx) for i in intensifiers):
                             lang_hits.append(marker_l)

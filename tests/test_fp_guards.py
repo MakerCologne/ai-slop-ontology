@@ -62,6 +62,59 @@ class TestStripQuotes(unittest.TestCase):
         text = "No quotes here at all, just plain technical prose."
         self.assertEqual(fp_guards.strip_quotes(text), text)
 
+    # --- issue #299: German typographic quotes -------------------------
+
+    def _de_quote(self, open_q, close_q):
+        inner = ("Heutzutage zeigen Studien eindeutig, dass es nicht nur um "
+                 "Technik geht. Studien zeigen außerdem, dass zusammenfassend "
+                 "in der heutigen Zeit vieles anders ist.")
+        return f"Der Bericht schreibt: {open_q}{inner}{close_q} Wir prüfen das."
+
+    def test_german_low_quotes_stripped(self):
+        # „…“ (U+201E/U+201C)
+        stripped = fp_guards.strip_quotes(self._de_quote("\u201e", "\u201c"))
+        self.assertNotIn("Heutzutage", stripped)
+        self.assertIn("Wir prüfen das.", stripped)
+
+    def test_german_single_low_quotes_stripped(self):
+        # ‚…‘ (U+201A/U+2018)
+        stripped = fp_guards.strip_quotes(self._de_quote("\u201a", "\u2018"))
+        self.assertNotIn("Heutzutage", stripped)
+
+    def test_guillemets_pointing_in_stripped(self):
+        # »…« (U+00BB/U+00AB) — German Guillemets
+        stripped = fp_guards.strip_quotes(self._de_quote("\u00bb", "\u00ab"))
+        self.assertNotIn("Heutzutage", stripped)
+
+    def test_guillemets_pointing_out_stripped(self):
+        # «…» (U+00AB/U+00BB) — French/Russian Guillemets
+        stripped = fp_guards.strip_quotes(self._de_quote("\u00ab", "\u00bb"))
+        self.assertNotIn("Heutzutage", stripped)
+
+
+class TestQuoteExemptionInClassifier(unittest.TestCase):
+    """Issue #299 (b): the CLI path (src/classifier.py) must apply the
+    quote exemption the same way slop_scorer.py does."""
+
+    def _quoted(self, open_q, close_q):
+        inner = ("Heutzutage zeigen Studien eindeutig, dass es nicht nur um "
+                 "Technik geht. Studien zeigen außerdem, dass zusammenfassend "
+                 "in der heutigen Zeit vieles anders ist.")
+        return f"Der Bericht schreibt: {open_q}{inner}{close_q} Wir prüfen das."
+
+    def test_classifier_quoted_de_text_not_flagged(self):
+        sys.path.insert(0, os.path.join(ROOT, "src"))
+        from classifier import SlopClassifier
+
+        clf = SlopClassifier(os.path.join(ROOT, "ontology.json"))
+        for open_q, close_q in [("\u201e", "\u201c"), ("\u00bb", "\u00ab"),
+                                ("\"", "\""), ("\u201c", "\u201d")]:
+            with self.subTest(quote=f"{open_q}…{close_q}"):
+                res = clf.classify_text(self._quoted(open_q, close_q))
+                self.assertLess(
+                    res.overall_slop_score, fp_guards.THRESHOLDS["DECISION_THRESHOLD"],
+                    f"quoted text flagged as slop: {res.overall_slop_score}")
+
 
 class TestQuoteExemptionInScorer(unittest.TestCase):
     def test_technical_text_quoting_slop_paragraph_stays_below_threshold(self):

@@ -30,12 +30,19 @@ THRESHOLDS = {
     "GENERIC_PHRASE_MIN_HITS": 3,
 }
 
-# ASCII double/single quotes and curly variants. Nested/unbalanced quotes are
-# handled by the regex fallbacks below (non-greedy pair matching).
+# ASCII double/single quotes and curly variants, German low quotes
+# („…“ U+201E/U+201C, ‚…‘ U+201A/U+2018) and Guillemets (»…«, «…»).
+# Nested/unbalanced quotes are handled by the regex fallbacks below
+# (non-greedy pair matching).
+_QM = str(THRESHOLDS["QUOTE_MIN_CHARS"])
 _QUOTE_PAIRS = [
-    (re.compile(r'"([^"]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})"'), ""),
-    (re.compile(r'\u201c([^\u201d]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\u201d'), ""),
-    (re.compile(r'(?<!\w)\'([^\']{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\'(?!\w)'), ""),
+    (re.compile(r'"([^"]{' + _QM + r',})"'), ""),
+    (re.compile(r'\u201e([^\u201c]{' + _QM + r',})\u201c'), ""),          # „…“ (German)
+    (re.compile(r'\u201c([^\u201d]{' + _QM + r',})\u201d'), ""),          # “…”
+    (re.compile(r'\u201a([^\u2018]{' + _QM + r',})\u2018'), ""),          # ‚…‘ (German single)
+    (re.compile(r'\u00bb([^\u00ab]{' + _QM + r',})\u00ab'), ""),          # »…« (Guillemets, DE)
+    (re.compile(r'\u00ab([^\u00bb]{' + _QM + r',})\u00bb'), ""),          # «…» (Guillemets, FR/RU)
+    (re.compile(r'(?<!\w)\'([^\']{' + _QM + r',})\'(?!\w)'), ""),
 ]
 
 
