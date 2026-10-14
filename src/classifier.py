@@ -429,6 +429,10 @@ class SlopClassifier:
                 mask_tech_metaphor_ml_terms = _mod.mask_tech_metaphor_ml_terms
         if mask_tech_metaphor_ml_terms is not None:
             text_lower = mask_tech_metaphor_ml_terms(text_lower)
+            # #299: signal text (quote-stripped) needs the same ML-context
+            # masking, otherwise "evaluation harness" in a quoted/ML passage
+            # re-enters phrase matching via the exemption path.
+            signal_text = mask_tech_metaphor_ml_terms(signal_text)
         phrase_hits = {}
         total_phrase_hits = 0
 
@@ -590,8 +594,8 @@ class SlopClassifier:
                     marker_l = marker.lower()
                     intensifiers = [i.lower() for i in rule.get("intensifiers", [])]
                     window = int(rule.get("window_chars", 60))
-                    for m in re.finditer(_term_pattern(marker_l), text_lower):
-                        ctx = text_lower[max(0, m.start() - window):m.start()]
+                    for m in re.finditer(_term_pattern(marker_l), signal_text):
+                        ctx = signal_text[max(0, m.start() - window):m.start()]
                         if any(re.search(
                                 _term_pattern(i), ctx) for i in intensifiers):
                             lang_hits.append(marker_l)

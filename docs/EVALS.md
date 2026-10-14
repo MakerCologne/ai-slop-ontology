@@ -173,6 +173,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_evals_doc.py` — diese Zuordnung prüfen (#68, Meta)
 - `tests/test_fn_series_signals.py` — Batch-F-FN-Serien (0101-0606) + Beleg-Disziplin (>=3 slop-, 0 clean-Texte)
 - `tests/test_fp_guards.py` — #23 Guards (Quote-Exemption, Kumulativregel)
+- `tests/test_issue299_quote_exemption.py` — #299 Quote-Exemption: deutsche Anführungszeichen „…“ + Guillemets »…« in fp_guards.strip_quotes, Engine-Parität (slopkit/classifier wendet die Exemption an)
 - `tests/test_human_voice.py` — #21 positive Gegenprofil-Referenz (Struktur-Pinning, kein Scorer)
 - `tests/test_fu_batch_g.py` — FU-Register-Abrechnung Batch G (FU-2/3/4 Red-Fixes aus Reviews C/D)
 - `tests/test_fu_batch_g2.py` — FU-5/7/10 (as_any-Kommentar-Guard, CHANGELOG-Claim, SKILL-Benchmark-Spiegel)
