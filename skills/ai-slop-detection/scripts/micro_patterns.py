@@ -46,6 +46,28 @@ GRAND_ENDPOINTS = {
     "microchips", "cave paintings", "black holes", "fire", "the wheel",
 }
 
+# Scale-mismatch endpoints for FalseRange (issue #247, gap G1):
+# "from X to Y" where X and Y do not share a common scale — one endpoint is
+# a technical/system property or a company-size domain, the other a human
+# virtue/emotion. "from startups to enterprises" is a real span (same scale);
+# "from scalability to passion" gestures across incommensurable scales.
+SYSTEM_PROPERTY = {
+    "scalability", "scale", "performance", "latency", "throughput", "uptime",
+    "reliability", "availability", "efficiency", "security", "infrastructure",
+    "maintainability", "observability", "compliance",
+}
+SIZE_DOMAIN = {
+    "startups", "startups and enterprises", "enterprises", "hobbyists",
+    "small teams", "solo developers", "freelancers", "mid-market",
+    "fortune 500 companies", "indie developers", "side projects",
+}
+HUMAN_VIRTUE = {
+    "passion", "empathy", "purpose", "authenticity", "creativity",
+    "intuition", "meaning", "belonging", "resilience", "mindfulness",
+    "vulnerability", "curiosity", "joy", "love", "hope", "craft",
+    "craftsmanship", "humanity", "imagination", "play",
+}
+
 RECAP_OPENERS = ["in conclusion", "overall,", "to summarize"]
 
 # --- ActorlessClaim (#248, Gap G4) ----------------------------------------
@@ -112,6 +134,14 @@ def _false_range(text: str):
         left = m.group(2).strip().lower()
         right = m.group(4).strip().lower()
         if left in GRAND_ENDPOINTS and right in GRAND_ENDPOINTS:
+            return m.group(0)
+        # Scale mismatch (G1, #247): one endpoint on a technical/system or
+        # company-size scale, the other a human virtue — no shared scale.
+        left_scale = left in SYSTEM_PROPERTY or left in SIZE_DOMAIN
+        right_virtue = right in HUMAN_VIRTUE
+        right_scale = right in SYSTEM_PROPERTY or right in SIZE_DOMAIN
+        left_virtue = left in HUMAN_VIRTUE
+        if (left_scale and right_virtue) or (left_virtue and right_scale):
             return m.group(0)
     return None
 
@@ -187,7 +217,10 @@ MICRO_PATTERNS = {
         "confidence": 0.55,
         "description": "Grandiosity sweep 'from the X to the Y' where both endpoints are "
                        "gesture-at-scale placeholders (Big Bang, dark matter, dinosaurs, "
-                       "printing press). Name the actual scope.",
+                       "printing press), OR a scale mismatch: one endpoint a technical/"
+                       "system property or company size (scalability, startups) and the "
+                       "other a human virtue (passion, empathy) — no shared scale (#247 "
+                       "gap G1). Name the actual scope.",
         "example_slop": "This guide covers everything from the Big Bang to dark matter.",
         "example_fix": "This guide covers cosmology from the early universe to structure formation.",
         "keep_when": "The endpoints are the literal topic (a cosmology lecture legitimately "

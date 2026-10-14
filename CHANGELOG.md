@@ -1,3 +1,17 @@
+## [Unreleased] — 2026-09-26 (slopgh#247 Gap G1 — FalseRange Scale-Mismatch)
+
+- FalseRange um Scale-Mismatch-Heuristik erweitert (Gap G1,
+  „from X to Y“ ohne gemeinsame Skala): feuert, wenn ein Endpunkt
+  System-Eigenschaft/Firmengröße (SIZE_DOMAIN: startup, enterprise, mid-market)
+  und der andere eine menschliche Tugend (HUMAN_VIRTUE: passion, curiosity,
+  integrity …) ist („from scalability to passion“) — echte Spannen und
+  Aufzählungen bleiben keep_when („from startups to enterprises“)
+- Neu: Konstanten HUMAN_VIRTUE, SIZE_DOMAIN, SYSTEM_PROPERTY im SSOT-Register
+  (C3) registriert; Tests: je 10 Positiv-/Negativ-Beispiele
+  (test_false_range_scale_mismatch)
+- Nachziehen des Inhalts aus geschlossenem PR #251 (Hertha-Review:
+  Rebase auf FalseRange-only nach #245-Merge — erledigt)
+
 ## [Unreleased] — 2026-09-22 (slopgh#249 G5+G9 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 2)
 
 - G5: Neues detect-only Pattern `InlineHeaderRestatement` (unslop #16):

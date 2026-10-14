@@ -54,6 +54,42 @@ class MicroPatternTests(unittest.TestCase):
             ids("The tour goes from the kitchen to the living room."),
         )
 
+    # --- FalseRange scale mismatch (issue #247, gap G1) ---
+    # 10 positives: one endpoint technical/system property or company size,
+    # the other a human virtue — no shared scale.
+    def test_false_range_scale_mismatch_positives(self):
+        positives = [
+            "Our platform evolves from scalability to passion.",
+            "The rebrand moved the company from performance to empathy.",
+            "DevOps is a journey from uptime to belonging.",
+            "The product grew from startups to authenticity.",
+            "Great engineering culture shifts from throughput to curiosity.",
+            "The keynote traced a path from infrastructure to creativity.",
+            "Their roadmap leads from security to joy.",
+            "Leadership reframed the mission from efficiency to purpose.",
+            "The community matured from solo developers to vulnerability.",
+            "Marketing now speaks from reliability to imagination.",
+        ]
+        for text in positives:
+            self.assertIn("FalseRange", ids(text), f"expected FalseRange: {text}")
+
+    # 10 negatives: real spans — both endpoints share a scale/domain.
+    def test_false_range_scale_mismatch_negatives(self):
+        negatives = [
+            "The platform scales from startups to enterprises.",
+            "We upgraded from 10 Gbit to 100 Gbit links.",
+            "Pricing runs from 5 to 500 dollars per seat.",
+            "The outage window moved from 2 a.m. to 4 a.m.",
+            "The tour goes from the kitchen to the living room.",
+            "We migrated the service from the old cluster to the new cluster.",
+            "The study covers firms from manufacturing to logistics.",
+            "Her career went from junior developer to staff engineer.",
+            "The workshop suits everyone from beginners to experts.",
+            "Shipping expanded from Germany to the Nordics.",
+        ]
+        for text in negatives:
+            self.assertNotIn("FalseRange", ids(text), f"unexpected FalseRange: {text}")
+
     # --- RecapEnding ---
 
     def test_recap_ending_positive_opener_and_restatement(self):
