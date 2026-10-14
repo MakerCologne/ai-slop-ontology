@@ -1,3 +1,23 @@
+## [Unreleased] — 2026-09-25 (slopgh#81 — Naturalness-Guard: „zu sauber" als Signal)
+
+- Neues detect-only Modul `src/naturalness_guard.py` (#81 Teilumfang):
+  - `over_sanitized`: Marker-Dichte <= 0.6/100 Wörter + Burstiness-CoV
+    <= 0.25 + ab 120 Wörtern → advisory „möglicherweise über-glättet"
+    (conf 0.35, severity low, nie score-wirksam, ADR-0001)
+  - `register_drift`: Marker-Dichte-Distanz zwischen Dokument-Hälften
+    (Faktor >= 4, High-Side >= 2.0/100 Wörter) als M69/30-Proxy
+    (Register-Kollaps, conf 0.45)
+  - Guardrail (Pflicht laut #81): Genre-Profile (#42) exemieren
+    technical/api-doc/legal/scientific/changelog — Grenzfixtures
+    „legitim gleichmäßig" als Tests
+  - `modal_particle_anomaly` (M63) bewusst DEFERRED → dockt an #73
+    DE-Signallayer an (braucht Modalpartikel-Inventar)
+- ontology.json-Spiegel `signals.naturalnessGuard` (detect-only,
+  patterns, deferred-Vermerk), signal_defs regeneriert,
+  check_ssot C1–C4 pass
+- Tests: tests/test_naturalness_guard.py (10 tests: 2 pos-Familien,
+  Genre-Exemierung, Human-Prose-Negativ, False-Drift, Kurztext/leer)
+
 ## [Unreleased] — 2026-09-22 (slopgh#249 G5+G9 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 2)
 
 - G5: Neues detect-only Pattern `InlineHeaderRestatement` (unslop #16):
