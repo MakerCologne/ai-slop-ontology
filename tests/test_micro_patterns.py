@@ -1,5 +1,6 @@
 """Tests for micro-pattern detect-only signals (issue #13)."""
 
+import json
 import os
 import sys
 import unittest
@@ -53,6 +54,51 @@ class MicroPatternTests(unittest.TestCase):
             "FalseRange",
             ids("The tour goes from the kitchen to the living room."),
         )
+
+    def test_false_range_positive_cross_domain_abstract(self):
+        # Issue #247 (G1): abstract endpoints without a shared scale.
+        self.assertIn(
+            "FalseRange",
+            ids("The product journey goes from scalability to passion."),
+        )
+        self.assertIn(
+            "FalseRange",
+            ids("The essay moves from revenue to meaning without pausing."),
+        )
+        self.assertIn(
+            "FalseRange",
+            ids("Her keynotes drift from justice to deployments."),
+        )
+
+    def test_false_range_negative_same_domain_abstract(self):
+        # Same domain -> real span on one scale, must not fire.
+        self.assertNotIn(
+            "FalseRange",
+            ids("We tuned the pipeline from latency to throughput."),
+        )
+        self.assertNotIn(
+            "FalseRange",
+            ids("The story arc moves from fear to joy."),
+        )
+        self.assertNotIn(
+            "FalseRange",
+            ids("The firm serves everyone from startups to enterprises."),
+        )
+        self.assertNotIn(
+            "FalseRange",
+            ids("Prices range from 20 to 40 dollars."),
+        )
+
+    def test_false_range_eval_fixtures(self):
+        # Issue #247 acceptance: 10 positive + 10 negative examples in the
+        # eval corpus, all classified correctly.
+        fixtures = json.load(
+            open(os.path.join(ROOT, "eval", "false_range_fixtures.json"))
+        )
+        for text in fixtures["positives"]:
+            self.assertIn("FalseRange", ids(text), text)
+        for text in fixtures["negatives"]:
+            self.assertNotIn("FalseRange", ids(text), text)
 
     # --- RecapEnding ---
 

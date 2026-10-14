@@ -101,6 +101,7 @@ SSOT_REGISTER = {
         "RECAP_OPENERS": ("corpus-calibrated", "deviation"),
         "AGENTLESS_CLAIM_VERBS": ("corpus-calibrated", "deviation"),
         "MICRO_PATTERNS": ("corpus-calibrated", "deviation"),
+        "ABSTRACT_DOMAINS": ("closed-list", "deviation"),
     },
     "proof_metrics.py": {
         "METRIC_NUMBERS": ("corpus-calibrated", "deviation"),
