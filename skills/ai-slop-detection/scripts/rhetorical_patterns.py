@@ -310,6 +310,45 @@ RHETORICAL_PATTERNS = {
                       "contrast frame is normal rhetoric and stays "
                       "unmarked; advisory only, never score-dominant."),
     },
+
+    "FalseRange": {
+        "label": "False range",
+        "confidence": 0.6,
+        "description": "\"from X to Y\" where X and Y do not sit on a shared scale "
+                       "(\"from scalability to passion\", \"from atoms to empathy\"). "
+                       "The span gestures at breadth it cannot deliver. Also fires "
+                       "for grandiosity sweeps where both endpoints are "
+                       "gesture-at-scale placeholders (Big Bang, dark matter). "
+                       "Migrated from the micro-pattern of the same name (#13) and "
+                       "broadened per #247 (Gap G1, unslop rule 12).",
+        "example_slop": "The conference ranged from scalability to passion.",
+        "example_fix": "The conference covered scaling talks in the morning and a "
+                       "keynote on craft in the afternoon.",
+        "keep_when": "A genuine span or enumeration: both endpoints on the same "
+                     "scale (\"from startups to enterprises\", \"from kitchen to "
+                     "attic\", \"from Monday to Friday\") or a literal topic span "
+                     "(a cosmology lecture legitimately spans Big Bang to dark "
+                     "matter). The detector only reports scale-mismatched pairs "
+                     "for a human to judge.",
+        "scales": {
+            "grand": [
+                "big bang", "dark matter", "atoms", "galaxies", "dinosaurs",
+                "quantum", "roman empire", "stone age", "printing press",
+                "steam engine", "microchips", "cave paintings", "black holes",
+                "fire", "wheel",
+            ],
+            "technical": [
+                "scalability", "performance", "reliability", "efficiency",
+                "latency", "throughput", "architecture", "infrastructure",
+                "automation", "optimization", "deployment", "maintenance",
+            ],
+            "emotional": [
+                "passion", "hope", "empathy", "belonging", "purpose",
+                "meaning", "joy", "love", "wonder", "vulnerability",
+                "authenticity", "connection",
+            ],
+        },
+    },
 }
 
 
@@ -423,6 +462,15 @@ def _snippet(text: str, start: int, end: int, width: int = 90) -> str:
     return frag[:width]
 
 
+def _norm_endpoint(phrase):
+    """Lowercase and strip trailing prepositional tail words ("throughput in
+    ten weeks" -> "throughput") so lazy regex growth does not hide the head
+    noun of the endpoint (#247)."""
+    p = phrase.strip().lower()
+    p = re.split(r"\b(?:in|on|for|with|during|at)\b", p)[0].strip(" -")
+    return p
+
+
 def find_rhetorical_patterns(text: str):
     """Return a list of {id, label, confidence, evidence, fix} for every rhetorical
     slop pattern found. Detect-only: does not compute or alter a slop score."""
@@ -437,6 +485,30 @@ def find_rhetorical_patterns(text: str):
             "evidence": evidence,
             "fix": meta["example_fix"],
         })
+
+    # 0. FalseRange (#247, Gap G1) — "from X to Y" without a shared scale.
+    # Migrated from micro-patterns (#13, grand sweep only) and broadened:
+    # scale lexicons group endpoints; the pattern fires when both endpoints
+    # are known and sit on DIFFERENT scales, or both on the grand-sweep
+    # scale (the original #13 behaviour). Unlisted endpoints never fire
+    # (conservative); genuine same-scale spans stay unmarked by design.
+    _scales = RHETORICAL_PATTERNS["FalseRange"]["scales"]
+    _endpoint_scale = {}
+    for _scale, _words in _scales.items():
+        for _w in _words:
+            _endpoint_scale[_w] = _scale
+    for m in re.finditer(
+        r"from\s+(?:the\s+)?([A-Za-z][\w\s-]{2,30}?)\s+to\s+(?:the\s+)?([A-Za-z][\w\s-]{2,30}?)(?=[.,;:)\n]|$|\s+and\b)",
+        text,
+    ):
+        left = _norm_endpoint(m.group(1))
+        right = _norm_endpoint(m.group(2))
+        ls, rs = _endpoint_scale.get(left), _endpoint_scale.get(right)
+        if ls is None or rs is None:
+            continue
+        if ls != rs or ls == "grand":
+            add("FalseRange", m.group(0))
+            break
 
     # 1. Binary contrast
     for rx in _BINARY_CONTRAST:
