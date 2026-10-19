@@ -56,6 +56,18 @@
 
 # Changelog
 
+## [Unreleased] — 2026-10-13 (#247 Gap G1 — FalseRange Scale-Mismatch)
+
+- `FalseRange` (micro_patterns.py) erweitert: neben dem Grand-Sweep
+  (beide Endpoints aus GRAND_ENDPOINTS) jetzt auch incommensurable abstrakte
+  Skalen — Measure-/Quality-Term gepaart mit Virtue-/Emotion-Term
+  ("from scalability to passion"). Confidence 0.55 → 0.6.
+- Closed Kategorien SCALE_MEASURE_TERMS / SCALE_VIRTUE_TERMS (SSOT-registriert);
+  echte Spannen und Aufzählungen ("from startups to enterprises",
+  "from scalability to reliability") bleiben lautlos (keep_when).
+- Eval-Korpus `eval/micro_falserange.jsonl` (11 Positiv / 11 Negativ) +
+  3 neue Tests inkl. Korpus-Runner (Issue #1182-Vorgabe: >=10/10).
+
 ## [Unreleased] — 2026-09-19 (#248 Gap G4 — ActorlessClaim)
 
 - Neues detect-only Micro-Signal `ActorlessClaim` (micro_patterns.py):

@@ -312,7 +312,39 @@ class SlopClassifier:
         result = ClassificationResult(modality="text")
 
         text_lower = text.lower()
+        # Quote exemption #23 (slopgh#299): long quoted passages (>40 chars)
+        # are removed from *signal matching only* (buzzwords, phrases,
+        # multilingual) — parity with slop_scorer.py. Structural dimensions
+        # (punctuation, structure, readability) keep the full text.
+        try:
+            from fp_guards import strip_quotes  # type: ignore
+        except ImportError:
+            try:
+                from src.fp_guards import strip_quotes  # type: ignore
+            except ImportError:
+                strip_quotes = None
+        if strip_quotes is None:
+            import importlib.util as _ilu
+            _fg_path = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                "skills", "ai-slop-detection", "scripts", "fp_guards.py",
+            )
+            strip_quotes = None
+            if os.path.exists(_fg_path):
+                _spec = _ilu.spec_from_file_location("_fp_guards_sq", _fg_path)
+                _mod = _ilu.module_from_spec(_spec)
+                _spec.loader.exec_module(_mod)
+                strip_quotes = _mod.strip_quotes
+        if strip_quotes is not None:
+            signal_lower = strip_quotes(text).lower()
+            if strip_quotes(text) != text:
+                result.notes.append("quote_exemption: long quoted span(s) removed from signal matching")
+        else:
+            signal_lower = text_lower
         words = re.findall(r'\b[\w-]+\b', text_lower)
+        # From here on, signal matching runs on the quote-exempt text;
+        # structural dimensions below keep using the original `text`.
+        text_lower = signal_lower
         total_words = len(words)
         unique_words = len(set(words))
         sentences = re.split(r'[.!?]+', text)

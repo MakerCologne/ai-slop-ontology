@@ -1,0 +1,22 @@
+{"id": "falserange-pos-01", "expect": "FalseRange", "text": "Our platform scales from raw scalability to genuine passion.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-02", "expect": "FalseRange", "text": "The rebrand takes the company from performance metrics to pure heart.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-03", "expect": "FalseRange", "text": "This framework moves teams from throughput to empathy in one sprint.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-04", "expect": "FalseRange", "text": "Great leadership means going from cost optimization to curiosity every day.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-05", "expect": "FalseRange", "text": "The product journey spans from security guarantees to a sense of belonging.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-06", "expect": "FalseRange", "text": "We evolved from reliability engineering to imagination itself.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-07", "expect": "FalseRange", "text": "The talk ranges from latency budgets to love.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-08", "expect": "FalseRange", "text": "Our mission stretches from compliance checklists to wonder.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-09", "expect": "FalseRange", "text": "The migration carried the team from uptime dashboards to hope.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-10", "expect": "FalseRange", "text": "It is a shift from efficiency to meaning, nothing less.", "kind": "scale-mismatch", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-pos-11", "expect": "FalseRange", "text": "This guide covers everything from the Big Bang to dark matter.", "kind": "grand-sweep", "source": "issue #13 baseline"}
+{"id": "falserange-neg-01", "expect": null, "text": "Our pricing scales from startups to enterprises.", "kind": "genuine-range", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-neg-02", "expect": null, "text": "We migrated the service from the old cluster to the new cluster.", "kind": "genuine-range", "source": "issue #13 baseline"}
+{"id": "falserange-neg-03", "expect": null, "text": "The tour goes from the kitchen to the living room.", "kind": "genuine-range", "source": "issue #13 baseline"}
+{"id": "falserange-neg-04", "expect": null, "text": "Latency improved from 200 ms to 40 ms after tuning.", "kind": "genuine-range", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-neg-05", "expect": null, "text": "The course covers everything from scalability to reliability engineering.", "kind": "same-scale", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-neg-06", "expect": null, "text": "Her talks move from passion to curiosity, always about craft.", "kind": "same-scale", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-neg-07", "expect": null, "text": "The concert program ranges from Bach to Bernstein.", "kind": "genuine-range", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-neg-08", "expect": null, "text": "They operate from a small office to a distributed team across Europe.", "kind": "genuine-range", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-neg-09", "expect": null, "text": "From security audits to compliance reviews, every step is documented.", "kind": "same-scale", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-neg-10", "expect": null, "text": "The workshop walks you from curiosity to a working prototype in two days.", "kind": "genuine-range", "source": "handcrafted (#247 Gap G1)"}
+{"id": "falserange-neg-11", "expect": null, "text": "The story moves from a quiet village to a busy capital.", "kind": "genuine-range", "source": "handcrafted (#247 Gap G1)"}

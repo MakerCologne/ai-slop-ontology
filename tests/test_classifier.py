@@ -142,3 +142,43 @@ class TestSlopClassifier(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestQuoteExemptionInClassifier(unittest.TestCase):
+    """slopgh#299: the classifier path (slopkit score/classify) must apply
+    the quote exemption (#23) like slop_scorer does — for all quote styles."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.clf = SlopClassifier(ONTOLOGY)
+
+    SLOP_QUOTE = (
+        "Heutzutage zeigen Studien eindeutig, dass es nicht nur um Technik "
+        "geht. Studien zeigen außerdem, dass zusammenfassend in der heutigen "
+        "Zeit vieles anders ist."
+    )
+
+    def _score(self, text):
+        res = self.clf.classify_text(text)
+        return res.overall_slop_score
+
+    def test_quoted_slop_is_exempt_across_quote_styles(self):
+        intro = "Der Bericht schreibt: "
+        outro = " Wir prüfen das."
+        styles = {
+            "ascii": "\"",
+            "curly": ("\u201c", "\u201d"),
+            "german": ("\u201e", "\u201c"),
+            "guillemet": ("\u00bb", "\u00ab"),
+        }
+        for name, s in styles.items():
+            open_q, close_q = (s, s) if isinstance(s, str) else s
+            text = intro + open_q + self.SLOP_QUOTE + close_q + outro
+            score = self._score(text)
+            self.assertLess(
+                score, 0.40,
+                f"{name}: quoted slop flagged by classifier (score={score})")
+
+    def test_unquoted_slop_is_still_flagged(self):
+        score = self._score(self.SLOP_QUOTE)
+        self.assertGreaterEqual(score, 0.40)

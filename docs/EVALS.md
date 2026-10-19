@@ -200,7 +200,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_learning_store.py` — #29 Learning-Store (--learn, Escalations-Schutz)
 - `tests/test_markup_anomalies.py` — Signal Markup-Anomalien
 - `tests/test_methodology_doc.py` — #63 Kodex-Konsistenz (Meta)
-- `tests/test_micro_patterns.py` — #13 Mikro-Muster
+- `tests/test_micro_patterns.py` — #13 Mikro-Muster; #247 Gap G1 FalseRange ("from X to Y" ohne gemeinsame Skala; detect-only, detect-only) mit Fixture-Korpus `eval/micro_falserange.jsonl` (L1: 11 Positiv- / 11 Negativ-Beispiele, handcrafted + issue #13 baseline)
 - `tests/test_portability.py` — #14 Portability
 - `tests/test_proof_metrics.py` — Signal Proof-Metrics
 - `tests/test_provenance.py` — #20 Provenance-Marker
