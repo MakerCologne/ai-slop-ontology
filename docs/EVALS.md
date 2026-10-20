@@ -30,7 +30,7 @@ L1-Pass-Rate ist eine Produktentscheidung, kein 100 %-Zwang — aber jede L1-Aus
 
 ### L3 — Quartals-Re-Score / Kalibrierung
 
-- `eval/corpus.jsonl` — Benchmark-Korpus (331 Texte = 221 slop + 110 clean; Labels, Genres, Quellen; Belegtquote ≥ 60 %, adr/0005)
+- `eval/corpus.jsonl` — Benchmark-Korpus (348 Texte = 221 slop + 127 clean; Labels, Genres, Quellen; Belegtquote ≥ 60 %, adr/0005)
 - `eval/run_benchmark.py` — Precision/Recall/F1 @ 0.40 + FP-/FN-Rate je Genre
 - `eval/calibrate.py` — Gewichts-Kalibrierung aus Korpus-Statistik (nur im Re-Baseline-Zyklus, s. SCORE-GOVERNANCE.md)
 - `eval/sample_mine.py` — #12 Empirischer Re-Kalibrierungs-Loop: N Samples pro Modell/Domain generieren (OpenAI-kompatibler Endpoint, offline über `--samples` umgehbar), n-gram-Wiederholung schürfen, Kandidaten für neue Tiers vorschlagen — gefiltert gegen die bestehende Scorer-Vokabular-SSOT, damit nur **unbedeckte** Muster vorgeschlagen werden. Integration: `calibrate.py --sample-mine <samples.jsonl>` druckt die Tier-Vorschläge neben den Gewichten. Vorschläge sind Review-Input, nie automatische Vokabular-Änderung (Kalibrierungsdisziplin s. #47/#104).
@@ -164,6 +164,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_metadata_slop_111.py` — #111 Metadata-Slop-Erweiterung: CommitVelocitySlop (Cadence-Verhalten), PRStructureSlop (anti-slop-Regeln), CommitKeywordSlop (gitorit-Vokabular); FP-Guards per Einzel-Regel-Negativ-Fixtures
 - `tests/test_control_set.py` — L2-Gate-Artefakte (Dateiformat, known_fn)- `tests/test_copula_rate.py` — Signal #22 Copula-Rate
 - `tests/test_data_files.py` — Datenfile-Integrität (JSONL/JSON)
+- `tests/test_fp_trap_categories.py` — GL#4 Batch E: Clean-Side-FP-Fallen (ShortMessage, Checklist, EmDashProse, MixedLanguage, AIAssistedReviewed; Kategorie-Präsenz + Clean-Verdict-Pin je Batch-E-Item) (L1)
 - `tests/test_diff_mode.py` — #10 Diff-Modus (nur geänderte Zeilen, Code-Routing)
 - `tests/test_diff_verification.py` — #112 Gamed Verification im Diff-Modus: AssertionDelta/SkippedTest/TrivialAssertion (detect-only, 3/3/2-Fixtures, Findings-Standard #119)
 - `tests/test_docs_examples.py` — Doku-Beispiele stimmen mit Scorer-Verhalten überein (#48)

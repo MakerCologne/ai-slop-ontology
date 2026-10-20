@@ -411,7 +411,7 @@ For URLs and search results, check these additional signals:
 ### Benchmark (Spiegel des README, FU-10)
 
 Gemessen 2026-08-28 mit `eval/run_benchmark.py --threshold 0.40`
-gegen `eval/corpus.jsonl` (n=331 = 221 slop + 110 clean), Engine
+gegen `eval/corpus.jsonl` (n=348 = 221 slop + 127 clean), Engine
 `skill-scorer`:
 
 - **P 1.0 / R 0.982 / F1 0.991** (TP 217, FN 4, FP 0)
