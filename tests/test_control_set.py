@@ -80,6 +80,51 @@ class TestControlSetGate(unittest.TestCase):
         self.assertIn("slop-fn-02", proc.stdout)
 
 
+class TestGateThresholdSource(unittest.TestCase):
+    """#1292 / GL #10: the gate reads the decision threshold from
+    config/threshold.json — a sweep moves the gate with it; a missing
+    config aborts loudly (same contract as threshold_config, no silent
+    fallback to a baked-in constant)."""
+
+    CFG = os.path.join(ROOT, "config", "threshold.json")
+
+    def setUp(self):
+        with open(self.CFG) as f:
+            self._original = f.read()
+        self.addCleanup(self._restore)
+
+    def _restore(self):
+        with open(self.CFG, "w") as f:
+            f.write(self._original)
+
+    def test_gate_follows_config_change(self):
+        config = json.loads(self._original)
+        config["threshold"] = 0.55
+        with open(self.CFG, "w") as f:
+            json.dump(config, f)
+        proc = subprocess.run(
+            [sys.executable, GATE_SCRIPT],
+            capture_output=True, text=True, timeout=120,
+        )
+        self.assertIn(
+            "threshold=0.55", proc.stdout,
+            "gate did not read the central config value")
+        self.assertNotEqual(
+            proc.returncode, 2,
+            "gate crashed instead of applying the config threshold")
+
+    def test_missing_config_aborts_loudly(self):
+        os.remove(self.CFG)
+        proc = subprocess.run(
+            [sys.executable, GATE_SCRIPT],
+            capture_output=True, text=True, timeout=60,
+        )
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn(
+            "threshold config missing", proc.stderr,
+            "gate silently fell back instead of aborting")
+
+
 class TestCliFileInput(unittest.TestCase):
     SLOP_TEXT = ("In today's rapidly evolving digital landscape, harnessing "
                  "the power of cutting-edge AI is paramount to unlock your "
