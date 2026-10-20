@@ -46,7 +46,9 @@ class TestOntologyJson(unittest.TestCase):
                  if isinstance(v, dict) and "buzzwords" in v]
         self.assertEqual(
             sorted(langs),
-            ["french", "german", "hindi", "spanish", "urdu", "vietnamese"],
+            ["arabic", "chinese", "french", "german", "hindi", "italian",
+             "japanese", "portuguese", "russian", "spanish", "turkish",
+             "urdu", "vietnamese"],
         )
 
 
