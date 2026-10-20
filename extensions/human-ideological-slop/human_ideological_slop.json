@@ -36,6 +36,7 @@
         "EthnopluralistRebrand",
         "RitualFirewall"
       ],
+      "lexikon_ref": "LEX-2026-008 (lexikon/entries/ethnopluralism.yaml, #94) — Detektor bewertet Strategieform (Schlussform Differenz→Trennung), nicht Parteizugehörigkeit",
       "hardNegatives": [
         "Statistik mit Nenner/Zeitraum/Quelle",
         "ethnografische Beschreibung ohne Segregationsforderung"
