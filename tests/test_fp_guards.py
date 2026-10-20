@@ -62,6 +62,34 @@ class TestStripQuotes(unittest.TestCase):
         text = "No quotes here at all, just plain technical prose."
         self.assertEqual(fp_guards.strip_quotes(text), text)
 
+    def test_german_quotes_are_stripped(self):
+        # slopgh#299: „…“ (U+201E opener, U+201C closer)
+        inner = ("Heutzutage zeigen Studien eindeutig, dass es nicht nur um "
+                 "Technik geht. Studien zeigen außerdem, dass vieles anders ist.")
+        text = "Der Bericht schreibt: \u201e" + inner + "\u201c Wir prüfen das."
+        stripped = fp_guards.strip_quotes(text)
+        self.assertNotIn("Heutzutage", stripped)
+        self.assertIn("Wir prüfen das.", stripped)
+
+    def test_guillemets_both_directions_are_stripped(self):
+        # slopgh#299: »…« (German usage) and «…» (French usage)
+        inner = ("Heutzutage zeigen Studien eindeutig, dass es nicht nur um "
+                 "Technik geht. Studien zeigen außerdem, dass vieles anders ist.")
+        for opener, closer in (("\u00bb", "\u00ab"), ("\u00ab", "\u00bb")):
+            text = "Der Bericht schreibt: " + opener + inner + closer + " Ende."
+            stripped = fp_guards.strip_quotes(text)
+            self.assertNotIn("Heutzutage", stripped)
+            self.assertIn("Ende.", stripped)
+
+    def test_german_single_quotes_are_stripped(self):
+        # slopgh#299: ‚…‘ (U+201A opener, U+2018 closer)
+        inner = ("Heutzutage zeigen Studien eindeutig, dass es nicht nur um "
+                 "Technik geht. Studien zeigen außerdem, dass vieles anders ist.")
+        text = "Der Bericht schreibt: \u201a" + inner + "\u2018 Ende."
+        stripped = fp_guards.strip_quotes(text)
+        self.assertNotIn("Heutzutage", stripped)
+        self.assertIn("Ende.", stripped)
+
 
 class TestQuoteExemptionInScorer(unittest.TestCase):
     def test_technical_text_quoting_slop_paragraph_stays_below_threshold(self):

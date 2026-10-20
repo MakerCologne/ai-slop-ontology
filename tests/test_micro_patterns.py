@@ -139,6 +139,42 @@ class MicroPatternTests(unittest.TestCase):
             ids("We decided to remove the feature."),
         )
 
+    def test_falserange_eval_corpus_247(self):
+        """#247 Gap G1: eval corpus (eval/micro_falserange.jsonl) — >=10 pos,
+        >=10 neg, detector matches every expectation."""
+        import json
+        path = os.path.join(ROOT, "eval", "micro_falserange.jsonl")
+        with open(path) as fh:
+            rows = [json.loads(l) for l in fh if l.strip()]
+        pos = [r for r in rows if r["expect"] == "FalseRange"]
+        neg = [r for r in rows if r["expect"] is None]
+        self.assertGreaterEqual(len(pos), 10, "#247 needs >=10 positives")
+        self.assertGreaterEqual(len(neg), 10, "#247 needs >=10 negatives")
+        for r in pos:
+            self.assertIn("FalseRange", ids(r["text"]), r["id"])
+        for r in neg:
+            self.assertNotIn("FalseRange", ids(r["text"]), r["id"])
+
+    def test_false_range_positive_scale_mismatch(self):
+        self.assertIn(
+            "FalseRange",
+            ids("Our platform scales from raw scalability to genuine passion."),
+        )
+        self.assertIn(
+            "FalseRange",
+            ids("The rebrand takes the company from performance metrics to pure heart."),
+        )
+
+    def test_false_range_negative_same_scale(self):
+        self.assertNotIn(
+            "FalseRange",
+            ids("The course covers everything from scalability to reliability engineering."),
+        )
+        self.assertNotIn(
+            "FalseRange",
+            ids("Her talks move from passion to curiosity, always about craft."),
+        )
+
     def test_every_example_fix_is_detector_clean(self):
         """#229 meta-safety: micro example_fixes must survive the detectors."""
         from rhetorical_patterns import find_rhetorical_patterns

@@ -98,6 +98,8 @@ SSOT_REGISTER = {
         "HUMAN_VERBS": ("corpus-calibrated", "deviation"),
         "FINANCE_OBJECTS": ("corpus-calibrated", "deviation"),
         "GRAND_ENDPOINTS": ("corpus-calibrated", "deviation"),
+        "SCALE_MEASURE_TERMS": ("corpus-calibrated", "deviation"),
+        "SCALE_VIRTUE_TERMS": ("corpus-calibrated", "deviation"),
         "RECAP_OPENERS": ("corpus-calibrated", "deviation"),
         "AGENTLESS_CLAIM_VERBS": ("corpus-calibrated", "deviation"),
         "MICRO_PATTERNS": ("corpus-calibrated", "deviation"),

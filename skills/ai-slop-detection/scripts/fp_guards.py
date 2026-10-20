@@ -30,17 +30,27 @@ THRESHOLDS = {
     "GENERIC_PHRASE_MIN_HITS": 3,
 }
 
-# ASCII double/single quotes, curly variants, German quotes (U+201E … U+201C)
-# and Guillemets (»…«). Nested/unbalanced quotes are
-# handled by the regex fallbacks below (non-greedy pair matching).
+# ASCII double/single quotes, curly variants and German/Guillemet quotes
+# (slopgh#299). Nested/unbalanced quotes are handled by the regex
+# fallbacks below (non-greedy pair matching).
+# Openers/closers (opener -> closer):
+#   " "  ASCII double, U+201C/U+201D English curly double,
+#   U+201E/U+201C German double („…“), U+00AB/U+00BB French Guillemets
+#   (»…«), U+2039/U+203A French single (‹…›), U+201A/U+2018 German single
+#   (‚…‘), reversed Guillemets U+203A/U+2039 (›…‹), ASCII single '…'.
+_MIN = str(THRESHOLDS["QUOTE_MIN_CHARS"])
 _QUOTE_PAIRS = [
-    (re.compile(r'"([^"]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})"'), ""),
-    (re.compile(r'\u201c([^\u201d]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\u201d'), ""),
-    (re.compile(r'(?<!\w)\'([^\']{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\'(?!\w)'), ""),
-    # German: „ opens low (U+201E), “ closes high (U+201C) — issue #299/btm #1269
-    (re.compile(r'\u201e([^\u201c]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\u201c'), ""),
-    # Guillemets: »…« (German direction, » opens)
-    (re.compile(r'\u00bb([^\u00ab]{' + str(THRESHOLDS["QUOTE_MIN_CHARS"]) + r',})\u00ab'), ""),
+    # German double first: its closer U+201C is also the English opener —
+    # otherwise the English pattern could eat a German quote's opening half.
+    (re.compile(r'\u201e([^\u201c]{' + _MIN + r',})\u201c'), ""),
+    (re.compile(r'\u00ab([^\u00bb]{' + _MIN + r',})\u00bb'), ""),
+    (re.compile(r'\u00bb([^\u00ab]{' + _MIN + r',})\u00ab'), ""),
+    (re.compile(r'\u2039([^\u203a]{' + _MIN + r',})\u203a'), ""),
+    (re.compile(r'\u203a([^\u2039]{' + _MIN + r',})\u2039'), ""),
+    (re.compile(r'\u201a([^\u2018]{' + _MIN + r',})\u2018'), ""),
+    (re.compile(r'"([^"]{' + _MIN + r',})"'), ""),
+    (re.compile(r'\u201c([^\u201d]{' + _MIN + r',})\u201d'), ""),
+    (re.compile(r'(?<!\w)\'([^\']{' + _MIN + r',})\'(?!\w)'), ""),
 ]
 
 

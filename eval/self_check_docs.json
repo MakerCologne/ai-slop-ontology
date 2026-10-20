@@ -3,10 +3,6 @@
   "threshold": 0.4,
   "measured": "2026-08-29",
   "exceptions": {
-    "CHANGELOG.md": {
-      "max_score": 0.995,
-      "reason": "Names the phrases and buzzwords each release added, in running prose ('serves as a testament', 'cutting-edge', 'widely regarded as'; #104: 'it is worth noting', 'in today's [X]'). Quoting the catalogue is what a changelog for a phrase database does; removing the terms would make the entries unreadable. Evidence, not slop (#23). Ceiling raised 0.9829 -> 0.995 for the #104 Slice A entry (measured 0.990)."
-    },
     "docs/no-ai-slop-coverage.md": {
       "max_score": 0.942,
       "reason": "Issue #104 Slice A: Mapping-Tabelle Doku<->SSOT. Ihr Gegenstand ist der Phrasenkatalog selbst — jede Zeile nennt die gemappte Form im Original (hedging, opening formulas), deshalb schlaegt der Lauftext-Check an. Ceilung gemessen 0.932 + 0.01."

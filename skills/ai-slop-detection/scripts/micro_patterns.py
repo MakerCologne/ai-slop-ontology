@@ -107,11 +107,49 @@ def _false_agency(sentences: list):
     return None
 
 
+# Scale-mismatch endpoint categories for FalseRange (#247, Gap G1):
+# "from X to Y" where X and Y are abstract but live on incommensurable
+# scales ("from scalability to passion") — a rhetorical leap dressed up as
+# a range. Closed lists, same discipline as GRAND_ENDPOINTS: an everyday
+# "from X to Y" inside one domain does not fire.
+SCALE_MEASURE_TERMS = frozenset({
+    "scalability", "performance", "cost", "costs", "speed", "latency",
+    "throughput", "reliability", "availability", "security", "accuracy",
+    "precision", "efficiency", "quality", "compliance", "governance",
+    "maintainability", "uptime", "scale", "bandwidth",
+})
+SCALE_VIRTUE_TERMS = frozenset({
+    "passion", "love", "empathy", "curiosity", "joy", "wonder",
+    "humanity", "creativity", "intuition", "meaning", "purpose",
+    "trust", "belonging", "authenticity", "resilience", "hope",
+    "imagination", "connection", "soul", "heart",
+})
+
+def _endpoint_category(endpoint: str):
+    tokens = set(re.findall(r"[a-z]+", endpoint))
+    if tokens & SCALE_MEASURE_TERMS:
+        return "measure"
+    if tokens & SCALE_VIRTUE_TERMS:
+        return "virtue"
+    if endpoint in GRAND_ENDPOINTS:
+        return "grand"
+    return None
+
 def _false_range(text: str):
     for m in re.finditer(r"from\s+(the\s+)?([a-z][a-z\s]{2,30}?)\s+to\s+(the\s+)?([a-z][a-z\s]{2,30}?)(?=[.,;:)]|$)", text, re.IGNORECASE):
         left = m.group(2).strip().lower()
         right = m.group(4).strip().lower()
+        # G1 original: grand-sweep placeholders (both endpoints grand).
         if left in GRAND_ENDPOINTS and right in GRAND_ENDPOINTS:
+            return m.group(0)
+        # #247 Gap G1: incommensurable abstract scales — a measure/quality
+        # term paired with a virtue/emotion term. Grand endpoints stay in the
+        # both-grand rule above; mixed grand pairs are left alone (keep_when
+        # guard). "from startups to enterprises" (same concrete domain)
+        # stays silent.
+        lcat = _endpoint_category(left)
+        rcat = _endpoint_category(right)
+        if {lcat, rcat} == {"measure", "virtue"}:
             return m.group(0)
     return None
 
@@ -184,15 +222,20 @@ MICRO_PATTERNS = {
     },
     "FalseRange": {
         "label": "False from-X-to-Y range",
-        "confidence": 0.55,
-        "description": "Grandiosity sweep 'from the X to the Y' where both endpoints are "
-                       "gesture-at-scale placeholders (Big Bang, dark matter, dinosaurs, "
-                       "printing press). Name the actual scope.",
-        "example_slop": "This guide covers everything from the Big Bang to dark matter.",
-        "example_fix": "This guide covers cosmology from the early universe to structure formation.",
-        "keep_when": "The endpoints are the literal topic (a cosmology lecture legitimately "
-                     "spans Big Bang to dark matter) — the guard is intent, the detector "
-                     "only reports the sweep for a human to judge.",
+        "confidence": 0.6,
+        "description": "Two flavors of fake range: (a) grandiosity sweep 'from the X "
+                       "to the Y' where both endpoints are gesture-at-scale "
+                       "placeholders (Big Bang, dark matter, dinosaurs, printing "
+                       "press), and (b) incommensurable abstract scales — a "
+                       "measure/quality term paired with a virtue/emotion term "
+                       "('from scalability to passion'). Name the actual scope.",
+        "example_slop": "Our platform scales from raw scalability to genuine passion.",
+        "example_fix": "Our platform handles 10x load, and users say it feels personal.",
+        "keep_when": "The endpoints are the literal topic (a cosmology lecture "
+                     "legitimately spans Big Bang to dark matter) or a genuine "
+                     "range/enumeration on one domain ('from startups to "
+                     "enterprises'). Closed category lists — the detector only "
+                     "reports the sweep for a human to judge.",
     },
     "RecapEnding": {
         "label": "Recap ending with restatement",
