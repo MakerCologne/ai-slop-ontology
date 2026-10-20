@@ -4017,6 +4017,16 @@
         "UnfalsifiableTemplate",
         "EnemyVermin"
       ]
+    },
+    "naturalnessGuard": {
+      "description": "Detect-only Over-Sanitization-Guard (#81): 'zu sauber' als Tell. over_sanitized (niedrige Marker-Dichte + extrem gleichfoermige Burstiness + 0 Eigenheiten) und register_drift (Marker-Distanz zwischen Dokumenthaelften, M69/30-Proxy). Advisory, nie score-wirksam (ADR-0001). Genre-Profile (#42) exemieren legitim gleichfoermige Texte (technical/api-doc/legal/scientific/changelog).",
+      "mode": "detect-only",
+      "source": "src/naturalness_guard.py (korpus-kalibrierte Inline-Thresholds, dokumentierte Abweichung)",
+      "patterns": [
+        "over_sanitized",
+        "register_drift"
+      ],
+      "deferred": "modal_particle_anomaly (M63) dockt an #73 DE-Signallayer an"
     }
   },
   "normativeFramings": {
