@@ -56,6 +56,21 @@
 
 # Changelog
 
+## [Unreleased] — 2026-09-20 (#123 Positionierung: Distribution-Update)
+
+- README "Positioning"-Abschnitte: Distribution-Beobachtung aus dem GitHub-Topic-
+  Scan (2026-09-02) ergaenzt — `npx skills add <repo>` ist der Standard-
+  Verbreitungsweg (scanaislop/skills, ZeroSlop, deslopper, …); Detektor +
+  Skill-Wrapper ist das erwartete Paket (bereits erfuellt: skills/
+  ai-slop-detection + `slop` CLI)
+- PRISM-`[[enforce]]`-Bloecke (claim + named rule, fails loudly) als zitier-
+  bares Packaging-Muster fuer Hard Rules notiert (#21-Anschluss, adr/0006/0031)
+- Zwei-Ebenen-Doktrin bestaetigt notiert (ML fasttext/ONNX als Filter,
+  deterministische Regeln als Gate); slop-alerter-Disclaimer ("trust your own
+  judgement over the model") als Positionierungssatz aufgenommen
+- Docs-only, kein Code/Score-Pfad betroffen
+
+
 ## [Unreleased] — 2026-09-19 (#248 Gap G4 — ActorlessClaim)
 
 - Neues detect-only Micro-Signal `ActorlessClaim` (micro_patterns.py):
