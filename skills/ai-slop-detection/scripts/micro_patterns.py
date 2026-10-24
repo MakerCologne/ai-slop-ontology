@@ -162,22 +162,69 @@ def _endpoint_candidates(phrase):
     return [" ".join(words[:i]) for i in range(1, min(4, len(words)) + 1)]
 
 
+# Function words: when one of these follows a prefix candidate, the candidate
+# is the head of its noun phrase (a PP/clause boundary), so the prefix may be
+# classified on its own ("meaning without pausing" — head 'meaning'). A
+# content word instead signals a compound noun phrase whose head differs
+# ("performance reviews", "market share reports" — head is the LAST noun),
+# which must never be classified via its first word (Codex P2 review #289).
+_PHRASE_BOUNDARY_WORDS = {
+    "and", "or", "plus", "with", "without", "of", "in", "into",
+    "through", "via", "for", "than",
+}
+
+
+def _candidate_allowed(words, count):
+    """A candidate shorter than the captured phrase is only trusted when the
+    next word marks a phrase boundary (function word). The full captured
+    phrase is always trusted — the regex lookahead verified its edge."""
+    if count >= len(words):
+        return True
+    return words[count] in _PHRASE_BOUNDARY_WORDS
+
+
+_FALSE_RANGE_RE = re.compile(
+    r"from\s+(?:the\s+)?([a-z][a-z\s]{2,30}?)\s+to\s+(?:the\s+)?([a-z][a-z\s]{2,30})(?=[.,;:)]|\s+\w|$)",
+    re.IGNORECASE,
+)
+
+
 def _false_range(text: str):
-    for m in re.finditer(
-        r"from\s+(?:the\s+)?([a-z][a-z\s]{2,30}?)\s+to\s+(?:the\s+)?([a-z][a-z\s]{2,30})(?=[.,;:)]|\s+\w|$)",
-        text, re.IGNORECASE,
-    ):
+    # Manual cursor instead of finditer: a greedy right-hand group can swallow
+    # a coordinated second range ("from revenue to growth and from scalability
+    # to passion" — the nested 'from' sits inside the captured phrase). On a
+    # non-firing match, scanning resumes inside the captured span so nested
+    # 'from' clauses are still evaluated (Codex P2 review #289).
+    pos = 0
+    while pos < len(text):
+        m = _FALSE_RANGE_RE.search(text, pos)
+        if not m:
+            return None
         left_raw, right_raw = m.group(1), m.group(2)
-        # The lazy regex stops the right endpoint at the first split the
-        # lookahead accepts; enumerate word-prefix candidates on both sides
-        # so "dark matter" and other multi-word endpoints are considered.
+        left_words = left_raw.strip().lower().split()
+        right_words = right_raw.strip().lower().split()
+        fired = False
         for left in _endpoint_candidates(left_raw):
+            count = len(left.split())
+            if not _candidate_allowed(left_words, count):
+                continue
             for right in _endpoint_candidates(right_raw):
+                if not _candidate_allowed(right_words, len(right.split())):
+                    continue
                 if left in GRAND_ENDPOINTS and right in GRAND_ENDPOINTS:
-                    return m.group(0)
+                    fired = True
+                    break
                 ldom, rdom = _domains(left), _domains(right)
                 if ldom and rdom and ldom.isdisjoint(rdom):
-                    return m.group(0)
+                    fired = True
+                    break
+            if fired:
+                break
+        if fired:
+            return m.group(0)
+        # No fire: restart after the left endpoint so a nested 'from ... to ...'
+        # inside the swallowed span is scanned on the next iteration.
+        pos = m.start(1) + 1
     return None
 
 
