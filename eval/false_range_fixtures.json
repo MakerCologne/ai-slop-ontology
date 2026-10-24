@@ -1,0 +1,33 @@
+{
+  "signal": "FalseRange",
+  "issue": "ai-slop-ontology#247 (G1) / btm-openclaw-platform#1182",
+  "description": "Eval-Korpus fuer den Cross-Domain-Teil von FalseRange: 'from X to Y' ohne gemeinsame Skala. 10 Positive (cross-domain abstrakt) + 10 Negative (gleiche Domain / konkrete Spannen / Aufzaehlung). Detektor: skills/ai-slop-detection/scripts/micro_patterns.py#_false_range.",
+  "positives": [
+    "The product journey goes from scalability to passion.",
+    "Our roadmap spans everything from latency to belonging.",
+    "The essay moves from revenue to meaning without pausing.",
+    "The talk promises a path from churn to consciousness.",
+    "We optimize from typography to throughput in one sprint.",
+    "Her keynotes drift from justice to deployments.",
+    "The workshop covers from empathy to infrastructure in an afternoon.",
+    "The rebrand travels from nostalgia to observability.",
+    "Their pitch runs from inequality to integration.",
+    "The memoir swings from market share to wonder."
+  ],
+  "negatives": [
+    "We tuned the pipeline from latency to throughput.",
+    "The story arc moves from fear to joy.",
+    "The firm serves everyone from startups to enterprises.",
+    "The tour goes from the kitchen to the living room.",
+    "Prices range from 20 to 40 dollars.",
+    "The company grew from two employees to two hundred.",
+    "The seminar series runs from antiquity to the Renaissance.",
+    "The essay traces inequality from education to housing.",
+    "Migration moved the service from the old cluster to the new cluster.",
+    "The festival program runs from noon to midnight."
+  ],
+  "expected": {
+    "positives_fire": 10,
+    "negatives_fire": 0
+  }
+}
