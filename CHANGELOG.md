@@ -1,3 +1,14 @@
+## [Unreleased] — 2026-09-25 (slopgh#249 G8 — BriefLeak)
+
+- **G8 (BriefLeak)**: Briefing-/Instruktions-Register im Artefakt
+  („as per your request", „per your request", „as requested") als
+  `meta_commentary`-Phrasen-Erweiterung, kein neues Signal — laut Issue-Prüfung
+  hat das Korpus keine Briefing-Texte, damit ist eine eigene Signal-Kalibrierung
+  nicht ehrlich (Konzept-Mapping wie im Deep-Dive #39 vorgesehen).
+  ontology.json-Spiegel aktualisiert; Tests: `tests/test_briefleak_g8.py`
+  (6 Fixtures inkl. Hard-Negatives: normales Verb „requested", exakte
+  Einzelzählung bei Quoted-Request)
+
 ## [Unreleased] — 2026-09-22 (slopgh#249 G5+G9 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 2)
 
 - G5: Neues detect-only Pattern `InlineHeaderRestatement` (unslop #16):
@@ -31,6 +42,13 @@
   dieses PRs: Pattern-Design + FP-Validierung gegen Listen/Label-Kolon
   getrennt zu leisten (Folge-PRs), G6/G8 laut Issue erst nach Prüfung
   gegen meta_commentary / authority_claims
+## [Unreleased] — 2026-09-23 #249 G6: NameDropList (detect-only)
+
+- **NameDropList** (G6, unslop #2): Medien-/Brand-Aufzaehlung ohne Aussageinhalt
+  (`micro_patterns.py`, detect-only). Lead-in-Liste (featured in/seen on/trusted by…)
+  ODER Bare-Enumeration mit ≤6 Nicht-Listen-Wörtern; Guards: KEEP-Verben für echte
+  Aussagen (compared/tested/ranked…), Referenz-Listen-Konventionen (Bullet/Nummer/Link),
+  ≥3-Item-Schwelle. Tests: `tests/test_namedrop_g6.py` (L1), EVALS.md-Zuordnung ergänzt.
 
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
