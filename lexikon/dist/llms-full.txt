@@ -21,14 +21,20 @@ Ideologische Strategie, die Kulturen als gleichwertig UND unverträglich erklär
   - Quelle: https://www.bpb.de/themen/rechtsextremismus/dossier-rechtsextremismus/526659/ethnopluralismus/ (Zugriff 2026-09-02)
     Zitat: Ethnopluralismus bezeichnet eine völkisch-radikalisierte Variante des Rassismus, die nicht auf eine Hierarchie der „Rassen“, sondern auf die strikte Trennung der Ethnien zielt.
 - Strategischer Kern (Taguieff, Rueda, Spektorowski): kein Verzicht auf Exklusion, sondern Rebranding vom biologistischen zu kulturalistischem Rassismus („cultural turn“) — Sprache von Diversität, Antitotalitarismus, Antiimperialismus und Umweltschutz wird gekapert; Taguieff beschreibt die Tarnung suprematistischer Gehalte hinter egalitärem Vokabular.
-  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/94 (Zugriff 2026-09-02)
-    Zitat: Strategischer Kern (Taguieff, Rueda, Spektorowski). Kein Verzicht auf Exklusion, sondern Rebranding: biologistischer Rassismus → kulturalistischer Rassismus („cultural turn"). Sprache von Diversität, Antitotalitarismus, Antiimperialismus, Umweltschutz wird gekapert. Taguieff: Tarnung suprematistischer Gehalte hinter egalitärem Vokabular.
+  - Quelle: https://doi.org/10.1080/0031322X.2021.1920722 (Zugriff 2026-10-04)
+    Zitat: Rueda, Daniel: „Alain de Benoist, ethnopluralism and the cultural turn in racism“, Patterns of Prejudice 55(3), 2021, 213–235. Rueda locates this ideal as part of „the cultural turn in racism“ — the passage from biological to cultural argumentation.
+  - Quelle: https://en.wikipedia.org/wiki/Ethnopluralism (Zugriff 2026-10-04)
+    Zitat: Many specialists have described the idea as a strategic attempt to legitimise racial supremacist views in public opinion by imitating egalitarian, anti-totalitarian, antiracist, or environmental discourses of the progressive movement (mit Verweis auf Taguieff).
 - Ambiguity-Befund (Journal of Political Ideologies 2023/25): Texte von Benoist, Faye, Eichberg und Lichtmesz zeigen den Cultural Turn bei gleichzeitig fortbestehenden biologistischen Resten — die Doppelbödigkeit ist Design, nicht Nebeneffekt. Malik: Kultur wird zum Synonym für Abstammung, sobald Zugehörigkeit an Herkunftsort und Deszendenz gebunden wird.
-  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/94 (Zugriff 2026-09-02)
-    Zitat: Ambiguity-Befund (Journal of Political Ideologies 2023/25). Texte von Benoist, Faye, Eichberg, Lichtmesz: Cultural Turn ja, Reste biologistischer Argumentation bleiben — die Doppelbödigkeit ist Design.
+  - Quelle: https://doi.org/10.1080/13569317.2023.2212252 (Zugriff 2026-10-04)
+    Zitat: Havertz, Ralf: „Ethnopluralism and its ambiguities: racism with and without race“, Journal of Political Ideologies 30(1), 2025, 51–66. Ethnopluralism has gained great significance as a political ideology with the rise of right-wing populism in Europe in recent years.
+  - Quelle: https://doi.org/10.1080/0031322X.2021.1920722 (Zugriff 2026-10-04)
+    Zitat: Rueda 2021 (Patterns of Prejudice 55(3), 213–235) dokumentiert den cultural turn in racism: Übergang von biologischer zu kultureller Argumentation bei fortbestehendem Exklusionsziel.
 - Metapolitik: Gramsci von rechts — kulturelle Hegemonie vor Staat. Deshalb wirkt der Begriff als Slop-Generator: Er produziert endlose „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.
-  - Quelle: https://github.com/MakerCologne/ai-slop-ontology/issues/94 (Zugriff 2026-09-02)
-    Zitat: Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat. Deshalb taugt der Begriff als Slop-Generator — er produziert endlos „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.
+  - Quelle: https://www.researchgate.net/publication/47252457_The_New_Right_Ethno-regionalism_ethno-pluralism_and_the_emergence_of_a_pan-European_nationalism (Zugriff 2026-10-04)
+    Zitat: Spektorowska, Irena: „The New Right: Ethno-regionalism, ethno-pluralism and the emergence of a pan-European nationalism“, Journal of Political Ideologies 8(1), 2003. Through the affirmation of culture racism is expanded; the revival of the ‚cultural‘ is not limited to legitimizing.
+  - Quelle: https://en.wikipedia.org/wiki/Ethnopluralism (Zugriff 2026-10-04)
+    Zitat: Wikipedia (EN), Artikel „Ethnopluralism“ (2026-10-04): The concept … formulated in its modern form by French political theorist and Nouvelle Droite founding member Alain de Benoist … closely associated with the European New Right and the Identitarian movement.
 
 ## Human-Slop
 
