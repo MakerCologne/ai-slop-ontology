@@ -49,6 +49,20 @@ claims:
           wird gekapert. Taguieff: Tarnung suprematistischer Gehalte hinter
           egalitärem Vokabular.
         accessed: "2026-09-02"
+      - url: https://doi.org/10.1080/0031322X.2021.1920722
+        quote: >-
+          Rueda locates this ideal as part of what will be called ‘the
+          cultural turn in racism’, that is, the passage from biological and
+          pseudo-scientific racism to alterophobic discourses based on culture
+          and ethnicity among European far-right intellectuals. (Rueda,
+          Patterns of Prejudice 55(3) 2021, Abstract)
+        accessed: "2026-09-28"
+      - url: https://www.greeneuropeanjournal.eu/metapolitics-and-the-battle-for-europes-future/
+        quote: >-
+          The Nouvelle Droite’s ideology promoted a hierarchised
+          ethno-nationalist society, carefully packaged as “non-racist” and
+          “non-fascist”. (Green European Journal, 05.12.2024)
+        accessed: "2026-09-28"
   - statement: >
       Ambiguity-Befund (Journal of Political Ideologies 2023/25): Texte von
       Benoist, Faye, Eichberg und Lichtmesz zeigen den Cultural Turn bei
@@ -64,6 +78,14 @@ claims:
           biologistischer Argumentation bleiben — die Doppelbödigkeit ist
           Design.
         accessed: "2026-09-02"
+      - url: https://doi.org/10.1080/13569317.2023.2212252
+        quote: >-
+          It was also found that there are still elements of biological racism
+          in the texts of these radical-right thinkers, particularly where
+          they connect ethnopluralism with the idea of the heredity of culture
+          and with biological determinist interpretations of territoriality.
+          (Havertz, Journal of Political Ideologies 30(1) 2025, Abstract)
+        accessed: "2026-09-28"
   - statement: >
       Metapolitik: Gramsci von rechts — kulturelle Hegemonie vor Staat.
       Deshalb wirkt der Begriff als Slop-Generator: Er produziert endlose
@@ -77,6 +99,14 @@ claims:
           „Differenz“-Prosa ohne operationalisierbare Policy außer
           Trennung/Remigration.
         accessed: "2026-09-02"
+      - url: https://www.greeneuropeanjournal.eu/metapolitics-and-the-battle-for-europes-future/
+        quote: >-
+          Sellner was clear about the need to first build what he called
+          “metapolitical power” to pave the way for their extreme agenda. …
+          before the public could be persuaded to accept the idea of
+          “remigration” … the groundwork had to be laid by shifting societal
+          norms and perceptions. (Green European Journal, 05.12.2024)
+        accessed: "2026-09-28"
 detect:
   hints:
     - Schluss von „Differenz“/„Vielfalt“ auf getrennte Räume oder Remigration
@@ -89,5 +119,5 @@ counter:
     Differenzbeschreibung ohne Segregationsforderung bleibt Hard-Negative.
   keep_when: Ethnografie, Historiografie oder Ideologieforschung, die das Konzept beschreibt, ohne die Trennungspolitik zu fordern
 status: nursery
-version: 1
+version: 2
 see_also: ["LEX-2026-006", "LEX-2026-007", "adr/0008", "#92", "#93", "#96"]
