@@ -1,6 +1,6 @@
 # DE-Coverage — Mapping des DE-Pattern-Katalogs (Issue #76, Teil 1+2)
 
-**Status:** Teil 1 (Quick Wins M46–M49) · **Teil 2** (12 neue de_*-Phrase-Kategorien + M60/M61-Strukturmodul `structure_metrics.py`, je Signal 3/3/2-Fixtures; Evidence je Phrase nach RI-1/RI-2: Wikipedia-Projektseite MIT Namespace-Präfix oder own:-Beleg, ≥2 Belege als FU offen) · **Datum:** 2026-08-25
+**Status:** NEU-Batch 02.10. (M6/M17/M50, de_structure.py) · Teil 1 (Quick Wins M46–M49) · **Teil 2** (12 neue de_*-Phrase-Kategorien + M60/M61-Strukturmodul `structure_metrics.py`, je Signal 3/3/2-Fixtures; Evidence je Phrase nach RI-1/RI-2: Wikipedia-Projektseite MIT Namespace-Präfix oder own:-Beleg, ≥2 Belege als FU offen) · **Datum:** 2026-08-25
 **Referenz-Katalog:** humanizer-de v5.22.2 `references/patterns.md` — **72 nummerierte Muster** (der im Deep-Dive genannte „82er-Katalog" zählt offenbar Überschriften/Sektionen mit; die Kurzreferenz listet exakt 72 Zeilen — Claim-Korrektur dokumentiert).
 **Lizenz-Schutz:** Der Referenz-Katalog steht teilweise unter CC BY-SA 4.0 (Wikipedia-abgeleitetes Pattern-Material). Dieses Mapping beschreibt jedes Muster **in eigenen Worten** als Konzept (Kurzname + Zuordnung zu unseren Signalen); es werden **keine Regexes oder Beispielsätze übernommen**. Bei den Phrase-Items gilt: Einzelne Formulierungen, die wortgleich auf der de-Wikipedia-Projektseite „Wikipedia:Anzeichen für KI-generierte Inhalte“ stehen, sind dieser Primärquelle attribuiert (die Wikipedia nennt sie selbst; der Referenz-Katalog ist Ko-Derivat) — Wortgleichheit mit dem Referenz-Katalog allein ist kein Beleg und wird mit `own:`-Belegen vermieden (vgl. RJ-1-Fixup). Die Quick-Win-Implementierung `skills/ai-slop-detection/scripts/de_typography.py` ist eine Eigen-Ableitung aus derselben Wikipedia-Seite + eigenen DE-Beispielen.
 **Quellen-Konzepte:** de.wikipedia „Anzeichen für KI-generierte Inhalte", en.wikipedia „Signs of AI writing" (beide bereits Grundlage unserer #7/#17-Signale).
@@ -20,7 +20,7 @@
 | M3 | Meta-Kommentare statt Inhalt | DE-VARIANTE | meta_commentary (EN) → #77 de_meta_comment |
 | M4 | Mechanische Konjunktionen (ferner, darüber hinaus) | **GEDECKT (neu, T2)** | **de_transitions (Teil 2)** | |
 | M5 | Abschnitts-Zusammenfassungen | **GEDECKT (neu, T2)** | **de_recap (Teil 2)** | |
-| M6 | Unpassendes „Fazit"-Kapitel | NEU (klein) | structural: Fazit-Heading ohne Substanz |
+| M6 | Unpassendes „Fazit"-Kapitel | **GEDECKT (neu, NEU-Batch 02.10.)** | **de_structure.HollowFazitHeading** |
 | M7 | Dichotom-Schluss + Lob→Herausforderung→Ausblick-Schablone | **GEDECKT (neu, #77-Rest W5 13.09.)** | **de_dichotomy_close (Voll-Zweibeleg de-ev-23)** | |
 | M8 | Negativ-Parallelismen (nicht nur … sondern auch) | **GEDECKT (neu, T2)** | **de_binary_contrast (Teil 2)** | |
 | M9 | Regel-der-Drei-Aufzählungen | GEDECKT | rhetorical_patterns (forced triads) |
@@ -31,7 +31,7 @@
 | M14 | Falsche Listen-Syntax | GEDECKT | markup_anomalies |
 | M15 | Emojis vor Überschriften | GEDECKT | markup_anomalies/formatting slop |
 | M16 | Gedankenstrich-Cluster | GEDECKT | EmDashExcess + Em-Dash-Doctrine |
-| M17 | Briefartiger Aufbau (Betreff/Anrede/Grußformel) | NEU (klein) | Kandidat instruction/provenance-Umfeld |
+| M17 | Briefartiger Aufbau (Betreff/Anrede/Grußformel) | **GEDECKT (neu, NEU-Batch 02.10.)** | **de_structure.LetterStructure (detect-only)** |
 | M18 | Kollaborativ-Floskeln („Ich hoffe, das hilft“) | **GEDECKT (neu, #77-Rest 13.09.)** | **de_chatbot_leftover (Voll-Zweibeleg de-ev-17)** |
 | M19 | Wissensgrenzen-Hinweise („Stand …") | GEDECKT | provenance #20 (Update-Marker) |
 | M20 | Prompt-Ablehnungsreste | GEDECKT | provenance #20 / instruction slop |
@@ -64,7 +64,7 @@
 | **M47** | **Englische Titel-Großschreibung** | **GEDECKT (neu)** | **de_typography.title_case_headings** |
 | **M48** | **Englisches Dezimal-/Datumsformat** | **GEDECKT (neu)** | **de_typography.en_number_formats (Versionen exempt)** |
 | **M49** | **Genitiv-Apostroph** | **GEDECKT (neu)** | **de_typography.genitive_apostrophe (Marken-Allowlist)** |
-| M50 | Stichpunkt-Großschreibung/Endpunkte | NEU (klein) | Kandidat Typografie |
+| M50 | Stichpunkt-Großschreibung/Endpunkte | **GEDECKT (neu, NEU-Batch 02.10.)** | **de_structure.BulletCapitalization** |
 | M51 | Parataxe-Häufung | NEU | Kandidat syntaktisch |
 | M52 | Diff-verankertes Schreiben | NEU | Kandidat provenance/Prosa |
 | M53 | Lückenfüllende Spekulation | **GEDECKT (neu, T2)** | **de_hedging (Teil 2, Wissensgrenzen-Hinweise)** | |
