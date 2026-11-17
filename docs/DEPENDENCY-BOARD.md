@@ -1,6 +1,6 @@
 # DEPENDENCY-BOARD.md — depends-on-Relationen der offenen Issues
 
-**Status:** verbindliche Roadmap-Referenz · **Quelle:** Issue #54 · **Letzter Abgleich:** 2026-09-13
+**Status:** verbindliche Roadmap-Referenz · **Quelle:** Issue #54 · **Letzter Abgleich:** 2026-10-06
 
 Das Board deklariert die Abhängigkeiten zwischen offenen Issues, die bislang nur implizit in Issue-Bodies standen. Regeln: ein Issue mit offener `depends-on`-Voraussetzung wird nicht bearbeitet (SIGNAL-DoD Punkt 7, Sequencing-Disziplin); ADR-Entscheidungen haben Vorrang vor Roadmap-Notizen.
 
@@ -24,17 +24,17 @@ Beziehungen als `Issue → hängt ab von`:
 | `#110` | `#77` | 4 Meta-Communicative Signale aus der Hassid-Liste erweitern die DE-Phrasendatenbank |
 | `#86` | PR #6 | Portierung des Bestands aus PR #6 |
 | `#87` | PR #6 | Portierung des Bestands aus PR #6 |
-| `#90` | — | ADR-Entscheidung, auf Stefan-Freigabe wartend (`status:decision-needed`) |
-| `#91` | `#90` | Bewerteter Vorschlag liegt als Teil von ADR-0008 vor, Abschluss hängt an #90 |
-| `#92` | `#90` | Option-B-Implementierung erst nach Geltungsbereichs-Entscheidung |
-| `#93` | `#90`, `#92` | Option-A-Extension „nicht vor B-Nursery mergen" (#93-Body) |
-| `#94` | `#92` | Lexikon für Ethnopluralismus gehört zum Option-B-Rhetorik-Layer |
-| `#98` | `#92` oder `#93` | Eval-Korpus braucht die implementierte Klasse whichever Option gewählt wird |
+| `#90` | ~~—~~ | ADR-0008 ausgearbeitet (2026-09-02, PR #125), Status bleibt **proposed** — Abschluss nur nach Stefan-Freigabe (`status:decision-needed` bleibt bestehen) |
+| `#91` | `#90` | Bewerteter Vorschlag (B zuerst, A danach) in ADR-0008 dokumentiert; DoD-Rest = Entscheidungs-Festschreibung im Epic #89, hängt an #90-Freigabe |
+| `#92` | ~~`#90`~~ | **Umgesetzt + promoviert** (PR #127 nursery 09-02, PR #276 Promotion 09-23): `src/de_ideology.py`, 10 Patterns, detect-only per ADR-0006, FP=0 auf Hard-Negatives. Implementierung lief unter der B-Nursery-Ausnahme von #91 („B-Nursery explizit detect-only") |
+| `#93` | `#90`, `#92` | Extension-Gerüst vorhanden (`extensions/human-ideological-slop/`: YAML/JSON/TTL + RESEARCH + examples); Mergen/Kern-Anbindung weiterhin erst nach #90-Freigabe |
+| `#94` | ~~`#92`~~ | Analyse erarbeitet; DoD-PR #294 offen (Belege, RESEARCH, Lexikon-Verweis) |
+| `#98` | `#92` ✅ | Eval-Korpus-Beschluss für die B-Klasse liegt vor (Basis der #92-Promotion); Korpus-Erweiterung siehe Corpus-v2-Plan |
 | `#95`–`#97` | `#89` | Fallstudien hängen am Epic-Rahmen |
 | `#55` | `#118` (schwach) | Severity-Tiers und Gates-Statt-Score adressieren dieselbe Achse; #118 definiert das Gate-Format |
 | `#117` | `#55` (schwach) | Geometrisches Mittel gewichtet nach Severity-Tier |
 
-Kritischer Pfad: `#12 → #35/#36`, `#53 → Sprach-Erweiterungen`, `#90 → #92 → #93/#94/#98`.
+Kritischer Pfad: `#12 → #35/#36`, `#53 → Sprach-Erweiterungen`, `#90 → #93/#98` (B-Schiene #92/#94 weitgehend umgesetzt, Rest hängt an Stefan-Freigabe von ADR-0008).
 
 ## Pflege
 

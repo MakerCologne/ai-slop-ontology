@@ -1,3 +1,32 @@
+## [Unreleased] — 2026-11-17 (slopgh#290 CI-Red-Repair — Merge mit master 9598ed7, Re-Pin nach GL#4 Batch E + Wiki-Caveats)
+
+PR #290 (Batch E) war am 06.10. am eigenen Gate rot hängen geblieben und hätte
+standalone gegen den inzwischen 14 Commits weiter fortgeschrittenen master
+falsche Pins publiziert. Merge mit master (9598ed7) und Re-Pin gegen den
+verbundenen Stand (n=348 = 221 slop + 127 clean), gemessen auf dem Merge-HEAD:
+
+- `eval/fp_baseline.json`: Rebuild via `scripts/fp_baseline.py` — 127 Fixtures,
+  alle 17 neuen Clean-Items (hardneg-070..086) gepinnt, max 0.352 (hardneg-076)
+- `eval/hardneg_borderline.json`: Top-5 re-piniert (076 0.352, 036 0.342,
+  066 0.324, 054 0.323, 049 0.323), generated_from n=125 → n=127;
+  master-seitig fehlten 066/054 im Register (sa331-Basis)
+- `tests/test_weight_gain_pin.py` + `docs/SCORE-GOVERNANCE.md`:
+  tn-Pin 110 → 127 (uniform TP 216 / FP 0 / TN 127 / FN 5;
+  DEFAULT TP 217 / FP 0 / TN 127 / FN 4; FP bleibt 0 — Engine-Verhalten
+  unverändert, Pin folgt der vom Test geforderten Messvorschrift n=348)
+- `tests/test_de_variant_rest3.py` / `rest4`: English-Clean-Oracle scoped —
+  FP-Trap-Fixtures (hardneg-070..086) sind absichtlich slop-nahe Menschtexte
+  („Moreover, …" ist in Wiki-Caveats-Prosa legitime Übergangsphrase) und
+  gehören zur FP-Gate-Fläche, nicht zum slop-naiven Clean-Oracle
+- `tests/test_genre_human_texts.py`: ≥6-Clean-Floor scoped auf FP-Trap-
+  Diagnose-Genres (bericht/blog/chat/commit/email/essay/family/meeting/
+  newsletter/runbook/shopping/work) — deren Anzahl pinnt test_fp_trap_
+  categories (≥3 je Kategorie) + fp_baseline; Artikel-Genres bleiben ≥6
+- Verifikation lokal (Merge-HEAD 8914c01): test_fp_baseline 9✓,
+  test_weight_gain_pin 5✓, rest3+rest4 21✓+206 Subtests, genre 5✓,
+  DocumentationTest ✓ (frischer Benchmark-Lauf), test_null_edit_contract ✓,
+  test_fp_trap_categories ✓, check_methodology rc=0
+
 ## [Unreleased] — 2026-10-02 (slopgh#76 NEU-Batch: M6/M17/M50 — DE-Struktur-Signale, detect-only)
 
 - `skills/ai-slop-detection/scripts/de_structure.py` (neu): drei
@@ -19,6 +48,17 @@
   je Signal + Aggregator + EN-Gate)
 - Lizenz: Konzepte aus de.wikipedia-Projektseite re-deriviert, keine
   CC-BY-SA-Pattern-Materialien übernommen
+
+## [Unreleased] — 2026-09-25 (slopgh#249 G8 — BriefLeak)
+
+- **G8 (BriefLeak)**: Briefing-/Instruktions-Register im Artefakt
+  („as per your request", „per your request", „as requested") als
+  `meta_commentary`-Phrasen-Erweiterung, kein neues Signal — laut Issue-Prüfung
+  hat das Korpus keine Briefing-Texte, damit ist eine eigene Signal-Kalibrierung
+  nicht ehrlich (Konzept-Mapping wie im Deep-Dive #39 vorgesehen).
+  ontology.json-Spiegel aktualisiert; Tests: `tests/test_briefleak_g8.py`
+  (6 Fixtures inkl. Hard-Negatives: normales Verb „requested", exakte
+  Einzelzählung bei Quoted-Request)
 
 ## [Unreleased] — 2026-09-22 (slopgh#249 G5+G9 — unslop/slopbeth-Deep-Dive Kleinlücken, Teil 2)
 
@@ -53,6 +93,13 @@
   dieses PRs: Pattern-Design + FP-Validierung gegen Listen/Label-Kolon
   getrennt zu leisten (Folge-PRs), G6/G8 laut Issue erst nach Prüfung
   gegen meta_commentary / authority_claims
+## [Unreleased] — 2026-09-23 #249 G6: NameDropList (detect-only)
+
+- **NameDropList** (G6, unslop #2): Medien-/Brand-Aufzaehlung ohne Aussageinhalt
+  (`micro_patterns.py`, detect-only). Lead-in-Liste (featured in/seen on/trusted by…)
+  ODER Bare-Enumeration mit ≤6 Nicht-Listen-Wörtern; Guards: KEEP-Verben für echte
+  Aussagen (compared/tested/ranked…), Referenz-Listen-Konventionen (Bullet/Nummer/Link),
+  ≥3-Item-Schwelle. Tests: `tests/test_namedrop_g6.py` (L1), EVALS.md-Zuordnung ergänzt.
 
 ## [Unreleased] — 2026-09-13 (#77-Rest Welle 5 — DE-Variante-Rest: fuenfte DE-Phrase-Welle)
 
@@ -77,6 +124,33 @@
 - `tests/test_de_variant_rest4.py` neu (Schema/Belege/Kollisionen/Detektion)
 
 # Changelog
+
+## [Unreleased] — 2026-09-20 (#123 Positionierung: Distribution-Update)
+
+- README "Positioning"-Abschnitte: Distribution-Beobachtung aus dem GitHub-Topic-
+  Scan (2026-09-02) ergaenzt — `npx skills add <repo>` ist der Standard-
+  Verbreitungsweg (scanaislop/skills, ZeroSlop, deslopper, …); Detektor +
+  Skill-Wrapper ist das erwartete Paket (bereits erfuellt: skills/
+  ai-slop-detection + `slop` CLI)
+- PRISM-`[[enforce]]`-Bloecke (claim + named rule, fails loudly) als zitier-
+  bares Packaging-Muster fuer Hard Rules notiert (#21-Anschluss, adr/0006/0031)
+- Zwei-Ebenen-Doktrin bestaetigt notiert (ML fasttext/ONNX als Filter,
+  deterministische Regeln als Gate); slop-alerter-Disclaimer ("trust your own
+  judgement over the model") als Positionierungssatz aufgenommen
+- Docs-only, kein Code/Score-Pfad betroffen
+
+## [Unreleased] — 2026-09-19 (#76-Rest M63 — Modalpartikel-Anomalie)
+
+- `naturalness_guard.modal_particle_anomaly`: Stub ersetzt durch vollständiges
+  DE-Modalpartikel-Inventar (12 Partikeln, Wortgrenzen-Matching mit
+  Umlaut-Lookarounds, ausserhalb von Zitaten). Zwei Anomalie-Cues, detect-only,
+  conf 0.45: density (≥ 6 Partikel-Tokens UND ≥ 2,5 % Wortanteil, ab 40 Wörtern)
+  + stacking (≥ 2 Sätze mit je ≥ 2 distinkten Partikeln).
+  keep_when-Suppression für Colloquial-Genres (dialogue/fiction/spoken).
+  Voll-Zweibeleg: Duden-Grammatik-Referenz (REFERENCES.md #40) + own:corpus
+  de-ev-29 (`eval/de_evidence_texts.jsonl`).
+- `tests/test_naturalness_guard.py` erweitert: `ModalParticleAnomalyDoD`
+  3 pos / 3 neg / 2 boundary + detect-only-Verkabelung (18/18 grün).
 
 ## [Unreleased] — 2026-09-19 (#248 Gap G4 — ActorlessClaim)
 
