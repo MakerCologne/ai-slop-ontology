@@ -385,6 +385,76 @@
       "slop_score": 0.093,
       "signals": []
     },
+    "hardneg-070": {
+      "slop_score": 0.046,
+      "signals": []
+    },
+    "hardneg-071": {
+      "slop_score": 0.05,
+      "signals": []
+    },
+    "hardneg-072": {
+      "slop_score": 0.092,
+      "signals": []
+    },
+    "hardneg-073": {
+      "slop_score": 0.079,
+      "signals": []
+    },
+    "hardneg-074": {
+      "slop_score": 0.084,
+      "signals": []
+    },
+    "hardneg-075": {
+      "slop_score": 0.299,
+      "signals": []
+    },
+    "hardneg-076": {
+      "slop_score": 0.352,
+      "signals": []
+    },
+    "hardneg-077": {
+      "slop_score": 0.145,
+      "signals": []
+    },
+    "hardneg-078": {
+      "slop_score": 0.227,
+      "signals": []
+    },
+    "hardneg-079": {
+      "slop_score": 0.187,
+      "signals": []
+    },
+    "hardneg-080": {
+      "slop_score": 0.145,
+      "signals": []
+    },
+    "hardneg-081": {
+      "slop_score": 0.069,
+      "signals": []
+    },
+    "hardneg-082": {
+      "slop_score": 0.109,
+      "signals": []
+    },
+    "hardneg-083": {
+      "slop_score": 0.054,
+      "signals": []
+    },
+    "hardneg-084": {
+      "slop_score": 0.088,
+      "signals": []
+    },
+    "hardneg-085": {
+      "slop_score": 0.056,
+      "signals": [
+        "generic_transitions:moreover"
+      ]
+    },
+    "hardneg-086": {
+      "slop_score": 0.031,
+      "signals": []
+    },
     "human-code-01": {
       "slop_score": 0.135,
       "signals": []

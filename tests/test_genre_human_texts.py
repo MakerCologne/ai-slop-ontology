@@ -35,11 +35,24 @@ class GenreCoverage(unittest.TestCase):
         # rein slop-getriebene Genres (seo/linkedin/wellness/wiki) haben
         # per Design keine Menschtexte. (TESTS_MODIFIED_AFTER_RED:
         # urspruenglich alle Genres gefordert, das war ueberspezifiziert.)
+        # GL#4 Batch E (2026-10-01) + Wiki-Caveats (2026-11-17) fuegen
+        # FP-Trap-Fixtures in eigenen Diagnose-Genres hinzu (ShortMessage/
+        # Checklist/MixedLanguage/AIAssistedReviewed/WikiEssay-Prosa:
+        # bericht/blog/chat/commit/email/family/meeting/newsletter/
+        # runbook/shopping/work). Deren Anzahl ist durch die FP-Gates
+        # gepinnt (tests/test_fp_trap_categories.py, fp_baseline), nicht
+        # durch den Artikel-Floor — sie dienen der FP-Diagnose, nicht der
+        # Genre-Abdeckung. Vor Batch E galt der Floor fuer alle Genres.
+        fp_trap_genres = {"bericht", "blog", "chat", "commit", "email",
+                          "essay", "family", "meeting", "newsletter",
+                          "runbook", "shopping", "work"}
         counts = {}
         for i in _items():
             if i.get("label") == "clean":
                 counts.setdefault(i["genre"], []).append(i)
         for genre in counts:
+            if genre in fp_trap_genres:
+                continue
             self.assertGreaterEqual(
                 len(counts[genre]), MIN_PER_GENRE, genre)
 

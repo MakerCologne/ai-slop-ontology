@@ -7,7 +7,7 @@ an ihre Messvorschrift: Wechsel der Korpuslage, des Thresholds oder der
 Aggregation ändern die Zahlen — dann muss die Doku mitziehen, nicht stumm
 altern (#85-Fehlerklasse).
 
-Messvorschrift: eval/corpus.jsonl (n=331), Threshold aus
+Messvorschrift: eval/corpus.jsonl (n=348), Threshold aus
 config/threshold.json, Uniform = 1/N über die Scorer-Dimensionen.
 """
 
@@ -31,9 +31,11 @@ CONTROL = os.path.join(ROOT, "eval", "control_set.jsonl")
 
 THRESHOLD = load_threshold()
 
-# Pin-Stand 2026-09-09 (docs/SCORE-GOVERNANCE.md, Abschnitt #106):
-PIN_UNIFORM = {"tp": 216, "fp": 0, "tn": 110, "fn": 5}
-PIN_DEFAULT = {"tp": 217, "fp": 0, "tn": 110, "fn": 4}
+# Pin-Stand 2026-11-17 (docs/SCORE-GOVERNANCE.md, Abschnitt #106;
+# Re-Pin nach GL#4 Batch E + Wiki-Caveats: Clean-Seite 110 -> 127,
+# FP bleibt 0, TP/FN unveraendert):
+PIN_UNIFORM = {"tp": 216, "fp": 0, "tn": 127, "fn": 5}
+PIN_DEFAULT = {"tp": 217, "fp": 0, "tn": 127, "fn": 4}
 # Risik-Tier-Beitrag (der eigentliche messbare Kalibrierungseffekt):
 PIN_UNIFORM_TIER2 = 0   # uniform: kein Korpus-Slop-Text erreicht 0.70
 PIN_DEFAULT_TIER2 = 24  # kalibriert: 24 Texte im "Slop"-Tier (>= 0.70)
