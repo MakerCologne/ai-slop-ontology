@@ -78,6 +78,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_source_verification.py` — #86 Quellenregister: Offline-Strukturprüfungen (arXiv/DOI/URL, Zukunftsdatum-Guard, Coverage-Ausweis) des aus PR#6 portierten `verify_sources.py`, inkl. Regressionstest des „no dead links bei Totalausfall"-Defekts (L1)
 - `tests/test_example_fix_meta.py` — #229 Meta-Regressionstest (L1) — jedes `eval/example_fixes.jsonl`-Paar (broken→fixed) muss den eigenen Detektor passieren: broken erkannt (Score ≥ Schwelle), fixed clean (Score < Schwelle), beide Engines; verhindert Reinführung abgelehnter Schreibmuster
 - `tests/test_tech_metaphor_nouns.py` — #246 TechMetaphorNoun (L1): phrase-Kategorie für abstrakte Tech-Metaphern-Nomen (substrate, flywheel, north star …) mit ML-keep_when-Guard (Satzfenster) für modality/vector/paradigm/harness; TP-Fixtures plus ML-Fachtext-Hard-Negatives (L1)
+- `tests/test_multilingual_expansion.py` — #53 Sprach-Erweiterung ZH/JA/PT/IT/RU/AR/TR (L1): je Sprache 2 Positive (≥2 Marker → Multilingual_<lang>-Signal in Classifier UND Skill-Scorer-Hit) + 1 Hard-Native-Negative (marker-freier Muttersprachtext → kein Signal), CJK-Match im raumlosen Laufext, ASCII-Wortgrenzen-Regressionsschutz und SSOT-Parität ontology.json ↔ slop_scorer (L1)
 
 - `tests/test_verification_ladder.py` — #121 Verification Ladder: fake-done-Metrik je Funktion (asserted > tested > reachable > claimed-only > stub > synthetic-risk), 28 Fixtures inkl. Under-Credit-Fälle (Stub schlägt Test-Referenz) und Selbst-Analyse ohne Gates (L1)- `tests/test_issue104_doc_drift.py` — #104 Slice A: Doku<->SSOT-Drift (L1) — Gate-Test für scripts/check_doc_signals.py (D1/D2, beide Richtungen) plus die beiden Issue-Beispiele als Matcher-/Classifier-Fixtures ('it is worth noting' in hedging_qualifiers, Template 'in today's [X]' in opening_formulas; konkrete SSOT-Varianten bleiben matchbar)
 - `tests/test_ontology_playground_adapter.py` — #87 Ontology-Playground-Adapter: Validator-Gate, SSOT-Existenz aller publizierten Klassen, Drift-Check inkl. erfundener Klasse, Manifest-Zählungen, HumanWorkSlop/AIWorkslop-Nicht-Kollaps (L1)
@@ -87,7 +88,10 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_model_notes.py` — #36 Modell-Dynamik: signalModelDynamics-SSOT-Sektion (schema, evidence-Pflicht M6, Halbwertszeit-Vokabular, Entries referenzieren reale Signale) + per-signal model_notes der Pilot-Signale + loop-guard-Doc-Existenz (L1)
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
 - `tests/test_adverb_rate.py` — Signal #24 Adverb-Rate (Fixtures)
+- `tests/test_authority_saturation.py` — GL#4 FakeAuthority-Strukturdeckel (L1): Authority-Sättigung (>= 3 unterschiedliche AUTHORITY_PATTERNS) zählt als zweite zustimmende Strong-Family und floored den Score am Threshold; Fixtures für Authority-only-Slop (vor Fix 0.205 Clean), Named-Source-Prose und 1–2-Hit-Nicht-Eskalation
 - `tests/test_opener_announcement.py` — #230 P3 Opener-Announcement (L1, detect-only): Frame-basierte Ankuendigungs-/Praise-Opener (Tier A immer, Tier B Ich-Anlauf nur text-initial ohne in-sentence Begruendung), TP/Hard-Negative-Fixtures inkl. Hard-Negative 'Ich denke, dass X, weil Y'
+- `tests/test_briefleak_g8.py` — #249 G8 BriefLeak: Briefing-Register („as per your request"…) als meta_commentary-Erweiterung, Hard-Negatives: normales Verb „requested", exakte Einzelzählung, ontology.json-Spiegel-Check
+- `tests/test_namedrop_g6.py` — #249 G6 NameDropList (L1, detect-only): Medien-/Brand-Aufzaehlung ohne Aussageinhalt (Lead-in-Liste ODER Bare-Enumeration ≤6 Nicht-Listen-Woerter), Guards: KEEP-Verben (compared/tested/ranked…), Referenz-Listen-Konventionen (Bullet/Nummer/Link), Zwei-Item-Schwelle, Hard-Negatives inkl. Vergleichssatz und Content-Satz um Namen (L1)
 - `tests/test_anchor_drift.py` — #78 Anchor-Drift (detect-only, Anker-Diff, Dezimal-Grenzfall)
 - `tests/test_anchor_diff_cli.py` — #78 Anchor-Diff-CLI (--anchor-diff im Diff-Modus)
 - `tests/test_null_edit_contract.py` — #79 Null-Edit-Contract-Gate (93 Hard Negatives clean auf beiden Engines, Null-Edit-Stabilität, Grenzband-Register eval/hardneg_borderline.json)
@@ -103,19 +107,20 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_phrase_matchability.py` — #83 Phrase-Matchbarkeit: struktureller Wächter, dass keine Phrase im SSOT unmatchbar ist (jede Phrase gegen ihre eigene Instanziierung), Platzhalter-Semantik [X]=Nominalphrase / [N]=Zahl mit Gegenproben, Pattern-Parity über src/scorer, skill/slop_scorer und skill/genre_profiles
 - `tests/test_project_config.py` — #11 Projekt-lokale Config: Validierung (unbekannte Familien/Keys, Gewichts-Bereich), Score-Integration (disabled_signals senkt Score, Allowlist senkt Buzzword-Count, Weight-Override), CLI --config (gültig + Fehlerfall)
 - `tests/test_packaging.py` — #82 Packaging-Contract: Deklarationstest (jeder zur Laufzeit geladene Pfad ist Wheel-Inhalt, ohne Build/Netz) + Build-Test (Wheel bauen, entpacken, Engine und CLI ausserhalb des Checkouts ausführen; benchmark/selfcheck brechen mit Meldung statt Traceback ab)
-- `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when, modal_particle_anomaly Stub für #76)
+- `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when; #76-Rest M63: modal_particle_anomaly vollständiges DE-Inventar, density+stacking, detect-only ≤0.45, Colloquial-Genre-Guard, Voll-Zweibeleg de-ev-29)
 - `tests/test_register_profile.py` — #74 Register-Profile v2: Stilkarte (9 Felder, JSON) + register_drift_intern (Hälften-Distanz, detect-only ≤0.5, #42-Genre-Exemptions, Kollisionsdisziplin zu #81 register_drift), Scorer-Kontext-Ausgabe ohne Score-Einfluss
 - `tests/test_de_variant_rest.py` — #77-Rest: M18/M33/M65 als de_chatbot_leftover/de_signposting/de_copula_avoidance (Voll-Zweibeleg de-ev-17..19, DoD 3/3/2)
 - `tests/test_de_variant_rest2.py` — #77-Rest Welle 4: M35/M59/M70 als de_fake_dialog/de_faux_candid/de_false_agency (Voll-Zweibeleg de-ev-20..22, DoD 3/3/2)
 - `tests/test_de_variant_rest3.py` — #77-Rest Welle 5: M7/M26/M30 als de_dichotomy_close/de_quote_fabrication/de_register_shift (Voll-Zweibeleg de-ev-23..25, DoD 3/3/2)
 - `tests/test_de_variant_rest4.py` — #77-Rest Welle 6: M32/M56/M72 als de_rhetorical_setup/de_aphorism/de_therapeutic_validation (Voll-Zweibeleg de-ev-26..28, DoD 3/3/2)
 
-- `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, genre-keep_when, modal_particle_anomaly Stub für #76)
+- `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, genre-keep_when; #76-Rest M63: modal_particle_anomaly vollständiges DE-Inventar, density+stacking, detect-only ≤0.45, Colloquial-Genre-Guard, Voll-Zweibeleg de-ev-29)
 - `tests/test_voice_drift.py` — #56 Voice-Drift-Guardrail: kumulatives Voice-Budget vs Draft_0 (β=25%), Burstiness-/TTR-Non-Regression (Floor draft_0×0.9), Loop-Integration (rejected_voice_drift_*, Audit-Payload, L1)
 
 
 - `tests/test_findings_standard.py` — #119 Findings-Standard mit Receipts: `{signal_id, span, evidence_quote, reliability, suggested_action}` — Schema-Validierung, Adapter (rhetorical/register/naturalness), receipts aus slop_score mit char-Spans; Ausgabevertrag ohne Score-Anteil (DoD 3/3/2)
-- `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when, modal_particle_anomaly Stub für #76)- `tests/test_register_profile.py` — #74 Register-Profile v2: Stilkarte (9 Felder, JSON) + register_drift_intern (Hälften-Distanz, detect-only ≤0.5, #42-Genre-Exemptions, Kollisionsdisziplin zu #81 register_drift), Scorer-Kontext-Ausgabe ohne Score-Einfluss
+- `tests/test_naturalness_guard.py` — #81 Naturalness-Guard (register_drift/over_sanitized detect-only ≤0.45, Genre-keep_when; #76-Rest M63: modal_particle_anomaly vollständiges DE-Inventar, density+stacking, detect-only ≤0.45, Colloquial-Genre-Guard, Voll-Zweibeleg de-ev-29)
+- `tests/test_register_profile.py` — #74 Register-Profile v2: Stilkarte (9 Felder, JSON) + register_drift_intern (Hälften-Distanz, detect-only ≤0.5, #42-Genre-Exemptions, Kollisionsdisziplin zu #81 register_drift), Scorer-Kontext-Ausgabe ohne Score-Einfluss
 - `tests/test_domain_bindings.py` — #35 Domain-Trigger: SSOT-Sanity von `domainBindings` (≥5 Pilot-Signale, whitelist XOR blacklist, deklarierte Domains), Accessor-Semantik (Whitelist schlägt Blacklist, Default domain-agnostisch), Scorer-Integration (`--domain` zero-t gemappte Gewichtsdimensionen, JSON-Audit-Felder, Exit 2 bei unbekannter Domain), Classifier-Integration (Filter vor Noisy-OR-Aggregation, fail-loud)
 - `tests/test_de_evidence_densification.py` — #76-Rest RI-2-FU: Evidence-Verdichtung (≥2 unabhängige Belege für ≥50% der de_*-Phrasen; L1) mit own:corpus-Belegtexten `eval/de_evidence_texts.jsonl` (L1-Belegtextdatei, eigene Handschrift) und C4-Coverage-Pin (Manipulationsprobe)
 - `tests/test_structure_rest.py` — #76-Rest: M66 Fake-Analyse-Anhang + M71 Scheinnuance (detect-only ≤0.5, DoD 3/3/2); M67 bewusst nicht dupliziert (schon de_announcement_cleft)
@@ -174,6 +179,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_evals_doc.py` — diese Zuordnung prüfen (#68, Meta)
 - `tests/test_fn_series_signals.py` — Batch-F-FN-Serien (0101-0606) + Beleg-Disziplin (>=3 slop-, 0 clean-Texte)
 - `tests/test_fp_guards.py` — #23 Guards (Quote-Exemption, Kumulativregel)
+- `tests/test_issue299_quote_exemption.py` — #299 Quote-Exemption: deutsche Anführungszeichen „…“ + Guillemets »…« in fp_guards.strip_quotes, Engine-Parität (slopkit/classifier wendet die Exemption an)
 - `tests/test_human_voice.py` — #21 positive Gegenprofil-Referenz (Struktur-Pinning, kein Scorer)
 - `tests/test_fu_batch_g.py` — FU-Register-Abrechnung Batch G (FU-2/3/4 Red-Fixes aus Reviews C/D)
 - `tests/test_fu_batch_g2.py` — FU-5/7/10 (as_any-Kommentar-Guard, CHANGELOG-Claim, SKILL-Benchmark-Spiegel)
@@ -195,6 +201,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_instruction_slop.py` — Signal Instruction-Slop
 - `tests/test_intensifier_fix.py` — FU-1 Intensifier-Fix
 - `tests/test_de_ideology.py` — #92 DE-Ideology-Rhetorik-Layer (detect-only, 10 Patterns × 3/3/2-Fixtures, FP=0-Pflicht auf Hard-Negatives, Advisory-Vertrag: nie score-wirksam) (L1)
+- `tests/test_de_surface.py` — #73 DE-Quick-Wins: 4 deterministische DE-Surface-Signale (mismatched-quotes, Deppenapostroph-Genitiv, US-Format-Daten, Title-Case-Heading; DE-Sprachgate, EN-Zeilen nie markiert, je Pos/Neg-Fixtures) (L1)
 - `tests/test_domain_trigger.py` — #35 Domain-Bindung: triggered_by:domain-Signale feuern nur im passenden Scope, ungebundene Signale und No-Arg-Pfad unverändert (L1, TP+Scope-Negativ+SSOT-Pin)
 - `tests/test_best_practices_guard.py` — #156 FP-Guard: 'Best Practices' zählt nur mit generischem Verstärker (conditional_buzzwords), Plain-Referenz ist kein Marker (L1, TP+Hard Negative+SSOT-Pin)
 - `tests/test_academic_register.py` — #114 Academic-Register-Signale: EpistemicMismatch, UnquantifiedScopeClaim, VagueAttribution — je Signal 2 Positive + 2 Hard-Negatives (Inversion mit n=/Zeitraum/Zitat; L1)
