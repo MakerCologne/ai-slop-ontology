@@ -1,5 +1,6 @@
 """Tests for micro-pattern detect-only signals (issue #13)."""
 
+import json
 import os
 import sys
 import unittest
@@ -53,6 +54,51 @@ class MicroPatternTests(unittest.TestCase):
             "FalseRange",
             ids("The tour goes from the kitchen to the living room."),
         )
+
+    def test_false_range_positive_cross_domain_abstract(self):
+        # Issue #247 (G1): abstract endpoints without a shared scale.
+        self.assertIn(
+            "FalseRange",
+            ids("The product journey goes from scalability to passion."),
+        )
+        self.assertIn(
+            "FalseRange",
+            ids("The essay moves from revenue to meaning without pausing."),
+        )
+        self.assertIn(
+            "FalseRange",
+            ids("Her keynotes drift from justice to deployments."),
+        )
+
+    def test_false_range_negative_same_domain_abstract(self):
+        # Same domain -> real span on one scale, must not fire.
+        self.assertNotIn(
+            "FalseRange",
+            ids("We tuned the pipeline from latency to throughput."),
+        )
+        self.assertNotIn(
+            "FalseRange",
+            ids("The story arc moves from fear to joy."),
+        )
+        self.assertNotIn(
+            "FalseRange",
+            ids("The firm serves everyone from startups to enterprises."),
+        )
+        self.assertNotIn(
+            "FalseRange",
+            ids("Prices range from 20 to 40 dollars."),
+        )
+
+    def test_false_range_eval_fixtures(self):
+        # Issue #247 acceptance: 10 positive + 10 negative examples in the
+        # eval corpus, all classified correctly.
+        fixtures = json.load(
+            open(os.path.join(ROOT, "eval", "false_range_fixtures.json"))
+        )
+        for text in fixtures["positives"]:
+            self.assertIn("FalseRange", ids(text), text)
+        for text in fixtures["negatives"]:
+            self.assertNotIn("FalseRange", ids(text), text)
 
     # --- RecapEnding ---
 
@@ -152,6 +198,96 @@ class MicroPatternTests(unittest.TestCase):
             self.assertEqual(
                 rhythm_metrics(fix)["signals"], [],
                 f"{pid} example_fix triggers rhythm signals")
+
+
+class Fallstudie97PuritySalvationTests(unittest.TestCase):
+    """#97 DoD: PurityBan / VibeScapegoat / SalvationModel FP=0 on hard
+    negatives; positives fire per the annotated texts
+    (docs/fallstudien/97-purity-vs-slopaganda.md, eval/human_ideological.jsonl)."""
+
+    def test_purity_ban_positive_chain_phrase(self):
+        self.assertIn("PurityBan", ids("AI IS THEFT. PASS IT ON."))
+
+    def test_purity_ban_positive_de_purity_test(self):
+        self.assertIn("PurityBan", ids(
+            "Wer AI-Tools nutzt, hat als Mensch schon verloren."))
+        self.assertIn("PurityBan", ids(
+            "Jeder, der hier ein AI-Avatar hat, ist blockiert. Nicht verhandeln."))
+        self.assertIn("PurityBan", ids(
+            "Wer auch nur einen ihrer Posts teilt, ist Teil des Problems."))
+
+    def test_purity_ban_negative_provenance_disclosure(self):
+        # keep_when: compliance/provenance disclosure is skipped
+        self.assertNotIn("PurityBan", ids(
+            "This report is watermarked as AI-generated in compliance with the contract requirements."))
+        self.assertNotIn("PurityBan", ids(
+            "The provenance watermark survived re-encoding; the C2PA manifest still validates."))
+
+    def test_vibe_scapegoat_positive_adjacent_qa(self):
+        self.assertIn("VibeScapegoat", ids(
+            "Service down again? Vibe-coded slop devs at work, as always."))
+        self.assertIn("VibeScapegoat", ids(
+            "Ausfall wieder? Klar \u2014 man braucht keine Meldung, um zu wissen, wer da gefuscht hat."))
+
+    def test_vibe_scapegoat_negative_technical_postmortem(self):
+        self.assertNotIn("VibeScapegoat", ids(
+            "The regression came from commit 4f2a1c; the postmortem shows the missing test, the review gap, and the rollback path."))
+
+    def test_salvation_model_positive_rituals(self):
+        self.assertIn("SalvationModel", ids(
+            "Only X can save the platform; everyone else ruined it."))
+        self.assertIn("SalvationModel", ids(
+            "Er hat es wieder getan. Der Genius. Die L\u00fcgenpresse schweigt."))
+        self.assertIn("SalvationModel", ids(
+            "Nur noch X kann das Land retten \u2014 alle anderen sind Teil des Problems."))
+
+    def test_salvation_model_negative_concrete_narrative(self):
+        self.assertNotIn("SalvationModel", ids(
+            "I was broke in 2024. After eight months of building a support-ticket automation, it now covers my rent."))
+
+    def test_fallstudie_97_hard_negatives_fp_zero(self):
+        """DoD: none of the three patterns fires on the 4 annotated
+        hard-negatives (Energie, Postmortem, Provenienz, Eval) nor on the
+        40 hard-negatives of the human_ideological corpus."""
+        hard = [
+            "Training-run energy for this model class is measured at 3.2 GWh with cited methodology; the audit compares two disclosure frameworks.",
+            "The regression came from commit 4f2a1c; the postmortem shows the missing test, the review gap, and the rollback path.",
+            "The provenance watermark survived re-encoding; the C2PA manifest still validates.",
+            "Our eval set shows the model fails on dialect inputs \u2014 41 % error rate, examples in appendix.",
+        ]
+        target = {"PurityBan", "VibeScapegoat", "SalvationModel"}
+        for t in hard:
+            self.assertFalse(ids(t) & target, t[:60])
+        import json
+        corpus = os.path.join(ROOT, "eval", "human_ideological.jsonl")
+        with open(corpus, encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                row = json.loads(line)
+                if row.get("label") == "hard_negative":
+                    hits = ids(row["text"]) & target
+                    self.assertFalse(hits, f"{row['id']} FP: {hits}")
+
+    def test_fallstudie_97_corpus_recall(self):
+        """Every slop row of the three signals fires its own pattern."""
+        import json
+        corpus = os.path.join(ROOT, "eval", "human_ideological.jsonl")
+        target = {"PurityBan", "VibeScapegoat", "SalvationModel"}
+        n = 0
+        with open(corpus, encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                row = json.loads(line)
+                if row.get("label") == "slop" and row.get("signal") in target:
+                    self.assertIn(
+                        row["signal"], ids(row["text"]),
+                        f"{row['id']} ({row['signal']}) does not fire")
+                    n += 1
+        self.assertGreaterEqual(n, 13)
 
 
 if __name__ == "__main__":

@@ -87,7 +87,10 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_model_notes.py` — #36 Modell-Dynamik: signalModelDynamics-SSOT-Sektion (schema, evidence-Pflicht M6, Halbwertszeit-Vokabular, Entries referenzieren reale Signale) + per-signal model_notes der Pilot-Signale + loop-guard-Doc-Existenz (L1)
 - `tests/test_adr.py` — ADR-Pflichtfelder (#65, Meta)
 - `tests/test_adverb_rate.py` — Signal #24 Adverb-Rate (Fixtures)
+- `tests/test_authority_saturation.py` — GL#4 FakeAuthority-Strukturdeckel (L1): Authority-Sättigung (>= 3 unterschiedliche AUTHORITY_PATTERNS) zählt als zweite zustimmende Strong-Family und floored den Score am Threshold; Fixtures für Authority-only-Slop (vor Fix 0.205 Clean), Named-Source-Prose und 1–2-Hit-Nicht-Eskalation
 - `tests/test_opener_announcement.py` — #230 P3 Opener-Announcement (L1, detect-only): Frame-basierte Ankuendigungs-/Praise-Opener (Tier A immer, Tier B Ich-Anlauf nur text-initial ohne in-sentence Begruendung), TP/Hard-Negative-Fixtures inkl. Hard-Negative 'Ich denke, dass X, weil Y'
+- `tests/test_briefleak_g8.py` — #249 G8 BriefLeak: Briefing-Register („as per your request"…) als meta_commentary-Erweiterung, Hard-Negatives: normales Verb „requested", exakte Einzelzählung, ontology.json-Spiegel-Check
+- `tests/test_namedrop_g6.py` — #249 G6 NameDropList (L1, detect-only): Medien-/Brand-Aufzaehlung ohne Aussageinhalt (Lead-in-Liste ODER Bare-Enumeration ≤6 Nicht-Listen-Woerter), Guards: KEEP-Verben (compared/tested/ranked…), Referenz-Listen-Konventionen (Bullet/Nummer/Link), Zwei-Item-Schwelle, Hard-Negatives inkl. Vergleichssatz und Content-Satz um Namen (L1)
 - `tests/test_anchor_drift.py` — #78 Anchor-Drift (detect-only, Anker-Diff, Dezimal-Grenzfall)
 - `tests/test_anchor_diff_cli.py` — #78 Anchor-Diff-CLI (--anchor-diff im Diff-Modus)
 - `tests/test_null_edit_contract.py` — #79 Null-Edit-Contract-Gate (93 Hard Negatives clean auf beiden Engines, Null-Edit-Stabilität, Grenzband-Register eval/hardneg_borderline.json)
@@ -173,6 +176,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_evals_doc.py` — diese Zuordnung prüfen (#68, Meta)
 - `tests/test_fn_series_signals.py` — Batch-F-FN-Serien (0101-0606) + Beleg-Disziplin (>=3 slop-, 0 clean-Texte)
 - `tests/test_fp_guards.py` — #23 Guards (Quote-Exemption, Kumulativregel)
+- `tests/test_issue299_quote_exemption.py` — #299 Quote-Exemption: deutsche Anführungszeichen „…“ + Guillemets »…« in fp_guards.strip_quotes, Engine-Parität (slopkit/classifier wendet die Exemption an)
 - `tests/test_human_voice.py` — #21 positive Gegenprofil-Referenz (Struktur-Pinning, kein Scorer)
 - `tests/test_fu_batch_g.py` — FU-Register-Abrechnung Batch G (FU-2/3/4 Red-Fixes aus Reviews C/D)
 - `tests/test_fu_batch_g2.py` — FU-5/7/10 (as_any-Kommentar-Guard, CHANGELOG-Claim, SKILL-Benchmark-Spiegel)
@@ -194,6 +198,7 @@ Kosten: Kreuzvalidierung ist L3, nicht L1 — eine Coordinate-Ascent-Runde koste
 - `tests/test_instruction_slop.py` — Signal Instruction-Slop
 - `tests/test_intensifier_fix.py` — FU-1 Intensifier-Fix
 - `tests/test_de_ideology.py` — #92 DE-Ideology-Rhetorik-Layer (detect-only, 10 Patterns × 3/3/2-Fixtures, FP=0-Pflicht auf Hard-Negatives, Advisory-Vertrag: nie score-wirksam) (L1)
+- `tests/test_de_surface.py` — #73 DE-Quick-Wins: 4 deterministische DE-Surface-Signale (mismatched-quotes, Deppenapostroph-Genitiv, US-Format-Daten, Title-Case-Heading; DE-Sprachgate, EN-Zeilen nie markiert, je Pos/Neg-Fixtures) (L1)
 - `tests/test_domain_trigger.py` — #35 Domain-Bindung: triggered_by:domain-Signale feuern nur im passenden Scope, ungebundene Signale und No-Arg-Pfad unverändert (L1, TP+Scope-Negativ+SSOT-Pin)
 - `tests/test_best_practices_guard.py` — #156 FP-Guard: 'Best Practices' zählt nur mit generischem Verstärker (conditional_buzzwords), Plain-Referenz ist kein Marker (L1, TP+Hard Negative+SSOT-Pin)
 - `tests/test_academic_register.py` — #114 Academic-Register-Signale: EpistemicMismatch, UnquantifiedScopeClaim, VagueAttribution — je Signal 2 Positive + 2 Hard-Negatives (Inversion mit n=/Zeitraum/Zitat; L1)

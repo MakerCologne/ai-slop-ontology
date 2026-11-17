@@ -181,7 +181,11 @@ PHRASE_CATEGORIES = {
             "the rest of this essay", "the remainder of this document",
             "in this section, we will", "in the next section",
             "as we'll see later", "throughout this article",
-            "without further ado", "in the following paragraphs"
+            "without further ado", "in the following paragraphs",
+            # issue #249/G8 (BriefLeak): briefing/instruction register leaking
+            # into the artefact — meta_commentary extension, not a new signal
+            # (corpus has no briefing texts; concept-mapped per deep-dive G8).
+            "as per your request", "per your request", "as requested"
         ]
     },
     "rhetorical_setups": {
@@ -1165,6 +1169,17 @@ def slop_score(text: str, weights: Optional[dict] = None, genre: Optional[str] =
         high_conf_single,
         prov_count >= 1,
     ])
+    # FakeAuthority structure ceiling (GL ai-slop-ontology#4): a weighted
+    # fake_authority contribution of 0.18 can never reach the threshold on
+    # its own, so authority-only slop with clean neutral dimensions stayed
+    # under 0.40 (verified FN: 5 distinct authority patterns, varied sentence
+    # lengths -> 0.205 Clean). Saturation of >= 3 DISTINCT unsubstantiated
+    # authority patterns is decisive evidence on its own: count it as a
+    # second agreeing family so the escalation floor fires. Named-source
+    # journalism does not hit this ("according to X of Y" is not in
+    # AUTHORITY_PATTERNS); 1-2 hits remain a single family, unchanged.
+    if auth_count >= 3:
+        strong_families += 1
     if strong_families >= 2:
         overall = max(overall, DECISION_THRESHOLD)
 
