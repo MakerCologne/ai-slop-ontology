@@ -1,3 +1,32 @@
+## [Unreleased] — 2026-11-17 (slopgh#290 CI-Red-Repair — Merge mit master 9598ed7, Re-Pin nach GL#4 Batch E + Wiki-Caveats)
+
+PR #290 (Batch E) war am 06.10. am eigenen Gate rot hängen geblieben und hätte
+standalone gegen den inzwischen 14 Commits weiter fortgeschrittenen master
+falsche Pins publiziert. Merge mit master (9598ed7) und Re-Pin gegen den
+verbundenen Stand (n=348 = 221 slop + 127 clean), gemessen auf dem Merge-HEAD:
+
+- `eval/fp_baseline.json`: Rebuild via `scripts/fp_baseline.py` — 127 Fixtures,
+  alle 17 neuen Clean-Items (hardneg-070..086) gepinnt, max 0.352 (hardneg-076)
+- `eval/hardneg_borderline.json`: Top-5 re-piniert (076 0.352, 036 0.342,
+  066 0.324, 054 0.323, 049 0.323), generated_from n=125 → n=127;
+  master-seitig fehlten 066/054 im Register (sa331-Basis)
+- `tests/test_weight_gain_pin.py` + `docs/SCORE-GOVERNANCE.md`:
+  tn-Pin 110 → 127 (uniform TP 216 / FP 0 / TN 127 / FN 5;
+  DEFAULT TP 217 / FP 0 / TN 127 / FN 4; FP bleibt 0 — Engine-Verhalten
+  unverändert, Pin folgt der vom Test geforderten Messvorschrift n=348)
+- `tests/test_de_variant_rest3.py` / `rest4`: English-Clean-Oracle scoped —
+  FP-Trap-Fixtures (hardneg-070..086) sind absichtlich slop-nahe Menschtexte
+  („Moreover, …" ist in Wiki-Caveats-Prosa legitime Übergangsphrase) und
+  gehören zur FP-Gate-Fläche, nicht zum slop-naiven Clean-Oracle
+- `tests/test_genre_human_texts.py`: ≥6-Clean-Floor scoped auf FP-Trap-
+  Diagnose-Genres (bericht/blog/chat/commit/email/essay/family/meeting/
+  newsletter/runbook/shopping/work) — deren Anzahl pinnt test_fp_trap_
+  categories (≥3 je Kategorie) + fp_baseline; Artikel-Genres bleiben ≥6
+- Verifikation lokal (Merge-HEAD 8914c01): test_fp_baseline 9✓,
+  test_weight_gain_pin 5✓, rest3+rest4 21✓+206 Subtests, genre 5✓,
+  DocumentationTest ✓ (frischer Benchmark-Lauf), test_null_edit_contract ✓,
+  test_fp_trap_categories ✓, check_methodology rc=0
+
 ## [Unreleased] — 2026-09-25 (slopgh#249 G8 — BriefLeak)
 
 - **G8 (BriefLeak)**: Briefing-/Instruktions-Register im Artefakt
