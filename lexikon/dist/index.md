@@ -29,7 +29,7 @@ Rhetorisches Muster "This is not X. It's Y." / "The question isn't X, it's Y." /
 
 ## Ethnopluralismus
 
-`LEX-2026-008` · Kategorie: type · Status: nursery · v1 · content_hash: `2bd3e511dcff0b3f`
+`LEX-2026-008` · Kategorie: type · Status: nursery · v1 · content_hash: `a1ac26158b216852`
 
 Ideologische Strategie, die Kulturen als gleichwertig UND unverträglich erklärt und daraus getrennte, möglichst homogene Räume als einzige operationale Policy ableitet. Modelliert nicht als Schlagwort, sondern als Strategie (Ziel, Taktik, semantische Tarnung), weil genau die Schlussform — von „Differenz“ auf Trennung — den Slop-Charakter erzeugt: endlose „Differenz“-Prosa ohne operationalisierbaren Gehalt außer Trennung (Detektionszweck, keine politische Wertung über den analytischen Bedarf hinaus).
 
@@ -42,22 +42,28 @@ Ideologische Strategie, die Kulturen als gleichwertig UND unverträglich erklär
    > „Ethnopluralismus bezeichnet eine völkisch-radikalisierte Variante des Rassismus, die nicht auf eine Hierarchie der „Rassen“, sondern auf die strikte Trennung der Ethnien zielt.“
    > — <https://www.bpb.de/themen/rechtsextremismus/dossier-rechtsextremismus/526659/ethnopluralismus/> (Zugriff 2026-09-02)
 2. Strategischer Kern (Taguieff, Rueda, Spektorowski): kein Verzicht auf Exklusion, sondern Rebranding vom biologistischen zu kulturalistischem Rassismus („cultural turn“) — Sprache von Diversität, Antitotalitarismus, Antiimperialismus und Umweltschutz wird gekapert; Taguieff beschreibt die Tarnung suprematistischer Gehalte hinter egalitärem Vokabular.
-   > „Strategischer Kern (Taguieff, Rueda, Spektorowski). Kein Verzicht auf Exklusion, sondern Rebranding: biologistischer Rassismus → kulturalistischer Rassismus („cultural turn"). Sprache von Diversität, Antitotalitarismus, Antiimperialismus, Umweltschutz wird gekapert. Taguieff: Tar…“
-   > — <https://github.com/MakerCologne/ai-slop-ontology/issues/94> (Zugriff 2026-09-02)
+   > „Rueda, Daniel: „Alain de Benoist, ethnopluralism and the cultural turn in racism“, Patterns of Prejudice 55(3), 2021, 213–235. Rueda locates this ideal as part of „the cultural turn in racism“ — the passage from biological to cultural argumentation.“
+   > — <https://doi.org/10.1080/0031322X.2021.1920722> (Zugriff 2026-10-04)
+   > „Many specialists have described the idea as a strategic attempt to legitimise racial supremacist views in public opinion by imitating egalitarian, anti-totalitarian, antiracist, or environmental discourses of the progressive movement (mit Verweis auf Taguieff).“
+   > — <https://en.wikipedia.org/wiki/Ethnopluralism> (Zugriff 2026-10-04)
 3. Ambiguity-Befund (Journal of Political Ideologies 2023/25): Texte von Benoist, Faye, Eichberg und Lichtmesz zeigen den Cultural Turn bei gleichzeitig fortbestehenden biologistischen Resten — die Doppelbödigkeit ist Design, nicht Nebeneffekt. Malik: Kultur wird zum Synonym für Abstammung, sobald Zugehörigkeit an Herkunftsort und Deszendenz gebunden wird.
-   > „Ambiguity-Befund (Journal of Political Ideologies 2023/25). Texte von Benoist, Faye, Eichberg, Lichtmesz: Cultural Turn ja, Reste biologistischer Argumentation bleiben — die Doppelbödigkeit ist Design.“
-   > — <https://github.com/MakerCologne/ai-slop-ontology/issues/94> (Zugriff 2026-09-02)
+   > „Havertz, Ralf: „Ethnopluralism and its ambiguities: racism with and without race“, Journal of Political Ideologies 30(1), 2025, 51–66. Ethnopluralism has gained great significance as a political ideology with the rise of right-wing populism in Europe in recent years.“
+   > — <https://doi.org/10.1080/13569317.2023.2212252> (Zugriff 2026-10-04)
+   > „Rueda 2021 (Patterns of Prejudice 55(3), 213–235) dokumentiert den cultural turn in racism: Übergang von biologischer zu kultureller Argumentation bei fortbestehendem Exklusionsziel.“
+   > — <https://doi.org/10.1080/0031322X.2021.1920722> (Zugriff 2026-10-04)
 4. Metapolitik: Gramsci von rechts — kulturelle Hegemonie vor Staat. Deshalb wirkt der Begriff als Slop-Generator: Er produziert endlose „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.
-   > „Metapolitik. Gramsci von rechts: kulturelle Hegemonie vor Staat. Deshalb taugt der Begriff als Slop-Generator — er produziert endlos „Differenz“-Prosa ohne operationalisierbare Policy außer Trennung/Remigration.“
-   > — <https://github.com/MakerCologne/ai-slop-ontology/issues/94> (Zugriff 2026-09-02)
+   > „Spektorowska, Irena: „The New Right: Ethno-regionalism, ethno-pluralism and the emergence of a pan-European nationalism“, Journal of Political Ideologies 8(1), 2003. Through the affirmation of culture racism is expanded; the revival of the ‚cultural‘ is not limited to legitimizin…“
+   > — <https://www.researchgate.net/publication/47252457_The_New_Right_Ethno-regionalism_ethno-pluralism_and_the_emergence_of_a_pan-European_nationalism> (Zugriff 2026-10-04)
+   > „Wikipedia (EN), Artikel „Ethnopluralism“ (2026-10-04): The concept … formulated in its modern form by French political theorist and Nouvelle Droite founding member Alain de Benoist … closely associated with the European New Right and the Identitarian movement.“
+   > — <https://en.wikipedia.org/wiki/Ethnopluralism> (Zugriff 2026-10-04)
 
 *Detect:* Schluss von „Differenz“/„Vielfalt“ auf getrennte Räume oder Remigration, ökologische Mimikry (Biodiversität ↔ Völkervielfalt), „Recht auf Differenz“ als Politikforderung statt Ethnografie
 
-*Gegenmaßnahme:* Detect-only named evidence (Pattern EthnopluralistRebrand, #92); kein Score. Kennzeichen ist die Schlussform, nicht das Wort: Ethnografische Differenzbeschreibung ohne Segregationsforderung bleibt Hard-Negative.
+*Gegenmaßnahme:* Detect-only named evidence (Pattern EthnopluralistRebrand, #92); kein Score. Der Detektor bewertet die Strategieform, nicht die Parteizugehörigkeit. Kennzeichen ist die Schlussform, nicht das Wort: Ethnografische Differenzbeschreibung ohne Segregationsforderung bleibt Hard-Negative.
 
 *Keep when:* Ethnografie, Historiografie oder Ideologieforschung, die das Konzept beschreibt, ohne die Trennungspolitik zu fordern
 
-*Siehe auch:* LEX-2026-006, LEX-2026-007, adr/0008, #92, #93, #96
+*Siehe auch:* LEX-2026-006, LEX-2026-007, adr/0008, #92, #93, #94, #96
 
 ## Human-Slop
 

@@ -24,10 +24,15 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "skills", "ai-slop-detection", "scripts"))
+sys.path.insert(0, os.path.join(ROOT, "src"))
 
 import slop_scorer  # noqa: E402
+from threshold_config import load_threshold  # noqa: E402
 
 DEFAULT_CONTROL_SET = os.path.join(ROOT, "eval", "control_set.jsonl")
+# Single source: config/threshold.json (#157 / GL #10) — the sweep (GL #6.3)
+# updates that file, never this constant (issue #1292 / GL #10 sync).
+THRESHOLD = load_threshold()
 
 
 def load_control_set(path: str) -> list:
@@ -94,7 +99,7 @@ def run_gate(items: list, threshold: float) -> int:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--control-set", default=DEFAULT_CONTROL_SET)
-    parser.add_argument("--threshold", type=float, default=0.40)
+    parser.add_argument("--threshold", type=float, default=THRESHOLD)
     args = parser.parse_args()
     items = load_control_set(args.control_set)
     print(f"Control set: {args.control_set} (n={len(items)}, threshold={args.threshold})")

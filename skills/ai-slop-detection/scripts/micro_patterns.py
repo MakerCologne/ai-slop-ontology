@@ -46,6 +46,55 @@ GRAND_ENDPOINTS = {
     "microchips", "cave paintings", "black holes", "fire", "the wheel",
 }
 
+# Cross-domain abstract endpoints for FalseRange (issue #247 / G1): "from X to
+# Y" where both endpoints are abstract nouns but from different semantic
+# domains — there is no shared scale, so the span is rhetorical, not literal
+# ("from scalability to passion"). Endpoints in the SAME domain describe a
+# real span on one scale ("from latency to throughput" — both engineering
+# qualities) and do not fire. Concrete nouns are never in these lists, so
+# everyday spans ("from the kitchen to the living room") stay clean.
+ABSTRACT_DOMAINS = {
+    "tech": {
+        "scalability", "latency", "throughput", "uptime", "performance",
+        "reliability", "bandwidth", "observability", "deployments",
+        "infrastructure", "architecture", "automation", "integration",
+    },
+    "emotion": {
+        "passion", "joy", "fear", "hope", "empathy", "wonder", "anxiety",
+        "delight", "belonging", "nostalgia",
+    },
+    "business": {
+        "revenue", "growth", "profit", "churn", "retention", "margin",
+        "valuation", "market share", "conversion", "pipeline",
+    },
+    "meaning": {
+        "meaning", "truth", "ethics", "existence", "consciousness",
+        "purpose", "identity", "justice", "freedom", "beauty",
+    },
+    "society": {
+        "politics", "culture", "history", "education", "inequality",
+        "community", "power", "trust", "institutions", "migration",
+    },
+    "craft": {
+        "craft", "design", "storytelling", "aesthetics", "technique",
+        "composition", "typography", "rhythm", "voice",
+    },
+}
+_ABSTRACT_TO_DOMAINS = {
+    noun: dom for dom, nouns in ABSTRACT_DOMAINS.items() for noun in nouns
+}
+
+
+def _domains(word):
+    """Domain set for a (lowercased, singularized) endpoint noun."""
+    w = word.strip().lower()
+    if w in _ABSTRACT_TO_DOMAINS:
+        return {"domain:" + _ABSTRACT_TO_DOMAINS[w]}
+    # Allow one trailing 's' (plural) without rebuilding the lists.
+    if w.endswith("s") and w[:-1] in _ABSTRACT_TO_DOMAINS:
+        return {"domain:" + _ABSTRACT_TO_DOMAINS[w[:-1]]}
+    return set()
+
 RECAP_OPENERS = ["in conclusion", "overall,", "to summarize"]
 
 # --- ActorlessClaim (#248, Gap G4) ----------------------------------------
@@ -68,6 +117,32 @@ _AGENTLESS_CLAIM = re.compile(
     r"(?:" + "|".join(AGENTLESS_CLAIM_VERBS) + r")\b"
     r"|\bmistakes\s+were\s+made\b",
     re.IGNORECASE,
+)
+
+# G6 (issue #249 / unslop #2): NameDropList — media/brand enumerations
+# without statement content. Lead-ins are a closed list; the second path
+# (bare enumeration, almost nothing else in the sentence) is capped by
+# MAX_NON_LIST_WORDS so it only fires on genuinely content-free lists.
+NAME_DROP_LEADINS = [
+    "featured in", "as featured in", "seen in", "as seen in", "seen on",
+    "as seen on", "covered by", "mentioned in", "praised by", "endorsed by",
+    "trusted by", "recommended by", "highlighted in", "spotlighted in",
+]
+
+# If any of these content verbs shape the list, the sentence makes a real
+# statement about the named things (comparison, review, interview) — not
+# a bare name drop.
+NAME_DROP_KEEP_VERBS = [
+    "compared", "tested", "benchmark", "benchmarked", "analyzed",
+    "analysed", "reviewed", "studied", "interviewed", "surveyed",
+    "evaluated", "ranked", "audited", "measured", "mapped",
+]
+MAX_NON_LIST_WORDS = 6
+
+# One enumerated item: capitalized word(s), optionally "The X"/"X of the Y".
+_ITEM = r"(?:[Tt]he\s+)?[A-Z][\w&.'’-]*(?:\s+[A-Z][\w&.'’-]*)*"
+_NAME_ENUM = re.compile(
+    r"(" + _ITEM + r"(?:\s*,\s*(?:and\s+|or\s+)?" + _ITEM + r"){2,})"
 )
 
 _STOP = {
@@ -107,12 +182,75 @@ def _false_agency(sentences: list):
     return None
 
 
+def _endpoint_candidates(phrase):
+    """All word-prefix candidates for an endpoint (1..4 words, lowercase)."""
+    words = phrase.strip().lower().split()
+    return [" ".join(words[:i]) for i in range(1, min(4, len(words)) + 1)]
+
+
+# Function words: when one of these follows a prefix candidate, the candidate
+# is the head of its noun phrase (a PP/clause boundary), so the prefix may be
+# classified on its own ("meaning without pausing" — head 'meaning'). A
+# content word instead signals a compound noun phrase whose head differs
+# ("performance reviews", "market share reports" — head is the LAST noun),
+# which must never be classified via its first word (Codex P2 review #289).
+_PHRASE_BOUNDARY_WORDS = {
+    "and", "or", "plus", "with", "without", "of", "in", "into",
+    "through", "via", "for", "than",
+}
+
+
+def _candidate_allowed(words, count):
+    """A candidate shorter than the captured phrase is only trusted when the
+    next word marks a phrase boundary (function word). The full captured
+    phrase is always trusted — the regex lookahead verified its edge."""
+    if count >= len(words):
+        return True
+    return words[count] in _PHRASE_BOUNDARY_WORDS
+
+
+_FALSE_RANGE_RE = re.compile(
+    r"from\s+(?:the\s+)?([a-z][a-z\s]{2,30}?)\s+to\s+(?:the\s+)?([a-z][a-z\s]{2,30})(?=[.,;:)]|\s+\w|$)",
+    re.IGNORECASE,
+)
+
+
 def _false_range(text: str):
-    for m in re.finditer(r"from\s+(the\s+)?([a-z][a-z\s]{2,30}?)\s+to\s+(the\s+)?([a-z][a-z\s]{2,30}?)(?=[.,;:)]|$)", text, re.IGNORECASE):
-        left = m.group(2).strip().lower()
-        right = m.group(4).strip().lower()
-        if left in GRAND_ENDPOINTS and right in GRAND_ENDPOINTS:
+    # Manual cursor instead of finditer: a greedy right-hand group can swallow
+    # a coordinated second range ("from revenue to growth and from scalability
+    # to passion" — the nested 'from' sits inside the captured phrase). On a
+    # non-firing match, scanning resumes inside the captured span so nested
+    # 'from' clauses are still evaluated (Codex P2 review #289).
+    pos = 0
+    while pos < len(text):
+        m = _FALSE_RANGE_RE.search(text, pos)
+        if not m:
+            return None
+        left_raw, right_raw = m.group(1), m.group(2)
+        left_words = left_raw.strip().lower().split()
+        right_words = right_raw.strip().lower().split()
+        fired = False
+        for left in _endpoint_candidates(left_raw):
+            count = len(left.split())
+            if not _candidate_allowed(left_words, count):
+                continue
+            for right in _endpoint_candidates(right_raw):
+                if not _candidate_allowed(right_words, len(right.split())):
+                    continue
+                if left in GRAND_ENDPOINTS and right in GRAND_ENDPOINTS:
+                    fired = True
+                    break
+                ldom, rdom = _domains(left), _domains(right)
+                if ldom and rdom and ldom.isdisjoint(rdom):
+                    fired = True
+                    break
+            if fired:
+                break
+        if fired:
             return m.group(0)
+        # No fire: restart after the left endpoint so a nested 'from ... to ...'
+        # inside the swallowed span is scanned on the next iteration.
+        pos = m.start(1) + 1
     return None
 
 
@@ -164,10 +302,196 @@ def _actorless_claim(text: str):
         m = _AGENTLESS_CLAIM.search(s)
         if m:
             return s
+def _name_drop_items(enum_match: str):
+    """Split an enumeration core into cleaned item strings."""
+    items = [p.strip() for p in enum_match.split(",")]
+    cleaned = []
+    for it in items:
+        it = re.sub(r"^(?:and|or)\s+", "", it, flags=re.IGNORECASE).strip()
+        # trailing 'and X' inside the last comma-less segment
+        parts = re.split(r"\s+(?:and|&)\s+", it)
+        cleaned.extend(p.strip() for p in parts if p.strip())
+    return cleaned
+
+
+def _name_drop_list(text: str):
+    for raw_line in text.split("\n"):
+        line = raw_line.strip()
+        # Reference-list conventions are legitimate enumerations by design.
+        if (not line or line.startswith(("-", "*", ">", "[", "(", "#"))
+                or line[0].isdigit() or "http" in line.lower()):
+            continue
+        for s in _sentences(line):
+            low = s.lower()
+            if any(v in low for v in NAME_DROP_KEEP_VERBS):
+                continue
+            m = _NAME_ENUM.search(s)
+            if not m:
+                continue
+            items = _name_drop_items(m.group(1))
+            if len(items) < 3:
+                continue
+            lead_in = next((li for li in NAME_DROP_LEADINS if li in low), None)
+            remainder = (s[:m.start(1)] + " " + s[m.end(1):]).strip()
+            if lead_in:
+                remainder = remainder.lower().replace(lead_in, " ")
+            words = [w for w in re.findall(r"[a-zA-Z']+", remainder)
+                     if w.lower() not in _STOP]
+            if len(words) <= MAX_NON_LIST_WORDS:
+                return s
+    return None
+
+
+# --- Fallstudie #97: PuritySlop / Slopaganda (detect-only) ---------------
+# Ritual anti-AI purity declarations (Bluesky "AI IS THEFT. PASS IT ON."
+# chain letters) and identity-signalling bans. Willison-test: unverlangt,
+#gedankenlos skaliert — oft ohne dass ein Modell den Text schrieb.
+_PURITY_RITUAL = re.compile(
+    r"\bai\s+is\s+theft\b"
+    r"|\bpass\s+it\s+on\b"
+    r"|\bblock\s+me\s+if\s+you\s+(?:use|support|like)\s+(?:any\s+)?ai\b"
+    r"|\bif\s+you\s+use\s+ai,?\s+block\s+me\b"
+    r"|\b(?:100%|one\s+hundred\s+percent)\s+(?:human[- ]written|human[- ]made)\b"
+    r"|\bno\s+ai\s+was\s+(?:used|involved|harmed)\b"
+    # DE (Fallstudie #97, Texte 3–4): Purity-Test ohne Argument
+    r"|\bai[- ]?tools?\s+nutzt,?\s+hat\s+als\s+mensch\b"
+    r"|\bai[- ]?avatar\s+hat,?\s+ist\s+blockiert\b"
+    r"|\bnicht\s+verhandeln\b"
+    # HIS: Teil-des-Problems-Ritual (Partizipation als Position, ohne Argument)
+    r"|\bwer\s+[^.!?]{0,80}\bist\s+teil\s+des\s+problems\b"
+    r"|\bkeine\s+unschuldigen\s+zuschauer\b"
+    r"|\bschauen\s+ist\s+schon\s+position\b",
+    re.IGNORECASE,
+)
+# keep_when: compliance/provenance disclosure — factual statements required by
+# a policy, licence, watermark or evaluation, not identity signalling.
+_PURITY_DISCLOSURE = re.compile(
+    r"\b(?:watermark|watermarked|provenance|disclosure|pursuant|compliance|"
+    r"licence|license|verified|certified|per\s+(?:the\s+)?(?:policy|contract|"
+    r"requirement|guideline)|evaluation|benchmark)\b",
+    re.IGNORECASE,
+)
+
+# VibeScapegoat: "vibe coding" invoked as blanket cause of a failure without
+# naming any technical mechanism (Bluesky outage discourse, Ars Technica
+# 2026-04).
+_VIBE_CODING = re.compile(r"\bvibe[- ]?cod(?:e|ed|er|ing)\b", re.IGNORECASE)
+_VIBE_FAILURE = re.compile(
+    r"\b(?:outage|broke|broke\s+down|down|downtime|incident|failure|"
+    r"crashed|went\s+down|meltdown|ausfall|st\u00f6rung)\b",
+    re.IGNORECASE,
+)
+_VIBE_EVIDENCE_DENIAL = re.compile(
+    r"\b(?:keine\s+(?:meldung|logs?|untersuchung|postmortem)|"
+    r"man\s+braucht\s+keine\s+meldung|no\s+logs?\s+needed|"
+    r"wir\s+wissen\s+alle|we\s+all\s+know|my\s+foot)\b",
+    re.IGNORECASE,
+)
+_VIBE_TECHNICAL = re.compile(
+    r"\b(?:commit|deploy|config|database|query|migration|log|cache|regex|"
+    r"race\s+condition|index|schema|load\s+balancer|dns|certificate|"
+    r"token|timeout|revert|rollback|hotfix)\b",
+    re.IGNORECASE,
+)
+
+# SalvationModel: monetised AI melodrama arc — injustice -> humiliation ->
+# redemption (WIRED 2026-07 schema) — signalled by stacked arc markers plus
+# an AI/money noun in the redemption sentence.
+_SALVATION_MARKERS = re.compile(
+    r"\b(?:against\s+all\s+odds|humble\s+beginnings|no\s+one\s+believed|"
+    r"laughed\s+(?:at|me\s+out)|rejected\s+by\s+everyone|slept\s+in\s+(?:a|my)\s+"
+    r"car|lost\s+everything|down\s+to\s+(?:my|his|her)\s+last\s+\$?\d+|"
+    r"tears\s+(?:of|streamed)|cried\s+(?:when|tears|for)|"
+    r"(?:never|still\s+can(?:'t|\s+not))\s+(?:believe|imagined)|"
+    r"(?:life|everything)\s+(?:is|was|has\s+been)\s+(?:changed|never\s+the\s+same)|"
+    r"forever\s+grateful|best\s+decision\s+(?:i|we|he|she)\s+ever\s+made)\b",
+    re.IGNORECASE,
+)
+_SALVATION_AI_MONEY = re.compile(
+    r"\b(?:ai|a\.i\.|chatgpt|gpt-?\d|grok|claude|gemini|midjourney|"
+    r"automation|bot)\b|\$\s?\d",
+    re.IGNORECASE,
+)
+
+# SLOPAGANDA_RITUAL (#97, Texte 5–8): unambiguous identity-regime phrases
+# (Erlöser-Schema, Lösch-Mobilisierung, Lügenpresse-Frame, Loyalitätstest).
+# Single marker fires — these are closed rituals, not ordinary rhetoric.
+_SLOPAGANDA_RITUAL = re.compile(
+    r"\bonly\s+\w+\s+can\s+save\b[^.!?]*\beveryone\s+else\b"
+    r"|\bteilt\s+(?:es|das),?\s+bevor\s+es\s+gelöscht\s+wird\b"
+    r"|\blügenpresse\b"
+    r"|\bliken\s*(?:=|ist)\s*loyalitäts?\b"
+    r"|\bwer\s+nicht\s+liked\b"
+    # HIS: Erloeser-Schema DE / Einheits-Pathos
+    r"|\bnur\s+noch\s+\w+\s+kann\s+[^.!?]*\bretten\b"
+    r"|\balle\s+anderen\s+sind\s+teil\s+des\s+problems\b"
+    r"|\beine\s+bewegung,?\s+ein\s+wille\b",
+    re.IGNORECASE,
+)
+
+
+def _purity_ban(text: str):
+    for s in _sentences(text):
+        m = _PURITY_RITUAL.search(s)
+        if m and not _PURITY_DISCLOSURE.search(s):
+            return s
+    return None
+
+
+def _vibe_scapegoat(text: str):
+    sentences = _sentences(text)
+    for i, s in enumerate(sentences):
+        if _VIBE_CODING.search(s) and _VIBE_FAILURE.search(s):
+            # keep_when: a post-mortem that names the actual mechanism is
+            # technical writing, not scapegoating.
+            if _VIBE_TECHNICAL.search(s):
+                continue
+            return s
+        # adjacency: failure claim and 'vibe coding' blame split across a
+        # question/answer pair ("Service down again? Vibe-coded devs…")
+        prev = sentences[i - 1] if i > 0 else ""
+        if (_VIBE_CODING.search(s) and _VIBE_FAILURE.search(prev)
+                and not _VIBE_TECHNICAL.search(s)):
+            return f"{prev} {s}".strip()
+        # blame-without-evidence: failure + dismissal of any investigation
+        # (HIS-052/53) — scapegoating without the buzzword
+        if (_VIBE_FAILURE.search(s) and _VIBE_EVIDENCE_DENIAL.search(s)
+                and not _VIBE_TECHNICAL.search(s)):
+            return s
+        if (_VIBE_FAILURE.search(prev) and _VIBE_EVIDENCE_DENIAL.search(s)
+                and not _VIBE_TECHNICAL.search(s)):
+            return f"{prev} {s}".strip()
+    return None
+
+
+def _salvation_model(text: str):
+    for s in _sentences(text):
+        if _SLOPAGANDA_RITUAL.search(s):
+            return s
+    markers = _SALVATION_MARKERS.findall(text)
+    if len(set(m.lower() for m in markers)) < 2:
+        return None
+    for s in _sentences(text):
+        if _SALVATION_MARKERS.search(s) and _SALVATION_AI_MONEY.search(s):
+            return s
     return None
 
 
 MICRO_PATTERNS = {
+    "NameDropList": {
+        "label": "Name-drop list",
+        "confidence": 0.6,
+        "description": "Enumeration of 3+ media/brand/outlet names with no statement "
+                       "content — 'As featured in TechCrunch, Forbes, and Wired.' "
+                       "The names ARE the sentence. FakeAuthoritySlop's list-shaped "
+                       "cousin (G6, unslop #2).",
+        "example_slop": "As featured in TechCrunch, Forbes, and Wired.",
+        "example_fix": "TechCrunch covered the launch; the benchmark data is in the report.",
+        "keep_when": "Reference lists, directories and citation sections (bullet/numbered "
+                     "lines are skipped), and sentences whose verb makes a real claim "
+                     "about the named things (compared/tested/interviewed/ranked…), "
+                     "e.g. 'We compared React, Vue, and Angular in the benchmark.'",
+    },
     "FalseAgency": {
         "label": "False agency",
         "confidence": 0.6,
@@ -184,15 +508,21 @@ MICRO_PATTERNS = {
     },
     "FalseRange": {
         "label": "False from-X-to-Y range",
-        "confidence": 0.55,
-        "description": "Grandiosity sweep 'from the X to the Y' where both endpoints are "
-                       "gesture-at-scale placeholders (Big Bang, dark matter, dinosaurs, "
-                       "printing press). Name the actual scope.",
+        "confidence": 0.6,
+        "description": "Two false-span shapes: (a) grandiosity sweep 'from the X to "
+                       "the Y' where both endpoints are gesture-at-scale placeholders "
+                       "(Big Bang, dark matter, printing press), and (b) cross-domain "
+                       "abstract span where both endpoints are abstract nouns from "
+                       "different semantic domains, so no shared scale exists "
+                       "('from scalability to passion'). Name the actual scope.",
         "example_slop": "This guide covers everything from the Big Bang to dark matter.",
         "example_fix": "This guide covers cosmology from the early universe to structure formation.",
-        "keep_when": "The endpoints are the literal topic (a cosmology lecture legitimately "
-                     "spans Big Bang to dark matter) — the guard is intent, the detector "
-                     "only reports the sweep for a human to judge.",
+        "keep_when": "(a) The endpoints are the literal topic (a cosmology lecture "
+                     "legitimately spans Big Bang to dark matter); (b) the endpoints "
+                     "share one domain/scale — 'from latency to throughput' is a real "
+                     "engineering span, 'from fear to joy' is a real emotional arc. "
+                     "Concrete everyday spans (rooms, orgs, prices) never fire. The "
+                     "detector only reports the span for a human to judge.",
     },
     "RecapEnding": {
         "label": "Recap ending with restatement",
@@ -230,14 +560,63 @@ MICRO_PATTERNS = {
                      "clauses are skipped). Sentences naming an agent ('by the team') "
                      "are skipped.",
     },
+    "PurityBan": {
+        "label": "Ritual AI-purity declaration",
+        "confidence": 0.55,
+        "description": "Identity-signalling anti-AI ritual phrases ('AI IS THEFT. "
+                       "PASS IT ON.', 'block me if you use AI', '100% human-made') "
+                       "scaled mindlessly, often without any model writing the text. "
+                       "Human slop: the frame is human, the mass is synthetic.",
+        "example_slop": "AI IS THEFT. PASS IT ON. Block me if you use it.",
+        "example_fix": "I don't want my posts used for training without my "
+                       "consent; my complaint is scraping and licensing, not identity.",
+        "keep_when": "Compliance or provenance disclosures required by policy, "
+                     "licence or watermark rules ('this report is watermarked per "
+                     "contract requirements') — sentences with disclosure/"
+                     "provenance/compliance vocabulary are skipped.",
+    },
+    "VibeScapegoat": {
+        "label": "'Vibe coding' blamed without mechanism",
+        "confidence": 0.55,
+        "description": "'Vibe coding' invoked as a blanket cause of an outage or "
+                       "failure while naming no technical mechanism — a scapegoat "
+                       "frame instead of a post-mortem.",
+        "example_slop": "The site went down because they were vibe coding, plain "
+                        "and simple.",
+        "example_fix": "The site went down after an unreviewed config change; the "
+                        "migration lacked a rollback plan.",
+        "keep_when": "Post-mortems or reviews that name a concrete mechanism "
+                     "(commit, deploy, database, migration, rollback…). Those "
+                     "sentences are skipped by the technical-token guard.",
+    },
+    "SalvationModel": {
+        "label": "AI salvation melodrama arc",
+        "confidence": 0.6,
+        "description": "Monetised AI melodrama following the arc injustice -> "
+                       "humiliation -> redemption ('lost everything… now $12k a "
+                       "month') — stacked arc markers plus an AI/money payoff.",
+        "example_slop": "I lost everything and no one believed in me. Today the "
+                        "AI bot earns me $40,000 a month and I still can't believe "
+                        "it.",
+        "example_fix": "I was broke in 2024. After eight months of building a "
+                        "support-ticket automation, it now covers my rent; the "
+                        "revenue table with numbers is below.",
+        "keep_when": "Genuine personal narratives with verifiable, concrete "
+                        "details (numbers, timelines, named methods) — the detector "
+                        "only reports the stacked arc markers for a human to judge.",
+    },
 }
 
 _FINDERS = {
+    "NameDropList": _name_drop_list,
     "FalseAgency": lambda text: _false_agency(_sentences(text)),
     "FalseRange": _false_range,
     "RecapEnding": _recap_ending,
     "HeadingRepeatedBelowItself": _heading_repeated,
     "ActorlessClaim": _actorless_claim,
+    "PurityBan": _purity_ban,
+    "VibeScapegoat": _vibe_scapegoat,
+    "SalvationModel": _salvation_model,
 }
 
 
